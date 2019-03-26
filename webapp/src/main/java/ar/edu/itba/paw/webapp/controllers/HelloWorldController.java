@@ -9,8 +9,8 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class HelloWorldController {
 
-    @Autowired
-    private UserService us;
+//     @Autowired
+//     private UserService us;
 
     @RequestMapping("/")
     public ModelAndView helloWorld() {
