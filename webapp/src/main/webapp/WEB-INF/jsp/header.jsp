@@ -14,7 +14,7 @@
             }
         </style>
         <div id="logo">
-            <img src="http://ultimominuto.com.mx/wp-content/uploads/2019/01/c670f2b2-michael-jackson-2018-1.jpg" style="width:100px;height:100px;">
+            <img src="https://images.clarin.com/2019/03/18/wl00XjUyF_1256x620__1.jpg" style="width:100px;height:100px;">
             <style>
                 #logo {
                     font-size: 24pt;
@@ -24,7 +24,7 @@
             </style>
         </div>
         <div id="header-right">
-            <button type="button" style="width:100px;height:50px"> emitir changa </button>
+            <button type="button" style="width:100px;height:50px">Emitir changa</button>
             <style>#header-right {
                 float: right;
                 width: 300px;
