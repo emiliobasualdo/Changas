@@ -5,7 +5,7 @@
             p {font-size: 16px;}
         </style>
     </head>
-    <div class="card w-75">
+    <div class="card w-100">
         <div class="card-body">
             <h1 class="card-title">
                 <c:out value="${requestScope.title}" />
