@@ -1,20 +1,25 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
-<html>
-    <div class="jumbotron text-center">
-        <h1>My First Bootstrap Page</h1>
-        <p>Resize this responsive page to see the effect!</p>
-    </div>
+<%--<html>--%>
+<%--<link rel='stylesheet' href="/webjars/bootstrap/css/bootstrap.min.css">--%>
 
-    <div class="container">
-        <div id="changasList">
-            <ul>
-                <c:forEach items="${changaList}" var="changa">
-                    <li>
-                        <c:out value="${changa.title}" />
-                        <c:out value="${changa.description}"/>
-                    </li>
-                </c:forEach>
-            </ul>
-        </div>
-    </div>
+<%--<jsp:include page="/WEB-INF/jsp/header.jsp" />--%>
+<%--<jsp:include page="/WEB-INF/jsp/lasChangas.jsp" />--%>
+
+<%--</html>--%>
+
+<html>
+<head>
+    <meta charset="utf-16">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css" />
+</head>
+
+<jsp:include page="/WEB-INF/jsp/header.jsp" />
+<jsp:include page="/WEB-INF/jsp/lasChangas.jsp" />
+
 </html>
