@@ -1,51 +1,39 @@
 <html>
-
 <head>
-    <div id="header">
-        <style>
-            #header {
-                padding-top: 10px;
-                padding-bottom: 10px;
-                padding-left: 25px;
-                background-color: #fafafa;
-                height: 100px;
-                border-bottom: 1px solid #d3d3d3;
-                overflow: auto;
-            }
-        </style>
-        <div id="logo">
-            <img src="http://ultimominuto.com.mx/wp-content/uploads/2019/01/c670f2b2-michael-jackson-2018-1.jpg" style="width:100px;height:100px;">
-            <style>
-                #logo {
-                    font-size: 24pt;
-                    width: 100px;
-                    float: left;
-                }
-            </style>
-        </div>
-        <div id="header-right">
-            <button type="button" style="width:100px;height:50px"> emitir changa </button>
-            <style>#header-right {
-                float: right;
-                width: 300px;
-                margin-right: 20px;
-                text-align: center;
-            }</style>
-        </div>
-        <div id="header-middle">
-            <h1>Changas</h1>
-            <style>
-                #header-middle {
-                    width: 300px;
-                    margin-left: auto;
-                    margin-right: auto;
-                }
-            </style>
-        </div>
-    </div>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 <body>
 
-</body>
+<div class="jumbotron text-center">
+    <h1>My First Bootstrap Page</h1>
+    <p>Resize this responsive page to see the effect!</p>
+</div>
 
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4">
+            <h3>Column 1</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
+        </div>
+        <div class="col-sm-4">
+            <h3>Column 2</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
+        </div>
+        <div class="col-sm-4">
+            <h3>Column 3</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
+        </div>
+    </div>
+</div>
+
+</body>
 </html>

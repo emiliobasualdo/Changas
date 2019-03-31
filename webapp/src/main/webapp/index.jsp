@@ -1,8 +1,6 @@
+<!DOCTYPE html>
 <html>
-
-    <%--<link rel="stylesheet" href="../css/bootstrap.min.css">--%>
-    <%--<script src="../js/bootstrap.min.js"></script>--%>
-    <%--<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>--%>
+    <link rel='stylesheet' href='/webjars/bootstrap/css/bootstrap.min.css'>
 
     <jsp:include page="/WEB-INF/jsp/header.jsp" />
 
