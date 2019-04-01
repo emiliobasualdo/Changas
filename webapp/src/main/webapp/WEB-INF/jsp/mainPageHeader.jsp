@@ -32,14 +32,14 @@
                 line-height: 1.8;
             }
             p {font-size: 16px;}
-            .margin {margin-bottom: 45px;}
+            .margin {margin-bottom: 25px;}
             .bg-1 {
-                background-color: #1abc9c; /* Green */
+                background-color: #2db6bb; /* Green */
                 color: #ffffff;
             }
             .container-fluid {
-                padding-top: 70px;
-                padding-bottom: 70px;
+                padding-top: 25px;
+                padding-bottom: 40px;
             }
             .navbar {
                 margin-bottom: 0;
@@ -50,7 +50,7 @@
     <header>
 
         <nav class="navbar navbar-light bg-light static-top">
-            <div class="container">No tenes una cuenta? &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<a class="btn btn-primary" href="#">Sign In</a><a class="btn btn-primary" href="#">Log In</a>
+            <div class="container">No tenes una cuenta? &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<a class="btn btn-primary" href="#">Sign In</a><a class="btn btn-primary" href="#">Log In</a>
             </div>
         </nav>
 

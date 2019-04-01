@@ -41,7 +41,7 @@
                     <c:set var="price" value="${changa.price}" scope="request"/>
                     <c:set var="neighborhood" value="${changa.neighborhood}" scope="request"/>
                     <div class="row" style="margin-top: 20px">
-                        <c:import url="/WEB-INF/jsp/changa.jsp"/>
+                        <c:import url="/WEB-INF/jsp/changaCard.jsp"/>
                     </div>
                 </c:forEach>
         </div>
