@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.interfaces.ChangaService;
+import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.models.Changa;
 import org.springframework.stereotype.Repository;
 
