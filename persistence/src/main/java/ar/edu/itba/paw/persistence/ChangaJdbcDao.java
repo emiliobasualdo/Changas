@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.constants.DBChangaFields;
-import ar.edu.itba.paw.interfaces.ChangaDao;
+import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.models.Changa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,6 +13,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBTableName.CHANGAS;
+import static ar.edu.itba.paw.constants.DBTableName.USERS;
 
 @Repository
 public class ChangaJdbcDao implements ChangaDao {
@@ -25,24 +25,29 @@ public class ChangaJdbcDao implements ChangaDao {
     @Autowired
     public ChangaJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
-        jdbcTemplate.execute(createTableQuery());
-        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(CHANGAS.TN()).usingGeneratedKeyColumns("ownerName");
+        createTable();
     }
 
-    private String createTableQuery() {
-        StringBuilder resp = new StringBuilder("CREATE TABLE IF NOT EXISTS " + CHANGAS.TN());
-        resp.append("(");
-        for (DBChangaFields field: DBChangaFields.values()) {
-            resp.append(field.getFQN());
-            resp.append(", ");
-        }
-        resp.deleteCharAt(resp.length()-1);// todo falta aca // We remove the extra coma
-        resp.append(")");
-        return resp.toString();
-
+    public void createTable() {
+        String query =
+                "CREATE TYPE address AS ( " +
+                    "street          VARCHAR(100), " +
+                    "neighborhood 	VARCHAR(100), " +
+                    "number 		INTEGER" +
+                ");" +
+                "CREATE TABLE "+CHANGAS.TN()+" ( " +
+                    "changa_id SERIAL PRIMARY KEY, " +
+                    "user_id SERIAL, " +
+                    "address address, " +
+                    "creation_date TIMESTAMP, " +
+                    "title VARCHAR(100), " +
+                    "description VARCHAR(100), " +
+                    "state 			INTEGER, " +
+                    "FOREIGN KEY (user_id) REFERENCES "+ USERS.TN() +"(user_id)" +
+                ")";
+        jdbcTemplate.execute(query);
     }
 
-    @Override
     public Changa findById(final long id) {
         final List<Changa> list = jdbcTemplate.query(
                 "SELECT * FROM ? WHERE id = ?",
@@ -63,7 +68,7 @@ public class ChangaJdbcDao implements ChangaDao {
     }
 
     @Override
-    public List<Changa> getAllChangas() {
+    public List<Changa> getAll() {
         return generateRandomChangas();
     }
 
@@ -78,13 +83,13 @@ public class ChangaJdbcDao implements ChangaDao {
         int max = 5;
         List<Changa> resp = new ArrayList<>();
         for (int i = 0; i < N_CHANGAS; i++) {
-            resp.add(create(new Changa(
+            resp.add(new Changa(
                     ownerId[r.nextInt(max)],
                     title[r.nextInt(max)],
                     description[r.nextInt(max)],
                     price[r.nextInt(max)],
                     neighborhood[r.nextInt(max)]
-            )));
+            ));
         }
         return resp;
     }
@@ -93,7 +98,7 @@ public class ChangaJdbcDao implements ChangaDao {
         return new Changa(
             rs.getLong("id"),
             rs.getLong("ownerId"),
-            rs.getString("ownerName"),
+            rs.getString("title"),
             rs.getString("description"),
             rs.getDouble("price"),
             rs.getString("neighborhood")

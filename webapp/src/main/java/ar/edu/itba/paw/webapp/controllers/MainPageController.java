@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.webapp.controllers;
 
-import ar.edu.itba.paw.interfaces.ChangaService;
+import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.models.Changa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,7 +21,8 @@ public class MainPageController {
         return mav;
     }
 
-    @RequestMapping("/create")
+
+/*    @RequestMapping("/create")
     public ModelAndView create(@RequestParam(value = "name") final String username) {
         final Changa u = cs.create(
                 new Changa(
@@ -33,6 +34,6 @@ public class MainPageController {
                 )
         );
         return new ModelAndView("redirect:/?changaId=" + u.getId());
-    }
+    }*/
 
 }

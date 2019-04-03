@@ -36,8 +36,7 @@
                 <c:forEach items="${changaList}" var="changa">
                     <c:set var="title" value="${changa.title}" scope="request"/>
                     <c:set var="description" value="${changa.description}" scope="request"/>
-                    <c:set var="ownerName" value="${changa.ownerName}" scope="request"/>
-                    <c:set var="ownerPhone" value="${changa.ownerPhone}" scope="request"/>
+                    <c:set var="ownerName" value="${changa.ownerId}" scope="request"/>
                     <c:set var="price" value="${changa.price}" scope="request"/>
                     <c:set var="neighborhood" value="${changa.neighborhood}" scope="request"/>
                     <div class="row" style="margin-top: 20px">

@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.interfaces.ChangaDao;
-import ar.edu.itba.paw.interfaces.ChangaService;
+import ar.edu.itba.paw.interfaces.daos.ChangaDao;
+import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.models.Changa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -15,7 +15,7 @@ public class ChangaServiceImpl implements ChangaService {
 
     @Override
     public List<Changa> getChangas() {
-        return dao.getAllChangas();
+        return dao.getAll();
     }
 
     @Override
