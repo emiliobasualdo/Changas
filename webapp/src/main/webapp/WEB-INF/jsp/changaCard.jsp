@@ -6,23 +6,17 @@
         </style>
     </head>
     <div class="card w-100">
-        <div class="card-body">
-            <h1 class="card-title">
+        <div class="card-body" style="border-color: #26B3BA">
+            <a href="changa?id=234332">
+            <h2 class="card-title" style="color: #26B3BA">
                 <c:out value="${requestScope.title}" />
-            </h1>
+            </h2></a>
             <p class="card-text">
-                <c:out value="${requestScope.description}" />
-            </p>
-            <p class="card-text" style="line-height: 20%;"><small class="text-muted">
                 Ubicacion: <c:out value="${requestScope.neighborhood}" />
-            </small></p>
-            <p class="card-text" style="line-height: 20%;"><small class="text-muted">
+            </p>
+            <p class="card-text">
                 Precio: <c:out value="${requestScope.price}" />$
-            </small></p>
-            <p class="card-text" style="line-height: 20%;"><small class="text-muted">
-                Contacto: <c:out value="${requestScope.ownerName}"/>  <c:out value="${requestScope.ownerPhone}"/>
-            </small></p>
-            <a href="#" class="btn btn-primary">Aceptar</a>
+            </p>
         </div>
     </div>
 </html>

@@ -18,6 +18,11 @@ public class ChangaServiceImpl implements ChangaService {
         return randomChangas();
     }
 
+    @Override
+    public Changa getById(long id) {
+        return new Changa("Sofi Murandi", "1133071114", "Lavar el perro", "Hay que hacerlo la palo", 32423.0, "Martinez");
+    }
+
     private List<Changa> randomChangas() {
         String[] ownerName = {"Juan Carlos", "Camila", "Sofi Murandi", "Rodrigo Escarapietra", "Carmen Villaurquiza"};
         String[] ownerPhone = {"1133071114", "1133071114", "1133071114", "1133071114", "1133071114",};

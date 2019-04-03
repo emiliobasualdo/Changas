@@ -20,8 +20,8 @@
     <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css" />
 </head>
 
-<jsp:include page="/WEB-INF/jsp/mainPageHeader.jsp" />
-<jsp:include page="/WEB-INF/jsp/mainPageBody.jsp" />
+<jsp:include page="/WEB-INF/jsp/changaHeader.jsp" />
+<jsp:include page="/WEB-INF/jsp/changaBody.jsp" />
 <jsp:include page="/WEB-INF/jsp/mainPageFooter.jsp" />
 
 </html>
