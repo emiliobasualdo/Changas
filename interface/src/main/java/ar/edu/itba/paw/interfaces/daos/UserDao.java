@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.interfaces;
+package ar.edu.itba.paw.interfaces.daos;
 
 import ar.edu.itba.paw.models.User;
 
@@ -9,7 +9,6 @@ import ar.edu.itba.paw.models.User;
  * This will help in making code modular and easily replaceable
  * when database is replaced (for some part of data)
  * */
-public interface UserService {
+public interface UserDao {
     User findById(long id);
-    String toString();
 }
