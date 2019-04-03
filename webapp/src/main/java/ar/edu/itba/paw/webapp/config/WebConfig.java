@@ -39,9 +39,14 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public DataSource dataSource() {
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
         ds.setDriverClass(org.postgresql.Driver.class);
-        ds.setUrl("postgres://nfuyohzm:FQ9W7Ck3I1eTYePdn_OHsJIANQihEwzA@isilo.db.elephantsql.com:5432/nfuyohzm");
-        ds.setUsername("nfuyohzm");
-        ds.setPassword("FQ9W7Ck3I1eTYePdn_OHsJIANQihEwzA");
+        // todo sacar para la entrega
+        boolean local = false; // cambiar esto si quieren conectarse a la db local
+        String url = local? "jdbc:postgresql://localhost/changas": "jdbc:postgresql://isilo.db.elephantsql.com";
+        String username = local? "pilo": "nfuyohzm";
+        String passwd = local? "qwerty": "FQ9W7Ck3I1eTYePdn_OHsJIANQihEwzA";
+        ds.setUrl(url);
+        ds.setUsername(username);
+        ds.setPassword(passwd);
         return ds;
     }
 

@@ -7,72 +7,39 @@ import java.util.Map;
 
 public class Changa {
 
-    private long id;
-    private final String ownerName;
-    private final String ownerPhone;
+    private static final long NO_ID = -1;
+
+    private final long id;
+    private final long ownerId;
     private final String title;
     private final String description;
     private final double price;
     private final String neighborhood;
 
-    public Changa(String ownerName, String ownerPhone, String title, String description, double price, String neighborhood) {
-        this.ownerName = ownerName;
-        this.ownerPhone = ownerPhone;
+    // todo, hacer el builder
+    public Changa(long id, long ownerId, String title, String description, double price, String neighborhood) {
+        this.id = id;
+        this.ownerId = ownerId;
         this.title = title;
         this.description = description;
         this.price = price;
         this.neighborhood = neighborhood;
     }
 
-    public Changa(ResultSet rs) throws SQLException {
-        this.id = rs.getInt("id");
-        this.ownerName = rs.getString("ownerName");
-        this.ownerPhone = rs.getString("ownerPhone");
-        this.title = rs.getString("ownerName");
-        this.description = rs.getString("description");
-        this.price = rs.getDouble("price");
-        this.neighborhood = rs.getString("neighborhood");
+    public Changa(long ownerId, String title, String description, double price, String neighborhood) {
+        this(NO_ID, ownerId ,title,description,price,neighborhood);
     }
 
     public Changa(Changa oldChanga, long id) {
-        this.id = id;
-        this.ownerName = oldChanga.ownerName;
-        this.ownerPhone = oldChanga.ownerPhone;
-        this.title = oldChanga.title;
-        this.description = oldChanga.description;
-        this.price = oldChanga.price;
-        this.neighborhood = oldChanga.neighborhood;
-    }
-
-    public static String dbName() {
-        return Changa.class.getName().toLowerCase();
-    }
-
-    public Map<String, Object> toTableRow() {
-        Map<String, Object> resp = new HashMap<>();
-        resp.put("ownerName", this.ownerName );
-        resp.put("ownerPhone", this.ownerPhone );
-        resp.put("title", this.title );
-        resp.put("description", this.description );
-        resp.put("price", this.price );
-        resp.put("neighborhood", this.neighborhood );
-        return resp;
-    }
-
-    public Changa clone() throws CloneNotSupportedException {
-        return (Changa) super.clone();
+        this(id,  oldChanga.ownerId, oldChanga.title, oldChanga.description, oldChanga.price, oldChanga.neighborhood);
     }
 
     public long getId() {
         return id;
     }
 
-    public String getOwnerName() {
-        return ownerName;
-    }
-
-    public String getOwnerPhone() {
-        return ownerPhone;
+    public long getownerId() {
+        return ownerId;
     }
 
     public String getTitle() {

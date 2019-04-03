@@ -1,17 +1,17 @@
 package ar.edu.itba.paw.constants;
 
-public enum DBConstants {
+public enum DBTableName {
 
     CHANGAS ("changas"),
     USERS   ("users"),
     ;
 
-    final String tableName;   // in kilograms
-    DBConstants(String tableName) {
+    final String tableName;
+    DBTableName(String tableName) {
         this.tableName = tableName;
     }
 
-    public String getTableName() {
+    public String TN() {
         return tableName;
     }
 }

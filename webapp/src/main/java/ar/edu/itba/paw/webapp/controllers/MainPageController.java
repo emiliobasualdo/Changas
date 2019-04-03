@@ -25,8 +25,7 @@ public class MainPageController {
     public ModelAndView create(@RequestParam(value = "name") final String username) {
         final Changa u = cs.create(
                 new Changa(
-                        "Pilo Basualdo",
-                        "005491133071114",
+                        1232321,
                         "Limpiar el gato",
                         "Description",
                         123122.312,
@@ -34,6 +33,6 @@ public class MainPageController {
                 )
         );
         return new ModelAndView("redirect:/?changaId=" + u.getId());
-}
+    }
 
 }
