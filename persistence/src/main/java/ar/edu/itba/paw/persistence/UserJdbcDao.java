@@ -27,14 +27,13 @@ public class UserJdbcDao implements UserDao {
     @Autowired
     public UserJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
-        createTable();
     }
 
     @Override
     public User findById(final long id) {
         final List<User> list = jdbcTemplate
             .query(
-                "SELECT * FROM ? WHERE id = ?",
+                "SELECT * FROM ? WHERE user_id = ?",
                 ROW_MAPPER,
                 USERS.TN(),
                 id
@@ -74,18 +73,6 @@ public class UserJdbcDao implements UserDao {
             ));
         }
         return resp;
-    }
-
-    @Override
-    public void createTable() {
-        String query =
-                "CREATE TABLE "+USERS.TN()+" ( " +
-                    "user_id SERIAL PRIMARY KEY, " +
-                    "name VARCHAR(100), " +
-                    "surname VARCHAR(100), " +
-                    "tel varchar(10)" +
-                ");";
-        jdbcTemplate.execute(query);
     }
 
     private static User userFromRS(ResultSet rs) throws SQLException {

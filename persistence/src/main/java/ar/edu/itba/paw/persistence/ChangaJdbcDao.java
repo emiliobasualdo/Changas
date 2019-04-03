@@ -25,32 +25,11 @@ public class ChangaJdbcDao implements ChangaDao {
     @Autowired
     public ChangaJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
-        createTable();
-    }
-
-    public void createTable() {
-        String query =
-                "CREATE TYPE address AS ( " +
-                    "street          VARCHAR(100), " +
-                    "neighborhood 	VARCHAR(100), " +
-                    "number 		INTEGER" +
-                ");" +
-                "CREATE TABLE "+CHANGAS.TN()+" ( " +
-                    "changa_id SERIAL PRIMARY KEY, " +
-                    "user_id SERIAL, " +
-                    "address address, " +
-                    "creation_date TIMESTAMP, " +
-                    "title VARCHAR(100), " +
-                    "description VARCHAR(100), " +
-                    "state 			INTEGER, " +
-                    "FOREIGN KEY (user_id) REFERENCES "+ USERS.TN() +"(user_id)" +
-                ")";
-        jdbcTemplate.execute(query);
     }
 
     public Changa findById(final long id) {
         final List<Changa> list = jdbcTemplate.query(
-                "SELECT * FROM ? WHERE id = ?",
+                "SELECT * FROM ? WHERE changa_id = ?",
                 ROW_MAPPER,
                 CHANGAS.TN(),
                 id
