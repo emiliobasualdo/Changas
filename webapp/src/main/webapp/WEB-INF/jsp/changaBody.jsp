@@ -44,7 +44,7 @@
             <!--<a href="#" class="btn btn-primary" style="margin-top: 1cm; margin-bottom: 1cm;">Aceptar</a>-->
         </div>
         <div class="container" style="margin-top: 80px">
-            <button type="button" class="btn btn-success btn-block">Aceptar changa</button>
+            <button type="button" class="btn btn-success btn-block">Anotame en la changa</button>
             <!-- <br> -->
         </div>
     </body>

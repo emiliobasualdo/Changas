@@ -8,7 +8,7 @@
 <html>
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow fixed-top">
     <div class="container" style="background-color: #26B3BA">
-        <a class="navbar-brand" href="#">CHANGAS</a>
+        <a class="navbar-brand" href="/">CHANGAS</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -20,13 +20,13 @@
                     </a>
                 </li>--%>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Registrate</a>
+                    <a class="nav-link" href="/signup">Registrarse</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Ingresar</a>
+                    <a class="nav-link" href="/login">Ingresar</a>
                 </li>
                 <li class="nav-item" style="margin-left: 15cm">
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#issueChangaModal">Emitir changa</a>
+                    <a class="nav-link" data-toggle="modal" data-target="#issueChangaModal">Emitir changa</a>
                 </li>
             </ul>
         </div>

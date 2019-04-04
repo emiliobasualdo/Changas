@@ -19,10 +19,23 @@ public class MainPageController {
         mav.addObject("changaList", cs.getChangas());
         return mav;
     }
+
     @RequestMapping("/changa")
     public ModelAndView showChanga (@RequestParam("id") final long id) {
         final ModelAndView mav = new ModelAndView("indexChanga");
         mav.addObject("changa", cs.getById(id));
+        return mav;
+    }
+
+    @RequestMapping("/login")
+    public ModelAndView showLogIn () {
+        final ModelAndView mav = new ModelAndView("indexLogIn");
+        return mav;
+    }
+
+    @RequestMapping("/signup")
+    public ModelAndView showSignUp () {
+        final ModelAndView mav = new ModelAndView("indexSignUp");
         return mav;
     }
 
