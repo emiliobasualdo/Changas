@@ -1,10 +1,3 @@
-<%--<html>--%>
-<%--<link rel='stylesheet' href="/webjars/bootstrap/css/bootstrap.min.css">--%>
-
-<%--<jsp:include page="/WEB-INF/jsp/mainPageHeader.jsp" />--%>
-<%--<jsp:include page="/WEB-INF/jsp/mainPageBody.jsp" />--%>
-
-<%--</html>--%>
 <!-- TODO: languages y utf con ñ y tildes -->
 <html>
 <head>

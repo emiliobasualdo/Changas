@@ -103,6 +103,18 @@
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                <input type="text" class="form-control" name="name" placeholder="Nombre" required="required">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                <input type="text" class="form-control" name="lastname" placeholder="Apellido" required="required">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-user"></i></span>
                 <input type="text" class="form-control" name="username" placeholder="Usuario" required="required">
             </div>
         </div>
