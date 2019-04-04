@@ -12,6 +12,9 @@
         <servlet-api.version>2.5</servlet-api.version>
         <jstl.version>1.2</jstl.version>
         <org.postgresql.version>9.3-1102-jdbc41</org.postgresql.version>
+        <javax.validation-api.version>1.0.0.GA</javax.validation-api.version>
+        <org.hibernate.validator>4.3.1.Final</org.hibernate.validator>
+        <org.hsqldb.version>2.3.1</org.hsqldb.version>
     </properties>
 
     <dependencyManagement>
@@ -52,6 +55,36 @@
                 <version>${org.postgresql.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${javax.validation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${org.hibernate.validator}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hsqldb</groupId>
+                <artifactId>hsqldb</artifactId>
+                <version>${org.hsqldb.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${org.springframework.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <scope>runtime</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

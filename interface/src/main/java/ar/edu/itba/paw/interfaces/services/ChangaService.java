@@ -14,5 +14,6 @@ import java.util.List;
  * */
 public interface ChangaService {
     List<Changa> getChangas();
-    Changa create(Changa username);
+//    Changa create(Changa username);
+    Changa create(long ownerId, String title, String description, double price, String neighborhood);
 }

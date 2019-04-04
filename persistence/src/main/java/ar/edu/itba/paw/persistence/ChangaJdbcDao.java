@@ -25,6 +25,7 @@ public class ChangaJdbcDao implements ChangaDao {
     @Autowired
     public ChangaJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
+        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("changas").usingGeneratedKeyColumns("changa_id");
     }
 
     public Changa findById(final long id) {
@@ -35,15 +36,14 @@ public class ChangaJdbcDao implements ChangaDao {
                 id
         );
         if (list.isEmpty()) {
-            return null; // todo <---- null
+            return null; // TODO: no se tiene que retornar null!
         }
         return list.get(0);
     }
 
-    @Override
-    public Changa create(final Changa changa) {
-        final Number changaId = jdbcInsert.executeAndReturnKey(changaToTableRow(changa));
-        return new Changa(changa, changaId.longValue());
+    public Changa create(long ownerId, String title, String description, double price, String neighborhood) { // TODO: alvaro dice que la mejor manera es esta, preguntar a juan si se puede hacer otra cosa
+        final Number changaId = jdbcInsert.executeAndReturnKey(changaToTableRow(ownerId, title, description, price, neighborhood));
+        return new Changa(changaId.longValue(), ownerId, title, description, price, neighborhood);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class ChangaJdbcDao implements ChangaDao {
         return resp;
     }
 
-    private static Changa changaFromRS(ResultSet rs) throws SQLException {
+    private static Changa changaFromRS(ResultSet rs) throws SQLException { // TODO: los nombres de columna no machean con los de la base de datos
         return new Changa(
             rs.getLong("id"),
             rs.getLong("ownerId"),
@@ -84,13 +84,15 @@ public class ChangaJdbcDao implements ChangaDao {
         );
     }
 
-    private Map<String, Object> changaToTableRow(Changa ch) {
+    private Map<String, Object> changaToTableRow(long ownerId, String title, String description, double price, String neighborhood) { // TODO: falta estado, tipo adress y fecha de creacion
         Map<String, Object> resp = new HashMap<>();
-        resp.put("ownerId", ch.getownerId());
-        resp.put("title", ch.getTitle());
-        resp.put("description", ch.getDescription());
-        resp.put("price", ch.getPrice());
-        resp.put("neighborhood", ch.getNeighborhood() );
+        resp.put("user_id", ownerId);
+        resp.put("title", title);
+        resp.put("description", description);
+        resp.put("price", price);
+        resp.put("address", null);
+        resp.put("creation_date", null);
+        resp.put("state", null);
         return resp;
     }
 }

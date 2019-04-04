@@ -19,7 +19,7 @@ public class ChangaServiceImpl implements ChangaService {
     }
 
     @Override
-    public Changa create(final Changa changa) {
-        return dao.create(changa);
+    public Changa create(long ownerId, String title, String description, double price, String neighborhood) { // TODO: alvaro dice que la mejor manera es esta, preguntar a juan si se puede hacer otra cosa
+        return dao.create(ownerId, title, description, price, neighborhood);
     }
 }

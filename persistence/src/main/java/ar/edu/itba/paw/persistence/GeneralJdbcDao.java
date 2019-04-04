@@ -27,17 +27,17 @@ public class GeneralJdbcDao implements GeneralDao {
                 "tel        varchar(10)" +
             "); " +
 
-            "DROP TYPE IF EXISTS address;"+
-            "CREATE TYPE address AS " +
-                "(" +
+                    "DROP TYPE IF EXISTS address;"+
+                    "CREATE TYPE address AS " +
+                    "(" +
                     "street         VARCHAR(100), " +
                     "neighborhood 	VARCHAR(100), " +
                     "number 		INTEGER" +
-                "); " +
+                    "); " +
 
             "CREATE TABLE IF NOT EXISTS changas ( " +
                 "changa_id      SERIAL PRIMARY KEY, " +
-                "user_id        SERIAL, " +
+                "user_id        INTEGER, " +
                 "address        address, " +
                 "creation_date  TIMESTAMP, " +
                 "title          VARCHAR(100), " +
@@ -47,15 +47,15 @@ public class GeneralJdbcDao implements GeneralDao {
             "); " +
 
             "CREATE TABLE IF NOT EXISTS user_owns ( " +
-                "user_id        SERIAL, " +
-                "changa_id      SERIAL UNIQUE, " +
+                "user_id        INTEGER, " +
+                "changa_id      INTEGER, " +
                 "FOREIGN KEY (user_id) REFERENCES users(user_id), " +
                 "FOREIGN KEY (changa_id) REFERENCES changas(changa_id)" +
             "); " +
 
             "CREATE TABLE IF NOT EXISTS user_inscribed ( " +
-                "user_id        SERIAL , " +
-                "changa_id      SERIAL, " +
+                "user_id        INTEGER, " +
+                "changa_id      INTEGER, " +
                 "state 		    INTEGER, " +
                 "FOREIGN KEY (user_id) REFERENCES users(user_id), " +
                 "FOREIGN KEY (changa_id) REFERENCES changas(changa_id)" +
