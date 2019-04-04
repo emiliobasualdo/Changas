@@ -2,8 +2,8 @@ package ar.edu.itba.paw.constants;
 
 public enum DBTableName {
 
-    CHANGAS ("changas"),
-    USERS   ("users"),
+    changas("changas"),
+    users("users"),
     ;
 
     final String tableName;

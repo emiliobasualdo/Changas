@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.daos.UserDao;
-import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-import static ar.edu.itba.paw.constants.DBTableName.USERS;
+import static ar.edu.itba.paw.constants.DBTableName.users;
 
 @Repository
 public class UserJdbcDao implements UserDao {
@@ -35,7 +34,7 @@ public class UserJdbcDao implements UserDao {
             .query(
                 "SELECT * FROM ? WHERE user_id = ?",
                 ROW_MAPPER,
-                USERS.TN(),
+                users.TN(),
                 id
         );
         if (list.isEmpty()) {

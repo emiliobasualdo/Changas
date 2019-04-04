@@ -45,7 +45,8 @@ public class GeneralJdbcDao implements GeneralDao {
                 "creation_date  TIMESTAMP, " +
                 "title          VARCHAR(100), " +
                 "description    VARCHAR(100), " +
-                "state 			INTEGER, " +
+                "state 			VARCHAR(100), " +
+                "price 			DOUBLE PRECISION, " +
                 "FOREIGN KEY (user_id) REFERENCES users(user_id)" +
             "); " +
 

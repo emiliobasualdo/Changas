@@ -1,12 +1,14 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.services.ChangaService;
+import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Changa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.sql.Timestamp;
 
 @Controller
 public class MainPageController {
@@ -22,18 +24,21 @@ public class MainPageController {
     }
 
 
-/*    @RequestMapping("/create")
-    public ModelAndView create(@RequestParam(value = "name") final String username) {
+    @RequestMapping("/create")
+    public ModelAndView create() {
         final Changa u = cs.create(
-                new Changa(
-                        1232321,
-                        "Limpiar el gato",
-                        "Description",
-                        123122.312,
-                        "Palermo Hollywood"
-                )
+                new Changa.Builder()
+                        .withUserId(1232321)
+                        .withDescription("Limpiar el gato")
+                        .withState("done")
+                        .withTitle("en casa")
+                        .withPrice(1231)
+                        .atAddress(new Address("Calle", "San telmo", 22))
+                        .createdAt(new Timestamp(123123))
+                        .build()
         );
-        return new ModelAndView("redirect:/?changaId=" + u.getId());
-    }*/
+
+        return new ModelAndView("redirect:/?changaId=" + u.getChanga_id());
+    }
 
 }
