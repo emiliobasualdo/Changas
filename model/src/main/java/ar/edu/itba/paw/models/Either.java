@@ -11,11 +11,11 @@ public class Either <T, S> {
         this. alternative= alternative;
     }
 
-    private static <T, S> Either<T, S> value (final T value) {
+    public static <T, S> Either<T, S> value (final T value) {
         return new Either<>(value, null);
     }
 
-    private static <T, S> Either<T, S> alternative (final S alternative) {
+    public static <T, S> Either<T, S> alternative (final S alternative) {
         return new Either<>(null, alternative);
     }
 
