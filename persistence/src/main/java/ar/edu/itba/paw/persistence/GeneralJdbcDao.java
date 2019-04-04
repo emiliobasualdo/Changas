@@ -27,13 +27,16 @@ public class GeneralJdbcDao implements GeneralDao {
                 "tel        varchar(10)" +
             "); " +
 
-            "DROP TYPE IF EXISTS address;"+
-            "CREATE TYPE address AS " +
-                "(" +
-                    "street         VARCHAR(100), " +
-                    "neighborhood 	VARCHAR(100), " +
-                    "number 		INTEGER" +
-                "); " +
+            "DO $$ BEGIN " +
+                "CREATE TYPE address AS" +
+                    "(" +
+                        "street         VARCHAR(100), " +
+                        "neighborhood 	VARCHAR(100), " +
+                        "number 		INTEGER" +
+                    "); " +
+            "EXCEPTION " +
+                    "WHEN duplicate_object THEN null;" +
+            "END $$;" +
 
             "CREATE TABLE IF NOT EXISTS changas ( " +
                 "changa_id      SERIAL PRIMARY KEY, " +
