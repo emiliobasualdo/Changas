@@ -20,49 +20,49 @@ public class GeneralJdbcDao implements GeneralDao {
     @Override
     public void createTables() { // todo preguntar como mejorar esto
         String query =
-                "CREATE TABLE IF NOT EXISTS users ( " +
-                        "user_id    SERIAL PRIMARY KEY, " +
-                        "name       VARCHAR(100), " +
-                        "surname    VARCHAR(100), " +
-                        "tel        varchar(10)" +
-                        "); " +
+            "CREATE TABLE IF NOT EXISTS users ( " +
+                "user_id    SERIAL PRIMARY KEY, " +
+                "name       VARCHAR(100), " +
+                "surname    VARCHAR(100), " +
+                "tel        varchar(10)" +
+            "); " +
 
-                        "DO $$ BEGIN " +
-                        "CREATE TYPE address AS" +
-                        "(" +
+            "DO $$ BEGIN " +
+                "CREATE TYPE address AS" +
+                    "(" +
                         "street         VARCHAR(100), " +
                         "neighborhood 	VARCHAR(100), " +
                         "number 		INTEGER" +
-                        "); " +
-                        "EXCEPTION " +
-                        "WHEN duplicate_object THEN null;" +
-                        "END $$;" +
+                    "); " +
+            "EXCEPTION " +
+                    "WHEN duplicate_object THEN null;" +
+            "END $$;" +
 
-                        "CREATE TABLE IF NOT EXISTS changas ( " +
-                        "changa_id      SERIAL PRIMARY KEY, " +
-                        "user_id        SERIAL, " +
-                        "address        address, " +
-                        "creation_date  TIMESTAMP, " +
-                        "title          VARCHAR(100), " +
-                        "description    VARCHAR(100), " +
-                        "state 			INTEGER, " +
-                        "FOREIGN KEY (user_id) REFERENCES users(user_id)" +
-                        "); " +
+            "CREATE TABLE IF NOT EXISTS changas ( " +
+                "changa_id      SERIAL PRIMARY KEY, " +
+                "user_id        SERIAL, " +
+                "address        address, " +
+                "creation_date  TIMESTAMP, " +
+                "title          VARCHAR(100), " +
+                "description    VARCHAR(100), " +
+                "state 			INTEGER, " +
+                "FOREIGN KEY (user_id) REFERENCES users(user_id)" +
+            "); " +
 
-                        "CREATE TABLE IF NOT EXISTS user_owns ( " +
-                        "user_id        SERIAL, " +
-                        "changa_id      SERIAL UNIQUE, " +
-                        "FOREIGN KEY (user_id) REFERENCES users(user_id), " +
-                        "FOREIGN KEY (changa_id) REFERENCES changas(changa_id)" +
-                        "); " +
+            "CREATE TABLE IF NOT EXISTS user_owns ( " +
+                "user_id        SERIAL, " +
+                "changa_id      SERIAL UNIQUE, " +
+                "FOREIGN KEY (user_id) REFERENCES users(user_id), " +
+                "FOREIGN KEY (changa_id) REFERENCES changas(changa_id)" +
+            "); " +
 
-                        "CREATE TABLE IF NOT EXISTS user_inscribed ( " +
-                        "user_id        SERIAL , " +
-                        "changa_id      SERIAL, " +
-                        "state 		    INTEGER, " +
-                        "FOREIGN KEY (user_id) REFERENCES users(user_id), " +
-                        "FOREIGN KEY (changa_id) REFERENCES changas(changa_id)" +
-                        ");";
+            "CREATE TABLE IF NOT EXISTS user_inscribed ( " +
+                "user_id        SERIAL , " +
+                "changa_id      SERIAL, " +
+                "state 		    INTEGER, " +
+                "FOREIGN KEY (user_id) REFERENCES users(user_id), " +
+                "FOREIGN KEY (changa_id) REFERENCES changas(changa_id)" +
+            ");";
         jdbcTemplate.execute(query);
     }
 }
