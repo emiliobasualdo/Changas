@@ -22,4 +22,9 @@ public class ChangaServiceImpl implements ChangaService {
     public Changa create(final Changa changa) {
         return dao.create(changa);
     }
+
+    @Override
+    public Changa getById(final long id){
+        return dao.findById(id);
+    }
 }

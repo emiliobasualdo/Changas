@@ -1,4 +1,11 @@
-<!-- TODO: languages y utf con ñ y tildes -->
+<%--<html>--%>
+<%--<link rel='stylesheet' href="/webjars/bootstrap/css/bootstrap.min.css">--%>
+
+<%--<jsp:include page="/WEB-INF/jsp/mainPageHeader.jsp" />--%>
+<%--<jsp:include page="/WEB-INF/jsp/mainPageBody.jsp" />--%>
+
+<%--</html>--%>
+
 <html>
 <head>
     <meta charset="utf-32">
@@ -13,8 +20,8 @@
     <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css" />
 </head>
 
-<jsp:include page="/WEB-INF/jsp/mainPageHeader.jsp" />
-<jsp:include page="/WEB-INF/jsp/mainPageBody.jsp" />
+<jsp:include page="/WEB-INF/jsp/changaHeader.jsp" />
+<jsp:include page="/WEB-INF/jsp/changaBody.jsp" />
 <jsp:include page="/WEB-INF/jsp/mainPageFooter.jsp" />
 
 </html>

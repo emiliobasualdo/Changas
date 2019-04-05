@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Changa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import java.time.LocalDateTime;
 
@@ -19,6 +20,25 @@ public class MainPageController {
     public ModelAndView showChangas() {
         final ModelAndView mav = new ModelAndView("index");
         mav.addObject("changaList", cs.getChangas());
+        return mav;
+    }
+
+    @RequestMapping("/changa")
+    public ModelAndView showChanga (@RequestParam("id") final long id) {
+        final ModelAndView mav = new ModelAndView("indexChanga");
+        mav.addObject("changa", cs.getById(id));
+        return mav;
+    }
+
+    @RequestMapping("/logIn")
+    public ModelAndView showLogIn () {
+        final ModelAndView mav = new ModelAndView("indexLogIn");
+        return mav;
+    }
+
+    @RequestMapping("/signUp")
+    public ModelAndView showSignUp () {
+        final ModelAndView mav = new ModelAndView("indexSignUp");
         return mav;
     }
 
