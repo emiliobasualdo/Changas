@@ -1,6 +1,9 @@
 package ar.edu.itba.paw.interfaces.daos;
 
+
+import ar.edu.itba.paw.interfaces.util.ValidationError;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.util.Either;
 
 /**
  * DAO should be limited to only add/update/insert/select Entity
@@ -10,5 +13,7 @@ import ar.edu.itba.paw.models.User;
  * when database is replaced (for some part of data)
  * */
 public interface UserDao {
-    User findById(long id);
+    Either<User, ValidationError> findById(long id);
+    Either<User, ValidationError> findByUsername(String username);
+    Either<User, ValidationError> create(String username, String password, String name, String surname, String phone);
 }

@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.models;
+package ar.edu.itba.paw.util;
 
 import java.util.NoSuchElementException;
 
@@ -33,7 +33,7 @@ public class Either <T, S> {
         return alternative;
     }
 
-    private boolean isValuePresent() {
+    public boolean isValuePresent() {
         return value != null;
     }
 
