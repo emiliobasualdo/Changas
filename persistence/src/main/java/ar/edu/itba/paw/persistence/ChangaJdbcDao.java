@@ -64,12 +64,16 @@ public class ChangaJdbcDao implements ChangaDao {
 
     @Override
     public List<Changa> getAll() {
-        return generateRandomChangas();
+        return jdbcTemplate.query(
+                String.format("SELECT * FROM %s ", changas.TN()),
+                ROW_MAPPER
+        );
+        //return generateRandomChangas();
     }
 
     private List<Changa> generateRandomChangas() {
         int N_CHANGAS = 100;
-        long[] userId = {1431234, 1234,3134343,1234,321};
+        long[] userId = {1, 1,1,1,1};
         String[] title = {"Lavar el perro", "Lavar los platos", "Lavarme el culo", "Prositushon", "Se busca nene de 5 años",};
         String[] description = {"Hay que hacerlo la palo", "Vigorosooo", "Full energetic", "Dale candela", "Muevete",};
         double[] price = {13123, 123, 312, 1, 231};
@@ -80,7 +84,7 @@ public class ChangaJdbcDao implements ChangaDao {
         int max = 5;
         List<Changa> resp = new ArrayList<>();
         for (int i = 0; i < N_CHANGAS; i++) {
-            resp.add(new Changa.Builder()
+            resp.add(create(new Changa.Builder()
                     .withUserId(userId[r.nextInt(max)])
                     .withPrice(price[r.nextInt(max)])
                     .withState(state[r.nextInt(max)])
@@ -88,7 +92,8 @@ public class ChangaJdbcDao implements ChangaDao {
                     .createdAt(createdAt[r.nextInt(max)])
                     .withDescription(description[r.nextInt(max)])
                     .atAddress(address[r.nextInt(max)])
-                    .build());
+                    .build())
+            );
         }
         return resp;
     }
@@ -100,8 +105,9 @@ public class ChangaJdbcDao implements ChangaDao {
                 .withDescription(rs.getString(description.name()))
                 .withPrice(rs.getDouble(price.name()))
                 //.atAddress(rs.getObject(address.name(), Address.class))
+                .atAddress(new Address("Calle", "San telmo", 22))
                 .withState(rs.getString(state.name()))
-                //.createdAt(rs.getObject(address.name(), LocalDateTime.class))
+                //.createdAt(rs.getObject(creation_date.name(), LocalDateTime.class))
                 .build();
 
     }
