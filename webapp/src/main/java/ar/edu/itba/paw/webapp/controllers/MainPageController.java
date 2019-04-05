@@ -7,8 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Controller
 public class MainPageController {
@@ -28,16 +27,15 @@ public class MainPageController {
     public ModelAndView create() {
         final Changa u = cs.create(
                 new Changa.Builder()
-                        .withUserId(1232321)
+                        .withUserId(1)
                         .withDescription("Limpiar el gato")
                         .withState("done")
                         .withTitle("en casa")
                         .withPrice(1231)
                         .atAddress(new Address("Calle", "San telmo", 22))
-                        .createdAt(new Timestamp(123123))
+                        .createdAt(LocalDateTime.now())
                         .build()
         );
-
         return new ModelAndView("redirect:/?changaId=" + u.getChanga_id());
     }
 

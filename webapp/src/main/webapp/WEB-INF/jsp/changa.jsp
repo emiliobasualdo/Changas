@@ -4,6 +4,7 @@
         <style>
             p {font-size: 16px;}
         </style>
+        <title>Changas</title>
     </head>
     <div class="card w-100">
         <div class="card-body">

@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.models;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class Changa {
 
@@ -9,7 +9,7 @@ public class Changa {
     private long changa_id;
     private long user_id;
     private Address address;
-    private Timestamp creation_date;
+    private LocalDateTime creation_date;
     private String title;
     private String description;
     private String state;
@@ -30,7 +30,17 @@ public class Changa {
         return address;
     }
 
-    public Timestamp getCreation_date() {
+    public String getStreet() {
+        return address.getStreet();
+    }
+
+    public String getNeighborhood() { return address.getNeighborhood(); }
+
+    public int getNumber() {
+        return address.getNumber();
+    }
+
+    public LocalDateTime getCreationDate() {
         return creation_date;
     }
 
@@ -55,7 +65,7 @@ public class Changa {
         private long changa_id;
         private long user_id;
         private Address address;
-        private Timestamp creation_date;
+        private LocalDateTime creation_date;
         private String title;
         private String description;
         private String state;
@@ -71,7 +81,7 @@ public class Changa {
             this.user_id = user_id;
             return this;
         }
-        public Builder createdAt(Timestamp creation_date){
+        public Builder createdAt(LocalDateTime creation_date){
             this.creation_date = creation_date;
             return this;
         }

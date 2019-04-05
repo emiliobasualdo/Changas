@@ -8,11 +8,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -50,13 +49,15 @@ public class ChangaJdbcDao implements ChangaDao {
     @Override
     public Changa create(final Changa changa) {
         // si no se insertó ninguna fila, what pass?
-        if (jdbcInsert.execute(changaToTableRow(changa)) < 1) {
+        Map<String, Object> changaRow = changaToTableRow(changa);
+        int rowsAffected = jdbcInsert.execute(changaRow);
+        if (rowsAffected < 1) {
             // todo maiteeeee??
         }
-        // todo error en alguno casos, concurrencia
+        // todo Preguntar que onda esto
         final List<Changa> list = jdbcTemplate.query(
-                "SELECT * FROM ? WHERE ? = ? AND ? = ?",
-                ROW_MAPPER, changas, user_id,changa.getUser_id(), title, changa.getTitle()
+                String.format("SELECT * FROM %s WHERE %s = %d AND %s = '%s'", changas.TN(), user_id.name(), changa.getUser_id(), title.name(), changa.getTitle()),
+                ROW_MAPPER
         );
         return list.get(0);
     }
@@ -74,7 +75,7 @@ public class ChangaJdbcDao implements ChangaDao {
         double[] price = {13123, 123, 312, 1, 231};
         Address[] address = {new Address("Calle", "San telmo", 22),new Address("Calle", "San telmo", 22),new Address("Calle", "San telmo", 22),new Address("Calle", "San telmo", 22),new Address("Calle", "San telmo", 22)};
         String[] state = {"done", "emitted", "closed", "settled", "settled"};
-        Timestamp[] createdAt = {new Timestamp(123123), new Timestamp(3), new Timestamp(12312), new Timestamp(123121123), new Timestamp(12322123)};
+        LocalDateTime[] createdAt = {LocalDateTime.now(),LocalDateTime.now(),LocalDateTime.now(),LocalDateTime.now(),LocalDateTime.now()};
         Random r = new Random();
         int max = 5;
         List<Changa> resp = new ArrayList<>();
@@ -98,9 +99,9 @@ public class ChangaJdbcDao implements ChangaDao {
                 .withTitle(rs.getString(title.name()))
                 .withDescription(rs.getString(description.name()))
                 .withPrice(rs.getDouble(price.name()))
-                .atAddress(rs.getObject(address.name(), Address.class))
+                //.atAddress(rs.getObject(address.name(), Address.class))
                 .withState(rs.getString(state.name()))
-                .createdAt(rs.getObject(address.name(), Timestamp.class))
+                //.createdAt(rs.getObject(address.name(), LocalDateTime.class))
                 .build();
 
     }
@@ -111,8 +112,8 @@ public class ChangaJdbcDao implements ChangaDao {
         resp.put(title.toString(), ch.getTitle());
         resp.put(description.toString(), ch.getDescription());
         resp.put(price.toString(), ch.getPrice());
-        resp.put(address.toString(), addressToTableRow(ch.getAddress()));
-        resp.put(creation_date.toString(), ch.getCreation_date());
+        //resp.put(address.toString(), addressToTableRow(ch.getAddress()));
+        //resp.put(creation_date.toString(), Timestamp.valueOf(ch.getCreationDate()));
         resp.put(state.toString(), ch.getState());
         return resp;
     }
@@ -120,8 +121,8 @@ public class ChangaJdbcDao implements ChangaDao {
     private Map<String, Object> addressToTableRow(Address address) {
         Map<String, Object> resp = new HashMap<>();
         resp.put(street.toString(), address.getStreet());
-        resp.put(neighborhood.toString(), address.getStreet());
-        resp.put(number.toString(), address.getStreet());
+        resp.put(neighborhood.toString(), address.getNeighborhood());
+        resp.put(number.toString(), address.getNumber());
         return resp;
     }
 }
