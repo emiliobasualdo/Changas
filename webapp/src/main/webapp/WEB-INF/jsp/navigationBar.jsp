@@ -26,7 +26,7 @@
                     <a class="nav-link" href="/logIn">Ingresar</a>
                 </li>
                 <li class="nav-item" style="margin-left: 15cm">
-                    <a class="nav-link" data-toggle="modal" data-target="#issueChangaModal">Emitir changa</a>
+                    <a id="emitirButton" class="nav-link" data-toggle="modal" data-target="#emitirChangaModal">Emitir changa</a>
                 </li>
             </ul>
         </div>

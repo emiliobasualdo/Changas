@@ -1,55 +1,46 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: jimenalozano
-  Date: 3/4/19
-  Time: 19:01
-  To change this template use File | Settings | File Templates.
---%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <html>
-<!-- issueChangaModal -->
-<div class="modal fade" id="issueChangaModal" tabindex="-1" role="dialog" aria-labelledby="issueChangaModalLabel" aria-hidden="true">
+<div class="modal fade" id="emitirChangaModal" tabindex="-1" role="dialog" aria-labelledby="emitirChangaModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="issueChangaModalLabel">Crea tu changa</h3>
+                <h3 class="modal-title" id="emitirChangaModalLabel">Crea tu changa</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <form>
+            <form:form method="post" modelAttribute="changaForm" action="/create" class="form-group">
+                <div class="modal-body">
                     <div class="form-group">
-                        <label for="inputName">Nombre</label>
-                        <input type="text" class="form-control" id="inputName" placeholder="Ingrese su nombre">
+                        <form:label path="title">Titulo</form:label>
+                        <form:input class="form-control" path="title"/>
+                        <form:errors path="title" element="p"/>
                     </div>
                     <div class="form-group">
-                        <label for="inputPhone">Telefono</label>
-                        <input type="text" class="form-control" id="inputPhone" placeholder="Ingrese su telefono">
+                        <form:label path="description">Descripcion</form:label>
+                        <form:textarea rows="3" class="form-control" path="description"/>
+                        <form:errors path="description" element="p"/>
                     </div>
                     <div class="form-group">
-                        <label for="inputTitle">Titulo</label>
-                        <input type="text" class="form-control" id="inputTitle" placeholder="Ingrese titulo representativo de su changa">
+                        <form:label path="neighborhood">Lugar</form:label>
+                        <form:input class="form-control" path="neighborhood"/>
+                        <form:errors path="neighborhood" element="p"/>
                     </div>
                     <div class="form-group">
-                        <label for="inputDescription">Descripcion</label>
-                        <textarea class="form-control" id="inputDescription" rows="3"></textarea>
+                        <form:label path="price">Precio</form:label>
+                        <form:input class="form-control" path="price"/>
+                        <form:errors path="price" element="p"/>
+                            <%--<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">--%>
+                            <%--<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>--%>
                     </div>
-                    <div class="form-group">
-                        <label for="inputNeighborhood">Ubicacion</label>
-                        <input type="text" class="form-control" id="inputNeighborhood" placeholder="Ingrese ubicacion">
-                    </div>
-                    <div class="form-group">
-                        <label for="inputPrice">Precio</label>
-                        <input type="number" class="form-control" id="inputPrice" placeholder="Ingrese precio"/>
-                        <%--<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">--%>
-                        <%--<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>--%>
-                    </div>
-                </form>
-            </div>
-            <%--<div class="modal-footer">
-                <button type="button" class="btn btn-primary">Emitir</button>
-            </div>--%>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Emitir</button>
+                </div>
+            </form:form>
         </div>
     </div>
 </div>
+
 </html>
