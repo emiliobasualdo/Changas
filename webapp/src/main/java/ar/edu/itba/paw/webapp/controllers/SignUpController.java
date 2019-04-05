@@ -4,7 +4,7 @@ import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.ValidationError;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.util.Either;
-import ar.edu.itba.paw.webapp.form.UserForm;
+import ar.edu.itba.paw.webapp.forms.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -34,10 +34,10 @@ public class SignUpController {
         if (errors.hasErrors()) {
             return signUp(form);
         }
-        final Either<User, ValidationError> user = us.create(form.getUsername(), form.getPassword(), form.getName(), form.getSurname(), form.getPhone());
+        final Either<User, ValidationError> either = us.create(form.getUsername(), form.getPassword(), form.getName(), form.getSurname(), form.getPhone());
 
-        if (!user.isValuePresent()){
-            int code = user.getAlternative().getCode();
+        if (!either.isValuePresent()){
+            int code = either.getAlternative().getCode();
             if (code == INVALID_USERNAME.getId()){
                 //TODO ver q va en el errorCode de abajo
                 errors.rejectValue("username","aca no se q va");
@@ -48,7 +48,7 @@ public class SignUpController {
         }
 
 
-        return new ModelAndView("redirect:/user?userId=" + user.getValue().getId());
+        return new ModelAndView("redirect:/user?userId=" + either.getValue().getId());
     }
 
 }

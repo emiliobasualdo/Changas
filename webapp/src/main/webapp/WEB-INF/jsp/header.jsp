@@ -99,8 +99,8 @@
                         <div class="form-group">
                             <label for="inputPrice">Precio</label>
                             <input type="number" class="form-control" id="inputPrice" placeholder="ingrese precio">
-                            <%--<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">--%>
-                            <%--<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>--%>
+                            <%--<input type="email" class="forms-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">--%>
+                            <%--<small id="emailHelp" class="forms-text text-muted">We'll never share your email with anyone else.</small>--%>
                         </div>
                     </form>
                 </div>

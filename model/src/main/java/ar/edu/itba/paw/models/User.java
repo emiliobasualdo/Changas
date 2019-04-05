@@ -1,26 +1,69 @@
 package ar.edu.itba.paw.models;
 
+
 public class User {
-   private long Id;
+   private String id;
    private String username;
    private String password;
    private String name;
    private String surname;
+   private String phone;
+   private String email;
 
-    public long getId() {
-        return Id;
+
+    private static class Builder {
+        /*Required parameters*/
+        private String username;
+        private String password;
+        private String name;
+        private String surname;
+        private String phone;
+        /*Optional parameters initialized to default values*/
+        private String id = null;
+        private String email = null;
+
+        public Builder(String username, String password, String name, String surname, String phone) {
+            this.username = username;
+            this.password = password;
+            this.name = name;
+            this.surname = surname;
+            this.phone = phone;
+        }
+
+        public Builder withId(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public User build() {
+            return new User(this);
+        }
     }
 
-    public void setId(long id) {
-        Id = id;
+    private User (Builder builder) {
+        this.username = builder.username;
+        this.password = builder.password;
+        this.name = builder.name;
+        this.surname = builder.surname;
+        this.phone = builder.phone;
+    }
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {
@@ -62,8 +105,5 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    private String phone;
-   private String email;
 
 }
