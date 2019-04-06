@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: jimenalozano
-  Date: 3/4/19
-  Time: 18:38
-  To change this template use File | Settings | File Templates.
---%>
 <html>
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow fixed-top">
     <div class="container" style="background-color: #26B3BA">
@@ -26,13 +19,11 @@
                     <a class="nav-link" href="/logIn">Ingresar</a>
                 </li>
                 <li class="nav-item" style="margin-left: 15cm">
-                    <a id="emitirButton" class="nav-link" data-toggle="modal" data-target="#emitirChangaModal">Emitir changa</a>
+                    <a class="nav-link" href="/createChanga">Emitir Changa</a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
-
-<jsp:include page="issueChangaForm.jsp"/>
 
 </html>

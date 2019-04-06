@@ -22,7 +22,7 @@ public class MainPageController {
     private ChangaService cs;
 
     @RequestMapping(value = "/")
-    public ModelAndView showChangas(@ModelAttribute("changaForm") final ChangaForm form) {
+    public ModelAndView showChangas() {
         return new ModelAndView("index").addObject("changaList", cs.getChangas());
     }
 
@@ -41,59 +41,6 @@ public class MainPageController {
     @RequestMapping("/findByUserId") // todo borrar, es un mapping de prueba
     public ModelAndView findByUserId (@RequestParam int user_id) {
         return new ModelAndView("index").addObject("changaList", cs.findByUserId(user_id));
-    }
-
-    @RequestMapping(value = "/create", method = RequestMethod.POST ) // todo no se tendría que poder hacer sin estar logeado
-    public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors) {
-        System.out.println(form.getTitle() + " " +  form.getDescription() + " " +  form.getPrice() + " " +  form.getNeighborhood());
-//        cs.create(new Changa.Builder()
-//                .withDescription(form.getDescription())
-//                .withTitle(form.getTitle())
-//                .withPrice(form.getPrice())
-//                .atAddress("Calle", form.getNeighborhood(), 22) // todo falta
-//                //.createdAt(LocalDateTime.now())
-//                .build()
-//        );
-        return new ModelAndView("index").addObject("changaList", cs.getChangas());
-    }
-
-
-
-
-
-
-    @Autowired
-    
-    private UserService us;
-
-    @RequestMapping("/signUp")
-    public ModelAndView signUp(@ModelAttribute("signUpForm") final UserForm userForm, @ModelAttribute("changaForm") final ChangaForm changaForm) {
-        return new ModelAndView("indexSignUp");
-    }
-
-
-    @RequestMapping(value = "/createUser", method = { RequestMethod.POST })
-    public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserForm form, final BindingResult errors) {
-        System.out.println(form.toString());
-//        if (errors.hasErrors()) {
-//            return signUp(form);
-//        }
-        //final Either<User, ValidationError> either = us.create(form.getUsername(), form.getPassword(), form.getName(), form.getSurname(), form.getPhone());
-
-//        if (!either.isValuePresent()){
-//            int code = either.getAlternative().getCode();
-//            if (code == INVALID_USERNAME.getId()){
-//                //TODO ver q va en el errorCode de abajo
-//                errors.rejectValue("username","aca no se q va");
-//                return signUp(form);
-//            } else if (code == DATABASE_ERROR.getId()) {
-//                //TODO return de una vista de error en la base de datos
-//            }
-//        }
-
-
-        // return new ModelAndView("redirect:/user?userId=" + either.getValue().getId());
-        return new ModelAndView("indexLogIn");
     }
 
 }
