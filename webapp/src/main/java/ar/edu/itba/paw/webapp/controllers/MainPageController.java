@@ -1,8 +1,10 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.services.ChangaService;
+import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
+import ar.edu.itba.paw.webapp.forms.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -36,11 +38,6 @@ public class MainPageController {
         return new ModelAndView("indexLogIn");
     }
 
-    @RequestMapping("/signUp")
-    public ModelAndView showSignUp () {
-        return new ModelAndView("indexSignUp");
-    }
-
     @RequestMapping("/findByUserId") // todo borrar, es un mapping de prueba
     public ModelAndView findByUserId (@RequestParam int user_id) {
         return new ModelAndView("index").addObject("changaList", cs.findByUserId(user_id));
@@ -58,6 +55,44 @@ public class MainPageController {
                 .build()
         );
         return new ModelAndView("index").addObject("changaList", cs.getChangas());
+    }
+
+
+
+
+
+
+    @Autowired
+    private UserService us;
+
+    @RequestMapping("/signUp")
+    public ModelAndView signUp(@ModelAttribute("signUpForm") final UserForm form) {
+        return new ModelAndView("indexSignUp");
+    }
+
+
+    @RequestMapping(value = "/createUser", method = { RequestMethod.POST })
+    public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserForm form, final BindingResult errors) {
+        System.out.println(form.toString());
+//        if (errors.hasErrors()) {
+//            return signUp(form);
+//        }
+        //final Either<User, ValidationError> either = us.create(form.getUsername(), form.getPassword(), form.getName(), form.getSurname(), form.getPhone());
+
+//        if (!either.isValuePresent()){
+//            int code = either.getAlternative().getCode();
+//            if (code == INVALID_USERNAME.getId()){
+//                //TODO ver q va en el errorCode de abajo
+//                errors.rejectValue("username","aca no se q va");
+//                return signUp(form);
+//            } else if (code == DATABASE_ERROR.getId()) {
+//                //TODO return de una vista de error en la base de datos
+//            }
+//        }
+
+
+        // return new ModelAndView("redirect:/user?userId=" + either.getValue().getId());
+        return new ModelAndView("indexLogIn");
     }
 
 }

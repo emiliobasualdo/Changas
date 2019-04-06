@@ -1,3 +1,4 @@
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -98,42 +99,50 @@
 <body>
 <div class="signup-form">
     <!-- action="" -> aca ponemos que pasa cuando el usuario apreta en ingresar -->
-    <form action="" method="post">
+    <form:form action="/createUser" modelAttribute="signUpForm" method="post">
         <h2>Create una cuenta</h2>
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                <input type="text" class="form-control" name="name" placeholder="Nombre" required="required">
+                <form:label path="name">Nombre</form:label>
+                <form:input type="text" class="form-control" path="name" name="name" placeholder="Nombre" required="required"/>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                <input type="text" class="form-control" name="lastname" placeholder="Apellido" required="required">
+                <form:label path="surname">Apellido</form:label>
+                <form:input type="text" class="form-control" path="surname" name="surname" placeholder="Apellido" required="required"/>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                <input type="text" class="form-control" name="username" placeholder="Usuario" required="required">
+                <span class="input-group-addon">
+                    <i class="fa fa-user"></i>
+                    <form:label path="username">Nombre de usuario</form:label>
+                </span>
+                <form:input class="form-control" path="username" name="username" placeholder="Usuario" required="required"/>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-phone"></i></span>
-                <input type="tel" class="form-control" name="telephone" placeholder="Telefono" required="required">
+                <form:label path="telephone">Telefono</form:label>
+                <form:input type="tel" class="form-control" path="telephone" name="telephone" placeholder="Telefono" required="required"/>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-paper-plane"></i></span>
-                <input type="email" class="form-control" name="email" placeholder="Email">
+                <form:label path="email">Email</form:label>
+                <form:input type="email" class="form-control" path="email" name="email" placeholder="Email"/>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                <input type="text" class="form-control" name="password" placeholder="Contrasena" required="required">
+                <form:label path="password">Contrasena</form:label>
+                <form:input type="text" class="form-control" path="password" name="password" placeholder="Contrasena" required="required"/>
             </div>
         </div>
         <div class="form-group">
@@ -142,15 +151,17 @@
 					<i class="fa fa-lock"></i>
 					<i class="fa fa-check"></i>
 				</span>
-                <input type="text" class="form-control" name="confirm_password" placeholder="Confirmar contrasena" required="required">
+                <form:label path="repeatPassword"></form:label>
+                <form:input type="text" class="form-control" path="repeatPassword" name="repeatPassword" placeholder="Confirmar contrasena" required="required"/>
             </div>
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-block btn-lg">Registrarse</button>
         </div>
         <p class="small text-center">Clickeando en el boton de registracion, estas de acuerdo con nuestros Terminos de Condiciones y Politica de Privacidad <%--<br><a href="#">Terms &amp; Conditions</a>, and <a href="#">Privacy Policy</a>--%>.</p>
-    </form>
+    </form:form>
     <div class="text-center">Ya tenes una cuenta? <a href="login">Ingresa aca</a>.</div>
 </div>
 </body>
 </html>
+
