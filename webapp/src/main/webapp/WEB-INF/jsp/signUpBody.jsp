@@ -117,10 +117,8 @@
         </div>
         <div class="form-group">
             <div class="input-group">
-                <span class="input-group-addon">
-                    <i class="fa fa-user"></i>
-                    <form:label path="username">Nombre de usuario</form:label>
-                </span>
+                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                <form:label path="username">Nombre de usuario</form:label>
                 <form:input class="form-control" path="username" placeholder="Usuario" required="required"/>
             </div>
         </div>

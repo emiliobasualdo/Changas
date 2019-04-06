@@ -13,40 +13,40 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 
-//@Controller
-//public class SignUpController {
-//
-//    @Autowired
-//    private UserService us;
-//
-//    @RequestMapping("/signUp")
-//    public ModelAndView signUp(@ModelAttribute("signUpForm") final UserForm form) {
-//        return new ModelAndView("indexSignUp");
-//    }
-//
-//
-//    @RequestMapping(value = "/createUser", method = { RequestMethod.POST })
-//    public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserForm form, final BindingResult errors) {
-//        System.out.println(form.toString());
-////        if (errors.hasErrors()) {
-////            return signUp(form);
-////        }
-//        //final Either<User, ValidationError> either = us.create(form.getUsername(), form.getPassword(), form.getName(), form.getSurname(), form.getPhone());
-//
-////        if (!either.isValuePresent()){
-////            int code = either.getAlternative().getCode();
-////            if (code == INVALID_USERNAME.getId()){
-////                //TODO ver q va en el errorCode de abajo
-////                errors.rejectValue("username","aca no se q va");
-////                return signUp(form);
-////            } else if (code == DATABASE_ERROR.getId()) {
-////                //TODO return de una vista de error en la base de datos
-////            }
-////        }
-//
-//
-//       // return new ModelAndView("redirect:/user?userId=" + either.getValue().getId());
-//        return new ModelAndView("indexLogIn");
-//    }
-//
-//}
+@Controller
+public class SignUpController {
+
+    @Autowired
+    private UserService us;
+
+    @RequestMapping("/signUp")
+    public ModelAndView signUp(@ModelAttribute("signUpForm") final UserForm form) {
+        return new ModelAndView("indexSignUp");
+    }
+
+
+    @RequestMapping(value = "/createUser", method = { RequestMethod.POST })
+    public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserForm form, final BindingResult errors) {
+        System.out.println(form.toString());
+//        if (errors.hasErrors()) {
+//            return signUp(form);
+//        }
+        //final Either<User, ValidationError> either = us.create(form.getUsername(), form.getPassword(), form.getName(), form.getSurname(), form.getPhone());
+
+//        if (!either.isValuePresent()){
+//            int code = either.getAlternative().getCode();
+//            if (code == INVALID_USERNAME.getId()){
+//                //TODO ver q va en el errorCode de abajo
+//                errors.rejectValue("username","aca no se q va");
+//                return signUp(form);
+//            } else if (code == DATABASE_ERROR.getId()) {
+//                //TODO return de una vista de error en la base de datos
+//            }
+//        }
+
+
+       // return new ModelAndView("redirect:/user?userId=" + either.getValue().getId());
+        return new ModelAndView("indexLogIn");
+    }
+
+}
