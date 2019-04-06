@@ -1,8 +1,10 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.services.ChangaService;
+import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
+import ar.edu.itba.paw.webapp.forms.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -20,7 +22,7 @@ public class MainPageController {
     private ChangaService cs;
 
     @RequestMapping(value = "/")
-    public ModelAndView showChangas(@ModelAttribute("changaForm") final ChangaForm form) {
+    public ModelAndView showChangas() {
         return new ModelAndView("index").addObject("changaList", cs.getChangas());
     }
 
@@ -36,28 +38,9 @@ public class MainPageController {
         return new ModelAndView("indexLogIn");
     }
 
-    @RequestMapping("/signUp")
-    public ModelAndView showSignUp () {
-        return new ModelAndView("indexSignUp");
-    }
-
     @RequestMapping("/findByUserId") // todo borrar, es un mapping de prueba
     public ModelAndView findByUserId (@RequestParam int user_id) {
         return new ModelAndView("index").addObject("changaList", cs.findByUserId(user_id));
-    }
-
-    @RequestMapping(value = "/create", method = RequestMethod.POST ) // todo no se tendría que poder hacer sin estar logeado
-    public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors) {
-        System.out.println(form.getTitle() + " " +  form.getDescription() + " " +  form.getPrice() + " " +  form.getNeighborhood());
-        cs.create(new Changa.Builder()
-                .withDescription(form.getDescription())
-                .withTitle(form.getTitle())
-                .withPrice(form.getPrice())
-                .atAddress("Calle", form.getNeighborhood(), 22) // todo falta
-                //.createdAt(LocalDateTime.now())
-                .build()
-        );
-        return new ModelAndView("index").addObject("changaList", cs.getChangas());
     }
 
 }

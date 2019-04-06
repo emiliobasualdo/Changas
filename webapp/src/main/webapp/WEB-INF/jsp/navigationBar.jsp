@@ -19,13 +19,11 @@
                     <a class="nav-link" href="/logIn">Ingresar</a>
                 </li>
                 <li class="nav-item" style="margin-left: 15cm">
-                    <a id="emitirButton" class="nav-link" data-toggle="modal" data-target="#emitirChangaModal">Emitir changa</a>
+                    <a class="nav-link" href="/createChanga">Emitir Changa</a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
-
-<jsp:include page="issueChangaForm.jsp"/>
 
 </html>
