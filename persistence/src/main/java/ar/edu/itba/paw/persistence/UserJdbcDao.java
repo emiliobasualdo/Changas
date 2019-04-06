@@ -71,28 +71,37 @@ public class UserJdbcDao implements UserDao {
         Map<String, Object> userRow = userToTableRow(user);
         int rowsAffected = jdbcInsert.execute(userRow);
         if (rowsAffected < 1) {
+            System.out.println("ERROR2");
             return Either.alternative(new ValidationError(DATABASE_ERROR.getMessage(), DATABASE_ERROR.getId() ));
         }
         // todo Preguntar que onda esto
-        final List<User> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s' AND %s = '%s'", users.TN(),
-                        name.name(), user.getName(),
-                        surname.name(), user.getSurname(),
-                        tel.name(), user.getTel()),
-                ROW_MAPPER
-        );
-        /*TODO en este punto se creó el usuario, osea que la query anterior si o si debería de devolver al usuario. Este chequeo lo saco?
-        */
+        final List<User> list;
+        try {
+            list = jdbcTemplate.query(
+                    String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s' AND %s = '%s'", users.TN(),
+                            name.name(), user.getName(),
+                            surname.name(), user.getSurname(),
+                            tel.name(), user.getTel()),
+                    ROW_MAPPER
+            );
+        } catch (org.springframework.dao.DuplicateKeyException ex) {
+            System.out.println(ex.getMessage());
+            System.out.println("ACAAA");
+            return Either.alternative(new ValidationError(INVALID_MAIL.getMessage(), INVALID_MAIL.getId()));
+        }
+//        /*TODO en este punto se creó el usuario, osea que la query anterior si o si debería de devolver al usuario. Este chequeo lo saco?
+//        */
         if (list.isEmpty()) {
+            System.out.println("ERROR3");
             return Either.alternative(new ValidationError(DATABASE_ERROR.getMessage(), DATABASE_ERROR.getId() ));
         }
-
+        System.out.println(list.get(0).toString());
         return Either.value(list.get(0));
     }
 
     @Override
     public List<User> createUsers() {
-        return generateRandomUsers();
+        return new LinkedList<>();
     }
 
     @Override
@@ -116,7 +125,7 @@ public class UserJdbcDao implements UserDao {
     }
 
     private List<User> generateRandomUsers() {
-        int N_USERS = 100;
+        int N_USERS = 5;
         String[] tel = {"34234", "1341", "12312", "123123", "123123"};
         String[] name = {"San Telmo", "Flores", "Talar del cheto", "Quinta presidencial", "Calle 13"};
         String[] surname = {"San ", "Flor", "Cheto", "Quinta", "Feranandez"};
@@ -127,11 +136,11 @@ public class UserJdbcDao implements UserDao {
         List<User> resp = new ArrayList<>();
         for (int i = 0; i < N_USERS; i++) {
             resp.add(create(new User.Builder()
-                    .withName(name[r.nextInt(max)])
-                    .withSurname(surname[r.nextInt(max)])
-                    .withTel(tel[r.nextInt(max)])
-                    .withMail(mail[r.nextInt(max)])
-                    .withPasswd(passwd[r.nextInt(max)])
+                    .withName(name[i])
+                    .withSurname(surname[i])
+                    .withTel(tel[i])
+                    .withMail(mail[i])
+                    .withPasswd(passwd[i])
                     .build()
                     ).getValue()
             );
