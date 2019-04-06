@@ -63,10 +63,11 @@ public class MainPageController {
 
 
     @Autowired
+    
     private UserService us;
 
     @RequestMapping("/signUp")
-    public ModelAndView signUp(@ModelAttribute("signUpForm") final UserForm form) {
+    public ModelAndView signUp(@ModelAttribute("signUpForm") final UserForm userForm, @ModelAttribute("changaForm") final ChangaForm changaForm) {
         return new ModelAndView("indexSignUp");
     }
 

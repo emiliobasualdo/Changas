@@ -9,6 +9,8 @@ public class UserForm {
     @Pattern(regexp = "[a-zA-Z0-9]+")
     private String username;
 
+    private String email;
+
     @Size(min = 6, max = 100)
     private String password;
 
@@ -57,20 +59,28 @@ public class UserForm {
         this.name = name;
     }
 
-    public String getPhone() {
-        return telephone;
-    }
-
-    public void setPhone(String phone) {
-        this.telephone = phone;
-    }
-
     public String getSurname() {
         return surname;
     }
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
