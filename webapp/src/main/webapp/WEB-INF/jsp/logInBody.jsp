@@ -1,3 +1,4 @@
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -95,16 +96,18 @@
 <body>
 <div class="login-form">
     <!-- action="" -> aca ponemos que pasa cuando el usuario apreta en ingresar -->
-    <form action="" method="post">
+    <form:form action="/logIn" modelAttribute="UserLoginForm" method="post">
         <div class="avatar">
             <img src="https://i.imgur.com/dGo8DOk.jpg" alt="Avatar">
         </div>
         <h2 class="text-center">Bienvenido</h2>
         <div class="form-group">
-            <input type="text" class="form-control" name="username" placeholder="Usuario" required="required">
+            <form:label path="username">Username</form:label>
+            <form:input path="username" class="form-control" placeholder="Usuario" required="required"/>
         </div>
         <div class="form-group">
-            <input type="password" class="form-control" name="password" placeholder="Constrasena" required="required">
+            <form:label path="password">Password</form:label>
+            <form:input path="password" class="form-control" placeholder="Constrasena" required="required"/>
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-lg btn-block">Ingresar</button>
@@ -113,7 +116,7 @@
             <label class="pull-left checkbox-inline"><input type="checkbox">Recuerdame</label>
             <a href="#" class="pull-right">Te olvidaste la contrasena?</a>
         </div>
-    </form>
+    </form:form>
     <p class="text-center small">No tenes una cuenta? <a href="#">Registrate!</a></p>
 </div>
 </body>
