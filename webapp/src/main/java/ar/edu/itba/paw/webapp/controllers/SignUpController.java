@@ -24,7 +24,6 @@ public class SignUpController {
         return new ModelAndView("indexSignUp");
     }
 
-
     @RequestMapping(value = "/createUser", method = { RequestMethod.POST })
     public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserForm form, final BindingResult errors) {
         System.out.println(form.toString());

@@ -4,7 +4,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class ChangaForm { //TODO: agregar validaciones necesarias
-    //@Size(min = 6, max = 100) @Pattern(regexp = "[a-zA-Z0-9]+")
+//    @Size(min = 6, max = 100) @Pattern(regexp = "[a-zA-Z0-9]+")
     private String title;
     private String description;
     private double price;
