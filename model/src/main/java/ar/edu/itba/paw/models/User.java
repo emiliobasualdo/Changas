@@ -7,6 +7,8 @@ public class User {
     private  String name;
     private  String surname;
     private  String tel;
+    private  String mail;
+    private  String passwd;
 
     private User(){
     }
@@ -27,12 +29,22 @@ public class User {
         return tel;
     }
 
+    public String getMail() {
+        return mail;
+    }
+
+    public String getPasswd() {
+        return passwd;
+    }
+
     public static class Builder {
 
         private long user_id;
         private String name;
         private String surname;
         private String tel;
+        private  String mail;
+        private  String passwd;
 
         public Builder() {
             this.user_id = NO_ID;
@@ -56,6 +68,16 @@ public class User {
             return this;
         }
 
+        public User.Builder withMail(String mail){
+            this.mail = mail;
+            return this;
+        }
+
+        public User.Builder withPasswd(String passwd){
+            this.passwd = passwd;
+            return this;
+        }
+
         public User build(){
             //Here we create the actual bank account object, which is always in a fully initialised state when it's returned.
             User user = new User();  //Since the builder is in the BankAccount class, we can invoke its private constructor.
@@ -63,6 +85,8 @@ public class User {
             user.name = this.name;
             user.surname = this.surname;
             user.tel = this.tel;
+            user.mail = this.mail;
+            user.passwd = this.passwd;
             return user;
         }
     }

@@ -76,11 +76,25 @@ public class UserJdbcDao implements UserDao {
         return generateRandomUsers();
     }
 
+    @Override
+    public User getUser(User user) {
+        final List<User> list = jdbcTemplate.query(
+                String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s'", users.TN(),
+                        mail.name(), user.getMail(),
+                        passwd.name(), user.getPasswd()
+                ),
+                ROW_MAPPER
+        );
+        return list.get(0);
+    }
+
     private List<User> generateRandomUsers() {
         int N_USERS = 100;
         String[] tel = {"34234", "1341", "12312", "123123", "123123"};
         String[] name = {"San Telmo", "Flores", "Talar del cheto", "Quinta presidencial", "Calle 13"};
         String[] surname = {"San ", "Flor", "Cheto", "Quinta", "Feranandez"};
+        String[] mail = {"a@hotmail.com", "b@hotmail.com", "c@hotmail.com", "d@hotmail.com", "e@hotmail.com"};
+        String[] passwd = {"San ", "Flor", "Cheto", "Quinta", "Feranandez"};
         Random r = new Random();
         int max = 5;
         List<User> resp = new ArrayList<>();
@@ -89,6 +103,8 @@ public class UserJdbcDao implements UserDao {
                     .withName(name[r.nextInt(max)])
                     .withSurname(surname[r.nextInt(max)])
                     .withTel(tel[r.nextInt(max)])
+                    .withMail(mail[r.nextInt(max)])
+                    .withPasswd(passwd[r.nextInt(max)])
                     .build()
                     )
             );
@@ -101,6 +117,8 @@ public class UserJdbcDao implements UserDao {
                 .withName(rs.getString("name"))
                 .withSurname(rs.getString("surname"))
                 .withTel(rs.getString("tel"))
+                .withMail(rs.getString("mail"))
+                .withPasswd(rs.getString("passwd"))
                 .build();
     }
 
@@ -109,6 +127,8 @@ public class UserJdbcDao implements UserDao {
         resp.put("name", us.getName());
         resp.put("surname", us.getSurname());
         resp.put("tel", us.getTel());
+        resp.put("mail", us.getMail());
+        resp.put("passwd", us.getPasswd());
         return resp;
     }
 }

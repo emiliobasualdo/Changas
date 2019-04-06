@@ -28,22 +28,13 @@ public class Changa {
         return user_id;
     }
 
-    public String getStreet() {
-        return street;
-    }
+    public String getStreet() { return street; }
 
-    public String getNeighborhood() {
-        return neighborhood;
-    }
+    public String getNeighborhood() { return neighborhood; }
 
-    public int getNumber() {
-        return number;
-    }
+    public int getNumber() { return number; }
 
-    public LocalDateTime getCreation_date() {
-        return creation_date;
-    }
-
+    public LocalDateTime getCreation_date() { return creation_date; }
 
     public String getTitle() {
         return title;
@@ -112,8 +103,7 @@ public class Changa {
         }
 
         public Changa build(){
-            //Here we create the actual bank account object, which is always in a fully initialised state when it's returned.
-            Changa changa = new Changa();  //Since the builder is in the BankAccount class, we can invoke its private constructor.
+            Changa changa = new Changa();
             changa.changa_id = this.changa_id;
             changa.user_id = this.user_id;
             changa.creation_date = this.creation_date;

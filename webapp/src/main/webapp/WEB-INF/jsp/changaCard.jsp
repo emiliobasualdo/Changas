@@ -7,7 +7,7 @@
     </head>
     <div class="card w-100">
         <div class="card-body" style="border-color: #26B3BA">
-            <a href="changa?id=234332">
+            <a href="changa?id=1">
             <h2 class="card-title" style="color: #26B3BA">
                 <c:out value="${requestScope.title}" />
             </h2></a>

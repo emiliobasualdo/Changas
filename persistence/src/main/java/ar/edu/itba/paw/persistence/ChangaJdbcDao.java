@@ -16,7 +16,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBChangaFields.*;
+import static ar.edu.itba.paw.constants.DBChangaFields.user_id;
 import static ar.edu.itba.paw.constants.DBTableName.changas;
+import static ar.edu.itba.paw.constants.DBTableName.users;
 
 @Repository
 public class ChangaJdbcDao implements ChangaDao {
@@ -35,12 +37,11 @@ public class ChangaJdbcDao implements ChangaDao {
                 .usingGeneratedKeyColumns(changa_id.name());
     }
 
+    @Override
     public Changa findById(final long id) {
         final List<Changa> list = jdbcTemplate.query(
-                "SELECT * FROM ? WHERE "+changa_id+" = ?",
-                ROW_MAPPER,
-                changas.TN(),
-                id
+                String.format("SELECT * FROM %s WHERE %s = %d",changas.TN(), changa_id.name(), id),
+                ROW_MAPPER
         );
         if (list.isEmpty()) {
             return null; // todo <---- null
@@ -57,6 +58,7 @@ public class ChangaJdbcDao implements ChangaDao {
             // todo maiteeeee??
         }
         // todo Preguntar que onda esto
+        // todo enorme fallo de seguridad el String.format
         final List<Changa> list = jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = %d AND %s = '%s'", changas.TN(), user_id.name(), changa.getUser_id(), title.name(), changa.getTitle()),
                 ROW_MAPPER
@@ -75,6 +77,15 @@ public class ChangaJdbcDao implements ChangaDao {
             return generateRandomChangas();
         }
         return resp;
+    }
+
+    @Override
+    public List<Changa> findByUserId(long id) {
+        return jdbcTemplate.query(
+                String.format("SELECT * FROM %s WHERE %s = '%d'", users.TN(),
+                        user_id.name(), id),
+                ROW_MAPPER
+        );
     }
 
     private List<Changa> generateRandomChangas() {

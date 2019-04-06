@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.validation.Valid;
 
 @Controller
@@ -34,27 +33,27 @@ public class MainPageController {
 
     @RequestMapping("/logIn")
     public ModelAndView showLogIn () {
-        final ModelAndView mav = new ModelAndView("indexLogIn");
-        return mav;
+        return new ModelAndView("indexLogIn");
     }
 
     @RequestMapping("/signUp")
     public ModelAndView showSignUp () {
-        final ModelAndView mav = new ModelAndView("indexSignUp");
-        return mav;
+        return new ModelAndView("indexSignUp");
     }
 
+    @RequestMapping("/findByUserId") // todo borrar, es un mapping de prueba
+    public ModelAndView findByUserId (@RequestParam int user_id) {
+        return new ModelAndView("index").addObject("changaList", cs.findByUserId(user_id));
+    }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST )
+    @RequestMapping(value = "/create", method = RequestMethod.POST ) // todo no se tendría que poder hacer sin estar logeado
     public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors) {
         System.out.println(form.getTitle() + " " +  form.getDescription() + " " +  form.getPrice() + " " +  form.getNeighborhood());
         cs.create(new Changa.Builder()
-                .withUserId(1)
                 .withDescription(form.getDescription())
-                .withState("done")
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
-                .atAddress("Calle", form.getNeighborhood(), 22)
+                .atAddress("Calle", form.getNeighborhood(), 22) // todo falta
                 //.createdAt(LocalDateTime.now())
                 .build()
         );

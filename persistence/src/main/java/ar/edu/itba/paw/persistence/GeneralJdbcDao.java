@@ -24,7 +24,9 @@ public class GeneralJdbcDao implements GeneralDao {
                 "user_id    SERIAL PRIMARY KEY, " +
                 "name       VARCHAR(100), " +
                 "surname    VARCHAR(100), " +
-                "tel        varchar(10)" +
+                "tel        VARCHAR(100)," +
+                "mail       VARCHAR(100)," +
+                "passwd     VARCHAR(100)" +
             "); " +
 
             "CREATE TABLE IF NOT EXISTS changas ( " +

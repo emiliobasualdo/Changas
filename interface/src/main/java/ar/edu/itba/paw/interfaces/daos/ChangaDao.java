@@ -9,4 +9,5 @@ public interface ChangaDao extends Dao {
     Changa findById(final long id);
     Changa create(final Changa changa);
     List<Changa> getAll();
+    List<Changa> findByUserId(final long user_id);
 }
