@@ -25,7 +25,7 @@ public class GeneralJdbcDao implements GeneralDao {
                 "name       VARCHAR(100), " +
                 "surname    VARCHAR(100), " +
                 "tel        VARCHAR(100)," +
-                "mail       VARCHAR(100)," +
+                "mail       VARCHAR(100) UNIQUE," +
                 "passwd     VARCHAR(100)" +
             "); " +
 

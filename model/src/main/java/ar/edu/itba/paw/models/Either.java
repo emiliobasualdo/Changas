@@ -33,7 +33,7 @@ public class Either <T, S> {
         return alternative;
     }
 
-    private boolean isValuePresent() {
+    public boolean isValuePresent() {
         return value != null;
     }
 
