@@ -39,10 +39,8 @@ public class UserJdbcDao implements UserDao {
     public  Either<User, ValidationError> findById(final long id) {
         final List<User> list = jdbcTemplate
             .query(
-                "SELECT * FROM ? WHERE user_id = ?",
-                ROW_MAPPER,
-                users.TN(),
-                id
+                    String.format("SELECT * FROM %s WHERE user_id = '%s'", users.TN(), id),
+                ROW_MAPPER
         );
         if (list.isEmpty()) {
             return Either.alternative(new ValidationError(INVALID_ID.getMessage(), INVALID_ID.getId()));
@@ -53,12 +51,7 @@ public class UserJdbcDao implements UserDao {
     @Override
     public Either<User, ValidationError> findByMail(String mail) {
         final List<User> list = jdbcTemplate
-                .query(
-                        "SELECT * FROM ? WHERE mail = ?",
-                        ROW_MAPPER,
-                        users.TN(),
-                        mail
-                );
+                .query(String.format("SELECT * FROM %s WHERE mail = '%s'", users.TN(), mail), ROW_MAPPER);
         if (list.isEmpty()) {
             return Either.alternative(new ValidationError(INVALID_MAIL.getMessage(), INVALID_MAIL.getId()));
         }
@@ -71,37 +64,29 @@ public class UserJdbcDao implements UserDao {
         Map<String, Object> userRow = userToTableRow(user);
         int rowsAffected = jdbcInsert.execute(userRow);
         if (rowsAffected < 1) {
-            System.out.println("ERROR2");
+
             return Either.alternative(new ValidationError(DATABASE_ERROR.getMessage(), DATABASE_ERROR.getId() ));
         }
         // todo Preguntar que onda esto
-        final List<User> list;
-        try {
-            list = jdbcTemplate.query(
-                    String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s' AND %s = '%s'", users.TN(),
-                            name.name(), user.getName(),
-                            surname.name(), user.getSurname(),
-                            tel.name(), user.getTel()),
-                    ROW_MAPPER
-            );
-        } catch (org.springframework.dao.DuplicateKeyException ex) {
-            System.out.println(ex.getMessage());
-            System.out.println("ACAAA");
-            return Either.alternative(new ValidationError(INVALID_MAIL.getMessage(), INVALID_MAIL.getId()));
-        }
-//        /*TODO en este punto se creó el usuario, osea que la query anterior si o si debería de devolver al usuario. Este chequeo lo saco?
-//        */
+        final List<User> list = jdbcTemplate.query(
+                String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s' AND %s = '%s'", users.TN(),
+                        name.name(), user.getName(),
+                        surname.name(), user.getSurname(),
+                        tel.name(), user.getTel()),
+                ROW_MAPPER
+        );
+        /*TODO en este punto se creó el usuario, osea que la query anterior si o si debería de devolver al usuario. Este chequeo lo saco?
+        */
         if (list.isEmpty()) {
-            System.out.println("ERROR3");
             return Either.alternative(new ValidationError(DATABASE_ERROR.getMessage(), DATABASE_ERROR.getId() ));
         }
-        System.out.println(list.get(0).toString());
+
         return Either.value(list.get(0));
     }
 
     @Override
     public List<User> createUsers() {
-        return new LinkedList<>();
+        return generateRandomUsers();
     }
 
     @Override

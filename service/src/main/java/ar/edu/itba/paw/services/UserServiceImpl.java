@@ -23,12 +23,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public  Either<User, ValidationError> register(User user) { // todo caso de que ya exista??
-//        //Either<User, ValidationError> either = userDao.findByMail(user.getMail());
-//
-//        //TODO hacer un || chequeando que el username no exista. Agregar username al UserBuilder.
-//        if(either.isValuePresent()) {
-//            return either;
-//        }
+        Either<User, ValidationError> either = userDao.findByMail(user.getMail());
+
+        //TODO hacer un || chequeando que el username no exista. Agregar username al UserBuilder.
+        if(either.isValuePresent()) {
+            return either;
+        }
         return userDao.create(user);
     }
 
