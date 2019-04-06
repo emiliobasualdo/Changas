@@ -16,9 +16,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBChangaFields.*;
-import static ar.edu.itba.paw.constants.DBChangaFields.user_id;
-import static ar.edu.itba.paw.constants.DBTableName.changas;
-import static ar.edu.itba.paw.constants.DBTableName.users;
+import static ar.edu.itba.paw.constants.DBTableName.*;
 
 @Repository
 public class ChangaJdbcDao implements ChangaDao {
@@ -44,7 +42,7 @@ public class ChangaJdbcDao implements ChangaDao {
                 ROW_MAPPER
         );
         if (list.isEmpty()) {
-            return null; // todo <---- null
+            return null; // todo  maite ?? <---- null
         }
         return list.get(0);
     }

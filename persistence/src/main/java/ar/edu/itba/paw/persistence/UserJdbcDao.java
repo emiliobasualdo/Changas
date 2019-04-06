@@ -113,22 +113,22 @@ public class UserJdbcDao implements UserDao {
     }
 
     private static User userFromRS(ResultSet rs) throws SQLException {
-        return new User.Builder(rs.getLong("user_id"))
-                .withName(rs.getString("name"))
-                .withSurname(rs.getString("surname"))
-                .withTel(rs.getString("tel"))
-                .withMail(rs.getString("mail"))
-                .withPasswd(rs.getString("passwd"))
+        return new User.Builder(rs.getLong(user_id.name()))
+                .withName(rs.getString(name.name()))
+                .withSurname(rs.getString(surname.name()))
+                .withTel(rs.getString(tel.name()))
+                .withMail(rs.getString(mail.name()))
+                .withPasswd(rs.getString(passwd.name()))
                 .build();
     }
 
     private Map<String, Object> userToTableRow(User us) {
         Map<String, Object> resp = new HashMap<>();
-        resp.put("name", us.getName());
-        resp.put("surname", us.getSurname());
-        resp.put("tel", us.getTel());
-        resp.put("mail", us.getMail());
-        resp.put("passwd", us.getPasswd());
+        resp.put(name.name(), us.getName());
+        resp.put(surname.name(), us.getSurname());
+        resp.put(tel.name(), us.getTel());
+        resp.put(mail.name(), us.getMail());
+        resp.put(passwd.name(), us.getPasswd());
         return resp;
     }
 }

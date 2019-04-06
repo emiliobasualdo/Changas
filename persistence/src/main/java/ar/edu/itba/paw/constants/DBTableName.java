@@ -4,6 +4,8 @@ public enum DBTableName {
 
     changas("changas"),
     users("users"),
+    user_inscribed("user_inscribed"),
+    user_owns("user_owns")
     ;
 
     final String tableName;

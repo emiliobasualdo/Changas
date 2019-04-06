@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 
+import static ar.edu.itba.paw.constants.DBInscriptionState.requested;
+
 @Repository
 public class GeneralJdbcDao implements GeneralDao {
     private JdbcTemplate jdbcTemplate;
@@ -53,10 +55,11 @@ public class GeneralJdbcDao implements GeneralDao {
             "CREATE TABLE IF NOT EXISTS user_inscribed ( " +
                 "user_id        SERIAL , " +
                 "changa_id      SERIAL, " +
-                "state 		    INTEGER, " +
+                "state 		    VARCHAR(100) DEFAULT "+requested.value()+","  +
                 "FOREIGN KEY (user_id) REFERENCES users(user_id), " +
                 "FOREIGN KEY (changa_id) REFERENCES changas(changa_id)" +
             ");";
+
         jdbcTemplate.execute(query);
     }
 }

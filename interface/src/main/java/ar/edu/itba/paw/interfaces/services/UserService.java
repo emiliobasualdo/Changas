@@ -14,4 +14,5 @@ public interface UserService {
     String toString();
     User register(User user);
     User logIn(User user);
+    User getUser(User user);
 }
