@@ -1,11 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: jimenalozano
-  Date: 2/4/19
-  Time: 20:24
-  To change this template use File | Settings | File Templates.
---%>
-
 <html>
 <footer class="footer bg-light" style="margin-top: 80px">
     <div class="container">

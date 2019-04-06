@@ -1,11 +1,3 @@
-<%--<html>--%>
-<%--<link rel='stylesheet' href="/webjars/bootstrap/css/bootstrap.min.css">--%>
-
-<%--<jsp:include page="/WEB-INF/jsp/mainPageHeader.jsp" />--%>
-<%--<jsp:include page="/WEB-INF/jsp/mainPageBody.jsp" />--%>
-
-<%--</html>--%>
-
 <html>
 <head>
     <meta charset="utf-32">

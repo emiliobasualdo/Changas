@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: jimenalozano
-  Date: 3/4/19
-  Time: 18:38
-  To change this template use File | Settings | File Templates.
---%>
 <html>
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow fixed-top">
     <div class="container" style="background-color: #26B3BA">
