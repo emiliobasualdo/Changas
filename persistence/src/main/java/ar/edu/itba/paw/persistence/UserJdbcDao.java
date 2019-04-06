@@ -80,7 +80,7 @@ public class UserJdbcDao implements UserDao {
     public User getUser(User user) {
         final List<User> list = jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s'", users.TN(),
-                        mail.name(), user.getMail(),
+                        email.name(), user.getEmail(),
                         passwd.name(), user.getPasswd()
                 ),
                 ROW_MAPPER
@@ -93,7 +93,7 @@ public class UserJdbcDao implements UserDao {
         String[] tel = {"34234", "1341", "12312", "123123", "123123"};
         String[] name = {"San Telmo", "Flores", "Talar del cheto", "Quinta presidencial", "Calle 13"};
         String[] surname = {"San ", "Flor", "Cheto", "Quinta", "Feranandez"};
-        String[] mail = {"a@hotmail.com", "b@hotmail.com", "c@hotmail.com", "d@hotmail.com", "e@hotmail.com"};
+        String[] email = {"a@hotmail.com", "b@hotmail.com", "c@hotmail.com", "d@hotmail.com", "e@hotmail.com"};
         String[] passwd = {"San ", "Flor", "Cheto", "Quinta", "Feranandez"};
         Random r = new Random();
         int max = 5;
@@ -103,7 +103,7 @@ public class UserJdbcDao implements UserDao {
                     .withName(name[r.nextInt(max)])
                     .withSurname(surname[r.nextInt(max)])
                     .withTel(tel[r.nextInt(max)])
-                    .withMail(mail[r.nextInt(max)])
+                    .withEmail(email[r.nextInt(max)])
                     .withPasswd(passwd[r.nextInt(max)])
                     .build()
                     )
@@ -117,7 +117,7 @@ public class UserJdbcDao implements UserDao {
                 .withName(rs.getString(name.name()))
                 .withSurname(rs.getString(surname.name()))
                 .withTel(rs.getString(tel.name()))
-                .withMail(rs.getString(mail.name()))
+                .withEmail(rs.getString(email.name()))
                 .withPasswd(rs.getString(passwd.name()))
                 .build();
     }
@@ -127,7 +127,7 @@ public class UserJdbcDao implements UserDao {
         resp.put(name.name(), us.getName());
         resp.put(surname.name(), us.getSurname());
         resp.put(tel.name(), us.getTel());
-        resp.put(mail.name(), us.getMail());
+        resp.put(email.name(), us.getEmail());
         resp.put(passwd.name(), us.getPasswd());
         return resp;
     }
