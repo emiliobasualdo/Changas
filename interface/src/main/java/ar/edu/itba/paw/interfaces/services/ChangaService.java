@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.interfaces.services;
 
 import ar.edu.itba.paw.models.Changa;
-import ar.edu.itba.paw.models.User;
 
 import java.util.List;
 
@@ -16,7 +15,9 @@ public interface ChangaService {
     List<Changa> getChangas();
     Changa create(Changa username);
 
+    // todo english please obys
     // este metodo lo uso para mostrar una changa cuando el usuario clickea en alguna de la lista de la pagina principal,
     // va a retornar una changa constante solo para probar.
     Changa getById(final long id);
+    List<Changa> findByUserId(final long user_id);
 }

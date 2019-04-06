@@ -12,4 +12,6 @@ import ar.edu.itba.paw.models.User;
 public interface UserService {
     User findById(long id);
     String toString();
+    User register(User user);
+    User logIn(User user);
 }

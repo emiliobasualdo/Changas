@@ -18,4 +18,14 @@ public class UserServiceImpl implements UserService {
     public User findById(long id) {
         return null;
     }
+
+    @Override
+    public User register(User user) { // todo caso de que ya exista??
+        return userDao.create(user);
+    }
+
+    @Override
+    public User logIn(User user) {
+        return userDao.getUser(user);
+    }
 }

@@ -28,8 +28,7 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td><c:out value="${changa.ownerName}"/></td>
-                    <td><c:out value="${changa.ownerPhone}"/></td>
+                    <td><c:out value="${changa.user_id}"/></td>
                     <td><c:out value="${changa.neighborhood}" /></td>
                 </tr>
                 </tbody>

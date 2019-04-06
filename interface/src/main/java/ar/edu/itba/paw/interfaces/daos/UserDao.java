@@ -15,4 +15,6 @@ public interface UserDao extends Dao{
     User findById(final long id);
     User create(final User user);
     List<User> getAll();
+    User getUser(User user);
+    List<User> createUsers();
 }

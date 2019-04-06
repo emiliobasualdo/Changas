@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBTableName.users;
+import static ar.edu.itba.paw.constants.DBUserFields.*;
 
 @Repository
 public class UserJdbcDao implements UserDao {
@@ -26,6 +27,9 @@ public class UserJdbcDao implements UserDao {
     @Autowired
     public UserJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
+        jdbcInsert = new SimpleJdbcInsert(ds)
+                .withTableName(users.TN())
+                .usingGeneratedKeyColumns(user_id.name());
     }
 
     @Override
@@ -45,8 +49,26 @@ public class UserJdbcDao implements UserDao {
 
     @Override
     public User create(final User user) {
-        final Number userId = jdbcInsert.executeAndReturnKey(userToTableRow(user));
-        return new User(user, userId.longValue());
+        // si no se insertó ninguna fila, what pass?
+        Map<String, Object> userRow = userToTableRow(user);
+        int rowsAffected = jdbcInsert.execute(userRow);
+        if (rowsAffected < 1) {
+            // todo maiteeeee??
+        }
+        // todo Preguntar que onda esto
+        final List<User> list = jdbcTemplate.query(
+                String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s' AND %s = '%s'", users.TN(),
+                        name.name(), user.getName(),
+                        surname.name(), user.getSurname(),
+                        tel.name(), user.getTel()),
+                ROW_MAPPER
+        );
+        return list.get(0);
+    }
+
+    @Override
+    public List<User> createUsers() {
+        return generateRandomUsers();
     }
 
     @Override
@@ -54,41 +76,59 @@ public class UserJdbcDao implements UserDao {
         return generateRandomUsers();
     }
 
+    @Override
+    public User getUser(User user) {
+        final List<User> list = jdbcTemplate.query(
+                String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s'", users.TN(),
+                        mail.name(), user.getMail(),
+                        passwd.name(), user.getPasswd()
+                ),
+                ROW_MAPPER
+        );
+        return list.get(0);
+    }
+
     private List<User> generateRandomUsers() {
         int N_USERS = 100;
-        long[] id = {1431234, 1234,3134343,1234,321};
         String[] tel = {"34234", "1341", "12312", "123123", "123123"};
         String[] name = {"San Telmo", "Flores", "Talar del cheto", "Quinta presidencial", "Calle 13"};
         String[] surname = {"San ", "Flor", "Cheto", "Quinta", "Feranandez"};
+        String[] mail = {"a@hotmail.com", "b@hotmail.com", "c@hotmail.com", "d@hotmail.com", "e@hotmail.com"};
+        String[] passwd = {"San ", "Flor", "Cheto", "Quinta", "Feranandez"};
         Random r = new Random();
         int max = 5;
         List<User> resp = new ArrayList<>();
         for (int i = 0; i < N_USERS; i++) {
-            resp.add(new User(
-                    id[r.nextInt(max)],
-                    name[r.nextInt(max)],
-                    tel[r.nextInt(max)],
-                    surname[r.nextInt(max)]
-            ));
+            resp.add(create(new User.Builder()
+                    .withName(name[r.nextInt(max)])
+                    .withSurname(surname[r.nextInt(max)])
+                    .withTel(tel[r.nextInt(max)])
+                    .withMail(mail[r.nextInt(max)])
+                    .withPasswd(passwd[r.nextInt(max)])
+                    .build()
+                    )
+            );
         }
         return resp;
     }
 
     private static User userFromRS(ResultSet rs) throws SQLException {
-        return new User(
-                rs.getLong("user_id"),
-                rs.getString("name"),
-                rs.getString("surname"),
-                rs.getString("tel")
-        );
+        return new User.Builder(rs.getLong("user_id"))
+                .withName(rs.getString("name"))
+                .withSurname(rs.getString("surname"))
+                .withTel(rs.getString("tel"))
+                .withMail(rs.getString("mail"))
+                .withPasswd(rs.getString("passwd"))
+                .build();
     }
 
     private Map<String, Object> userToTableRow(User us) {
         Map<String, Object> resp = new HashMap<>();
-        resp.put("user_id", us.getUser_id());
         resp.put("name", us.getName());
         resp.put("surname", us.getSurname());
         resp.put("tel", us.getTel());
+        resp.put("mail", us.getMail());
+        resp.put("passwd", us.getPasswd());
         return resp;
     }
 }
