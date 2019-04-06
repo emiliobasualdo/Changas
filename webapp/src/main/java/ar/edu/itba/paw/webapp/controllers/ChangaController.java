@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -20,14 +21,17 @@ public class ChangaController {
     private ChangaService cs;
 
     @RequestMapping(value = "/createChanga")
-    public ModelAndView showChangas(@ModelAttribute("changaForm") final ChangaForm form) {
+    public ModelAndView createChanga(@ModelAttribute("changaForm") final ChangaForm form) {
         return new ModelAndView("issueChangaForm");
     }
 
+
+
     @RequestMapping(value = "/createChanga", method = RequestMethod.POST ) // todo no se tendría que poder hacer sin estar logeado
     public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors) {
+        if (UserController.currentUser != null) {
         System.out.println(form.getTitle() + " " +  form.getDescription() + " " +  form.getPrice() + " " +  form.getNeighborhood());
-        cs.create(new Changa.Builder().withUserId(1)
+        cs.create(new Changa.Builder().withUserId(UserController.currentUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
@@ -36,6 +40,15 @@ public class ChangaController {
                 .build()
         );
         return new ModelAndView("index").addObject("changaList", cs.getChangas());
+        }
+        return new ModelAndView("redirect:/signUp");
+    }
+
+    @RequestMapping("/changa")
+    public ModelAndView showChanga(@RequestParam("id") final long id) {
+        final ModelAndView mav = new ModelAndView("indexChanga");
+        mav.addObject("changa", cs.getById(id));
+        return mav;
     }
 
 }
