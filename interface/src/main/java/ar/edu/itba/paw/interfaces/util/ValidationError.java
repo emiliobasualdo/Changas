@@ -1,4 +1,4 @@
-package ar.edu.itba.paw;
+package ar.edu.itba.paw.interfaces.util;
 
 public class ValidationError {
     private final String message;
