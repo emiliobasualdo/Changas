@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
-import ar.edu.itba.paw.models.Address;
+import ar.edu.itba.paw.interfaces.daos.UserDao;
 import ar.edu.itba.paw.models.Changa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,6 +24,8 @@ public class ChangaJdbcDao implements ChangaDao {
 
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert jdbcInsert;
+    @Autowired
+    private UserDao usersDao;
 
     @Autowired
     public ChangaJdbcDao(final DataSource ds) {
@@ -64,21 +66,27 @@ public class ChangaJdbcDao implements ChangaDao {
 
     @Override
     public List<Changa> getAll() {
-        return jdbcTemplate.query(
+        List<Changa> resp = jdbcTemplate.query(
                 String.format("SELECT * FROM %s ", changas.TN()),
                 ROW_MAPPER
         );
-        //return generateRandomChangas();
+        if (resp.isEmpty()){ // todo sacar esto
+            usersDao.createUsers();
+            return generateRandomChangas();
+        }
+        return resp;
     }
 
     private List<Changa> generateRandomChangas() {
         int N_CHANGAS = 100;
-        long[] userId = {1, 1,1,1,1};
+        long[] userId = {1, 2,3,4,5};
         String[] title = {"Lavar el perro", "Lavar los platos", "Lavarme el culo", "Prositushon", "Se busca nene de 5 años",};
         String[] description = {"Hay que hacerlo la palo", "Vigorosooo", "Full energetic", "Dale candela", "Muevete",};
         double[] price = {13123, 123, 312, 1, 231};
-        Address[] address = {new Address("Calle", "San telmo", 22),new Address("Calle", "San telmo", 22),new Address("Calle", "San telmo", 22),new Address("Calle", "San telmo", 22),new Address("Calle", "San telmo", 22)};
+        String[] neigh = {"San Telmo", "Juarez", "Martinez", "San Isidro", "San Fer"};
+        String[] calle = {"calle1", "calle2", "calle3", "calle4", "calle5"};
         String[] state = {"done", "emitted", "closed", "settled", "settled"};
+        int[] number = {13123, 123, 312, 1, 231};
         LocalDateTime[] createdAt = {LocalDateTime.now(),LocalDateTime.now(),LocalDateTime.now(),LocalDateTime.now(),LocalDateTime.now()};
         Random r = new Random();
         int max = 5;
@@ -91,7 +99,7 @@ public class ChangaJdbcDao implements ChangaDao {
                     .withTitle(title[r.nextInt(max)])
                     .createdAt(createdAt[r.nextInt(max)])
                     .withDescription(description[r.nextInt(max)])
-                    .atAddress(address[r.nextInt(max)])
+                    .atAddress(calle[r.nextInt(max)],neigh[r.nextInt(max)],number[r.nextInt(max)])
                     .build())
             );
         }
@@ -104,8 +112,7 @@ public class ChangaJdbcDao implements ChangaDao {
                 .withTitle(rs.getString(title.name()))
                 .withDescription(rs.getString(description.name()))
                 .withPrice(rs.getDouble(price.name()))
-                //.atAddress(rs.getObject(address.name(), Address.class))
-                .atAddress(new Address("Calle", "San telmo", 22))
+                .atAddress(rs.getString(street.name()),rs.getString(neighborhood.name()),rs.getInt(number.name()) )
                 .withState(rs.getString(state.name()))
                 //.createdAt(rs.getObject(creation_date.name(), LocalDateTime.class))
                 .build();
@@ -118,17 +125,11 @@ public class ChangaJdbcDao implements ChangaDao {
         resp.put(title.toString(), ch.getTitle());
         resp.put(description.toString(), ch.getDescription());
         resp.put(price.toString(), ch.getPrice());
-        //resp.put(address.toString(), addressToTableRow(ch.getAddress()));
+        resp.put(street.toString(), ch.getStreet());
+        resp.put(neighborhood.toString(), ch.getNeighborhood());
+        resp.put(number.toString(), ch.getNumber());
         //resp.put(creation_date.toString(), Timestamp.valueOf(ch.getCreationDate()));
         resp.put(state.toString(), ch.getState());
-        return resp;
-    }
-
-    private Map<String, Object> addressToTableRow(Address address) {
-        Map<String, Object> resp = new HashMap<>();
-        resp.put(street.toString(), address.getStreet());
-        resp.put(neighborhood.toString(), address.getNeighborhood());
-        resp.put(number.toString(), address.getNumber());
         return resp;
     }
 }

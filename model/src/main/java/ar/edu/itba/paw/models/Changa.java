@@ -8,7 +8,9 @@ public class Changa {
 
     private long changa_id;
     private long user_id;
-    private Address address;
+    private String street;
+    private String neighborhood;
+    private int number;
     private LocalDateTime creation_date;
     private String title;
     private String description;
@@ -26,23 +28,22 @@ public class Changa {
         return user_id;
     }
 
-    public Address getAddress() {
-        return address;
-    }
-
     public String getStreet() {
-        return address.getStreet();
+        return street;
     }
 
-    public String getNeighborhood() { return address.getNeighborhood(); }
+    public String getNeighborhood() {
+        return neighborhood;
+    }
 
     public int getNumber() {
-        return address.getNumber();
+        return number;
     }
 
-    public LocalDateTime getCreationDate() {
+    public LocalDateTime getCreation_date() {
         return creation_date;
     }
+
 
     public String getTitle() {
         return title;
@@ -64,12 +65,14 @@ public class Changa {
 
         private long changa_id;
         private long user_id;
-        private Address address;
         private LocalDateTime creation_date;
         private String title;
         private String description;
         private String state;
         private double price;
+        private String street;
+        private String neighborhood;
+        private int number;
 
         public Builder() {
             this.changa_id = NO_ID;
@@ -101,8 +104,10 @@ public class Changa {
             this.price = price;
             return this;
         }
-        public Builder atAddress(Address address) {
-            this.address = address;
+        public Builder atAddress(String street,String neighborhood,int number) {
+            this.street = street;
+            this.neighborhood = neighborhood;
+            this.number = number;
             return this;
         }
 
@@ -111,12 +116,14 @@ public class Changa {
             Changa changa = new Changa();  //Since the builder is in the BankAccount class, we can invoke its private constructor.
             changa.changa_id = this.changa_id;
             changa.user_id = this.user_id;
-            changa.address = this.address;
             changa.creation_date = this.creation_date;
             changa.title = this.title;
             changa.description = this.description;
             changa.state = this.state;
             changa.price = this.price;
+            changa.street = this.street;
+            changa.neighborhood = this.neighborhood;
+            changa.number = this.number;
             return changa;
         }
     }

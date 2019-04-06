@@ -4,7 +4,6 @@ public enum DBChangaFields {
 
     changa_id       ("changa_id","SERIAL",-1),
     user_id         ("user_id", "SERIAL",-1),
-    address         ("address", "address", -1),
     creation_date   ("creation_date", "TIMESTAMP", -1),
     title           ("title", "VARCHAR",100),
     description     ("description", "VARCHAR",400),
