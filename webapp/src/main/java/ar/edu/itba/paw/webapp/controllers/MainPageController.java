@@ -46,14 +46,14 @@ public class MainPageController {
     @RequestMapping(value = "/create", method = RequestMethod.POST ) // todo no se tendría que poder hacer sin estar logeado
     public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors) {
         System.out.println(form.getTitle() + " " +  form.getDescription() + " " +  form.getPrice() + " " +  form.getNeighborhood());
-        cs.create(new Changa.Builder()
-                .withDescription(form.getDescription())
-                .withTitle(form.getTitle())
-                .withPrice(form.getPrice())
-                .atAddress("Calle", form.getNeighborhood(), 22) // todo falta
-                //.createdAt(LocalDateTime.now())
-                .build()
-        );
+//        cs.create(new Changa.Builder()
+//                .withDescription(form.getDescription())
+//                .withTitle(form.getTitle())
+//                .withPrice(form.getPrice())
+//                .atAddress("Calle", form.getNeighborhood(), 22) // todo falta
+//                //.createdAt(LocalDateTime.now())
+//                .build()
+//        );
         return new ModelAndView("index").addObject("changaList", cs.getChangas());
     }
 
