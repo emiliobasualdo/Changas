@@ -15,7 +15,7 @@ public interface ChangaService {
     List<Changa> getChangas();
     Changa create(Changa username);
 
-    // todo english please obys
+    // todo english please boys
     // este metodo lo uso para mostrar una changa cuando el usuario clickea en alguna de la lista de la pagina principal,
     // va a retornar una changa constante solo para probar.
     Changa getById(final long id);

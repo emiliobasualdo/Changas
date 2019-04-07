@@ -7,7 +7,7 @@ public class User {
     private  String name;
     private  String surname;
     private  String tel;
-    private  String mail;
+    private  String email;
     private  String passwd;
 
     private User(){
@@ -29,8 +29,8 @@ public class User {
         return tel;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
     public String getPasswd() {
@@ -43,7 +43,7 @@ public class User {
         private String name;
         private String surname;
         private String tel;
-        private  String mail;
+        private  String email;
         private  String passwd;
 
         public Builder() {
@@ -68,8 +68,8 @@ public class User {
             return this;
         }
 
-        public User.Builder withMail(String mail){
-            this.mail = mail;
+        public User.Builder withEmail(String email){
+            this.email = email;
             return this;
         }
 
@@ -85,7 +85,7 @@ public class User {
             user.name = this.name;
             user.surname = this.surname;
             user.tel = this.tel;
-            user.mail = this.mail;
+            user.email = this.email;
             user.passwd = this.passwd;
             return user;
         }

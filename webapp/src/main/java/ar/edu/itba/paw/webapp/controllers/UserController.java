@@ -58,7 +58,7 @@ public class UserController {
     public ModelAndView logIn(@ModelAttribute("UserLoginForm") final UserLoginForm form, final BindingResult errors) {
         System.out.println(form.toString());
         currentUser = us.logIn(new User.Builder()
-                .withMail(form.getUsername())
+                .withEmail(form.getUsername())
                 .withPasswd(form.getPassword())
                 .build());
         return new ModelAndView("redirect:/");
