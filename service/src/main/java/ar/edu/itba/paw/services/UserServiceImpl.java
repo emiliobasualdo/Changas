@@ -16,7 +16,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(long id) {
-        return null;
+        // harcodeo esto solo para probar la vista del perfil de un usuario
+        return new User.Builder()
+                .withEmail("prueba@gmail.com")
+                .withPasswd("prueba123")
+                .withName("prueba")
+                .withSurname("probando")
+                .build();
     }
 
     @Override

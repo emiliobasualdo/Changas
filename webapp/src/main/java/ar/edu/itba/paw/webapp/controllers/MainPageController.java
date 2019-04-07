@@ -19,9 +19,9 @@ public class MainPageController {
         return new ModelAndView("index").addObject("changaList", cs.getChangas());
     }
 
-    @RequestMapping("/findByUserId") // todo borrar, es un mapping de prueba
+    /*@RequestMapping("/findByUserId") // todo borrar, es un mapping de prueba
     public ModelAndView findByUserId (@RequestParam int user_id) {
         return new ModelAndView("index").addObject("changaList", cs.findByUserId(user_id));
-    }
+    }*/
 
 }

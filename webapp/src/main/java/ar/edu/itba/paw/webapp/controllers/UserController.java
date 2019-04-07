@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controllers;
 
+import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.forms.UserLoginForm;
@@ -10,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -19,6 +21,10 @@ public class UserController {
 
     @Autowired
     private UserService us;
+
+    // todo: esto es muy villero. ya lo voy a borrar. es solo para probar mostrar las changas en el profile
+    @Autowired
+    private ChangaService cs;
 
     public static User currentUser;
 
@@ -62,5 +68,10 @@ public class UserController {
                 .withPasswd(form.getPassword())
                 .build());
         return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping("/profile")
+    public ModelAndView profile(@RequestParam int id){
+        return new ModelAndView("indexProfile").addObject("profile", us.findById(id)).addObject("changaList", cs.findByUserId(id));
     }
 }

@@ -29,6 +29,7 @@
                 <tbody>
                 <tr>
                     <td><c:out value="${changa.user_id}"/></td>
+                    <!-- todo: mostrar el nombre del USUARIO que emitio la changa junto a su telefono -->
                     <td><c:out value="${changa.neighborhood}" /></td>
                 </tr>
                 </tbody>

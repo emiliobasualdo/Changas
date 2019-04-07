@@ -41,12 +41,12 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         ds.setDriverClass(org.postgresql.Driver.class);
         // todo sacar para la entrega
         boolean local = true; // cambiar esto si quieren conectarse a la db local
-//        String url = local? "jdbc:postgresql://localhost/testdb": "jdbc:postgresql://isilo.db.elephantsql.com";
-//        String username = local? "user12": "nfuyohzm";
-//        String passwd = local? "habichuela": "FQ9W7Ck3I1eTYePdn_OHsJIANQihEwzA";
-        String url = "jdbc:postgresql://isilo.db.elephantsql.com"; //local? "jdbc:postgresql://localhost/changas": "jdbc:postgresql://isilo.db.elephantsql.com";
+        String url = local? "jdbc:postgresql://localhost/changas": "jdbc:postgresql://isilo.db.elephantsql.com";
+        String username = local? "jime": "nfuyohzm";
+        String passwd = local? "hola": "FQ9W7Ck3I1eTYePdn_OHsJIANQihEwzA";
+        /*String url = "jdbc:postgresql://isilo.db.elephantsql.com"; //local? "jdbc:postgresql://localhost/changas": "jdbc:postgresql://isilo.db.elephantsql.com";
         String username = "phhlctzu";//local? "pilo": "nfuyohzm";
-        String passwd = "YYoLBl5QrXsPA2ga-akkGimITHTfmyTL"; //local? "uiop": "FQ9W7Ck3I1eTYePdn_OHsJIANQihEwzA";
+        String passwd = "YYoLBl5QrXsPA2ga-akkGimITHTfmyTL"; //local? "uiop": "FQ9W7Ck3I1eTYePdn_OHsJIANQihEwzA";*/
         ds.setUrl(url);
         ds.setUsername(username);
         ds.setPassword(passwd);
