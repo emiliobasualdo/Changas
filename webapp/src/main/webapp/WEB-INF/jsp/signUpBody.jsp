@@ -127,6 +127,7 @@
                 <span class="input-group-addon"><i class="fa fa-phone"></i></span>
                 <form:label path="telephone">Telefono</form:label>
                 <form:input class="form-control" path="telephone" placeholder="Telefono" required="required"/>
+                <form:errors path="telephone">error wach</form:errors>
             </div>
         </div>
         <div class="form-group">

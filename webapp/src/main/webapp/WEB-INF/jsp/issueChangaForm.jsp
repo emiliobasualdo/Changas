@@ -1,17 +1,16 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%--<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>--%>
-<!DOCTYPE html>
-<html lang="en">
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<html>
 <head>
-    <%--<meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
-    <title>Bootstrap Elegant Sign Up Form with Icons</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>--%>
+    <head>
+        <meta charset="utf-32">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    </head>
     <style type="text/css">
         body {
             color: #999;
@@ -100,10 +99,9 @@
 <body>
 <div class="signup-form">
     <form:form method="post" modelAttribute="changaForm" action="/createChanga">
-        <h2>Create una changa</h2>
+        <h2>Crea tu changa</h2>
         <div class="form-group">
             <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-user"></i></span>
                 <form:label path="title">Titulo</form:label>
                 <form:input class="form-control" path="title"/>
                 <form:errors path="title" element="p"/>
@@ -111,7 +109,6 @@
         </div>
         <div class="form-group">
             <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-user"></i></span>
                 <form:label path="description">Descripcion</form:label>
                 <form:textarea rows="3" class="form-control" path="description"/>
                 <form:errors path="description" element="p"/>
@@ -119,7 +116,6 @@
         </div>
         <div class="form-group">
             <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-user"></i></span>
                 <form:label path="neighborhood">Lugar</form:label>
                 <form:input class="form-control" path="neighborhood"/>
                 <form:errors path="neighborhood" element="p"/>
@@ -127,7 +123,6 @@
         </div>
         <div class="form-group">
             <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-phone"></i></span>
                 <form:label path="price">Precio</form:label>
                 <form:input class="form-control" path="price"/>
                 <form:errors path="price" element="p"/>
@@ -136,7 +131,6 @@
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-block btn-lg">Emitir</button>
         </div>
-        <p class="small text-center">Clickeando en el boton de registracion, estas de acuerdo con nuestros Terminos de Condiciones y Politica de Privacidad <%--<br><a href="#">Terms &amp; Conditions</a>, and <a href="#">Privacy Policy</a>--%>.</p>
     </form:form>
     <div class="text-center">Ya tenes una cuenta? <a href="login">Ingresa aca</a>.</div>
 </div>

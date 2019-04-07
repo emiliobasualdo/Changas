@@ -30,9 +30,9 @@ public class UserController {
     @RequestMapping(value = "/createUser", method = { RequestMethod.POST })
     public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors) {
         System.out.println(form.toString());
-//        if (errors.hasErrors()) {
-//            return signUp(form);
-//        }
+        if (errors.hasErrors()) {
+            return signUp(form);
+        }
         //final Either<User, ValidationError> either = us.create(form.getUsername(), form.getPassword(), form.getName(), form.getSurname(), form.getPhone());
 
 //        if (!either.isValuePresent()){
@@ -46,7 +46,7 @@ public class UserController {
 //            }
 //        }
        // return new ModelAndView("redirect:/user?userId=" + either.getValue().getId());
-        return new ModelAndView("indexLogIn");
+        return new ModelAndView("redirect:/logIn");
     }
 
     @RequestMapping("/logIn")
