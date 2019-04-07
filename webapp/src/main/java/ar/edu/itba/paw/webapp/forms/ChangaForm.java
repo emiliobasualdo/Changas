@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.forms;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 
 public class ChangaForm { //TODO: agregar validaciones necesarias
 //    @Size(min = 6, max = 100) @Pattern(regexp = "[a-zA-Z0-9]+")
@@ -9,6 +10,8 @@ public class ChangaForm { //TODO: agregar validaciones necesarias
     private String description;
     private double price;
     private String neighborhood;
+    private String street;
+    private int number;
 
     public String getTitle() {
         return title;
@@ -40,5 +43,21 @@ public class ChangaForm { //TODO: agregar validaciones necesarias
 
     public void setNeighborhood(String neighborhood) {
         this.neighborhood = neighborhood;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 }

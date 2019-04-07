@@ -159,7 +159,7 @@
         </div>
         <p class="small text-center">Clickeando en el boton de registracion, estas de acuerdo con nuestros Terminos de Condiciones y Politica de Privacidad <%--<br><a href="#">Terms &amp; Conditions</a>, and <a href="#">Privacy Policy</a>--%>.</p>
     </form:form>
-    <div class="text-center">Ya tenes una cuenta? <a href="login">Ingresa aca</a>.</div>
+    <div class="text-center">Ya tenes una cuenta? <a href="/logIn" style="color: #999;">Ingresa aca</a>.</div>
 </div>
 </body>
 </html>

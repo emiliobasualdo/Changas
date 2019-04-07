@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.constants;
+package ar.edu.itba.paw.models;
 
 public enum DBChangaState {
 

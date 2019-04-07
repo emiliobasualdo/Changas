@@ -104,35 +104,48 @@
             <div class="input-group">
                 <form:label path="title">Titulo</form:label>
                 <form:input class="form-control" path="title"/>
-                <form:errors path="title" element="p"/>
+                <form:errors path="title" element="p">Invalido</form:errors>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <form:label path="description">Descripcion</form:label>
                 <form:textarea rows="3" class="form-control" path="description"/>
-                <form:errors path="description" element="p"/>
+                <form:errors path="description" element="p">Invalido</form:errors>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
-                <form:label path="neighborhood">Lugar</form:label>
+                <form:label path="neighborhood">Localidad</form:label>
                 <form:input class="form-control" path="neighborhood"/>
-                <form:errors path="neighborhood" element="p"/>
+                <form:errors path="neighborhood" element="p">Invalido</form:errors>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="input-group">
+                <form:label path="street">Calle</form:label>
+                <form:input class="form-control" path="street"/>
+                <form:errors path="street" element="p">Invalido</form:errors>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="input-group">
+                <form:label path="number">Altura</form:label>
+                <form:input class="form-control" path="number"/>
+                <form:errors path="number" element="p">Invalido</form:errors>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <form:label path="price">Precio</form:label>
                 <form:input class="form-control" path="price"/>
-                <form:errors path="price" element="p"/>
+                <form:errors path="price" element="p">Invalido</form:errors>
             </div>
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-block btn-lg">Emitir</button>
         </div>
     </form:form>
-    <div class="text-center">Ya tenes una cuenta? <a href="login">Ingresa aca</a>.</div>
 </div>
 </body>
 </html>
