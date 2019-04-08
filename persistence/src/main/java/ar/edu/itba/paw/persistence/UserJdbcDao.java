@@ -35,12 +35,10 @@ public class UserJdbcDao implements UserDao {
     @Override
     public User findById(final long id) {
         final List<User> list = jdbcTemplate
-            .query(
-                "SELECT * FROM ? WHERE user_id = ?",
-                ROW_MAPPER,
-                users.TN(),
-                id
-        );
+                .query(
+                        String.format("SELECT * FROM %s WHERE user_id = '%s'", users.TN(), id),
+                        ROW_MAPPER
+                );
         if (list.isEmpty()) {
             return null; // todo <---- null
         }
