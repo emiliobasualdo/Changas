@@ -1,29 +1,38 @@
 package ar.edu.itba.paw.webapp.forms;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class UserRegisterForm {
-
-    @Size(min = 6, max = 100)
+    //TODO MAITE DESCOMENTAR PATTERNS Y TAMAÑOS (los comento asi pueden probar rapido)
+    @NotNull
+    //@Size(min = 4, max = 100)
     @Pattern(regexp = "[a-zA-Z0-9]+")
     private String username;
 
+    @NotNull
+    //TODO MAITE pattern mail
     private String email;
 
-    @Size(min = 6, max = 100)
+    @NotNull
+    //@Size(min = 6, max = 100)
     private String password;
 
-    @Size(min = 6, max = 100)
+    @NotNull
+    //@Size(min = 6, max = 100)
     private String repeatPassword;
 
+    @NotNull
     @Pattern(regexp = "[a-zA-Z]+[ ]*[a-zA-z]*")
     private String name;
 
+    @NotNull
     @Pattern(regexp = "[a-zA-Z]+[ ]*[a-zA-z]*")
     private String surname;
 
-    @Size(min = 6, max = 25)
+    @NotNull
+    //@Size(min = 6, max = 25)
     @Pattern(regexp = "[0-9]+")
     private String telephone;
 
