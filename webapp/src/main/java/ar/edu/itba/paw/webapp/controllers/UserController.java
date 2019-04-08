@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controllers;
 
+import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.ValidationError;
 import ar.edu.itba.paw.models.Either;
@@ -17,7 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 
-import static ar.edu.itba.paw.interfaces.util.ErrorCodes.DATABASE_ERROR;
 import static ar.edu.itba.paw.interfaces.util.ErrorCodes.INVALID_MAIL;
 
 @Controller
@@ -25,6 +25,10 @@ public class UserController {
 
     @Autowired
     private UserService us;
+
+    // todo: esto es muy villero. ya lo voy a borrar. es solo para probar mostrar las changas en el profile
+    @Autowired
+    private ChangaService cs;
 
     public static User currentUser;
 
@@ -89,4 +93,10 @@ public class UserController {
     }
 
 
+    @RequestMapping("/profile")
+    public ModelAndView profile(@RequestParam int id){
+        return new ModelAndView("indexProfile")
+                .addObject("profile", us.findById(id))
+                .addObject("changaList", cs.findByUserId(id));
+    }
 }
