@@ -39,7 +39,7 @@ public class UserJdbcDao implements UserDao {
     public  Either<User, ValidationError> findById(final long id) {
         final List<User> list = jdbcTemplate
                 .query(
-                        String.format("SELECT * FROM %s WHERE user_id = '%s'", users.TN(), id),
+                        String.format("SELECT * FROM %s WHERE %s = %d", users.TN(),user_id.name() ,id),
                         ROW_MAPPER
                 );
         if (list.isEmpty()) {
@@ -51,7 +51,7 @@ public class UserJdbcDao implements UserDao {
     @Override
     public Either<User, ValidationError> findByMail(String mail) {
         final List<User> list = jdbcTemplate
-                .query(String.format("SELECT * FROM %s WHERE email = '%s'", users.TN(), mail), ROW_MAPPER);
+                .query(String.format("SELECT * FROM %s WHERE %s = '%s'", users.TN(),email.name(), mail), ROW_MAPPER);
         if (list.isEmpty()) {
             return Either.alternative(new ValidationError(INVALID_MAIL.getMessage(), INVALID_MAIL.getId()));
         }

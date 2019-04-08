@@ -82,7 +82,7 @@ public class ChangaJdbcDao implements ChangaDao {
     @Override
     public List<Changa> findByUserId(long id) {
         return jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = '%s'", user_owns.TN(),
+                String.format("SELECT * FROM %s WHERE %s = %d", user_owns.TN(),
                         user_id.name(), id),
                 ROW_MAPPER
         );
