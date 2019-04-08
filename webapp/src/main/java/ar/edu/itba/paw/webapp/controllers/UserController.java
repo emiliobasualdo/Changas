@@ -34,6 +34,11 @@ public class UserController {
 
     @RequestMapping(value = "/createUser", method = { RequestMethod.POST })
     public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors) {
+        if (errors.hasErrors()) {
+            System.out.println("Errores en los campos del formulario sign up");
+            return signUp(form);
+        }
+
         final Either<User, ValidationError> either = us.register(new User.Builder()
                 .withName(form.getName())
                 .withSurname(form.getSurname())
@@ -76,4 +81,6 @@ public class UserController {
                 .build()).getValue();
         return new ModelAndView("redirect:/");
     }
+
+
 }
