@@ -53,11 +53,10 @@ public class GeneralJdbcDao implements GeneralDao {
             "); " +
 
             "CREATE TABLE IF NOT EXISTS user_inscribed ( " +
-                "user_id        SERIAL , " +
-                "changa_id      SERIAL, " +
+                "user_id        SERIAL REFERENCES users(user_id), " +
+                "changa_id      SERIAL REFERENCES changas(changa_id), " +
                 "state 		    VARCHAR(100) DEFAULT "+requested.value()+","  +
-                "FOREIGN KEY (user_id) REFERENCES users(user_id), " +
-                "FOREIGN KEY (changa_id) REFERENCES changas(changa_id)" +
+                "PRIMARY KEY (user_id, changa_id)" +
             ");";
 
         jdbcTemplate.execute(query);

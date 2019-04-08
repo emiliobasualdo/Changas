@@ -37,6 +37,7 @@
         </div>
         <div class="container" style="margin-top: 80px">
             <form action="/joinChanga" method="post">
+                <input type="hidden" name="changaId" value="<c:out value="${changa.user_id}"/>">
                 <input type="submit"  class="btn btn-success btn-block" value="Anotame en la changa" />
             </form>
         </div>
