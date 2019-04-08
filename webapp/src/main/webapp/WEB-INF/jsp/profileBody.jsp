@@ -145,7 +145,7 @@
                         </div>
                         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                             <!-- copiamos lo que hay en mainPageBody -->
-                            <c:import url="mainPageBody.jsp"/>
+                            <jsp:include page="mainPageBody.jsp"/>
                         </div>
                     </div>
                 </div>
