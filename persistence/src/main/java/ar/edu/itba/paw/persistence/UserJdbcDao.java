@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.daos.UserDao;
+import ar.edu.itba.paw.interfaces.util.ValidationError;
+import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,6 +17,7 @@ import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBTableName.users;
 import static ar.edu.itba.paw.constants.DBUserFields.*;
+import static ar.edu.itba.paw.interfaces.util.ErrorCodes.*;
 
 @Repository
 public class UserJdbcDao implements UserDao {
@@ -33,27 +36,35 @@ public class UserJdbcDao implements UserDao {
     }
 
     @Override
-    public User findById(final long id) {
+    public  Either<User, ValidationError> findById(final long id) {
         final List<User> list = jdbcTemplate
-            .query(
-                "SELECT * FROM ? WHERE user_id = ?",
-                ROW_MAPPER,
-                users.TN(),
-                id
-        );
+                .query(
+                        String.format("SELECT * FROM %s WHERE user_id = '%s'", users.TN(), id),
+                        ROW_MAPPER
+                );
         if (list.isEmpty()) {
-            return null; // todo <---- null
+            return Either.alternative(new ValidationError(INVALID_ID.getMessage(), INVALID_ID.getId()));
         }
-        return list.get(0);
+        return Either.value(list.get(0));
     }
 
     @Override
-    public User create(final User user) {
+    public Either<User, ValidationError> findByMail(String mail) {
+        final List<User> list = jdbcTemplate
+                .query(String.format("SELECT * FROM %s WHERE email = '%s'", users.TN(), mail), ROW_MAPPER);
+        if (list.isEmpty()) {
+            return Either.alternative(new ValidationError(INVALID_MAIL.getMessage(), INVALID_MAIL.getId()));
+        }
+        return Either.value(list.get(0));
+    }
+
+    @Override
+    public Either<User, ValidationError> create(final User user) {
         // si no se insertó ninguna fila, what pass?
         Map<String, Object> userRow = userToTableRow(user);
         int rowsAffected = jdbcInsert.execute(userRow);
         if (rowsAffected < 1) {
-            // todo maiteeeee??
+            return Either.alternative(new ValidationError(DATABASE_ERROR.getMessage(), DATABASE_ERROR.getId() ));
         }
         // todo Preguntar que onda esto
         final List<User> list = jdbcTemplate.query(
@@ -63,7 +74,15 @@ public class UserJdbcDao implements UserDao {
                         tel.name(), user.getTel()),
                 ROW_MAPPER
         );
-        return list.get(0);
+        /*TODO MAITE
+         en este punto se creó el usuario, osea que la query anterior si o si debería de devolver al usuario.
+         Este chequeo lo saco o lo dejo por si JUSTO se cayo la base de datos y no lo pudo levantar?
+         */
+        if (list.isEmpty()) {
+            return Either.alternative(new ValidationError(DATABASE_ERROR.getMessage(), DATABASE_ERROR.getId() ));
+        }
+
+        return Either.value(list.get(0));
     }
 
     @Override
@@ -77,7 +96,7 @@ public class UserJdbcDao implements UserDao {
     }
 
     @Override
-    public User getUser(User user) {
+    public Either<User, ValidationError> getUser(User user) {
         final List<User> list = jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s'", users.TN(),
                         email.name(), user.getEmail(),
@@ -85,7 +104,10 @@ public class UserJdbcDao implements UserDao {
                 ),
                 ROW_MAPPER
         );
-        return list.get(0);
+        if (list.isEmpty()) {
+            return Either.alternative(new ValidationError(INVALID_USER.getMessage(), INVALID_USER.getId()));
+        }
+        return Either.value(list.get(0));
     }
 
     private List<User> generateRandomUsers() {
@@ -106,7 +128,7 @@ public class UserJdbcDao implements UserDao {
                     .withEmail(email[r.nextInt(max)])
                     .withPasswd(passwd[r.nextInt(max)])
                     .build()
-                    )
+                    ).getValue()
             );
         }
         return resp;

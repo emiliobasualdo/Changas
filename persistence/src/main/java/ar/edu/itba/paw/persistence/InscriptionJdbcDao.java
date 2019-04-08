@@ -70,7 +70,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
             return usersList;
         }
         for (Inscription insc: list) {
-            usersList.add(new Pair<>(userDao.findById(insc.user_id), insc.state));
+            usersList.add(new Pair<>(userDao.findById(insc.user_id).getValue(), insc.state));
         }
         return usersList;
     }

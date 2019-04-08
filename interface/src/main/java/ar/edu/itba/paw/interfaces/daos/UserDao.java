@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.interfaces.daos;
 
+import ar.edu.itba.paw.interfaces.util.ValidationError;
+import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 
 import java.util.List;
@@ -12,9 +14,10 @@ import java.util.List;
  * when database is replaced (for some part of data)
  * */
 public interface UserDao extends Dao{
-    User findById(final long id);
-    User create(final User user);
+    Either<User, ValidationError> findById(final long id);
+    Either<User, ValidationError> findByMail(final String mail);
+    Either<User, ValidationError> create(final User user);
     List<User> getAll();
-    User getUser(User user);
+    Either<User, ValidationError> getUser(User user);
     List<User> createUsers();
 }
