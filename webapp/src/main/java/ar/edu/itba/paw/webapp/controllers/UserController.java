@@ -18,7 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 
-import static ar.edu.itba.paw.interfaces.util.ErrorCodes.DATABASE_ERROR;
 import static ar.edu.itba.paw.interfaces.util.ErrorCodes.INVALID_MAIL;
 
 @Controller
@@ -91,6 +90,8 @@ public class UserController {
 
     @RequestMapping("/profile")
     public ModelAndView profile(@RequestParam int id){
-        return new ModelAndView("indexProfile").addObject("profile", us.findById(id)).addObject("changaList", cs.findByUserId(id));
+        return new ModelAndView("indexProfile")
+                .addObject("profile", us.findById(id))
+                .addObject("changaList", cs.findByUserId(id));
     }
 }
