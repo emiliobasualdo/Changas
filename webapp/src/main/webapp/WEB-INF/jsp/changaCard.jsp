@@ -31,7 +31,7 @@
         transform: scale(1.04);
     }
     .changaCard-option:hover i,  .changaCard-option:hover h1,  .changaCard-option:hover span,  .changaCard-option:hover b {
-        color: #F85E6A;
+        color: #26B3BA;
     }
     .changaCard-option:hover .front {
         opacity: 0;
@@ -87,7 +87,7 @@
         transition: all .3s ease-in-out;
     }
     .changaCard-option .price .back a.button {
-        background: #F85E6A;
+        background: #26B3BA;
         padding: 15px 20px;
         display: inline-block;
         text-decoration: none;

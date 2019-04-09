@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.ValidationError;
+import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.forms.UserLoginForm;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static ar.edu.itba.paw.interfaces.util.ErrorCodes.INVALID_MAIL;
 
@@ -114,7 +117,8 @@ public class UserController {
     @RequestMapping("/profile")
     public ModelAndView profile(@RequestParam int id){
         return new ModelAndView("indexProfile")
-                .addObject("profile", us.findById(id))
-                .addObject("changaList", cs.findByUserId(id));
+                .addObject("profile", us.findById(id).getValue())
+                .addObject("publishedChangas", cs.findByUserId(id))
+                .addObject("pendingChangas", cs.findByUserId(id));
     }
 }

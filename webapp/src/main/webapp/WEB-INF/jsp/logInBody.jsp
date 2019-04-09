@@ -1,5 +1,5 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<!DOCTYPE html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <%--<meta charset="utf-8">
@@ -102,22 +102,21 @@
         </div>
         <h2 class="text-center">Bienvenido</h2>
         <div class="form-group">
-            <form:label path="username">Username</form:label>
+            <form:label path="username">Usuario</form:label>
             <form:input path="username" class="form-control" placeholder="Usuario" required="required"/>
         </div>
         <div class="form-group">
-            <form:label path="password">Password</form:label>
-            <form:input path="password" class="form-control" placeholder="Constrasena" required="required"/>
+            <form:label path="password">Constraseña</form:label>
+            <form:input path="password" class="form-control" placeholder="Constraseña" required="required"/>
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-lg btn-block">Ingresar</button>
         </div>
         <div class="clearfix">
-            <label class="pull-left checkbox-inline"><input type="checkbox">Recuerdame</label>
-            <a href="#" class="pull-right">Te olvidaste la contrasena?</a>
+            <a href="#" class="pull-right">Te olvidaste la contraseña?</a>
         </div>
     </form:form>
-    <p class="text-center small">No tenes una cuenta? <a href="#">Registrate!</a></p>
+    <p class="text-center small">No tenés una cuenta? <a href="/signUp">Registrate!</a></p>
 </div>
 </body>
 </html>

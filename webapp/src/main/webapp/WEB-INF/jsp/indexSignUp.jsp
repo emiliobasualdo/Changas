@@ -1,6 +1,6 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <meta charset="utf-32">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -10,7 +10,7 @@
 </head>
 
 <%--<jsp:include page="/WEB-INF/jsp/changaHeader.jsp" />--%>
-<jsp:include page="/WEB-INF/jsp/signUpBody.jsp" />
-<jsp:include page="/WEB-INF/jsp/mainPageFooter.jsp" />
+<jsp:include page="signUpBody.jsp" />
+<jsp:include page="mainPageFooter.jsp" />
 
 </html>
