@@ -86,6 +86,13 @@ public class InscriptionJdbcDao implements InscriptionDao {
         }
         return usersList;
     }
+
+    @Override
+    public boolean isUserInscribedInChanga(long userId, long changaId) {
+        final List<Inscription> list  = jdbcTemplate.query(String.format("SELECT * FROM %s WHERE %s = %d  AND %s = %d", user_inscribed.TN()
+                , changa_id.name(), changaId, user_id.name(), userId), ROW_MAPPER );
+        return !list.isEmpty();
+    }
     // todo change sate
 
     private void generateRandomInscriptions() {

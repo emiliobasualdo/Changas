@@ -41,6 +41,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
         ds.setDriverClass(org.postgresql.Driver.class);
         // todo sacar para la entrega
+
         boolean local = Boolean.valueOf(System.getenv("CHANGAS_LOCAL")); // cambiar esto si quieren conectarse a la db local
         String url = local? "jdbc:postgresql://localhost/changas": "jdbc:postgresql://isilo.db.elephantsql.com";
         String username = local? System.getenv("CHANGAS_USERNAME"): "nfuyohzm";

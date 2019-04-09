@@ -15,4 +15,5 @@ public interface InscriptionDao extends Dao {
     Either<Boolean, ValidationError> inscribeInChanga(long user_id, long changa_id);
     List<Pair<User, Inscription>> getInscribedInChanga(Changa changa);
     List<Pair<User, Inscription>> getInscribedInChanga(long changa_id);
+    boolean isUserInscribedInChanga(long userId, long changaId);
 }

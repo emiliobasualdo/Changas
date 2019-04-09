@@ -38,4 +38,9 @@ public class InscriptionServiceImpl implements InscriptionService {
     public List<Pair<User, Inscription>> getInscribedUsers(long changa_id) {
         return dao.getInscribedInChanga(changa_id);
     }
+
+    @Override
+    public boolean isUserInscribedInChanga(long userId, long changaId) {
+        return dao.isUserInscribedInChanga(userId, changaId);
+    }
 }
