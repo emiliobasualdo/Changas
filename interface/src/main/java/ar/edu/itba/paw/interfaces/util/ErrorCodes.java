@@ -7,7 +7,9 @@ public enum ErrorCodes {
     INVALID_ID (3, "Invalid id"),
     INVALID_USER(4, "Invalid user"),
     INVALID_MAIL(5, "Invalid mail"),
+    ALREADY_INSCRIBED(6, "User already inscribed in changa"),
     ;
+
 
     private final int id;
     private final String message;

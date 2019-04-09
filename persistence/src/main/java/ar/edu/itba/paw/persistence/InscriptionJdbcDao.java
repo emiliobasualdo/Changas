@@ -2,10 +2,13 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
 import ar.edu.itba.paw.interfaces.daos.UserDao;
+import ar.edu.itba.paw.interfaces.util.ValidationError;
 import ar.edu.itba.paw.models.Changa;
+import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -20,6 +23,8 @@ import java.util.Map;
 import static ar.edu.itba.paw.constants.DBInscriptionFields.*;
 import static ar.edu.itba.paw.constants.DBInscriptionFields.user_id;
 import static ar.edu.itba.paw.constants.DBTableName.user_inscribed;
+import static ar.edu.itba.paw.interfaces.util.ErrorCodes.ALREADY_INSCRIBED;
+import static ar.edu.itba.paw.interfaces.util.ErrorCodes.DATABASE_ERROR;
 
 @Repository
 public class InscriptionJdbcDao implements InscriptionDao {
@@ -36,22 +41,32 @@ public class InscriptionJdbcDao implements InscriptionDao {
     public InscriptionJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(ds)
-                .withTableName(user_inscribed.TN())
-                .usingGeneratedKeyColumns(changa_id.name());
+                .withTableName(user_inscribed.TN());
     }
 
     @Override
-    public Boolean inscribeInChanga(User user, Changa changa) {
+    public Either<Boolean, ValidationError> inscribeInChanga(User user, Changa changa) {
         return this.inscribeInChanga(user.getUser_id(), changa.getChanga_id());
     }
 
     @Override
-    public Boolean inscribeInChanga(long user_id, long changa_id) {
+    public Either<Boolean, ValidationError> inscribeInChanga(long user_id, long changa_id) {
         Map<String, Object> row = inscriptionToTableRow(user_id, changa_id);
-        int rowsAffected = jdbcInsert.execute(row);
-        // todo maiteeeee??
-        return rowsAffected >= 1;
+        int rowsAffected;
+        //TODO se hace con try catch o se hace una query antes para ver si el usuario ya esta inscripto en la changa? q es mejor?
+        try {
+            rowsAffected = jdbcInsert.execute(row);
+            if (rowsAffected <= 0) {
+                return Either.alternative(new ValidationError(DATABASE_ERROR.getMessage(), DATABASE_ERROR.getId()));
+            }
+        } catch (DataIntegrityViolationException ex) {
+            return Either.alternative(new ValidationError(ALREADY_INSCRIBED.getMessage(), ALREADY_INSCRIBED.getId()));
+            //TODO MAITE preguntar si es mejor devolver directo un ValidationError que tenga un codigo para sin errores en vez de hacer el either con Boolean
+        }
+
+        return Either.value(true);
     }
+
 
     @Override
     public List<Pair<User, String>> getInscribeInChanga(Changa changa) {
@@ -82,8 +97,8 @@ public class InscriptionJdbcDao implements InscriptionDao {
      * */
     private Map<String, Object> inscriptionToTableRow(long us_id, long ch_id) {
         Map<String,Object> resp = new HashMap<>();
-        resp.put(user_id.name(), ch_id);
-        resp.put(changa_id.name(), us_id);
+        resp.put(user_id.name(), us_id);
+        resp.put(changa_id.name(), ch_id);
         return resp;
     }
 

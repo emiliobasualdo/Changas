@@ -16,7 +16,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBChangaFields.*;
-import static ar.edu.itba.paw.constants.DBTableName.*;
+import static ar.edu.itba.paw.constants.DBTableName.changas;
+import static ar.edu.itba.paw.constants.DBTableName.user_owns;
 
 @Repository
 public class ChangaJdbcDao implements ChangaDao {
@@ -80,7 +81,7 @@ public class ChangaJdbcDao implements ChangaDao {
     @Override
     public List<Changa> findByUserId(long id) {
         return jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = '%d'", users.TN(),
+                String.format("SELECT * FROM %s WHERE %s = %d", user_owns.TN(),
                         user_id.name(), id),
                 ROW_MAPPER
         );

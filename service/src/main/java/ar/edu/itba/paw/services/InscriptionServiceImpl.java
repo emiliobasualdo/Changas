@@ -2,7 +2,9 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
+import ar.edu.itba.paw.interfaces.util.ValidationError;
 import ar.edu.itba.paw.models.Changa;
+import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +19,12 @@ public class InscriptionServiceImpl implements InscriptionService {
     private InscriptionDao dao;
 
     @Override
-    public Boolean inscribeInChanga(User user, Changa changa) {
+    public Either<Boolean, ValidationError> inscribeInChanga(User user, Changa changa) {
         return dao.inscribeInChanga(user,changa);
     }
 
     @Override
-    public Boolean inscribeInChanga(long user_id, long changa_id) {
+    public Either<Boolean, ValidationError> inscribeInChanga(long user_id, long changa_id) {
         return dao.inscribeInChanga(user_id,changa_id);
     }
 
