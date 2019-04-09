@@ -1,6 +1,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<!DOCTYPE html>
-<html lang="en">
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
 <head>
     <%--<meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -125,7 +125,7 @@
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-phone"></i></span>
-                <form:label path="telephone">Telefono</form:label>
+                <form:label path="telephone">Teléfono</form:label>
                 <form:input class="form-control" path="telephone" placeholder="Telefono" required="required"/>
                 <form:errors path="telephone">error wach</form:errors>
             </div>
@@ -140,8 +140,8 @@
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                <form:label path="password">Contrasena</form:label>
-                <form:input class="form-control" path="password" placeholder="Contrasena" required="required"/>
+                <form:label path="password">Contraseña</form:label>
+                <form:input class="form-control" path="password" placeholder="Contraseña" required="required"/>
             </div>
         </div>
         <div class="form-group">
@@ -150,16 +150,16 @@
 					<i class="fa fa-lock"></i>
 					<i class="fa fa-check"></i>
 				</span>
-                <form:label path="repeatPassword"></form:label>
-                <form:input class="form-control" path="repeatPassword" placeholder="Confirmar contrasena" required="required"/>
+                <form:label path="repeatPassword">Confirmar constraseña</form:label>
+                <form:input class="form-control" path="repeatPassword" placeholder="Confirmar contraseña" required="required"/>
             </div>
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-block btn-lg">Registrarse</button>
         </div>
-        <p class="small text-center">Clickeando en el boton de registracion, estas de acuerdo con nuestros Terminos de Condiciones y Politica de Privacidad <%--<br><a href="#">Terms &amp; Conditions</a>, and <a href="#">Privacy Policy</a>--%>.</p>
+        <p class="small text-center">Clickeando en el boton de registración, estás de acuerdo con nuestros Términos de Condiciones y Política de Privacidad <%--<br><a href="#">Terms &amp; Conditions</a>, and <a href="#">Privacy Policy</a>--%>.</p>
     </form:form>
-    <div class="text-center">Ya tenes una cuenta? <a href="/logIn" style="color: #999;">Ingresa aca</a>.</div>
+    <div class="text-center">Ya tenés una cuenta? <a href="/logIn" style="color: #999;">Ingresá acá</a>.</div>
 </div>
 </body>
 </html>

@@ -13,7 +13,8 @@
             background: #fff;
         }
         .profile-img{
-            font: 15px Montserrat, sans-serif;
+            font-family: "Josefin Sans", sans-serif;
+            font-size: 20px;
             text-align: center;
         }
         .profile-img img{
@@ -27,7 +28,8 @@
             width: 70%;
             border: none;
             border-radius: 0;
-            font: 15px Montserrat, sans-serif;
+            font-family: "Josefin Sans", sans-serif;
+            font-size: 15px;
             background: #212529b8;
         }
         .profile-img .file input {
@@ -57,7 +59,8 @@
         }
         .profile-head .nav-tabs .nav-link{
             font-weight:600;
-            font: 20px Montserrat, sans-serif;
+            font-family: "Josefin Sans", sans-serif;
+            font-size: 20px;
             border: none;
         }
         .profile-head .nav-tabs .nav-link.active{
@@ -66,11 +69,13 @@
         }
         .profile-tab label{
             font-weight: 600;
-            font: 15px Montserrat, sans-serif;
+            font-family: "Josefin Sans", sans-serif;
+            font-size: 20px;
         }
         .profile-tab p{
             font-weight: 600;
-            font: 15px Montserrat, sans-serif;
+            font-family: "Josefin Sans", sans-serif;
+            font-size: 20px;
             color: #000000;
         }
     </style>
@@ -95,10 +100,10 @@
                         </h5> -->
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Mis datos</a>
+                                <a class="nav-link active" id="published-changas-tab" data-toggle="tab" href="#published" role="tab" aria-controls="published" aria-selected="true">Changas publicadas</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Mis changas</a>
+                                <a class="nav-link" id="pending-changas-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false">Changas anotadas</a>
                             </li>
                         </ul>
                     </div>
@@ -109,43 +114,44 @@
             </div>
             <div class="row">
                 <div class="col-md-4">
-                    <div class="profile-head">
-                        <h5 style="text-align: center; margin-top: 1cm">
-                            <%--<c:out value="${profile.name}"/> <c:out value="${profile.surname}"/>--%>Jimena Lozano
-                        </h5>
+                    <div class="profile-head" style="text-align: center">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Nombre</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p><c:out value="${profile.name}"/> <c:out value="${profile.surname}"/></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Email</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p><c:out value="${profile.email}"/></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Telefono</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p><c:out value="${profile.tel}"/></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-8">
                     <div class="tab-content profile-tab" id="myTabContent">
-                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Nombre</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><c:out value="${profile.name}"/> <c:out value="${profile.surname}"/></p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Email</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><c:out value="${profile.email}"/></p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Telefono</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><c:out value="${profile.tel}"/></p>
-                                </div>
-                            </div>
+                        <div class="tab-pane fade show active" id="published" role="tabpanel" aria-labelledby="published-changas-tab">
+
+                            <jsp:include page="publishedChangas.jsp"/>
+
                         </div>
-                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                            <!-- copiamos lo que hay en mainPageBody -->
-                            <jsp:include page="mainPageBody.jsp"/>
+                        <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-changas-tab">
+
+                            <jsp:include page="pendingChangas.jsp"/>
+
                         </div>
                     </div>
                 </div>

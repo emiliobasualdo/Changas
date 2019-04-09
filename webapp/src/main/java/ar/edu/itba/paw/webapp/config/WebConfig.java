@@ -37,6 +37,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public DataSource dataSource() {
+
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
         ds.setDriverClass(org.postgresql.Driver.class);
         // todo sacar para la entrega
@@ -44,13 +45,15 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         String url = local? "jdbc:postgresql://localhost/changas": "jdbc:postgresql://isilo.db.elephantsql.com";
         String username = local? "jime": "nfuyohzm";
         String passwd = local? "hola": "FQ9W7Ck3I1eTYePdn_OHsJIANQihEwzA";
+
         /*String url = "jdbc:postgresql://isilo.db.elephantsql.com"; //local? "jdbc:postgresql://localhost/changas": "jdbc:postgresql://isilo.db.elephantsql.com";
         String username = "phhlctzu";//local? "pilo": "nfuyohzm";
         String passwd = "YYoLBl5QrXsPA2ga-akkGimITHTfmyTL"; //local? "uiop": "FQ9W7Ck3I1eTYePdn_OHsJIANQihEwzA";*/
-        boolean local = Boolean.valueOf(System.getenv("CHANGAS_LOCAL")); // cambiar esto si quieren conectarse a la db local
+
+        /*boolean local = Boolean.valueOf(System.getenv("CHANGAS_LOCAL")); // cambiar esto si quieren conectarse a la db local
         String url = local? "jdbc:postgresql://localhost/changas": "jdbc:postgresql://isilo.db.elephantsql.com";
         String username = local? System.getenv("CHANGAS_USERNAME"): "nfuyohzm";
-        String passwd = local? System.getenv("CHANGAS_PASSWD"): "FQ9W7Ck3I1eTYePdn_OHsJIANQihEwzA";
+        String passwd = local? System.getenv("CHANGAS_PASSWD"): "FQ9W7Ck3I1eTYePdn_OHsJIANQihEwzA";*/
         ds.setUrl(url);
         ds.setUsername(username);
         ds.setPassword(passwd);

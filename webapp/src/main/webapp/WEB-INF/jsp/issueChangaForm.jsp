@@ -99,47 +99,47 @@
 <body>
 <div class="signup-form">
     <form:form method="post" modelAttribute="changaForm" action="/createChanga">
-        <h2>Crea tu changa</h2>
+        <h2>Creá tu changa</h2>
         <div class="form-group">
             <div class="input-group">
-                <form:label path="title">Titulo</form:label>
+                <form:label path="title">Título</form:label>
                 <form:input class="form-control" path="title"/>
-                <form:errors path="title" element="p">Invalido</form:errors>
+                <form:errors path="title" element="p">Inválido</form:errors>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
-                <form:label path="description">Descripcion</form:label>
+                <form:label path="description">Descripción</form:label>
                 <form:textarea rows="3" class="form-control" path="description"/>
-                <form:errors path="description" element="p">Invalido</form:errors>
+                <form:errors path="description" element="p">Inválido</form:errors>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <form:label path="neighborhood">Localidad</form:label>
                 <form:input class="form-control" path="neighborhood"/>
-                <form:errors path="neighborhood" element="p">Invalido</form:errors>
+                <form:errors path="neighborhood" element="p">Inválido</form:errors>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <form:label path="street">Calle</form:label>
                 <form:input class="form-control" path="street"/>
-                <form:errors path="street" element="p">Invalido</form:errors>
+                <form:errors path="street" element="p">Inválido</form:errors>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <form:label path="number">Altura</form:label>
                 <form:input class="form-control" path="number"/>
-                <form:errors path="number" element="p">Invalido</form:errors>
+                <form:errors path="number" element="p">Inválido</form:errors>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <form:label path="price">Precio</form:label>
                 <form:input class="form-control" path="price"/>
-                <form:errors path="price" element="p">Invalido</form:errors>
+                <form:errors path="price" element="p">Inválido</form:errors>
             </div>
         </div>
         <div class="form-group">
