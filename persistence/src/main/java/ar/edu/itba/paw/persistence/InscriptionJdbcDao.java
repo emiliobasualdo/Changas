@@ -3,9 +3,7 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
 import ar.edu.itba.paw.interfaces.daos.UserDao;
 import ar.edu.itba.paw.interfaces.util.ValidationError;
-import ar.edu.itba.paw.models.Changa;
-import ar.edu.itba.paw.models.Either;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -68,23 +66,23 @@ public class InscriptionJdbcDao implements InscriptionDao {
 
 
     @Override
-    public List<Pair<User, String>> getInscribedInChanga(Changa changa) {
+    public List<Pair<User, Inscription>> getInscribedInChanga(Changa changa) {
         return getInscribedInChanga(changa.getChanga_id());
     }
 
     @Override
-    public List<Pair<User, String>> getInscribedInChanga(long id) {
+    public List<Pair<User, Inscription>> getInscribedInChanga(long id) {
         final List<Inscription> list = jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = %d", user_inscribed.TN()
                         , changa_id.name(), id),
                 ROW_MAPPER
         );
-        final List<Pair<User,String>> usersList = new ArrayList<>();
+        final List<Pair<User,Inscription>> usersList = new ArrayList<>();
         if (list.isEmpty()) {
             return usersList;
         }
         for (Inscription insc: list) {
-            usersList.add(new Pair<>(userDao.findById(insc.user_id).getValue(), insc.state));
+            usersList.add(new Pair<>(userDao.findById(insc.getUser_id()).getValue(), insc));
         }
         return usersList;
     }
@@ -113,21 +111,10 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
     private static Inscription inscriptionFromRS(ResultSet rs) throws SQLException {
-        return new Inscription(
-                rs.getLong(user_id.name()),
-                rs.getLong(changa_id.name()),
-                rs.getString(state.name()));
-    }
-
-    private static class Inscription {
-        private final long user_id;
-        private final long changa_id;
-        private final String state;
-
-        Inscription(long user_id, long changa_id, String state) {
-            this.user_id = user_id;
-            this.changa_id = changa_id;
-            this.state = state;
-        }
+        return new Inscription.Builder()
+                .withUserId(rs.getLong(user_id.name()))
+                .withChangaId(rs.getLong(changa_id.name()))
+                .withState(rs.getString(state.name()))
+                .build();
     }
 }

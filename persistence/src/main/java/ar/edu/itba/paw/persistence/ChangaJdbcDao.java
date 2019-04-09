@@ -3,7 +3,6 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.daos.UserDao;
 import ar.edu.itba.paw.models.Changa;
-import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -18,7 +17,6 @@ import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBChangaFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.changas;
-import static ar.edu.itba.paw.constants.DBTableName.user_owns;
 
 @Repository
 public class ChangaJdbcDao implements ChangaDao {
@@ -82,7 +80,7 @@ public class ChangaJdbcDao implements ChangaDao {
     @Override
     public List<Changa> findByUserId(long id) {
         return jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = %d", user_owns.TN(),
+                String.format("SELECT * FROM %s WHERE %s = %d", changas.TN(),
                         user_id.name(), id),
                 ROW_MAPPER
         );
