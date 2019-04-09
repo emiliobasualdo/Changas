@@ -2,7 +2,9 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.daos.UserDao;
+import ar.edu.itba.paw.interfaces.util.ValidationError;
 import ar.edu.itba.paw.models.Changa;
+import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,6 +21,8 @@ import java.util.*;
 import static ar.edu.itba.paw.constants.DBChangaFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.changas;
 import static ar.edu.itba.paw.constants.DBTableName.user_owns;
+import static ar.edu.itba.paw.interfaces.util.ErrorCodes.DATABASE_ERROR;
+import static ar.edu.itba.paw.interfaces.util.ErrorCodes.INVALID_ID;
 
 @Repository
 public class ChangaJdbcDao implements ChangaDao {
@@ -38,24 +42,24 @@ public class ChangaJdbcDao implements ChangaDao {
     }
 
     @Override
-    public Changa findById(final long id) {
+    public Either<Changa, ValidationError> findById(final long id) {
         final List<Changa> list = jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = %d",changas.TN(), changa_id.name(), id),
                 ROW_MAPPER
         );
         if (list.isEmpty()) {
-            return null; // todo  maite ?? <---- null
+            return Either.alternative(new ValidationError(INVALID_ID.getMessage(), INVALID_ID.getId()));
         }
-        return list.get(0);
+        return Either.value(list.get(0));
     }
 
     @Override
-    public Changa create(final Changa changa) {
+    public Either<Changa, ValidationError> create(final Changa changa) {
         // si no se insertó ninguna fila, what pass?
         Map<String, Object> changaRow = changaToTableRow(changa);
         int rowsAffected = jdbcInsert.execute(changaRow);
         if (rowsAffected < 1) {
-            // todo maiteeeee??
+            return Either.alternative(new ValidationError(DATABASE_ERROR.getMessage(), DATABASE_ERROR.getId()));
         }
         // todo Preguntar que onda esto
         // todo enorme fallo de seguridad el String.format
@@ -63,7 +67,7 @@ public class ChangaJdbcDao implements ChangaDao {
                 String.format("SELECT * FROM %s WHERE %s = %d AND %s = '%s'", changas.TN(), user_id.name(), changa.getUser_id(), title.name(), changa.getTitle()),
                 ROW_MAPPER
         );
-        return list.get(0);
+        return Either.value(list.get(0));
     }
 
     @Override
@@ -81,6 +85,7 @@ public class ChangaJdbcDao implements ChangaDao {
 
     @Override
     public List<Changa> findByUserId(long id) {
+        //TODO no se como distinguir entre el usuario no existe y el usuario no tiene changas. ambos devuelven lista vacia. (creo )
         return jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = %d", user_owns.TN(),
                         user_id.name(), id),
@@ -111,7 +116,7 @@ public class ChangaJdbcDao implements ChangaDao {
                     .createdAt(createdAt[r.nextInt(max)])
                     .withDescription(description[r.nextInt(max)])
                     .atAddress(calle[r.nextInt(max)],neigh[r.nextInt(max)],number[r.nextInt(max)])
-                    .build())
+                    .build()).getValue()
             );
         }
         return resp;

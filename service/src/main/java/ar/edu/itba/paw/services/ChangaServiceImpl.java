@@ -2,7 +2,9 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
+import ar.edu.itba.paw.interfaces.util.ValidationError;
 import ar.edu.itba.paw.models.Changa;
+import ar.edu.itba.paw.models.Either;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -19,12 +21,12 @@ public class ChangaServiceImpl implements ChangaService {
     }
 
     @Override
-    public Changa create(final Changa changa) {
+    public Either<Changa, ValidationError> create(final Changa changa) {
         return dao.create(changa);
     }
 
     @Override
-    public Changa getById(final long id){
+    public Either<Changa, ValidationError> getById(final long id){
         return dao.findById(id);
     }
 
