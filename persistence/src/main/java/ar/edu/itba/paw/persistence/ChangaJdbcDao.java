@@ -21,8 +21,8 @@ import java.util.*;
 import static ar.edu.itba.paw.constants.DBChangaFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.changas;
 import static ar.edu.itba.paw.constants.DBTableName.user_owns;
-import static ar.edu.itba.paw.interfaces.util.ErrorCodes.DATABASE_ERROR;
-import static ar.edu.itba.paw.interfaces.util.ErrorCodes.INVALID_ID;
+import static ar.edu.itba.paw.interfaces.util.ErrorCodes.*;
+
 
 @Repository
 public class ChangaJdbcDao implements ChangaDao {
@@ -87,7 +87,7 @@ public class ChangaJdbcDao implements ChangaDao {
     public List<Changa> findByUserId(long id) {
         //TODO no se como distinguir entre el usuario no existe y el usuario no tiene changas. ambos devuelven lista vacia. (creo )
         return jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = %d", user_owns.TN(),
+                String.format("SELECT * FROM %s WHERE %s = %d", changas.TN(),
                         user_id.name(), id),
                 ROW_MAPPER
         );

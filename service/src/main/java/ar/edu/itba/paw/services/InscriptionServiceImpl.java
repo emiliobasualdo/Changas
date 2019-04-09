@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.util.ValidationError;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.Either;
+import ar.edu.itba.paw.models.Inscription;
 import ar.edu.itba.paw.models.User;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +30,12 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public List<Pair<User, String>> getInscribedUsers(Changa changa) {
+    public List<Pair<User, Inscription>> getInscribedUsers(Changa changa) {
         return dao.getInscribedInChanga(changa);
     }
 
     @Override
-    public List<Pair<User, String>> getInscribedUsers(long changa_id) {
+    public List<Pair<User, Inscription>> getInscribedUsers(long changa_id) {
         return dao.getInscribedInChanga(changa_id);
     }
 
