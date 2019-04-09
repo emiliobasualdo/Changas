@@ -14,4 +14,5 @@ public interface InscriptionService {
     Either<Boolean, ValidationError> inscribeInChanga(long user_id, long changa_id);
     List<Pair<User, String>> getInscribedUsers(Changa changa);
     List<Pair<User, String>> getInscribedUsers(long changa_id);
+    boolean isUserInscribedInChanga(long userId, long changaId);
 }

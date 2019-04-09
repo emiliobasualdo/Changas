@@ -101,13 +101,16 @@ public class UserController {
             return  new ModelAndView("redirect:/logIn");
         }
 
-
+        System.out.println("current user id: "+currentUser.getUser_id());
         Either<Boolean, ValidationError> either = is.inscribeInChanga(currentUser.getUser_id(), changaId);
         //TODO hacer que se deshabilite el boton Anotarme en changa cuando ya está inscripto
         if (!either.isValuePresent()){
             //TODO JIME un popup de error
             System.out.println("No se pudo inscribir en la changa pq:"+ either.getAlternative().getMessage());
+        } else {
+            System.out.println("user "+ currentUser.getUser_id()+ " successfully inscripto en changa ");
         }
+
 
 
         return new ModelAndView("redirect:/");
