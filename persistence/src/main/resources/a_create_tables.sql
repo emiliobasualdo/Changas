@@ -39,3 +39,5 @@ CREATE TABLE IF NOT EXISTS user_inscribed
     FOREIGN KEY (user_id) REFERENCES users (user_id),
     FOREIGN KEY (changa_id) REFERENCES changas (changa_id)
 );
+
+

@@ -23,8 +23,22 @@ import javax.sql.DataSource;
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-    @Value("classpath:create_tables.sql")
+    @Value("classpath:a_create_tables.sql")
     private Resource createTables;
+
+    @Bean
+    public DataSourceInitializer dataSourceInitializer(final DataSource ds) {
+        final DataSourceInitializer dsi = new DataSourceInitializer();
+        dsi.setDataSource(ds);
+        dsi.setDatabasePopulator(databasePopulator());
+        return dsi;
+    }
+
+    private DatabasePopulator databasePopulator() {
+        final ResourceDatabasePopulator dbp = new ResourceDatabasePopulator();
+        dbp.addScript(createTables);
+        return dbp;
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -52,23 +66,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         String url = local? "jdbc:postgresql://localhost/changas": "jdbc:postgresql://isilo.db.elephantsql.com";
         String username = local? System.getenv("CHANGAS_USERNAME"): "nfuyohzm";
         String passwd = local? System.getenv("CHANGAS_PASSWD"): "FQ9W7Ck3I1eTYePdn_OHsJIANQihEwzA";
+
         ds.setUrl(url);
         ds.setUsername(username);
         ds.setPassword(passwd);
         System.out.println(String.format("//////\nConectando a la BD %s con el usuario %s y la contraseña %s\n//////",url, username,passwd));
         return ds;
-    }
-
-    @Bean
-    public DataSourceInitializer dataSourceInitializer(final DataSource ds) {
-        final DataSourceInitializer dsi = new DataSourceInitializer();
-        dsi.setDataSource(ds);
-        dsi.setDatabasePopulator(databasePopulator());
-        return dsi;
-    }
-    private DatabasePopulator databasePopulator() {
-        final ResourceDatabasePopulator dbp = new ResourceDatabasePopulator();
-        dbp.addScript(createTables);
-        return dbp;
     }
 }

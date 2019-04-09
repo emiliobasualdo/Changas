@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controllers;
 
+import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.ValidationError;
@@ -25,6 +26,9 @@ public class UserController {
 
     @Autowired
     private UserService us;
+
+    @Autowired
+    private InscriptionService is;
 
     // todo: esto es muy villero. ya lo voy a borrar. es solo para probar mostrar las changas en el profile
     @Autowired
@@ -84,6 +88,25 @@ public class UserController {
                 .withEmail(form.getUsername())
                 .withPasswd(form.getPassword())
                 .build()).getValue();
+        return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping(value = "/joinChanga", method = RequestMethod.POST)
+    public ModelAndView showChanga(@RequestParam("changaId") final long changaId) {
+        if (currentUser == null){
+            //TODO hacer que se loggee y que despues se redirija a la changa que estaba viendo.
+            return  new ModelAndView("redirect:/logIn");
+        }
+
+
+        Either<Boolean, ValidationError> either = is.inscribeInChanga(currentUser.getUser_id(), changaId);
+        //TODO hacer que se deshabilite el boton Anotarme en changa cuando ya está inscripto
+        if (!either.isValuePresent()){
+            //TODO JIME un popup de error
+            System.out.println("No se pudo inscribir en la changa pq:"+ either.getAlternative().getMessage());
+        }
+
+
         return new ModelAndView("redirect:/");
     }
 
