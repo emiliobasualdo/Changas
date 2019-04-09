@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 
     <body>
@@ -21,9 +22,9 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>Nombre</th>
-                    <th>Telefono</th>
-                    <th>Ubicacion</th>
+                    <th><spring:message code="changaBody.Table.name" /></th>
+                    <th><spring:message code="changaBody.Table.telephone" /></th>
+                    <th><spring:message code="changaBody.Table.location" /></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -36,7 +37,7 @@
             <!--<a href="#" class="btn btn-primary" style="margin-top: 1cm; margin-bottom: 1cm;">Aceptar</a>-->
         </div>
         <div class="container" style="margin-top: 80px">
-            <button type="button" class="btn btn-success btn-block">Anotame en la changa</button>
+            <button type="button" class="btn btn-success btn-block"><spring:message code="changaBody.button" /></button>
             <!-- <br> -->
         </div>
     </body>

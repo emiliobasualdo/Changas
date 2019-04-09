@@ -1,4 +1,5 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -100,20 +101,20 @@
         <div class="avatar">
             <img src="https://i.imgur.com/dGo8DOk.jpg" alt="Avatar">
         </div>
-        <h2 class="text-center">Bienvenido</h2>
+        <h2 class="text-center"><spring:message code="logInBody.header"/></h2>
         <div class="form-group">
-            <form:label path="username">Username</form:label>
-            <form:input path="username" class="form-control" placeholder="Usuario" required="required"/>
+            <form:label path="username"><spring:message code="UserLoginForm.username"/></form:label>
+            <form:input path="username" class="form-control" />
         </div>
         <div class="form-group">
-            <form:label path="password">Password</form:label>
-            <form:input path="password" class="form-control" placeholder="Constrasena" required="required"/>
+            <form:label path="password"><spring:message code="UserLoginForm.password"/></form:label>
+            <form:input path="password" class="form-control"/>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-lg btn-block">Ingresar</button>
+            <button type="submit" class="btn btn-primary btn-lg btn-block"><spring:message code="logInBody.button"/></button>
         </div>
         <div class="clearfix">
-            <label class="pull-left checkbox-inline"><input type="checkbox">Recuerdame</label>
+            <label class="pull-left checkbox-inline"><input type="checkbox"><spring:message code="logInBody.checkbox"/></label>
             <a href="#" class="pull-right">Te olvidaste la contrasena?</a>
         </div>
     </form:form>

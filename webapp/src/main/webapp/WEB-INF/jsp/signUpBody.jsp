@@ -1,4 +1,5 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -104,44 +105,44 @@
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                <form:label path="name">Nombre</form:label>
-                <form:input class="form-control" path="name" placeholder="Nombre" required="required"/>
+                <form:label path="name"><spring:message code="UserRegisterForm.name"/></form:label>
+                <form:input class="form-control" path="name" />
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                <form:label path="surname">Apellido</form:label>
-                <form:input class="form-control" path="surname" placeholder="Apellido" required="required"/>
+                <form:label path="surname"><spring:message code="UserRegisterForm.surname"/></form:label>
+                <form:input class="form-control" path="surname" />
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                <form:label path="username">Nombre de usuario</form:label>
-                <form:input class="form-control" path="username" placeholder="Usuario" required="required"/>
+                <form:label path="username"><spring:message code="UserRegisterForm.username"/></form:label>
+                <form:input class="form-control" path="username" />
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-phone"></i></span>
-                <form:label path="telephone">Telefono</form:label>
-                <form:input class="form-control" path="telephone" placeholder="Telefono" required="required"/>
+                <form:label path="telephone"><spring:message code="UserRegisterForm.telephone"/></form:label>
+                <form:input class="form-control" path="telephone" />
                 <form:errors path="telephone">error wach</form:errors>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-paper-plane"></i></span>
-                <form:label path="email">Email</form:label>
-                <form:input class="form-control" path="email" placeholder="Email"/>
+                <form:label path="email"><spring:message code="UserRegisterForm.email"/></form:label>
+                <form:input class="form-control" path="email" />
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                <form:label path="password">Contrasena</form:label>
-                <form:input class="form-control" path="password" placeholder="Contrasena" required="required"/>
+                <form:label path="password"><spring:message code="UserRegisterForm.password"/></form:label>
+                <form:input class="form-control" path="password" />
             </div>
         </div>
         <div class="form-group">
@@ -150,12 +151,12 @@
 					<i class="fa fa-lock"></i>
 					<i class="fa fa-check"></i>
 				</span>
-                <form:label path="repeatPassword"></form:label>
-                <form:input class="form-control" path="repeatPassword" placeholder="Confirmar contrasena" required="required"/>
+                <form:label path="repeatPassword"><spring:message code="UserRegisterForm.repeatPassword"/></form:label>
+                <form:input class="form-control" path="repeatPassword"/>
             </div>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block btn-lg">Registrarse</button>
+            <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="signUpBody.button"/></button>
         </div>
         <p class="small text-center">Clickeando en el boton de registracion, estas de acuerdo con nuestros Terminos de Condiciones y Politica de Privacidad <%--<br><a href="#">Terms &amp; Conditions</a>, and <a href="#">Privacy Policy</a>--%>.</p>
     </form:form>
