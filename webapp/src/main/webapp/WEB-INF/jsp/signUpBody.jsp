@@ -104,28 +104,28 @@
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                <form:label path="name">Nombre</form:label>
+                <form:label path="name"></form:label>
                 <form:input class="form-control" path="name" placeholder="Nombre" required="required"/>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                <form:label path="surname">Apellido</form:label>
+                <form:label path="surname"></form:label>
                 <form:input class="form-control" path="surname" placeholder="Apellido" required="required"/>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                <form:label path="username">Nombre de usuario</form:label>
+                <form:label path="username"></form:label>
                 <form:input class="form-control" path="username" placeholder="Usuario" required="required"/>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-phone"></i></span>
-                <form:label path="telephone">Teléfono</form:label>
+                <form:label path="telephone"></form:label>
                 <form:input class="form-control" path="telephone" placeholder="Telefono" required="required"/>
                 <form:errors path="telephone">error wach</form:errors>
             </div>
@@ -133,14 +133,14 @@
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-paper-plane"></i></span>
-                <form:label path="email">Email</form:label>
+                <form:label path="email"></form:label>
                 <form:input class="form-control" path="email" placeholder="Email"/>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                <form:label path="password">Contraseña</form:label>
+                <form:label path="password"></form:label>
                 <form:input class="form-control" path="password" placeholder="Contraseña" required="required"/>
             </div>
         </div>
@@ -150,7 +150,7 @@
 					<i class="fa fa-lock"></i>
 					<i class="fa fa-check"></i>
 				</span>
-                <form:label path="repeatPassword">Confirmar constraseña</form:label>
+                <form:label path="repeatPassword"></form:label>
                 <form:input class="form-control" path="repeatPassword" placeholder="Confirmar contraseña" required="required"/>
             </div>
         </div>
