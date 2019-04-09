@@ -1,3 +1,4 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
 
@@ -9,7 +10,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <style>
         body {
-            font: 15px Montserrat, sans-serif;
+            font: 18px Montserrat, sans-serif;
             line-height: 1.8;
         }
         p {font-size: 16px;}navbar {
