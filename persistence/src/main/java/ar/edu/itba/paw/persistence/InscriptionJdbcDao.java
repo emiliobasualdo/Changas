@@ -10,15 +10,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import static ar.edu.itba.paw.constants.DBInscriptionFields.*;
-import static ar.edu.itba.paw.constants.DBInscriptionFields.user_id;
 import static ar.edu.itba.paw.constants.DBTableName.user_inscribed;
 
 @Repository
@@ -38,6 +36,13 @@ public class InscriptionJdbcDao implements InscriptionDao {
         jdbcInsert = new SimpleJdbcInsert(ds)
                 .withTableName(user_inscribed.TN())
                 .usingGeneratedKeyColumns(changa_id.name());
+        final List<Inscription> list = jdbcTemplate.query(
+                String.format("SELECT * FROM %s LIMIT 1", user_inscribed.TN()),
+                ROW_MAPPER
+        );
+        if(list.isEmpty()){
+            generateRandomInscriptions();
+        }
     }
 
     @Override
@@ -54,12 +59,12 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
     @Override
-    public List<Pair<User, String>> getInscribeInChanga(Changa changa) {
-        return getInscribeInChanga(changa.getChanga_id());
+    public List<Pair<User, String>> getInscribedInChanga(Changa changa) {
+        return getInscribedInChanga(changa.getChanga_id());
     }
 
     @Override
-    public List<Pair<User, String>> getInscribeInChanga(long id) {
+    public List<Pair<User, String>> getInscribedInChanga(long id) {
         final List<Inscription> list = jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = %d", user_inscribed.TN()
                         , changa_id.name(), id),
@@ -75,6 +80,17 @@ public class InscriptionJdbcDao implements InscriptionDao {
         return usersList;
     }
     // todo change sate
+
+    private void generateRandomInscriptions() {
+        int N_INSCRIPTIONS = 1000;
+        int N_USERS_CHANGAS = 100;
+        Random rchanga = new Random();
+        Random ruser = new Random();
+        for (int i = 0; i < N_INSCRIPTIONS; i++) {
+            inscribeInChanga(ruser.nextInt(N_USERS_CHANGAS),rchanga.nextInt(N_USERS_CHANGAS));
+        }
+
+    }
 
     /**
      * The 'state' column is not passed because it is set with a default value

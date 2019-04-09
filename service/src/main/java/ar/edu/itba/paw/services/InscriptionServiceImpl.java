@@ -28,11 +28,11 @@ public class InscriptionServiceImpl implements InscriptionService {
 
     @Override
     public List<Pair<User, String>> getInscribedUsers(Changa changa) {
-        return dao.getInscribeInChanga(changa);
+        return dao.getInscribedInChanga(changa);
     }
 
     @Override
     public List<Pair<User, String>> getInscribedUsers(long changa_id) {
-        return dao.getInscribeInChanga(changa_id);
+        return dao.getInscribedInChanga(changa_id);
     }
 }

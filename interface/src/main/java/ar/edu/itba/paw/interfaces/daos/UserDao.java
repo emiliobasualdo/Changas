@@ -17,7 +17,6 @@ public interface UserDao extends Dao{
     Either<User, ValidationError> findById(final long id);
     Either<User, ValidationError> findByMail(final String mail);
     Either<User, ValidationError> create(final User user);
-    List<User> getAll();
     Either<User, ValidationError> getUser(User user);
     List<User> createUsers();
 }

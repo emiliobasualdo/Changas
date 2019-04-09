@@ -55,12 +55,12 @@ public class UserJdbcDao implements UserDao {
         if (list.isEmpty()) {
             return Either.alternative(new ValidationError(INVALID_MAIL.getMessage(), INVALID_MAIL.getId()));
         }
-        return Either.value(list.get(0));
+        return Either.value(list.get(0)); // todo get(0) mal
     }
 
     @Override
     public Either<User, ValidationError> create(final User user) {
-        // si no se insertó ninguna fila, what pass?
+        // todo si no se insertó ninguna fila, what pass?
         Map<String, Object> userRow = userToTableRow(user);
         int rowsAffected = jdbcInsert.execute(userRow);
         if (rowsAffected < 1) {
@@ -68,10 +68,9 @@ public class UserJdbcDao implements UserDao {
         }
         // todo Preguntar que onda esto
         final List<User> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s' AND %s = '%s'", users.TN(),
-                        name.name(), user.getName(),
-                        surname.name(), user.getSurname(),
-                        tel.name(), user.getTel()),
+                String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s' ", users.TN(),
+                        email.name(), user.getEmail(),
+                        passwd.name(), user.getPasswd()),
                 ROW_MAPPER
         );
         /*TODO MAITE
@@ -87,11 +86,6 @@ public class UserJdbcDao implements UserDao {
 
     @Override
     public List<User> createUsers() {
-        return generateRandomUsers();
-    }
-
-    @Override
-    public List<User> getAll() {
         return generateRandomUsers();
     }
 
@@ -113,9 +107,9 @@ public class UserJdbcDao implements UserDao {
     private List<User> generateRandomUsers() {
         int N_USERS = 100;
         String[] tel = {"34234", "1341", "12312", "123123", "123123"};
-        String[] name = {"San Telmo", "Flores", "Talar del cheto", "Quinta presidencial", "Calle 13"};
-        String[] surname = {"San ", "Flor", "Cheto", "Quinta", "Feranandez"};
-        String[] email = {"a@hotmail.com", "b@hotmail.com", "c@hotmail.com", "d@hotmail.com", "e@hotmail.com"};
+        String[] name = {"Pilo", "Jime", "Fer", "Mauricio", "Cristina"};
+        String[] surname = {"Basualdo ", "Gomez", "Lozano", "Macrio", "Kirschner"};
+        String[] email = {"@hotmail.com", "@hotmail.com", "@hotmail.com", "@hotmail.com", "@hotmail.com"};
         String[] passwd = {"San ", "Flor", "Cheto", "Quinta", "Feranandez"};
         Random r = new Random();
         int max = 5;
@@ -125,7 +119,7 @@ public class UserJdbcDao implements UserDao {
                     .withName(name[r.nextInt(max)])
                     .withSurname(surname[r.nextInt(max)])
                     .withTel(tel[r.nextInt(max)])
-                    .withEmail(email[r.nextInt(max)])
+                    .withEmail(i+email[r.nextInt(max)])
                     .withPasswd(passwd[r.nextInt(max)])
                     .build()
                     ).getValue()
