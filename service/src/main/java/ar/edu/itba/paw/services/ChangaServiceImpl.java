@@ -31,5 +31,6 @@ public class ChangaServiceImpl implements ChangaService {
     @Override
     public List<Changa> findByUserId(long user_id) {
         return dao.findByUserId(user_id);
+        //return dao.getAll();
     }
 }

@@ -30,6 +30,7 @@
                 <tbody>
                 <tr>
                     <td><c:out value="${changa.user_id}"/></td>
+                    <!-- todo: mostrar el nombre del USUARIO que emitio la changa junto a su telefono -->
                     <td><c:out value="${changa.neighborhood}" /></td>
                 </tr>
                 </tbody>
@@ -37,8 +38,10 @@
             <!--<a href="#" class="btn btn-primary" style="margin-top: 1cm; margin-bottom: 1cm;">Aceptar</a>-->
         </div>
         <div class="container" style="margin-top: 80px">
-            <button type="button" class="btn btn-success btn-block"><spring:message code="changaBody.button" /></button>
-            <!-- <br> -->
+            <form action="/joinChanga" method="post">
+                <input type="hidden" name="changaId" value="<c:out value="${changa.user_id}"/>">
+                <input type="submit"  class="btn btn-success btn-block" value="Anotame en la changa" />
+            </form>
         </div>
     </body>
 </html>

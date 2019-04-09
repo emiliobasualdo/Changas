@@ -100,47 +100,47 @@
 <body>
 <div class="signup-form">
     <form:form method="post" modelAttribute="changaForm" action="/createChanga">
-        <h2>Crea tu changa</h2>
+        <h2>Creá tu changa</h2>
         <div class="form-group">
             <div class="input-group">
                 <form:label path="title"><spring:message code="ChangaForm.title"/></form:label>
                 <form:input class="form-control" path="title"/>
-                <form:errors path="title" element="p">Invalido</form:errors>
+                <form:errors path="title" element="p">Inválido</form:errors>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <form:label path="description"><spring:message code="ChangaForm.description"/></form:label>
                 <form:textarea rows="3" class="form-control" path="description"/>
-                <form:errors path="description" element="p">Invalido</form:errors>
+                <form:errors path="description" element="p">Inválido</form:errors>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <form:label path="neighborhood"><spring:message code="ChangaForm.neighborhood"/></form:label>
                 <form:input class="form-control" path="neighborhood"/>
-                <form:errors path="neighborhood" element="p">Invalido</form:errors>
+                <form:errors path="neighborhood" element="p">Inválido</form:errors>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <form:label path="street"><spring:message code="ChangaForm.street"/></form:label>
                 <form:input class="form-control" path="street"/>
-                <form:errors path="street" element="p">Invalido</form:errors>
+                <form:errors path="street" element="p">Inválido</form:errors>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <form:label path="number"><spring:message code="ChangaForm.number"/></form:label>
                 <form:input class="form-control" path="number"/>
-                <form:errors path="number" element="p">Invalido</form:errors>
+                <form:errors path="number" element="p">Inválido</form:errors>
             </div>
         </div>
         <div class="form-group">
             <div class="input-group">
                 <form:label path="price"><spring:message code="ChangaForm.price"/></form:label>
                 <form:input class="form-control" path="price"/>
-                <form:errors path="price" element="p">Invalido</form:errors>
+                <form:errors path="price" element="p">Inválido</form:errors>
             </div>
         </div>
         <div class="form-group">

@@ -1,4 +1,5 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
 <html>
@@ -118,7 +119,7 @@
             <a href="#" class="pull-right">Te olvidaste la contrasena?</a>
         </div>
     </form:form>
-    <p class="text-center small">No tenes una cuenta? <a href="#">Registrate!</a></p>
+    <p class="text-center small">No tenés una cuenta? <a href="/signUp">Registrate!</a></p>
 </div>
 </body>
 </html>

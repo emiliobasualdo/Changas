@@ -54,4 +54,11 @@ public class ChangaController {
         return mav;
     }
 
+    @RequestMapping("/admin-changa")
+    public ModelAndView showAdminChanga(@RequestParam("id") final long id) {
+        final ModelAndView mav = new ModelAndView("indexAdminChanga");
+        mav.addObject("changa", cs.getById(id));
+        return mav;
+    }
+
 }

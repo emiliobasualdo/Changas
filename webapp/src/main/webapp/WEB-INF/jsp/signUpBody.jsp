@@ -1,7 +1,9 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
+<html>
 <head>
     <%--<meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -158,9 +160,9 @@
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="signUpBody.button"/></button>
         </div>
-        <p class="small text-center">Clickeando en el boton de registracion, estas de acuerdo con nuestros Terminos de Condiciones y Politica de Privacidad <%--<br><a href="#">Terms &amp; Conditions</a>, and <a href="#">Privacy Policy</a>--%>.</p>
+        <p class="small text-center">Clickeando en el boton de registración, estás de acuerdo con nuestros Términos de Condiciones y Política de Privacidad <%--<br><a href="#">Terms &amp; Conditions</a>, and <a href="#">Privacy Policy</a>--%>.</p>
     </form:form>
-    <div class="text-center">Ya tenes una cuenta? <a href="/logIn" style="color: #999;">Ingresa aca</a>.</div>
+    <div class="text-center">Ya tenés una cuenta? <a href="/logIn" style="color: #999;">Ingresá acá</a>.</div>
 </div>
 </body>
 </html>
