@@ -71,10 +71,10 @@ public class ChangaJdbcDao implements ChangaDao {
                 String.format("SELECT * FROM %s ", changas.TN()),
                 ROW_MAPPER
         );
-        if (resp.isEmpty()){ // todo sacar esto
+/*        if (resp.isEmpty()){ // todo sacar esto
             usersDao.createUsers();
             return generateRandomChangas();
-        }
+        }*/
         return resp;
     }
 

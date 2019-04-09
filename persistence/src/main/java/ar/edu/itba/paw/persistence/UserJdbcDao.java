@@ -84,10 +84,10 @@ public class UserJdbcDao implements UserDao {
         return Either.value(list.get(0));
     }
 
-    @Override
+   /* @Override
     public List<User> createUsers() {
         return generateRandomUsers();
-    }
+    }*/
 
     @Override
     public Either<User, ValidationError> getUser(User user) {

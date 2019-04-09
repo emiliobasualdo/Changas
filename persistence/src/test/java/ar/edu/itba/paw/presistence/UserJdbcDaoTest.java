@@ -19,7 +19,7 @@ import static ar.edu.itba.paw.constants.DBUserFields.email;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@Sql("classpath:create_tables.sql")
+@Sql("classpath:sql/a_create_tables.sql")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 public class UserJdbcDaoTest {

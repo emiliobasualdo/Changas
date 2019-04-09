@@ -30,15 +30,15 @@ CREATE TABLE IF NOT EXISTS changas
 
 CREATE TABLE IF NOT EXISTS user_owns
 (
-    user_id   INTEGER IDENTITY NOT NULL,
-    changa_id INTEGER NOT NULL ,
+    user_id   INTEGER NOT NULL,
+    changa_id INTEGER IDENTITY NOT NULL ,
     FOREIGN KEY (user_id) REFERENCES users (user_id),
     FOREIGN KEY (changa_id) REFERENCES changas (changa_id)
 );
 
 CREATE TABLE IF NOT EXISTS user_inscribed
 (
-    user_id   INTEGER IDENTITY NOT NULL,
+    user_id   INTEGER NOT NULL,
     changa_id INTEGER NOT NULL ,
     state     VARCHAR(100) DEFAULT 'requested',
     FOREIGN KEY (user_id) REFERENCES users (user_id),
