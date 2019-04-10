@@ -108,10 +108,10 @@
         </div>
         <div class="clearfix">
             <label class="pull-left checkbox-inline"><input type="checkbox"><spring:message code="logInBody.checkbox"/></label>
-            <a href="#" class="pull-right">Te olvidaste la contrasena?</a>
+            <a href="#" class="pull-right"><spring:message code="loginBody.alert.forgotPassword"/></a>
         </div>
     </form:form>
-    <p class="text-center small">No tenés una cuenta? <a href="/signUp">Registrate!</a></p>
+    <p class="text-center small"><spring:message code="loginBody.alert.noAccount"/><a href="/signUp"><spring:message code="loginBody.btn.singUp"/></a></p>
 </div>
 </body>
 </html>

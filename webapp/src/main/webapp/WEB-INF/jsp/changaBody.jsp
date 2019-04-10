@@ -59,7 +59,7 @@
             </c:when>
             <c:otherwise>
                 <div class="alert alert-info" role="alert">
-                    <strong>Ya estás anotado!</strong> Si querés ver las changas en las que te anotaste dirigite <strong><a href="/profile?id=<c:out value="${currentUser.user_id}"/>" class="alert-link">acá</a></strong>.
+                    <strong><spring:message code="changaBody.alert.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="/profile?id=<c:out value="${currentUser.user_id}"/>" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
                 </div>
                 <br />
             </c:otherwise>

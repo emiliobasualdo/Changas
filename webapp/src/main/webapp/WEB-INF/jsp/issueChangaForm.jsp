@@ -101,7 +101,7 @@
 <body>
 <div class="signup-form">
     <form:form method="post" modelAttribute="changaForm" action="/createChanga">
-        <h2>Creá tu changa</h2>
+        <h2><spring:message code="issueChangaForm.header"/></h2>
         <div class="form-group">
             <div class="input-group">
                 <form:label path="title"><spring:message code="ChangaForm.title"/></form:label>
@@ -145,7 +145,7 @@
             </div>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="issueChangaForm.button"/></button>
+            <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="issueChangaForm.btn"/></button>
         </div>
     </form:form>
 </div>

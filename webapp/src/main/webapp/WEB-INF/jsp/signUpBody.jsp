@@ -142,9 +142,9 @@
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="signUpBody.button"/></button>
         </div>
-        <p class="small text-center">Clickeando en el boton de registración, estás de acuerdo con nuestros Términos de Condiciones y Política de Privacidad <%--<br><a href="#">Terms &amp; Conditions</a>, and <a href="#">Privacy Policy</a>--%>.</p>
+        <p class="small text-center"><spring:message code="signUpBody.alert.termsAndPivacyP"/><%--<br><a href="#">Terms &amp; Conditions</a>, and <a href="#">Privacy Policy</a>--%>.</p>
     </form:form>
-    <div class="text-center" style="color: black;">Ya tenés una cuenta? <a href="/logIn" style="color: black;">Ingresá acá</a>.</div>
+    <div class="text-center" style="color: black;"><spring:message code="signUpBody.alert.logIn"/><a href="/logIn" style="color: black;"><spring:message code="signUpBody.alert.btn.logIn"/></a>.</div>
 </div>
 </body>
 </html>
