@@ -92,6 +92,9 @@ public class ChangaController {
         }*/
         inscribedUsers.add(new User.Builder().withName("p").withSurname("p").withEmail("p").withPasswd("p").withTel("1").build());
         inscribedUsers.add(new User.Builder().withName("pp").withSurname("pp").withEmail("pp").withPasswd("pp").withTel("11").build());
+        inscribedUsers.add(new User.Builder().withName("ppp").withSurname("ppp").withEmail("ppp").withPasswd("ppp").withTel("111").build());
+        inscribedUsers.add(new User.Builder().withName("pppp").withSurname("pppp").withEmail("pppp").withPasswd("pppp").withTel("1111").build());
+
         mav.addObject("inscribedUsers", inscribedUsers);
         mav.addObject("alreadyInscribedUsers", inscribedUsers.isEmpty());
         return mav;

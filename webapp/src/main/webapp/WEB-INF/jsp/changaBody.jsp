@@ -33,9 +33,9 @@
         <table class="table">
             <thead>
             <tr>
-                <th>Nombre</th>
-                <th>Telefono</th>
-                <th>Ubicacion</th>
+                <th><spring:message code="changaBody.Table.name" /></th>
+                <th><spring:message code="changaBody.Table.telephone" /></th>
+                <th><spring:message code="changaBody.Table.location" /></th>
             </tr>
             </thead>
             <tbody>

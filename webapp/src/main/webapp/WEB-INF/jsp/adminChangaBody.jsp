@@ -56,8 +56,9 @@
         </c:otherwise>
     </c:choose>
 </div>
-<div class="container" style="margin-top: 80px">
+<div class="container" style="margin-top: 40px">
     <div class="auto-table">
+        <h2 style="margin-bottom: 20px">Usuarios anotados</h2>
         <c:forEach items="${inscribedUsers}" var="user">
             <c:set var="name" value="${user.name}" scope="request"/>
             <c:set var="surname" value="${user.surname}" scope="request"/>
