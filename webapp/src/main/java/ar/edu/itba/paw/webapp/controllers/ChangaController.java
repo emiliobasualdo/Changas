@@ -69,7 +69,8 @@ public class ChangaController {
         mav.addObject("changa", changa);
         boolean userAlreadyInscribedInChanga = false;
         if(UserController.currentUser == null) {
-            return new ModelAndView("redirect:/logIn");
+            mav.addObject("userAlreadyInscribedInChanga", false);
+            return mav;
         }
         Either<Boolean, Validation> either = is.isUserInscribedInChanga(UserController.currentUser, id);
         if (either.isValuePresent()) {

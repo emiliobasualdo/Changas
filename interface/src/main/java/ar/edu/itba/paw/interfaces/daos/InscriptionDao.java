@@ -11,10 +11,8 @@ public interface InscriptionDao {
 
     Either<Map<Changa, Inscription>, Validation> getUserInscriptions(long userId);
     Either getInscribedUsers(long changa_id);
-
     Validation uninscribeFromChanga(long userId, long changaId, String state);
     Validation inscribeInChanga(long user_id, long changa_id);
-
     Validation changeUserStateInChanga(long userId, long changaId, String state);
     Either<Boolean, Validation> isUserInscribedInChanga(long userId, long changaId);
     Either<Boolean, Validation> hasInscribedUsers(long changa_id);

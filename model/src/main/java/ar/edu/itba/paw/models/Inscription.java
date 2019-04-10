@@ -21,7 +21,6 @@ public class Inscription {
     }
 
 
-
     public static class Builder {
 
         private static final long NO_ID = -1;

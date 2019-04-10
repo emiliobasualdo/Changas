@@ -25,18 +25,8 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public Validation inscribeInChanga(User user, Changa changa) {
-        return this.inscribeInChanga(user.getUser_id(),changa.getChanga_id());
-    }
-
-    @Override
     public Validation uninscribeFromChanga(long userId, long changaId, State state) {
         return dao.uninscribeFromChanga(userId,changaId,state.getState());
-    }
-
-    @Override
-    public Validation uninscribeFromChanga(User user, Changa changa, State state) {
-        return this.uninscribeFromChanga(user.getUser_id(),changa.getChanga_id(),state);
     }
 
     @Override
@@ -45,18 +35,8 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public Either<Map<User, Inscription>, Validation> getInscribedUsers(Changa changa) {
-        return this.getInscribedUsers(changa.getChanga_id());
-    }
-
-    @Override
     public Validation changeUserStateInChanga(long userId, long changaId, State state) {
         return dao.changeUserStateInChanga(userId,changaId,state.getState());
-    }
-
-    @Override
-    public Validation changeUserStateInChanga(User user, Changa changa, State state) {
-        return this.changeUserStateInChanga(user.getUser_id(), changa.getChanga_id(), state);
     }
 
     @Override
@@ -65,22 +45,8 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public Either<Map<Changa, Inscription>, Validation> getUserInscriptions(User user) {
-        return this.getUserInscriptions(user.getUser_id());
-    }
-
-    @Override
     public Either<Boolean, Validation> isUserInscribedInChanga(long userId, long changaId) {
         return dao.isUserInscribedInChanga(userId, changaId);
     }
 
-    @Override
-    public Either<Boolean, Validation> isUserInscribedInChanga(User user, Changa changa) {
-        return this.isUserInscribedInChanga(user.getUser_id(), changa.getChanga_id());
-    }
-
-    @Override
-    public Either<Boolean, Validation> isUserInscribedInChanga(User user, long changaId) {
-        return this.isUserInscribedInChanga(user.getUser_id(), changaId);
-    }
 }
