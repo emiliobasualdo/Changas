@@ -38,15 +38,6 @@ public class UserController {
     private ChangaService cs;
 
     public static User currentUser;
-
-    @ModelAttribute("loggedUser")
-    public User loggedUser() {
-        return new User.Builder()
-                .withEmail("algo")
-                .withPasswd("algo")
-                .build();
-    }
-
     @RequestMapping("/signUp")
     public ModelAndView signUp(@ModelAttribute("signUpForm") final UserRegisterForm form) {
         return new ModelAndView("indexSignUp");

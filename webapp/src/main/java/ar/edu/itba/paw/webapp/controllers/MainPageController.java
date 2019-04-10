@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.services.ChangaService;
-import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +12,7 @@ public class MainPageController {
 
     @Autowired
     private ChangaService cs;
-
+    
     @RequestMapping(value = "/")
     public ModelAndView showChangas() {
         return new ModelAndView("index").addObject("changaList", cs.getChangas());
