@@ -85,7 +85,7 @@
 <div class="signup-form">
     <!-- action="" -> aca ponemos que pasa cuando el usuario apreta en ingresar -->
     <form:form action="/createUser" modelAttribute="signUpForm" method="post">
-        <h2>Create una cuenta</h2>
+        <h2><spring:message code="signUpBody.header"/></h2>
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
