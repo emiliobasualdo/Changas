@@ -64,12 +64,11 @@ public class UserController {
         if (!either.isValuePresent()){
             Validation err = either.getAlternative();
             //no me dejo hacer un switch pq blabla pero ver como hacerlo mas lindo
-            if (err.getEc() == INVALID_MAIL){
+            errors.rejectValue("email","aca no se q va");
+            return signUp(form);
+
                 //TODO MAITE ver q va en el errorCode de abajo
                 //TODO MAITE sacarle la E a email en todos lados
-                errors.rejectValue("email","aca no se q va");
-                return signUp(form);
-            }
 //            else if (code == DATABASE_ERROR.getId()) {
 //                //TODO MAITE que hacemo aca. preguntarle a Juan lo de las exceptions de la base de datos cuando violas un unique
 //            }
@@ -103,7 +102,7 @@ public class UserController {
 
     @RequestMapping(value = "/joinChanga", method = RequestMethod.POST)
     public ModelAndView showChanga(@RequestParam("changaId") final long changaId) {
-        if (currentUser == null){
+        if (currentUser == null){ // todo maite, current user tiene que ser un Either
             //TODO hacer que se loggee y que despues se redirija a la changa que estaba viendo.
             return  new ModelAndView("redirect:/logIn");
         }

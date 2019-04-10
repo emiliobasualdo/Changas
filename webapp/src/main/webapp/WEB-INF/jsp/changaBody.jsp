@@ -52,7 +52,7 @@
         <c:choose>
             <c:when test="${userAlreadyInscribedInChanga == false}">
                 <form action="/joinChanga" method="post">
-                    <input type="hidden" name="changaId" value="<c:out value="${changa.user_id}"/>">
+                    <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
                     <input type="submit"  class="btn btn-success btn-block" value="Anotame en la changa" />
                 </form>
                 <br />

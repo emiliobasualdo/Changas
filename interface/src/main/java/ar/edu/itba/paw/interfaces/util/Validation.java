@@ -40,6 +40,7 @@ public class Validation {
         NO_SUCH_USER            ("No such user"),
         INVALID_MAIL            ("Invalid mail"),
         INVALID_COMBINATION     ("The email and password combination is invalid"),
+        USER_ALREADY_EXISTS     ("The email provided is already in use"),
 
         // Inscription
         ALREADY_INSCRIBED       ("User already inscribed in changa"),
