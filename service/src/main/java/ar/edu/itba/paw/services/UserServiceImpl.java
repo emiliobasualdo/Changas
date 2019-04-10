@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.daos.UserDao;
 import ar.edu.itba.paw.interfaces.services.UserService;
-import ar.edu.itba.paw.interfaces.util.ValidationError;
+import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +16,18 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public Either<User, ValidationError> findById(long id) {
-        return userDao.findById(id);
+    public Either<User, Validation> findById(long id) {
+        return userDao.getById(id);
     }
 
     @Override
-    public  Either<User, ValidationError> register(User user) {
+    public  Either<User, Validation> register(User user) {
         /*TODO MAITE
         preguntar si en vez de hacer la query findByMail es mejor
         directamente crear el usuario y, si ya existe, catchear la excepcion]
         de la base de datos. como sabes q esa exception es la q viola una determinada key?
          */
-        Either<User, ValidationError> either = userDao.findByMail(user.getEmail());
+        Either<User, Validation> either = userDao.findByMail(user.getEmail());
 
         /*TODO MAITE
         Hacer username unique en la tabla
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public  Either<User, ValidationError> logIn(User user) {
+    public  Either<User, Validation> logIn(User user) {
         return userDao.getUser(user);
     }
 

@@ -5,23 +5,15 @@
 <html>
 <html>
 <head>
-    <%--<meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
-    <title>Bootstrap Elegant Sign Up Form with Icons</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>--%>
     <style type="text/css">
+        @import url(https://fonts.googleapis.com/css?family=Josefin+Sans:400,300,300italic,400italic,600,700,600italic,700italic);
         body {
             color: #999;
             background: #26B3BA;
-        }
-        .form-control, .form-control:focus, .input-group-addon {
-            border-color: #e1e1e1;
-            border-radius: 0;
+            font-family: "Josefin Sans", sans-serif;
+            line-height: 1;
+            padding: 20px;
+            height: 100%;
         }
         .signup-form {
             width: 390px;
@@ -31,11 +23,6 @@
         .signup-form h2 {
             color: #636363;
             margin: 0 0 15px;
-            text-align: center;
-        }
-        .signup-form .lead {
-            font-size: 14px;
-            margin-bottom: 30px;
             text-align: center;
         }
         .signup-form form {
@@ -52,11 +39,6 @@
         .signup-form label {
             font-weight: normal;
             font-size: 13px;
-        }
-        .signup-form .form-control {
-            min-height: 38px;
-            box-shadow: none !important;
-            border-width: 0 0 1px 0;
         }
         .signup-form .input-group-addon {
             max-width: 42px;
@@ -162,7 +144,7 @@
         </div>
         <p class="small text-center">Clickeando en el boton de registración, estás de acuerdo con nuestros Términos de Condiciones y Política de Privacidad <%--<br><a href="#">Terms &amp; Conditions</a>, and <a href="#">Privacy Policy</a>--%>.</p>
     </form:form>
-    <div class="text-center">Ya tenés una cuenta? <a href="/logIn" style="color: #999;">Ingresá acá</a>.</div>
+    <div class="text-center" style="color: black;">Ya tenés una cuenta? <a href="/logIn" style="color: black;">Ingresá acá</a>.</div>
 </div>
 </body>
 </html>

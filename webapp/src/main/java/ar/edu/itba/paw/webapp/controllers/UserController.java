@@ -3,8 +3,7 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.UserService;
-import ar.edu.itba.paw.interfaces.util.ValidationError;
-import ar.edu.itba.paw.models.Changa;
+import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.forms.UserLoginForm;
@@ -20,9 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 
-import java.util.List;
-
-import static ar.edu.itba.paw.interfaces.util.ErrorCodes.INVALID_MAIL;
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.INVALID_MAIL;
 
 @Controller
 public class UserController {
@@ -56,7 +53,7 @@ public class UserController {
             return signUp(form);
         }
 
-        final Either<User, ValidationError> either = us.register(new User.Builder()
+        final Either<User, Validation> either = us.register(new User.Builder()
                 .withName(form.getName())
                 .withSurname(form.getSurname())
                 .withTel(form.getTelephone())
@@ -65,9 +62,9 @@ public class UserController {
                 .build());
 
         if (!either.isValuePresent()){
-            int code = either.getAlternative().getCode();
+            Validation err = either.getAlternative();
             //no me dejo hacer un switch pq blabla pero ver como hacerlo mas lindo
-            if (code == INVALID_MAIL.getId()){
+            if (err.getEc() == INVALID_MAIL){
                 //TODO MAITE ver q va en el errorCode de abajo
                 //TODO MAITE sacarle la E a email en todos lados
                 errors.rejectValue("email","aca no se q va");
@@ -92,10 +89,15 @@ public class UserController {
     @RequestMapping(value = "/logIn", method = RequestMethod.POST)
     public ModelAndView logIn(@ModelAttribute("UserLoginForm") final UserLoginForm form, final BindingResult errors) {
         System.out.println(form.toString());
-        currentUser = us.logIn(new User.Builder()
+        Either<User, Validation> either = us.logIn(new User.Builder()
                 .withEmail(form.getUsername())
                 .withPasswd(form.getPassword())
-                .build()).getValue();
+                .build());
+        if (!either.isValuePresent()) {
+            System.out.println(either.getAlternative());
+            return new ModelAndView("500");
+        }
+        currentUser = either.getValue();
         return new ModelAndView("redirect:/");
     }
 
@@ -107,13 +109,13 @@ public class UserController {
         }
 
         System.out.println("current user id: "+currentUser.getUser_id());
-        Either<Boolean, ValidationError> either = is.inscribeInChanga(currentUser.getUser_id(), changaId);
+        Validation val = is.inscribeInChanga(currentUser.getUser_id(), changaId);
         //TODO hacer que se deshabilite el boton Anotarme en changa cuando ya está inscripto
-        if (!either.isValuePresent()){
-            //TODO JIME un popup de error
-            System.out.println("No se pudo inscribir en la changa pq:"+ either.getAlternative().getMessage());
+        if (val.isOk()){
+            System.out.println("user "+ currentUser.getUser_id()+ " successfully inscripto en changa "+ changaId);
         } else {
-            System.out.println("user "+ currentUser.getUser_id()+ " successfully inscripto en changa ");
+            //TODO JIME un popup de error
+            System.out.println("No se pudo inscribir en la changa pq:"+ val.getMessage());
         }
 
 
@@ -126,7 +128,7 @@ public class UserController {
     public ModelAndView profile(@RequestParam int id){
         return new ModelAndView("indexProfile")
                 .addObject("profile", us.findById(id).getValue())
-                .addObject("publishedChangas", cs.findByUserId(id))
-                .addObject("pendingChangas", cs.findByUserId(id));
+                .addObject("publishedChangas", cs.getUserOwnedChangas(id).getValue())
+                .addObject("pendingChangas", is.getUserInscriptions(id).getValue().keySet());
     }
 }
