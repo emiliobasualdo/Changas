@@ -1,36 +1,78 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
+import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
+import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
+import ar.edu.itba.paw.models.Either;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
+
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.USERS_INSCRIBED;
 
 @Repository
 public class ChangaServiceImpl implements ChangaService {
 
     @Autowired
-    private ChangaDao dao;
+    private ChangaDao chDao;
+
+    @Autowired
+    private InscriptionDao inDao;
 
     @Override
-    public List<Changa> getChangas() {
-        return dao.getAll();
+    public Either<List<Changa>, Validation> getAllChangas() {
+        return chDao.getAll();
     }
 
     @Override
-    public Changa create(final Changa changa) {
-        return dao.create(changa);
+    public Either<Changa, Validation> create(final Changa changa) {
+        return chDao.create(changa);
+    }
+
+    // todo NEFASTO cambiar ya
+    @Override
+    public Either<Changa, Validation> update(Changa changa) {
+        Either<Changa, Validation> old = chDao.getById(changa.getChanga_id());
+        // if changa exists
+        if(!old.isValuePresent()){
+            return Either.alternative(old.getAlternative());
+        }
+
+        // we will update a changa ONLY if no changueros are inscribed in it
+        Either<Boolean, Validation> either = inDao.hasInscribedUsers(changa.getChanga_id());
+
+        // If there was no problem
+        if(!either.isValuePresent()){
+            return Either.alternative(either.getAlternative()); // todo como solucionar esto? No hay necesidad de hacer new, podría retornar la otra instancia de either
+        }
+
+        // if there are no changueros inscribed
+        if (!either.getValue()) {
+            return chDao.update(changa); // todo mal, cambiar de changa a builder
+        }
+        return Either.alternative(new Validation(USERS_INSCRIBED));
     }
 
     @Override
-    public Changa getById(final long id){
-        return dao.findById(id);
+    public Validation delete(long changaId) {
+        return chDao.delete(changaId);
     }
 
     @Override
-    public List<Changa> findByUserId(long user_id) {
-        return dao.findByUserId(user_id);
-        //return dao.getAll();
+    public Validation delete(Changa changa) {
+        return this.delete(changa.getChanga_id());
+    }
+
+    @Override
+    public Either<Changa, Validation> getChangaById(final long id){
+        return chDao.getById(id);
+    }
+
+    @Override
+    public Either<List<Changa>, Validation> getUserOwnedChangas(long user_id) {
+        return chDao.getUserOwnedChangas(user_id);
     }
 }

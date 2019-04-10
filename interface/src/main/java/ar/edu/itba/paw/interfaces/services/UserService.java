@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.interfaces.services;
 
-import ar.edu.itba.paw.interfaces.util.ValidationError;
+import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 
@@ -12,8 +12,8 @@ import ar.edu.itba.paw.models.User;
  * when database is replaced (for some part of data)
  * */
 public interface UserService {
-    Either<User, ValidationError> findById(long id);
+    Either<User, Validation> findById(long id);
     String toString();
-    Either<User, ValidationError> register(User user);
-    Either<User, ValidationError> logIn(User user);
+    Either<User, Validation> register(User user);
+    Either<User, Validation> logIn(User user);
 }

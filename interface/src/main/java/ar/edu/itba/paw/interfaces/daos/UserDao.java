@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.interfaces.daos;
 
-import ar.edu.itba.paw.interfaces.util.ValidationError;
+import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 
@@ -11,10 +11,10 @@ import ar.edu.itba.paw.models.User;
  * This will help in making code modular and easily replaceable
  * when database is replaced (for some part of data)
  * */
-public interface UserDao extends Dao{
-    Either<User, ValidationError> findById(final long id);
-    Either<User, ValidationError> findByMail(final String mail);
-    Either<User, ValidationError> create(final User user);
-    Either<User, ValidationError> getUser(User user);
+public interface UserDao extends Dao<User>{
+    Either<User, Validation> getById(final long id);
+    Either<User, Validation> findByMail(final String mail);
+    Either<User, Validation> create(final User user);
+    Either<User, Validation> getUser(User user);
     //List<User> createUsers();
 }

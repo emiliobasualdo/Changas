@@ -2,7 +2,9 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.daos.UserDao;
+import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
+import ar.edu.itba.paw.models.Either;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,6 +19,8 @@ import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBChangaFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.changas;
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.DATABASE_ERROR;
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.NO_SUCH_USER;
 
 @Repository
 public class ChangaJdbcDao implements ChangaDao {
@@ -24,6 +28,7 @@ public class ChangaJdbcDao implements ChangaDao {
 
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert jdbcInsert;
+
     @Autowired
     private UserDao usersDao;
 
@@ -36,24 +41,27 @@ public class ChangaJdbcDao implements ChangaDao {
     }
 
     @Override
-    public Changa findById(final long id) {
+    public Either<Changa, Validation> getById(final long id) {
         final List<Changa> list = jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = %d",changas.TN(), changa_id.name(), id),
                 ROW_MAPPER
         );
         if (list.isEmpty()) {
-            return null; // todo  maite ?? <---- null
+            return Either.alternative(new Validation(NO_SUCH_USER));
         }
-        return list.get(0);
+        if(list.size() > 1){
+            return Either.alternative(new Validation(DATABASE_ERROR));
+        }
+        return Either.value(list.get(0));
     }
 
     @Override
-    public Changa create(final Changa changa) {
+    public Either<Changa, Validation> create(final Changa changa) {
         // si no se insertó ninguna fila, what pass?
         Map<String, Object> changaRow = changaToTableRow(changa);
         int rowsAffected = jdbcInsert.execute(changaRow);
         if (rowsAffected < 1) {
-            // todo maiteeeee??
+            return Either.alternative(new Validation(DATABASE_ERROR));
         }
         // todo Preguntar que onda esto
         // todo enorme fallo de seguridad el String.format
@@ -61,29 +69,39 @@ public class ChangaJdbcDao implements ChangaDao {
                 String.format("SELECT * FROM %s WHERE %s = %d AND %s = '%s'", changas.TN(), user_id.name(), changa.getUser_id(), title.name(), changa.getTitle()),
                 ROW_MAPPER
         );
-        return list.get(0);
+        return Either.value(list.get(0));
     }
 
+    // todo que casos de error podría haber?
     @Override
-    public List<Changa> getAll() {
+    public Either<List<Changa>, Validation> getAll() {
         List<Changa> resp = jdbcTemplate.query(
                 String.format("SELECT * FROM %s ", changas.TN()),
                 ROW_MAPPER
         );
-/*        if (resp.isEmpty()){ // todo sacar esto
-            usersDao.createUsers();
-            return generateRandomChangas();
-        }*/
-        return resp;
+
+        return Either.value(resp);
     }
 
     @Override
-    public List<Changa> findByUserId(long id) {
-        return jdbcTemplate.query(
+    public Either<List<Changa>, Validation> getUserOwnedChangas(long id) {
+        return Either.value(
+            jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = %d", changas.TN(),
                         user_id.name(), id),
                 ROW_MAPPER
+            )
         );
+    }
+
+    @Override
+    public Either<Changa, Validation> update(Changa changa) {
+        return null;
+    }
+
+    @Override
+    public Validation delete(long changaId) {
+        return null;
     }
 
     private List<Changa> generateRandomChangas() {
@@ -101,7 +119,9 @@ public class ChangaJdbcDao implements ChangaDao {
         int max = 5;
         List<Changa> resp = new ArrayList<>();
         for (int i = 0; i < N_CHANGAS; i++) {
-            resp.add(create(new Changa.Builder()
+            resp.add(
+                create(
+                    new Changa.Builder()
                     .withUserId(userId[r.nextInt(max)])
                     .withPrice(price[r.nextInt(max)])
                     .withState(state[r.nextInt(max)])
@@ -109,7 +129,8 @@ public class ChangaJdbcDao implements ChangaDao {
                     .createdAt(createdAt[r.nextInt(max)])
                     .withDescription(description[r.nextInt(max)])
                     .atAddress(calle[r.nextInt(max)],neigh[r.nextInt(max)],number[r.nextInt(max)])
-                    .build())
+                    .build()
+                ).getValue()
             );
         }
         return resp;

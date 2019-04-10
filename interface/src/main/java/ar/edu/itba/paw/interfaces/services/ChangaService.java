@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.interfaces.services;
 
+import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
+import ar.edu.itba.paw.models.Either;
 
 import java.util.List;
 
@@ -12,12 +14,15 @@ import java.util.List;
  * when database is replaced (for some part of data)
  * */
 public interface ChangaService {
-    List<Changa> getChangas();
-    Changa create(Changa username);
+    Either<Changa, Validation> create(Changa changa);
 
-    // todo english please boys
-    // este metodo lo uso para mostrar una changa cuando el usuario clickea en alguna de la lista de la pagina principal,
-    // va a retornar una changa constante solo para probar.
-    Changa getById(final long id);
-    List<Changa> findByUserId(final long user_id);
+    Either<Changa, Validation> update(Changa changa);
+    Validation delete(long changaId);
+    Validation delete(Changa changa);
+
+    Either<List<Changa>, Validation> getUserOwnedChangas(final long userId);
+    Either<Changa, Validation> getChangaById(final long changaId);
+    Either<List<Changa>, Validation> getAllChangas();
+
+
 }

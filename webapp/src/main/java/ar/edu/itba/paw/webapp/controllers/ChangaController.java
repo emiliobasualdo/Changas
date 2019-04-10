@@ -2,8 +2,9 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
+import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
-import ar.edu.itba.paw.models.DBChangaState;
+import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,7 +43,6 @@ public class ChangaController {
                     .withTitle(form.getTitle())
                     .withPrice(form.getPrice())
                     .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
-                    .withState(DBChangaState.emitted.name())
                     .createdAt(LocalDateTime.now())
                     .build()
             );
@@ -54,19 +54,25 @@ public class ChangaController {
     @RequestMapping("/changa")
     public ModelAndView showChanga(@RequestParam("id") final long id) {
         final ModelAndView mav = new ModelAndView("indexChanga");
-        mav.addObject("changa", cs.getById(id));
+        mav.addObject("changa", cs.getChangaById(id));
         if(UserController.currentUser == null) {
             return new ModelAndView("redirect:/logIn");
         }
-        Boolean alreadyInscribed = is.isUserInscribedInChanga(UserController.currentUser.getUser_id(), id);
-        mav.addObject("userAlreadyInscribedInChanga", alreadyInscribed);
+        Either<Boolean, Validation> either = is.isUserInscribedInChanga(UserController.currentUser, id);
+        if (either.isValuePresent()) {
+            mav.addObject("userAlreadyInscribedInChanga", either.getValue());
+        } else {
+            // todo que carajo pasa aca?
+            // el usuario podría no esxistir
+            // La changa podría no existir
+        }
         return mav;
     }
 
     @RequestMapping("/admin-changa")
     public ModelAndView showAdminChanga(@RequestParam("id") final long id) {
         final ModelAndView mav = new ModelAndView("indexAdminChanga");
-        mav.addObject("changa", cs.getById(id));
+        mav.addObject("changa", cs.getChangaById(id));
         return mav;
     }
 
