@@ -13,21 +13,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>--%>
     <style type="text/css">
+        @import url(https://fonts.googleapis.com/css?family=Josefin+Sans:400,300,300italic,400italic,600,700,600italic,700italic);
         body {
             color: #fff;
             background: #26B3BA;
-        }
-        .form-control {
-            min-height: 41px;
-            background: #fff;
-            box-shadow: none !important;
-            border-color: #e3e3e3;
-        }
-        .form-control:focus {
-            border-color: #26B3BA;
-        }
-        .form-control, .btn {
-            border-radius: 2px;
+            font-family: "Josefin Sans", sans-serif;
+            line-height: 1;
+            padding: 20px;
+            height: 100%;
         }
         .login-form {
             width: 350px;

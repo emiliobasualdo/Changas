@@ -2,10 +2,13 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
+import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.DBChangaState;
+import ar.edu.itba.paw.models.Inscription;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -17,12 +20,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 @Controller
 public class ChangaController {
 
     @Autowired
     private ChangaService cs;
+
+    @Autowired
+    private UserService us;
 
     @Autowired
     private InscriptionService is;
@@ -58,19 +67,33 @@ public class ChangaController {
     @RequestMapping("/changa")
     public ModelAndView showChanga(@RequestParam("id") final long id) {
         final ModelAndView mav = new ModelAndView("indexChanga");
-        mav.addObject("changa", cs.getById(id));
+        final Changa changa = cs.getById(id).getValue();
+        mav.addObject("changa", changa);
         if(UserController.currentUser == null) {
             return new ModelAndView("redirect:/logIn");
         }
         Boolean alreadyInscribed = is.isUserInscribedInChanga(UserController.currentUser.getUser_id(), id);
         mav.addObject("userAlreadyInscribedInChanga", alreadyInscribed);
+        mav.addObject("changaOwner", us.findById(changa.getUser_id()).getValue());
         return mav;
     }
 
     @RequestMapping("/admin-changa")
     public ModelAndView showAdminChanga(@RequestParam("id") final long id) {
         final ModelAndView mav = new ModelAndView("indexAdminChanga");
-        mav.addObject("changa", cs.getById(id));
+        final Changa changa = cs.getById(id).getValue();
+        mav.addObject("changa", changa);
+        mav.addObject("changaOwner", us.findById(changa.getUser_id()).getValue());
+        List<Pair<User, Inscription>> inscribedUsersPair = is.getInscribedUsers(id);
+        List<User> inscribedUsers = new ArrayList<>();
+        /*for (Pair<User, Inscription> pair : inscribedUsersPair ){
+            inscribedUsers.add(pair.getKey());
+            System.out.println(pair.getKey().getName());
+        }*/
+        inscribedUsers.add(new User.Builder().withName("p").withSurname("p").withEmail("p").withPasswd("p").withTel("1").build());
+        inscribedUsers.add(new User.Builder().withName("pp").withSurname("pp").withEmail("pp").withPasswd("pp").withTel("11").build());
+        mav.addObject("inscribedUsers", inscribedUsers);
+        mav.addObject("alreadyInscribedUsers", inscribedUsers.isEmpty());
         return mav;
     }
 
