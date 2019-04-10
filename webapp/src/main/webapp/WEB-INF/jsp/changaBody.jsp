@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 
     <body>
@@ -38,10 +39,21 @@
             <!--<a href="#" class="btn btn-primary" style="margin-top: 1cm; margin-bottom: 1cm;">Aceptar</a>-->
         </div>
         <div class="container" style="margin-top: 80px">
-            <form action="/joinChanga" method="post">
-                <input type="hidden" name="changaId" value="<c:out value="${changa.user_id}"/>">
-                <input type="submit"  class="btn btn-success btn-block" value="Anotame en la changa" />
-            </form>
+            <c:choose>
+                <c:when test="${userAlreadyInscribedInChanga == false}">
+                    <form action="/joinChanga" method="post">
+                        <input type="hidden" name="changaId" value="<c:out value="${changa.user_id}"/>">
+                        <input type="submit"  class="btn btn-success btn-block" value="Anotame en la changa" />
+                    </form>
+                    <br />
+                </c:when>
+                <c:otherwise>
+                    <div class="alert alert-info" role="alert">
+                        <strong>Ya estás anotado!</strong> Si querés ver las changas en las que te anotaste dirigite <strong><a href="/profile?id=<c:out value="${currentUser.user_id}"/>" class="alert-link">acá</a></strong>.
+                    </div>
+                    <br />
+                </c:otherwise>
+            </c:choose>
         </div>
     </body>
 </html>

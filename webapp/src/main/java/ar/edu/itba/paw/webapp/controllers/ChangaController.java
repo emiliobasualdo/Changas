@@ -1,8 +1,10 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.services.ChangaService;
+import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.DBChangaState;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,12 +24,18 @@ public class ChangaController {
     @Autowired
     private ChangaService cs;
 
+    @Autowired
+    private InscriptionService is;
+
+    @ModelAttribute("currentUser")
+    public User getCurrentUser() {
+        return UserController.currentUser;
+    }
+
     @RequestMapping(value = "/createChanga")
     public ModelAndView createChanga(@ModelAttribute("changaForm") final ChangaForm form) {
         return new ModelAndView("issueChangaForm");
     }
-
-
 
     @RequestMapping(value = "/createChanga", method = RequestMethod.POST ) // todo no se tendría que poder hacer sin estar logeado
     public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors) {
@@ -51,6 +59,11 @@ public class ChangaController {
     public ModelAndView showChanga(@RequestParam("id") final long id) {
         final ModelAndView mav = new ModelAndView("indexChanga");
         mav.addObject("changa", cs.getById(id));
+        if(UserController.currentUser == null) {
+            return new ModelAndView("redirect:/logIn");
+        }
+        Boolean alreadyInscribed = is.isUserInscribedInChanga(UserController.currentUser.getUser_id(), id);
+        mav.addObject("userAlreadyInscribedInChanga", alreadyInscribed);
         return mav;
     }
 
