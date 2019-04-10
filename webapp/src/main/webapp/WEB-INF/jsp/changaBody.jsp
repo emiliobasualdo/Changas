@@ -48,7 +48,7 @@
                 </c:when>
                 <c:otherwise>
                     <div class="alert alert-info" role="alert">
-                        <strong>Ya estás anotado!</strong> Si querés ver las changas en las que te anotaste dirigite <strong><a href="/profile" class="alert-link">acá</a></strong>.
+                        <strong>Ya estás anotado!</strong> Si querés ver las changas en las que te anotaste dirigite <strong><a href="/profile?id=<c:out value="${currentUser.user_id}"/>" class="alert-link">acá</a></strong>.
                     </div>
                     <br />
                 </c:otherwise>

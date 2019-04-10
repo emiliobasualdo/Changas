@@ -13,7 +13,7 @@
 </head>
 
 <!-- todo: header para todos las vistas con el nombre del usuario (si esta loggeado) o con el boton de ingresar/registrarse -->
-<%-- <jsp:include page="header.jsp" /> --%>
+<jsp:include page="navigationBar.jsp" />
 <jsp:include page="profileBody.jsp" />
 <jsp:include page="mainPageFooter.jsp" />
 
