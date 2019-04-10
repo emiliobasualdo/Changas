@@ -5,7 +5,6 @@ import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
-import ar.edu.itba.paw.models.DBChangaState;
 import ar.edu.itba.paw.models.Inscription;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
@@ -22,9 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class ChangaController {
@@ -68,19 +65,21 @@ public class ChangaController {
     @RequestMapping("/changa")
     public ModelAndView showChanga(@RequestParam("id") final long id) {
         final ModelAndView mav = new ModelAndView("indexChanga");
-        final Changa changa = cs.getById(id).getValue();
+        final Changa changa = cs.getChangaById(id).getValue();
         mav.addObject("changa", changa);
+        boolean userAlreadyInscribedInChanga = false;
         if(UserController.currentUser == null) {
             return new ModelAndView("redirect:/logIn");
         }
         Either<Boolean, Validation> either = is.isUserInscribedInChanga(UserController.currentUser, id);
         if (either.isValuePresent()) {
-            mav.addObject("userAlreadyInscribedInChanga", either.getValue());
+            userAlreadyInscribedInChanga = either.getValue();
         } else {
             // todo que carajo pasa aca?
             // el usuario podría no esxistir
             // La changa podría no existir
         }
+        mav.addObject("userAlreadyInscribedInChanga", userAlreadyInscribedInChanga);
         mav.addObject("changaOwner", us.findById(changa.getUser_id()).getValue());
         return mav;
     }
@@ -88,22 +87,24 @@ public class ChangaController {
     @RequestMapping("/admin-changa")
     public ModelAndView showAdminChanga(@RequestParam("id") final long id) {
         final ModelAndView mav = new ModelAndView("indexAdminChanga");
-        final Changa changa = cs.getById(id).getValue();
+        final Changa changa = cs.getChangaById(id).getValue();
         mav.addObject("changa", changa);
         mav.addObject("changaOwner", us.findById(changa.getUser_id()).getValue());
-        List<Pair<User, Inscription>> inscribedUsersPair = is.getInscribedUsers(id);
-        List<User> inscribedUsers = new ArrayList<>();
-        /*for (Pair<User, Inscription> pair : inscribedUsersPair ){
-            inscribedUsers.add(pair.getKey());
-            System.out.println(pair.getKey().getName());
-        }*/
-        inscribedUsers.add(new User.Builder().withName("p").withSurname("p").withEmail("p").withPasswd("p").withTel("1").build());
-        inscribedUsers.add(new User.Builder().withName("pp").withSurname("pp").withEmail("pp").withPasswd("pp").withTel("11").build());
-        inscribedUsers.add(new User.Builder().withName("ppp").withSurname("ppp").withEmail("ppp").withPasswd("ppp").withTel("111").build());
-        inscribedUsers.add(new User.Builder().withName("pppp").withSurname("pppp").withEmail("pppp").withPasswd("pppp").withTel("1111").build());
-
-        mav.addObject("inscribedUsers", inscribedUsers);
-        mav.addObject("alreadyInscribedUsers", inscribedUsers.isEmpty());
+        Either<Map<User, Inscription>, Validation> either = is.getInscribedUsers(id);
+        Set<User> inscribedUsers = new HashSet<>();
+        if (either.isValuePresent()) {
+            Map<User, Inscription> map = either.getValue();
+            inscribedUsers = map.keySet();
+//            inscribedUsers.add(new User.Builder().withName("p").withSurname("p").withEmail("p").withPasswd("p").withTel("1").build());
+//            inscribedUsers.add(new User.Builder().withName("pp").withSurname("pp").withEmail("pp").withPasswd("pp").withTel("11").build());
+//            inscribedUsers.add(new User.Builder().withName("ppp").withSurname("ppp").withEmail("ppp").withPasswd("ppp").withTel("111").build());
+//            inscribedUsers.add(new User.Builder().withName("pppp").withSurname("pppp").withEmail("pppp").withPasswd("pppp").withTel("1111").build());
+        } else {
+            //todo
+        }
+        System.out.println("Usuarios inscriptos en changa " + id + " son " + inscribedUsers.size());
+        mav.addObject("alreadyInscribedUsers", !inscribedUsers.isEmpty());
+        mav.addObject("userAlreadyInscribedInChanga", inscribedUsers);
         return mav;
     }
 

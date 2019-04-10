@@ -8,7 +8,7 @@
         line-height: 1;
         padding: 20px;
         height: 100%;
-        background: #eee;
+        background: white;
     }
 
 </style>
@@ -52,21 +52,21 @@
             <br />
         </c:when>
         <c:otherwise>
+            <div class="container" style="margin-top: 40px">
+                <div class="auto-table">
+                    <h2 style="margin-bottom: 20px">Usuarios anotados</h2>
+                    <c:forEach items="${inscribedUsers}" var="user">
+                        <c:set var="name" value="${user.name}" scope="request"/>
+                        <c:set var="surname" value="${user.surname}" scope="request"/>
+                        <c:set var="tel" value="${user.tel}" scope="request"/>
+                        <c:set var="email" value="${user.email}" scope="request"/>
+                        <c:import url="inscribedUserCard.jsp"/>
+                    </c:forEach>
+                </div>
+            </div>
             <br />
         </c:otherwise>
     </c:choose>
-</div>
-<div class="container" style="margin-top: 40px">
-    <div class="auto-table">
-        <h2 style="margin-bottom: 20px">Usuarios anotados</h2>
-        <c:forEach items="${inscribedUsers}" var="user">
-            <c:set var="name" value="${user.name}" scope="request"/>
-            <c:set var="surname" value="${user.surname}" scope="request"/>
-            <c:set var="tel" value="${user.tel}" scope="request"/>
-            <c:set var="email" value="${user.email}" scope="request"/>
-            <c:import url="inscribedUserCard.jsp"/>
-        </c:forEach>
-    </div>
 </div>
 </body>
 </html>

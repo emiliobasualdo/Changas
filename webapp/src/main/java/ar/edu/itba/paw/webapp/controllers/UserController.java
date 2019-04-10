@@ -112,7 +112,7 @@ public class UserController {
         Validation val = is.inscribeInChanga(currentUser.getUser_id(), changaId);
         //TODO hacer que se deshabilite el boton Anotarme en changa cuando ya está inscripto
         if (val.isOk()){
-            System.out.println("user "+ currentUser.getUser_id()+ " successfully inscripto en changa ");
+            System.out.println("user "+ currentUser.getUser_id()+ " successfully inscripto en changa "+ changaId);
         } else {
             //TODO JIME un popup de error
             System.out.println("No se pudo inscribir en la changa pq:"+ val.getMessage());
@@ -128,7 +128,7 @@ public class UserController {
     public ModelAndView profile(@RequestParam int id){
         return new ModelAndView("indexProfile")
                 .addObject("profile", us.findById(id).getValue())
-                .addObject("publishedChangas", cs.getUserOwnedChangas(id))
-                .addObject("pendingChangas", cs.getUserOwnedChangas(id));
+                .addObject("publishedChangas", cs.getUserOwnedChangas(id).getValue())
+                .addObject("pendingChangas", is.getUserInscriptions(id).getValue().keySet());
     }
 }
