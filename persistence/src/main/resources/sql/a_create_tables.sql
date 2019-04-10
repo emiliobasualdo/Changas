@@ -33,11 +33,8 @@ CREATE TABLE IF NOT EXISTS user_owns
 
 CREATE TABLE IF NOT EXISTS user_inscribed
 (
-    user_id   SERIAL NOT NULL,
-    changa_id SERIAL NOT NULL,
+    user_id   SERIAL NOT NULL REFERENCES users (user_id),
+    changa_id SERIAL NOT NULL  REFERENCES changas (changa_id),
     state     VARCHAR(100) DEFAULT 'requested',
-    FOREIGN KEY (user_id) REFERENCES users (user_id),
-    FOREIGN KEY (changa_id) REFERENCES changas (changa_id)
+    PRIMARY KEY (user_id, changa_id)
 );
-
-

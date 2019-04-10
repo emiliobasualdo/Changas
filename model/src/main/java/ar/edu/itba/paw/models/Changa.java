@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 public class Changa {
 
-    private static final long NO_ID = -1;
-
     private long changa_id;
     private long user_id;
     private String street;
@@ -54,6 +52,7 @@ public class Changa {
 
     public static class Builder {
 
+        private static final int NO_ID = -1;
         private long changa_id;
         private long user_id;
         private LocalDateTime creation_date;

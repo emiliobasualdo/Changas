@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.models;
 
 public class User {
-    private static final int NO_ID = -1;
 
     private long user_id;
     private  String name;
@@ -39,6 +38,7 @@ public class User {
 
     public static class Builder {
 
+        private static final int NO_ID = -1;
         private long user_id;
         private String name;
         private String surname;
