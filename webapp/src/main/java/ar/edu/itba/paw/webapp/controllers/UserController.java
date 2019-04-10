@@ -17,7 +17,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import java.security.Principal;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.INVALID_MAIL;
 
@@ -117,12 +120,8 @@ public class UserController {
             //TODO JIME un popup de error
             System.out.println("No se pudo inscribir en la changa pq:"+ val.getMessage());
         }
-
-
-
         return new ModelAndView("redirect:/");
     }
-
 
     @RequestMapping("/profile")
     public ModelAndView profile(@RequestParam int id){
