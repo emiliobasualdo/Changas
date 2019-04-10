@@ -1,10 +1,11 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.daos.UserDao;
-import ar.edu.itba.paw.interfaces.util.ValidationError;
+import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -17,7 +18,7 @@ import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBTableName.users;
 import static ar.edu.itba.paw.constants.DBUserFields.*;
-import static ar.edu.itba.paw.interfaces.util.ErrorCodes.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
 
 @Repository
 public class UserJdbcDao implements UserDao {
@@ -36,35 +37,41 @@ public class UserJdbcDao implements UserDao {
     }
 
     @Override
-    public  Either<User, ValidationError> findById(final long id) {
+    public  Either<User, Validation> getById(final long id) {
         final List<User> list = jdbcTemplate
                 .query(
                         String.format("SELECT * FROM %s WHERE %s = %d", users.TN(),user_id.name() ,id),
                         ROW_MAPPER
                 );
         if (list.isEmpty()) {
-            return Either.alternative(new ValidationError(INVALID_ID.getMessage(), INVALID_ID.getId()));
+            return Either.alternative(new Validation(NO_SUCH_USER));
         }
         return Either.value(list.get(0));
     }
 
     @Override
-    public Either<User, ValidationError> findByMail(String mail) {
+    public Either<User, Validation> findByMail(String mail) {
         final List<User> list = jdbcTemplate
                 .query(String.format("SELECT * FROM %s WHERE %s = '%s'", users.TN(),email.name(), mail), ROW_MAPPER);
         if (list.isEmpty()) {
-            return Either.alternative(new ValidationError(INVALID_MAIL.getMessage(), INVALID_MAIL.getId()));
+            return Either.alternative(new Validation(INVALID_MAIL));
         }
         return Either.value(list.get(0)); // todo get(0) mal
     }
 
     @Override
-    public Either<User, ValidationError> create(final User user) {
+    public Either<User, Validation> create(final User user) {
         // todo si no se insertó ninguna fila, what pass?
+        int rowsAffected;
         Map<String, Object> userRow = userToTableRow(user);
-        int rowsAffected = jdbcInsert.execute(userRow);
+        try {
+            rowsAffected = jdbcInsert.execute(userRow);
+
+        } catch (DuplicateKeyException e ){
+            return Either.alternative(new Validation(DATABASE_ERROR));
+        }
         if (rowsAffected < 1) {
-            return Either.alternative(new ValidationError(DATABASE_ERROR.getMessage(), DATABASE_ERROR.getId() ));
+            return Either.alternative(new Validation(DATABASE_ERROR));
         }
         // todo Preguntar que onda esto
         final List<User> list = jdbcTemplate.query(
@@ -78,7 +85,7 @@ public class UserJdbcDao implements UserDao {
          Este chequeo lo saco o lo dejo por si JUSTO se cayo la base de datos y no lo pudo levantar?
          */
         if (list.isEmpty()) {
-            return Either.alternative(new ValidationError(DATABASE_ERROR.getMessage(), DATABASE_ERROR.getId() ));
+            return Either.alternative(new Validation(DATABASE_ERROR));
         }
 
         return Either.value(list.get(0));
@@ -90,7 +97,7 @@ public class UserJdbcDao implements UserDao {
     }*/
 
     @Override
-    public Either<User, ValidationError> getUser(User user) {
+    public Either<User, Validation> getUser(User user) { // todo No puede recibir parametro de tipo User
         final List<User> list = jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s'", users.TN(),
                         email.name(), user.getEmail(),
@@ -99,7 +106,7 @@ public class UserJdbcDao implements UserDao {
                 ROW_MAPPER
         );
         if (list.isEmpty()) {
-            return Either.alternative(new ValidationError(INVALID_USER.getMessage(), INVALID_USER.getId()));
+            return Either.alternative(new Validation(INVALID_COMBINATION));
         }
         return Either.value(list.get(0));
     }

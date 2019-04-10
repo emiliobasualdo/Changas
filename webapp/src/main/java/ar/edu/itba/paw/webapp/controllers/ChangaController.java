@@ -3,9 +3,11 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
+import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.DBChangaState;
 import ar.edu.itba.paw.models.Inscription;
+import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
 import javafx.util.Pair;
@@ -55,7 +57,6 @@ public class ChangaController {
                     .withTitle(form.getTitle())
                     .withPrice(form.getPrice())
                     .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
-                    .withState(DBChangaState.emitted.name())
                     .createdAt(LocalDateTime.now())
                     .build()
             );
@@ -72,8 +73,14 @@ public class ChangaController {
         if(UserController.currentUser == null) {
             return new ModelAndView("redirect:/logIn");
         }
-        Boolean alreadyInscribed = is.isUserInscribedInChanga(UserController.currentUser.getUser_id(), id);
-        mav.addObject("userAlreadyInscribedInChanga", alreadyInscribed);
+        Either<Boolean, Validation> either = is.isUserInscribedInChanga(UserController.currentUser, id);
+        if (either.isValuePresent()) {
+            mav.addObject("userAlreadyInscribedInChanga", either.getValue());
+        } else {
+            // todo que carajo pasa aca?
+            // el usuario podría no esxistir
+            // La changa podría no existir
+        }
         mav.addObject("changaOwner", us.findById(changa.getUser_id()).getValue());
         return mav;
     }
