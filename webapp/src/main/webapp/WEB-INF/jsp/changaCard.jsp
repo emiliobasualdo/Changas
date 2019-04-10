@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
@@ -137,11 +138,13 @@
         <div class="price">
             <div class="front">
                 <span class="price">
-                    <c:out value="${requestScope.price}" />$<b>$</b>
+                    <c:out value="${requestScope.price}" />$
                 </span>
             </div>
             <div class="back">
-                <a href="changa?id=<c:out value="${requestScope.changa_id}"/>" class="button">Ver Changa</a>
+                <a href="changa?id=<c:out value="${requestScope.changa_id}"/>" class="button">
+                    <spring:message code="changaCard.button" />
+                </a>
             </div>
         </div>
     </div>

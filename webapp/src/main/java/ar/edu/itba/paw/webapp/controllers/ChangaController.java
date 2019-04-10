@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.Either;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,12 +28,15 @@ public class ChangaController {
     @Autowired
     private InscriptionService is;
 
+    @ModelAttribute("currentUser")
+    public User getCurrentUser() {
+        return UserController.currentUser;
+    }
+
     @RequestMapping(value = "/createChanga")
     public ModelAndView createChanga(@ModelAttribute("changaForm") final ChangaForm form) {
         return new ModelAndView("issueChangaForm");
     }
-
-
 
     @RequestMapping(value = "/createChanga", method = RequestMethod.POST ) // todo no se tendría que poder hacer sin estar logeado
     public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors) {

@@ -4,8 +4,10 @@ import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.Either;
+import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -16,6 +18,12 @@ public class MainPageController {
 
     @Autowired
     private ChangaService cs;
+
+
+    @ModelAttribute("currentUser")
+    public User getCurrentUser() {
+        return UserController.currentUser;
+    }
 
     @RequestMapping(value = "/")
     public ModelAndView showChangas() {

@@ -28,7 +28,6 @@ public class ChangaJdbcDao implements ChangaDao {
 
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert jdbcInsert;
-
     @Autowired
     private UserDao usersDao;
 

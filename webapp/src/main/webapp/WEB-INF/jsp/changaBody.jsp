@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 
@@ -22,9 +23,9 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>Nombre</th>
-                    <th>Telefono</th>
-                    <th>Ubicacion</th>
+                    <th><spring:message code="changaBody.Table.name" /></th>
+                    <th><spring:message code="changaBody.Table.telephone" /></th>
+                    <th><spring:message code="changaBody.Table.location" /></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -48,7 +49,7 @@
                 </c:when>
                 <c:otherwise>
                     <div class="alert alert-info" role="alert">
-                        <strong>Ya estás anotado!</strong> Si querés ver las changas en las que te anotaste dirigite <strong><a href="/profile" class="alert-link">acá</a></strong>.
+                        <strong>Ya estás anotado!</strong> Si querés ver las changas en las que te anotaste dirigite <strong><a href="/profile?id=<c:out value="${currentUser.user_id}"/>" class="alert-link">acá</a></strong>.
                     </div>
                     <br />
                 </c:otherwise>

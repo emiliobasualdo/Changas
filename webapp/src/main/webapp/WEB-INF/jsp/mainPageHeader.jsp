@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <html>
 
     <jsp:include page="navigationBar.jsp" />

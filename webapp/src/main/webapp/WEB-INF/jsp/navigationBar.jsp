@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <html>
 <head>
 
@@ -41,18 +42,39 @@
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>--%>
-                <li class="nav-item">
-                    <a class="nav-link" href="/signUp">Registrarse</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/logIn">Ingresar</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/profile?id=3">Perfil</a>
-                </li>
-                <li class="nav-item" style="margin-left: 15cm">
-                    <a class="nav-link" href="/createChanga">Emitir Changa</a>
-                </li>
+                <c:choose>
+                    <c:when test="${currentUser == null}">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/signUp">Registrarse</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logIn">Ingresar</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logIn">Perfil</a>
+                            <br />
+                        </li>
+                        <li class="nav-item" style="margin-left: 15cm">
+                            <a class="nav-link" href="/createChanga">Emitir Changa</a>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <%-- TODO: saludo al usuario --%>
+                        <%--<li>
+                            <label style="margin-top: 0.5cm">Hola, <c:out value="${currentUser.name}"/> </label>
+                        </li>--%>
+                        <li class="nav-item">
+                            <a class="nav-link" href="profile?id=<c:out value="${currentUser.user_id}"/>" >Perfil</a>
+                            <br />
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/signUp">Cerrar sesión</a>
+                        </li>
+                        <li class="nav-item" style="margin-left: 15cm">
+                            <a class="nav-link" href="/createChanga">Emitir Changa</a>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
             </ul>
         </div>
     </div>

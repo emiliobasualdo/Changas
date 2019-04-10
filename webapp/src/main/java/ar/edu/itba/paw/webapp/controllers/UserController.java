@@ -36,6 +36,11 @@ public class UserController {
 
     public static User currentUser;
 
+    @ModelAttribute("currentUser")
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
     @RequestMapping("/signUp")
     public ModelAndView signUp(@ModelAttribute("signUpForm") final UserRegisterForm form) {
         return new ModelAndView("indexSignUp");
