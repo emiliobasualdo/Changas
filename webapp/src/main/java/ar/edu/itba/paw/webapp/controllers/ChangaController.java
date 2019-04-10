@@ -55,7 +55,7 @@ public class ChangaController {
                     .withPrice(form.getPrice())
                     .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
                     .createdAt(LocalDateTime.now())
-                    .build()
+
             );
             return new ModelAndView("redirect:/");
         }

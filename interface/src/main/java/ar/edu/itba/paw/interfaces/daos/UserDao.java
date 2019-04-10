@@ -14,7 +14,7 @@ import ar.edu.itba.paw.models.User;
 public interface UserDao extends Dao<User>{
     Either<User, Validation> getById(final long id);
     Either<User, Validation> findByMail(final String mail);
-    Either<User, Validation> create(final User user);
-    Either<User, Validation> getUser(User user);
+    Either<User, Validation> create(final User.Builder userBuilder);
+    Either<User, Validation> getUser(final User.Builder userBuilder);
     //List<User> createUsers();
 }

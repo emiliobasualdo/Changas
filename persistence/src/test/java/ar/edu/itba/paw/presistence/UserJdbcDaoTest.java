@@ -47,7 +47,7 @@ public class UserJdbcDaoTest {
         // todo MAL,no puedo usar métodos de la clase que quiero probar
         final User user = userDao.create(new User.Builder()
                 .withEmail(EMAIL)
-                .withPasswd(PASSWORD).build()
+                .withPasswd(PASSWORD)
         ).getValue();
         // EJERCITAR
 

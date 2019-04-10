@@ -59,7 +59,7 @@ public class UserController {
                 .withTel(form.getTelephone())
                 .withEmail(form.getEmail())
                 .withPasswd(form.getPassword())
-                .build());
+                );
 
         if (!either.isValuePresent()){
             Validation err = either.getAlternative();
@@ -92,7 +92,7 @@ public class UserController {
         Either<User, Validation> either = us.logIn(new User.Builder()
                 .withEmail(form.getUsername())
                 .withPasswd(form.getPassword())
-                .build());
+                );
         if (!either.isValuePresent()) {
             System.out.println(either.getAlternative());
             return new ModelAndView("500");

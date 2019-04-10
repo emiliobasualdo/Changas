@@ -28,21 +28,21 @@ public class ChangaServiceImpl implements ChangaService {
     }
 
     @Override
-    public Either<Changa, Validation> create(final Changa changa) {
-        return chDao.create(changa);
+    public Either<Changa, Validation> create(final Changa.Builder changaBuilder) {
+        return chDao.create(changaBuilder);
     }
 
     // todo NEFASTO cambiar ya
     @Override
-    public Either<Changa, Validation> update(Changa changa) {
-        Either<Changa, Validation> old = chDao.getById(changa.getChanga_id());
+    public Either<Changa, Validation> update(final long changaId, final Changa.Builder changaBuilder) {
+        Either<Changa, Validation> old = chDao.getById(changaId);
         // if changa exists
         if(!old.isValuePresent()){
             return Either.alternative(old.getAlternative());
         }
 
         // we will update a changa ONLY if no changueros are inscribed in it
-        Either<Boolean, Validation> either = inDao.hasInscribedUsers(changa.getChanga_id());
+        Either<Boolean, Validation> either = inDao.hasInscribedUsers(changaId);
 
         // If there was no problem
         if(!either.isValuePresent()){
@@ -51,7 +51,7 @@ public class ChangaServiceImpl implements ChangaService {
 
         // if there are no changueros inscribed
         if (!either.getValue()) {
-            return chDao.update(changa); // todo mal, cambiar de changa a builder
+            return chDao.update(changaId, changaBuilder); // todo mal, cambiar de changa a builder
         }
         return Either.alternative(new Validation(USERS_INSCRIBED));
     }
@@ -59,11 +59,6 @@ public class ChangaServiceImpl implements ChangaService {
     @Override
     public Validation delete(long changaId) {
         return chDao.delete(changaId);
-    }
-
-    @Override
-    public Validation delete(Changa changa) {
-        return this.delete(changa.getChanga_id());
     }
 
     @Override

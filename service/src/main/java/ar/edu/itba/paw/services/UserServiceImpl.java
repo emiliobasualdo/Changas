@@ -1,4 +1,5 @@
 package ar.edu.itba.paw.services;
+import ar.edu.itba.paw.Builder;
 import ar.edu.itba.paw.interfaces.daos.UserDao;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
@@ -21,13 +22,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public  Either<User, Validation> register(User user) {
-        /*TODO MAITE
-        preguntar si en vez de hacer la query findByMail es mejor
-        directamente crear el usuario y, si ya existe, catchear la excepcion]
-        de la base de datos. como sabes q esa exception es la q viola una determinada key?
-         */
-        Either<User, Validation> either = userDao.findByMail(user.getEmail());
+    public  Either<User, Validation> register(final User.Builder userBuilder) {
+
+        Either<User, Validation> either = userDao.findByMail(userBuilder.getEmail());
 
         /*TODO MAITE
         Hacer username unique en la tabla
@@ -36,12 +33,12 @@ public class UserServiceImpl implements UserService {
         if(either.isValuePresent()) {
             return either;
         }
-        return userDao.create(user);
+        return userDao.create(userBuilder);
     }
 
     @Override
-    public  Either<User, Validation> logIn(User user) {
-        return userDao.getUser(user);
+    public  Either<User, Validation> logIn(final User.Builder userBuilder) {
+        return userDao.getUser(userBuilder);
     }
 
 

@@ -14,15 +14,10 @@ import java.util.List;
  * when database is replaced (for some part of data)
  * */
 public interface ChangaService {
-    Either<Changa, Validation> create(Changa changa);
-
-    Either<Changa, Validation> update(Changa changa);
+    Either<Changa, Validation> create(final Changa.Builder changaBuilder);
+    Either<Changa, Validation> update(final long changaId, final Changa.Builder changaBuilder);
     Validation delete(long changaId);
-    Validation delete(Changa changa);
-
     Either<List<Changa>, Validation> getUserOwnedChangas(final long userId);
     Either<Changa, Validation> getChangaById(final long changaId);
     Either<List<Changa>, Validation> getAllChangas();
-
-
 }

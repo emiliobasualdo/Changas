@@ -19,8 +19,7 @@ import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBChangaFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.changas;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.DATABASE_ERROR;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.NO_SUCH_USER;
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
 
 @Repository
 public class ChangaJdbcDao implements ChangaDao {
@@ -55,19 +54,28 @@ public class ChangaJdbcDao implements ChangaDao {
     }
 
     @Override
-    public Either<Changa, Validation> create(final Changa changa) {
+    public Either<Changa, Validation> create(final Changa.Builder changaBuilder) {
         // si no se insertó ninguna fila, what pass?
-        Map<String, Object> changaRow = changaToTableRow(changa);
+        Map<String, Object> changaRow = changaToTableRow(changaBuilder);
         int rowsAffected = jdbcInsert.execute(changaRow);
         if (rowsAffected < 1) {
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
+        return getChanga(changaBuilder);
+    }
+
+
+    @Override
+    public Either<Changa, Validation> getChanga(final Changa.Builder changaBuilder) {
         // todo Preguntar que onda esto
         // todo enorme fallo de seguridad el String.format
         final List<Changa> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = %d AND %s = '%s'", changas.TN(), user_id.name(), changa.getUser_id(), title.name(), changa.getTitle()),
+                String.format("SELECT * FROM %s WHERE %s = %d AND %s = '%s'", changas.TN(), user_id.name(), changaBuilder.getUser_id(), title.name(), changaBuilder.getTitle()),
                 ROW_MAPPER
         );
+        if (list.isEmpty()) {
+            return Either.alternative(new Validation(INVALID_COMBINATION)); //el error que les parezca
+        }
         return Either.value(list.get(0));
     }
 
@@ -94,7 +102,7 @@ public class ChangaJdbcDao implements ChangaDao {
     }
 
     @Override
-    public Either<Changa, Validation> update(Changa changa) {
+    public Either<Changa, Validation> update(final long changaId, Changa.Builder changaBuilder) {
         return null;
     }
 
@@ -128,7 +136,6 @@ public class ChangaJdbcDao implements ChangaDao {
                     .createdAt(createdAt[r.nextInt(max)])
                     .withDescription(description[r.nextInt(max)])
                     .atAddress(calle[r.nextInt(max)],neigh[r.nextInt(max)],number[r.nextInt(max)])
-                    .build()
                 ).getValue()
             );
         }
@@ -136,29 +143,31 @@ public class ChangaJdbcDao implements ChangaDao {
     }
 
     private static Changa changaFromRS(ResultSet rs) throws SQLException {
-        return new Changa.Builder(rs.getLong(changa_id.name()))
-                .withUserId(rs.getLong(user_id.name()))
-                .withTitle(rs.getString(title.name()))
-                .withDescription(rs.getString(description.name()))
-                .withPrice(rs.getDouble(price.name()))
-                .atAddress(rs.getString(street.name()),rs.getString(neighborhood.name()),rs.getInt(number.name()) )
-                .withState(rs.getString(state.name()))
-                //.createdAt(rs.getObject(creation_date.name(), LocalDateTime.class))
-                .build();
-
+        return build (rs.getLong(changa_id.name()), new Changa.Builder()
+                                                    .withUserId(rs.getLong(user_id.name()))
+                                                    .withTitle(rs.getString(title.name()))
+                                                    .withDescription(rs.getString(description.name()))
+                                                    .withPrice(rs.getDouble(price.name()))
+                                                    .atAddress(rs.getString(street.name()),rs.getString(neighborhood.name()),rs.getInt(number.name()) )
+                                                    .withState(rs.getString(state.name()))
+                     );
     }
 
-    private Map<String, Object> changaToTableRow(Changa ch) {
+    private static Changa build(long changaId, Changa.Builder changaBuilder) {
+        return new Changa(changaId, changaBuilder);
+    }
+
+    private Map<String, Object> changaToTableRow(Changa.Builder changaBuilder) {
         Map<String, Object> resp = new HashMap<>();
-        resp.put(user_id.toString(), ch.getUser_id());
-        resp.put(title.toString(), ch.getTitle());
-        resp.put(description.toString(), ch.getDescription());
-        resp.put(price.toString(), ch.getPrice());
-        resp.put(street.toString(), ch.getStreet());
-        resp.put(neighborhood.toString(), ch.getNeighborhood());
-        resp.put(number.toString(), ch.getNumber());
+        resp.put(user_id.toString(),  changaBuilder.getUser_id());
+        resp.put(title.toString(),  changaBuilder.getTitle());
+        resp.put(description.toString(),  changaBuilder.getDescription());
+        resp.put(price.toString(),  changaBuilder.getPrice());
+        resp.put(street.toString(),  changaBuilder.getStreet());
+        resp.put(neighborhood.toString(),  changaBuilder.getNeighborhood());
+        resp.put(number.toString(),  changaBuilder.getNumber());
         //resp.put(creation_date.toString(), Timestamp.valueOf(ch.getCreationDate()));
-        resp.put(state.toString(), ch.getState());
+        resp.put(state.toString(), changaBuilder.getState());
         return resp;
     }
 }

@@ -50,10 +50,20 @@ public class Changa {
         return state;
     }
 
-    public static class Builder {
+    public Changa (long id, Changa.Builder cb) {
+        changa_id = id;
+        user_id = cb.getUser_id();
+        street = cb.getStreet();
+        neighborhood = cb.getNeighborhood();
+        number = cb.getNumber();
+        creation_date = cb.getCreation_date();
+        title = cb.getTitle();
+        description = cb.getDescription();
+        state = cb.getState();
+        price = cb.getPrice();
+    }
 
-        private static final int NO_ID = -1;
-        private long changa_id;
+    public static class Builder {
         private long user_id;
         private LocalDateTime creation_date;
         private String title;
@@ -64,12 +74,7 @@ public class Changa {
         private String neighborhood;
         private int number;
 
-        public Builder() {
-            this.changa_id = NO_ID;
-        }
-        public Builder(long changa_id) {
-            this.changa_id = changa_id;
-        }
+
         public Builder withUserId(long user_id){
             this.user_id = user_id;
             return this;
@@ -101,19 +106,55 @@ public class Changa {
             return this;
         }
 
-        public Changa build(){
-            Changa changa = new Changa();
-            changa.changa_id = this.changa_id;
-            changa.user_id = this.user_id;
-            changa.creation_date = this.creation_date;
-            changa.title = this.title;
-            changa.description = this.description;
-            changa.state = this.state;
-            changa.price = this.price;
-            changa.street = this.street;
-            changa.neighborhood = this.neighborhood;
-            changa.number = this.number;
-            return changa;
+        public long getUser_id() {
+            return user_id;
         }
+
+        public LocalDateTime getCreation_date() {
+            return creation_date;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public String getState() {
+            return state;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+
+        public String getStreet() {
+            return street;
+        }
+
+        public String getNeighborhood() {
+            return neighborhood;
+        }
+
+        public int getNumber() {
+            return number;
+        }
+
+//        public Changa build(){
+//            Changa changa = new Changa();
+//            changa.changa_id = this.changa_id;
+//            changa.user_id = this.user_id;
+//            changa.creation_date = this.creation_date;
+//            changa.title = this.title;
+//            changa.description = this.description;
+//            changa.state = this.state;
+//            changa.price = this.price;
+//            changa.street = this.street;
+//            changa.neighborhood = this.neighborhood;
+//            changa.number = this.number;
+//            return changa;
+//        }
     }
 }

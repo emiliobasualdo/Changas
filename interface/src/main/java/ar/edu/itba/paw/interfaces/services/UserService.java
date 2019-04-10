@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.interfaces.services;
 
+import ar.edu.itba.paw.Builder;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
@@ -14,6 +15,6 @@ import ar.edu.itba.paw.models.User;
 public interface UserService {
     Either<User, Validation> findById(long id);
     String toString();
-    Either<User, Validation> register(User user);
-    Either<User, Validation> logIn(User user);
+    Either<User, Validation> register(final User.Builder userBuilder);
+    Either<User, Validation> logIn(final User.Builder userBuilder);
 }

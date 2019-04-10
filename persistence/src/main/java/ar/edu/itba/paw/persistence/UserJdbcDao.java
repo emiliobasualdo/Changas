@@ -18,6 +18,7 @@ import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBTableName.users;
 import static ar.edu.itba.paw.constants.DBUserFields.*;
+import static ar.edu.itba.paw.constants.DBUserFields.email;
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
 
 @Repository
@@ -60,10 +61,10 @@ public class UserJdbcDao implements UserDao {
     }
 
     @Override
-    public Either<User, Validation> create(final User user) {
+    public Either<User, Validation> create(final User.Builder userBuilder) {
         // todo si no se insertó ninguna fila, what pass?
         int rowsAffected;
-        Map<String, Object> userRow = userToTableRow(user);
+        Map<String, Object> userRow = userToTableRow(userBuilder);
         try {
             rowsAffected = jdbcInsert.execute(userRow);
 
@@ -73,22 +74,34 @@ public class UserJdbcDao implements UserDao {
         if (rowsAffected < 1) {
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
-        // todo Preguntar que onda esto
-        final List<User> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s' ", users.TN(),
-                        email.name(), user.getEmail(),
-                        passwd.name(), user.getPasswd()),
-                ROW_MAPPER
-        );
-        /*TODO MAITE
-         en este punto se creó el usuario, osea que la query anterior si o si debería de devolver al usuario.
-         Este chequeo lo saco o lo dejo por si JUSTO se cayo la base de datos y no lo pudo levantar?
-         */
-        if (list.isEmpty()) {
-            return Either.alternative(new Validation(DATABASE_ERROR));
-        }
 
-        return Either.value(list.get(0));
+        //TODO investigar si hay una forma de obtener el userId cuando se hace el insert
+        return getUser(userBuilder);
+    }
+
+
+    private Map<String, Object> userToTableRow(User.Builder userBuilder) {
+        Map<String, Object> resp = new HashMap<>();
+        resp.put(name.name(), userBuilder.getName());
+        resp.put(surname.name(), userBuilder.getSurname());
+        resp.put(tel.name(), userBuilder.getTel());
+        resp.put(email.name(), userBuilder.getEmail());
+        resp.put(passwd.name(), userBuilder.getPasswd());
+        return resp;
+    }
+
+    private static User userFromRS(ResultSet rs) throws SQLException {
+        return build(rs.getLong(user_id.name()), new User.Builder()
+                                                .withName(rs.getString(name.name()))
+                                                .withSurname(rs.getString(surname.name()))
+                                                .withTel(rs.getString(tel.name()))
+                                                .withEmail(rs.getString(email.name()))
+                                                .withPasswd(rs.getString(passwd.name()))
+        );
+    }
+
+    private static User build(long userId, User.Builder userBuilder) {
+        return new User(userId, userBuilder);
     }
 
    /* @Override
@@ -97,16 +110,31 @@ public class UserJdbcDao implements UserDao {
     }*/
 
     @Override
-    public Either<User, Validation> getUser(User user) { // todo No puede recibir parametro de tipo User
+    public Either<User, Validation> getUser(final User.Builder userBuilder) {
         final List<User> list = jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s'", users.TN(),
-                        email.name(), user.getEmail(),
-                        passwd.name(), user.getPasswd()
+                        email.name(), userBuilder.getEmail(),
+                        passwd.name(), userBuilder.getPasswd()
                 ),
                 ROW_MAPPER
         );
         if (list.isEmpty()) {
+            //TODO chequear si es q el mail no pertenece a un usuario para hacer INVALID_EMAIL
             return Either.alternative(new Validation(INVALID_COMBINATION));
+        }
+        return Either.value(list.get(0));
+    }
+
+
+    private Either<User, Validation> getUserFromUserId(long userId) {
+        final List<User> list = jdbcTemplate.query(
+                String.format("SELECT * FROM %s WHERE %s = '%s'", users.TN(),
+                        user_id.name(), userId),
+                ROW_MAPPER
+        );
+
+        if (list.isEmpty()) {
+            return Either.alternative(new Validation(DATABASE_ERROR));
         }
         return Either.value(list.get(0));
     }
@@ -128,30 +156,10 @@ public class UserJdbcDao implements UserDao {
                     .withTel(tel[r.nextInt(max)])
                     .withEmail(i+email[r.nextInt(max)])
                     .withPasswd(passwd[r.nextInt(max)])
-                    .build()
                     ).getValue()
             );
         }
         return resp;
     }
 
-    private static User userFromRS(ResultSet rs) throws SQLException {
-        return new User.Builder(rs.getLong(user_id.name()))
-                .withName(rs.getString(name.name()))
-                .withSurname(rs.getString(surname.name()))
-                .withTel(rs.getString(tel.name()))
-                .withEmail(rs.getString(email.name()))
-                .withPasswd(rs.getString(passwd.name()))
-                .build();
-    }
-
-    private Map<String, Object> userToTableRow(User us) {
-        Map<String, Object> resp = new HashMap<>();
-        resp.put(name.name(), us.getName());
-        resp.put(surname.name(), us.getSurname());
-        resp.put(tel.name(), us.getTel());
-        resp.put(email.name(), us.getEmail());
-        resp.put(passwd.name(), us.getPasswd());
-        return resp;
-    }
 }
