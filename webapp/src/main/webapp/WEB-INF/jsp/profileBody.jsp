@@ -8,7 +8,7 @@
             line-height: 1;
             padding: 20px;
             height: 100%;
-            background: #26B3BA;
+            background: white;
         }
         .changaCard-option {
             /*width: 32%;*/
