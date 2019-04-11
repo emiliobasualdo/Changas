@@ -48,7 +48,6 @@ public class ChangaController {
     @RequestMapping(value = "/createChanga", method = RequestMethod.POST ) // todo no se tendría que poder hacer sin estar logeado
     public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors) {
         if (UserController.currentUser != null) {
-            System.out.println(form.getTitle() + " " +  form.getDescription() + " " +  form.getPrice() + " " +  form.getNeighborhood());
             cs.create(new Changa.Builder().withUserId(UserController.currentUser.getUser_id())
                     .withDescription(form.getDescription())
                     .withTitle(form.getTitle())
@@ -59,6 +58,29 @@ public class ChangaController {
             );
             return new ModelAndView("redirect:/");
         }
+        return new ModelAndView("redirect:/signUp");
+    }
+
+    /*@RequestMapping("/editChanga")
+    public ModelAndView editChanga(@ModelAttribute("changaForm") final ChangaForm form){
+        //final Changa currentChanga = cs.getChangaById()
+    }*/
+
+    @RequestMapping(value = "/editChanga", method = RequestMethod.POST ) // todo no se tendría que poder hacer sin estar logeado
+    public ModelAndView editChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors) {
+        if (UserController.currentUser != null) {
+            cs.update(new Changa.Builder().withUserId(UserController.currentUser.getUser_id())
+                    .withDescription(form.getDescription())
+                    .withTitle(form.getTitle())
+                    .withPrice(form.getPrice())
+                    .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
+                    .createdAt(LocalDateTime.now())
+                    .build()
+            );
+            return new ModelAndView("redirect:/profile?id="+ getCurrentUser().getUser_id());
+        }
+
+        //no deberiamos nunca llegar acá, pero por las dudas de que esten jugando con la URL
         return new ModelAndView("redirect:/signUp");
     }
 
@@ -95,16 +117,11 @@ public class ChangaController {
         if (either.isValuePresent()) {
             Map<User, Inscription> map = either.getValue();
             inscribedUsers = map.keySet();
-//            inscribedUsers.add(new User.Builder().withName("p").withSurname("p").withEmail("p").withPasswd("p").withTel("1").build());
-//            inscribedUsers.add(new User.Builder().withName("pp").withSurname("pp").withEmail("pp").withPasswd("pp").withTel("11").build());
-//            inscribedUsers.add(new User.Builder().withName("ppp").withSurname("ppp").withEmail("ppp").withPasswd("ppp").withTel("111").build());
-//            inscribedUsers.add(new User.Builder().withName("pppp").withSurname("pppp").withEmail("pppp").withPasswd("pppp").withTel("1111").build());
         } else {
             //todo
         }
-        System.out.println("Usuarios inscriptos en changa " + id + " son " + inscribedUsers.size());
-        mav.addObject("alreadyInscribedUsers", !inscribedUsers.isEmpty());
-        mav.addObject("userAlreadyInscribedInChanga", inscribedUsers);
+        mav.addObject("notInscribedUsers", inscribedUsers.isEmpty());
+        mav.addObject("inscribedUsers", inscribedUsers);
         return mav;
     }
 

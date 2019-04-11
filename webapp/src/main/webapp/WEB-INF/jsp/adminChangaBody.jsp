@@ -47,8 +47,8 @@
         </tbody>
     </table>
     <c:choose>
-        <c:when test="${alreadyInscribedUsers == false}">
-            <a href="#" class="btn btn-primary" style="margin-top: 1cm; margin-bottom: 1cm;">Editar datos</a>
+        <c:when test="${notInscribedUsers == true}">
+            <a href="/editChanga" class="btn btn-primary" style="margin-top: 1cm; margin-bottom: 1cm;">Editar datos</a>
             <br />
         </c:when>
         <c:otherwise>

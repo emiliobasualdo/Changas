@@ -30,13 +30,13 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public Validation uninscribeFromChanga(long userId, long changaId, State state) {
-        return dao.uninscribeFromChanga(userId,changaId,state.getState());
+    public Validation uninscribeFromChanga(long userId, long changaId) {
+        return dao.uninscribeFromChanga(userId,changaId);
     }
 
     @Override
-    public Validation uninscribeFromChanga(User user, Changa changa, State state) {
-        return this.uninscribeFromChanga(user.getUser_id(),changa.getChanga_id(),state);
+    public Validation uninscribeFromChanga(User user, Changa changa) {
+        return this.uninscribeFromChanga(user.getUser_id(),changa.getChanga_id());
     }
 
     @Override

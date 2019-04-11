@@ -14,8 +14,8 @@ public interface InscriptionService {
     Validation inscribeInChanga(User user, Changa changa);
     Validation inscribeInChanga(long userId, long changaId);
 
-    Validation uninscribeFromChanga(long userId, long changaId, State state);
-    Validation uninscribeFromChanga(User user, Changa changa, State state);
+    Validation uninscribeFromChanga(long userId, long changaId);
+    Validation uninscribeFromChanga(User user, Changa changa);
 
     Either<Boolean, Validation> isUserInscribedInChanga(long userId, long changaId);
     Either<Boolean, Validation> isUserInscribedInChanga(User user, Changa changa);

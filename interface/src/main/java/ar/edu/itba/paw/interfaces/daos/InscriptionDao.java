@@ -12,7 +12,7 @@ public interface InscriptionDao {
     Either<Map<Changa, Inscription>, Validation> getUserInscriptions(long userId);
     Either getInscribedUsers(long changa_id);
 
-    Validation uninscribeFromChanga(long userId, long changaId, String state);
+    Validation uninscribeFromChanga(long userId, long changaId);
     Validation inscribeInChanga(long user_id, long changa_id);
 
     Validation changeUserStateInChanga(long userId, long changaId, String state);

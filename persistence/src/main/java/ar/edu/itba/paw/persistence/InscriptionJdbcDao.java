@@ -72,17 +72,18 @@ public class InscriptionJdbcDao implements InscriptionDao {
     @Override
     /* Return the changas the user of id=userId is inscribed in */
     public Either<Map<Changa, Inscription>, Validation> getUserInscriptions(long userId) {
-        return this.getter(changaDao, changa_id.name(), userId, Inscription::getUser_id);
+        return this.getter(changaDao, user_id.name(), userId, Inscription::getChanga_id);
     }
 
     @Override
     /* Returns the users that are inscribed in a changa of id=changaId */
     public Either<Map<User, Inscription>, Validation> getInscribedUsers(long changaId) {
-        return this.getter(userDao, changa_id.name(), changaId, Inscription::getChanga_id);
+        return this.getter(userDao, changa_id.name(), changaId, Inscription::getUser_id);
     }
 
     @Override
-    public Validation uninscribeFromChanga(long userId, long changaId, String state) {
+    public Validation uninscribeFromChanga(long userId, long changaId) {
+        //TODO pilo
         return null;
     }
 
