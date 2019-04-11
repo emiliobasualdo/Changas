@@ -15,24 +15,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
-public class MainPageController {
+public class MainPageController { //TODO: hacer que los jsp sea HTML safe
 
     @Autowired
     private ChangaService cs;
 
     @Autowired
     private UserService us;
-
-    @ModelAttribute("currentUser")
-    public User getCurrentUser() {
-        if (isUserLoggedIn()) {
-            return getLoggedUser();
-        }
-        return null; // nefasto
-    }
 
     public boolean isUserLoggedIn() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -46,14 +39,25 @@ public class MainPageController {
     }
 
     @RequestMapping(value = "/")
-    public ModelAndView showChangas() {
+    public ModelAndView showChangas(HttpSession session) {
+
+        if (isUserLoggedIn()) {
+            System.out.println("user Logged in" +  getLoggedUser().getEmail());
+            session.setAttribute("isUserLogged", true);
+            session.setAttribute("getLoggedUser", getLoggedUser());
+        } else {
+            System.out.println("user NOT Logged in");
+            session.setAttribute("isUserLogged", false);
+        }
+
         Either<List<Changa>, Validation> either = cs.getAllChangas();
+
         if (either.isValuePresent()) {
             return new ModelAndView("index")
                     .addObject("changaList", either.getValue());
-        }
-        else
+        } else {
             return new ModelAndView("500");
+        }
     }
 
 }

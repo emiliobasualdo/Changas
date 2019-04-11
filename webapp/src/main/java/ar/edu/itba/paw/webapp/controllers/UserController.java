@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import java.security.Principal;
@@ -40,14 +41,6 @@ public class UserController {
     // todo: esto es muy villero. ya lo voy a borrar. es solo para probar mostrar las changas en el profile
     @Autowired
     private ChangaService cs;
-
-    @ModelAttribute("currentUser")
-    public User getCurrentUser() {
-        if (isUserLoggedIn()) {
-            return getLoggedUser();
-        }
-        return null; // nefasto
-    }
 
     @RequestMapping("/signUp")
     public ModelAndView signUp(@ModelAttribute("signUpForm") final UserRegisterForm form) {
@@ -110,17 +103,18 @@ public class UserController {
 //        return new ModelAndView("redirect:/");
 //    }
 
-    @RequestMapping(value = "/joinChanga", method = RequestMethod.POST)
-    public ModelAndView showChanga(@RequestParam("changaId") final long changaId) {
-        if (!isUserLoggedIn()){
-            //TODO hacer que se loggee y que despues se redirija a la changa que estaba viendo.
-            return  new ModelAndView("redirect:/logIn");
-        }
-        System.out.println("current user id: " + getCurrentUser().getUser_id());
-        Validation val = is.inscribeInChanga(getCurrentUser().getUser_id(), changaId);
+    @RequestMapping(value = "/joinChanga", method = RequestMethod.POST)  //TODO: DEBERIA ESSTAR EN CHANGACONTROLLER NO?
+    public ModelAndView showChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
+//        if (!isUserLoggedIn()){   // <---- DE ESTO SE ENCARGA SPRING SECURITY
+//            //TODO hacer que se loggee y que despues se redirija a la changa que estaba viendo.
+//            return  new ModelAndView("redirect:/logIn");
+//        }
+        User loggedUser = ((User)session.getAttribute("getLoggedUser"));
+        System.out.println("current user id: " + loggedUser.getUser_id());
+        Validation val = is.inscribeInChanga(loggedUser.getUser_id(), changaId);
         //TODO hacer que se deshabilite el boton Anotarme en changa cuando ya está inscripto
         if (val.isOk()){
-            System.out.println("user "+ getCurrentUser().getUser_id()+ " successfully inscripto en changa "+ changaId);
+            System.out.println("user "+ loggedUser.getUser_id()+ " successfully inscripto en changa "+ changaId);
         } else {
             //TODO JIME un popup de error
             System.out.println("No se pudo inscribir en la changa pq:"+ val.getMessage());
@@ -128,22 +122,12 @@ public class UserController {
         return new ModelAndView("redirect:/");
     }
 
-    public boolean isUserLoggedIn() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return !(authentication instanceof AnonymousAuthenticationToken);
-    }
-
-    public User getLoggedUser() { //TODO: meter Either y mandarlo a una vista 500 si ocurre un error
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserName = authentication.getName();
-        return us.findByMail(currentUserName).getValue();
-    }
-
     @RequestMapping("/profile")
-    public ModelAndView profile(@RequestParam int id){
+    public ModelAndView profile(HttpSession session) { // Solamente podemos llegar aca si estamos autorizados por lo que no hace falta pedir el id lo tenemos guardado en session o en context
+        User loggedUser = (User)session.getAttribute("getLoggedUser");
         return new ModelAndView("indexProfile")
-                .addObject("profile", us.findById(id).getValue())
-                .addObject("publishedChangas", cs.getUserOwnedChangas(id).getValue())
-                .addObject("pendingChangas", is.getUserInscriptions(id).getValue().keySet());
+                .addObject("profile", loggedUser)
+                .addObject("publishedChangas", cs.getUserOwnedChangas(loggedUser.getUser_id()).getValue())
+                .addObject("pendingChangas", is.getUserInscriptions(loggedUser.getUser_id()).getValue().keySet());
     }
 }

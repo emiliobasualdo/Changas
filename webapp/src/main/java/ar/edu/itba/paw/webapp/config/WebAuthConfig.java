@@ -31,17 +31,17 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .and().formLogin()
                     .usernameParameter("j_username")
                     .passwordParameter("j_password")
-                    .defaultSuccessUrl("/profile", true) //the landing page after a successful login
+                    .defaultSuccessUrl("/", true) //the landing page after a successful login
                     .loginPage("/logIn") //the custom login page
                     //loginProcessingUrl() – the url to submit the username and password to
-//                .and().rememberMe()
-//                    .rememberMeParameter("j_rememberme")
-//                    .userDetailsService(userDetailsService)
-//                    .key("mysupersecretketthatnobodyknowsabout")
-//                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
-//                .and().logout()
-//                    .logoutUrl("/logout")
-//                    .logoutSuccessUrl("/login")
+                .and().rememberMe()
+                    .rememberMeParameter("j_rememberme")
+                    .userDetailsService(userDetailsService)
+                    .key("mysupersecretketthatnobodyknowsabout")
+                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
+                .and().logout()
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/")
 //                .and().exceptionHandling()
 //                    .accessDeniedPage("/403")
                 .and().csrf()

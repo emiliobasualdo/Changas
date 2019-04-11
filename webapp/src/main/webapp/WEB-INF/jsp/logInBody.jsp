@@ -110,7 +110,7 @@
             <button type="submit" class="btn btn-primary btn-lg btn-block"><spring:message code="logInBody.button"/></button>
         </div>
         <div class="clearfix">
-            <label class="pull-left checkbox-inline"><input type="checkbox"><spring:message code="logInBody.checkbox"/></label>
+            <label class="pull-left checkbox-inline"><input type="checkbox" name="j_rememberme"><spring:message code="logInBody.checkbox"/></label>
             <a href="#" class="pull-right">Te olvidaste la contrasena?</a>
         </div>
     </form>

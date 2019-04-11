@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -38,57 +39,35 @@ public class ChangaController {
     @Autowired
     private InscriptionService is;
 
-    @ModelAttribute("currentUser")
-    public User getCurrentUser() {
-        if (isUserLoggedIn()) {
-            return getLoggedUser();
-        }
-        return null; // nefasto
-    }
-
-    public boolean isUserLoggedIn() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return !(authentication instanceof AnonymousAuthenticationToken);
-    }
-
-    public User getLoggedUser() { //TODO: meter Either y mandarlo a una vista 500 si ocurre un error
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserName = authentication.getName();
-        return us.findByMail(currentUserName).getValue();
-    }
-
     @RequestMapping(value = "/createChanga")
     public ModelAndView createChanga(@ModelAttribute("changaForm") final ChangaForm form) {
         return new ModelAndView("issueChangaForm");
     }
 
-    @RequestMapping(value = "/createChanga", method = RequestMethod.POST ) // todo no se tendría que poder hacer sin estar logeado
-    public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors) {
-        if (isUserLoggedIn()) {
-            System.out.println(form.getTitle() + " " +  form.getDescription() + " " +  form.getPrice() + " " +  form.getNeighborhood());
-            cs.create(new Changa.Builder().withUserId(getLoggedUser().getUser_id())
-                    .withDescription(form.getDescription())
-                    .withTitle(form.getTitle())
-                    .withPrice(form.getPrice())
-                    .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
-                    .createdAt(LocalDateTime.now())
-                    .build()
-            );
-            return new ModelAndView("redirect:/");
-        }
-        return new ModelAndView("redirect:/signUp");
+    @RequestMapping(value = "/createChanga", method = RequestMethod.POST )
+    public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, HttpSession session) {
+        System.out.println(form.getTitle() + " " +  form.getDescription() + " " +  form.getPrice() + " " +  form.getNeighborhood());
+        cs.create(new Changa.Builder().withUserId(((User)session.getAttribute("getLoggedUser")).getUser_id())
+                .withDescription(form.getDescription())
+                .withTitle(form.getTitle())
+                .withPrice(form.getPrice())
+                .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
+                .createdAt(LocalDateTime.now())
+                .build()
+        );
+        return new ModelAndView("redirect:/");
     }
 
     @RequestMapping("/changa")
-    public ModelAndView showChanga(@RequestParam("id") final long id) {
+    public ModelAndView showChanga(@RequestParam("id") final long id, HttpSession session) { //TODO: RE VER
         final ModelAndView mav = new ModelAndView("indexChanga");
         final Changa changa = cs.getChangaById(id).getValue();
         mav.addObject("changa", changa);
         boolean userAlreadyInscribedInChanga = false;
-        if(!isUserLoggedIn()) {
-            return new ModelAndView("redirect:/login");
-        }
-        Either<Boolean, Validation> either = is.isUserInscribedInChanga(getLoggedUser(), id);
+//        if(!isUserLoggedIn()) {                         //SPRING SECURITY SE ENCARGA DE ESTO
+//            return new ModelAndView("redirect:/login");
+//        }
+        Either<Boolean, Validation> either = is.isUserInscribedInChanga(((User)session.getAttribute("getLoggedUser")), id);
         if (either.isValuePresent()) {
             userAlreadyInscribedInChanga = either.getValue();
         } else {

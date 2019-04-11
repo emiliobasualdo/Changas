@@ -43,7 +43,7 @@
                     </a>
                 </li>--%>
                 <c:choose>
-                    <c:when test="${currentUser == null}">
+                    <c:when test="${sessionScope.isUserLogged == false}">
                         <li class="nav-item">
                             <a class="nav-link" href="/signUp">Registrarse</a>
                         </li>
@@ -64,11 +64,11 @@
                             <label style="margin-top: 0.5cm">Hola, <c:out value="${currentUser.name}"/> </label>
                         </li>--%>
                         <li class="nav-item">
-                            <a class="nav-link" href="profile?id=<c:out value="${currentUser.user_id}"/>" >Perfil</a>
+                            <a class="nav-link" href="/profile" >Perfil</a>
                             <br />
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/signUp">Cerrar sesión</a>
+                            <a class="nav-link" href="/logout">Cerrar sesión</a>
                         </li>
                         <li class="nav-item" style="margin-left: 15cm">
                             <a class="nav-link" href="/createChanga">Emitir Changa</a>
