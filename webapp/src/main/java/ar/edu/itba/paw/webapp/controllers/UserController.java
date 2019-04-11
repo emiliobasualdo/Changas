@@ -9,6 +9,9 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.forms.UserLoginForm;
 import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import java.security.Principal;
+import java.util.Optional;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.INVALID_MAIL;
 
@@ -37,11 +41,12 @@ public class UserController {
     @Autowired
     private ChangaService cs;
 
-    public static User currentUser;
-
     @ModelAttribute("currentUser")
     public User getCurrentUser() {
-        return currentUser;
+        if (isUserLoggedIn()) {
+            return getLoggedUser();
+        }
+        return null; // nefasto
     }
 
     @RequestMapping("/signUp")
@@ -89,38 +94,49 @@ public class UserController {
         return new ModelAndView("indexLogIn");
     }
 
-    @RequestMapping(value = "/logIn", method = RequestMethod.POST)
-    public ModelAndView logIn(@ModelAttribute("UserLoginForm") final UserLoginForm form, final BindingResult errors) {
-        System.out.println(form.toString());
-        Either<User, Validation> either = us.logIn(new User.Builder()
-                .withEmail(form.getUsername())
-                .withPasswd(form.getPassword())
-                .build());
-        if (!either.isValuePresent()) {
-            System.out.println(either.getAlternative());
-            return new ModelAndView("500");
-        }
-        currentUser = either.getValue();
-        return new ModelAndView("redirect:/");
-    }
+//    @RequestMapping(value = "/login1", method = RequestMethod.POST)
+//    public ModelAndView logIn(@ModelAttribute("UserLoginForm") final UserLoginForm form, final BindingResult errors) {
+//        System.out.println(form.toString());
+//        Either<User, Validation> either = us.logIn(new User.Builder()
+//                .withEmail(form.getUsername())
+//                .withPasswd(form.getPassword())
+//                .build());
+//        if (!either.isValuePresent()) {
+//            System.out.println(either.getAlternative());
+//            return new ModelAndView("500");
+//        }
+//
+//        currentUser = either.getValue();
+//        return new ModelAndView("redirect:/");
+//    }
 
     @RequestMapping(value = "/joinChanga", method = RequestMethod.POST)
     public ModelAndView showChanga(@RequestParam("changaId") final long changaId) {
-        if (currentUser == null){
+        if (!isUserLoggedIn()){
             //TODO hacer que se loggee y que despues se redirija a la changa que estaba viendo.
             return  new ModelAndView("redirect:/logIn");
         }
-
-        System.out.println("current user id: "+currentUser.getUser_id());
-        Validation val = is.inscribeInChanga(currentUser.getUser_id(), changaId);
+        System.out.println("current user id: " + getCurrentUser().getUser_id());
+        Validation val = is.inscribeInChanga(getCurrentUser().getUser_id(), changaId);
         //TODO hacer que se deshabilite el boton Anotarme en changa cuando ya está inscripto
         if (val.isOk()){
-            System.out.println("user "+ currentUser.getUser_id()+ " successfully inscripto en changa "+ changaId);
+            System.out.println("user "+ getCurrentUser().getUser_id()+ " successfully inscripto en changa "+ changaId);
         } else {
             //TODO JIME un popup de error
             System.out.println("No se pudo inscribir en la changa pq:"+ val.getMessage());
         }
         return new ModelAndView("redirect:/");
+    }
+
+    public boolean isUserLoggedIn() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return !(authentication instanceof AnonymousAuthenticationToken);
+    }
+
+    public User getLoggedUser() { //TODO: meter Either y mandarlo a una vista 500 si ocurre un error
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+        return us.findByMail(currentUserName).getValue();
     }
 
     @RequestMapping("/profile")

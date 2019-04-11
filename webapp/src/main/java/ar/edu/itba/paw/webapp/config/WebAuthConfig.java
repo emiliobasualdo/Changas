@@ -22,15 +22,16 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.userDetailsService(userDetailsService).sessionManagement()
-                .invalidSessionUrl("/logIn")
+//                .invalidSessionUrl("/logIn") //upon logout, you will be forwarded here por ahora no lo usamos
                 .and().authorizeRequests()
+                    .antMatchers("/", "/signUp", "/createUser").permitAll()
                     .antMatchers("/logIn").anonymous()
 //                    .antMatchers("/admin/**").hasRole("ADMIN")
                     .antMatchers("/**").authenticated()
                 .and().formLogin()
-                    .usernameParameter("username")
-                    .passwordParameter("password")
-                    //.defaultSuccessUrl("/", false) //the landing page after a successful login
+                    .usernameParameter("j_username")
+                    .passwordParameter("j_password")
+                    .defaultSuccessUrl("/profile", true) //the landing page after a successful login
                     .loginPage("/logIn") //the custom login page
                     //loginProcessingUrl() – the url to submit the username and password to
 //                .and().rememberMe()

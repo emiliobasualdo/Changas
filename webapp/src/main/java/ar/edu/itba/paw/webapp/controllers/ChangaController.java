@@ -11,6 +11,9 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -37,7 +40,21 @@ public class ChangaController {
 
     @ModelAttribute("currentUser")
     public User getCurrentUser() {
-        return UserController.currentUser;
+        if (isUserLoggedIn()) {
+            return getLoggedUser();
+        }
+        return null; // nefasto
+    }
+
+    public boolean isUserLoggedIn() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return !(authentication instanceof AnonymousAuthenticationToken);
+    }
+
+    public User getLoggedUser() { //TODO: meter Either y mandarlo a una vista 500 si ocurre un error
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+        return us.findByMail(currentUserName).getValue();
     }
 
     @RequestMapping(value = "/createChanga")
@@ -47,9 +64,9 @@ public class ChangaController {
 
     @RequestMapping(value = "/createChanga", method = RequestMethod.POST ) // todo no se tendría que poder hacer sin estar logeado
     public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors) {
-        if (UserController.currentUser != null) {
+        if (isUserLoggedIn()) {
             System.out.println(form.getTitle() + " " +  form.getDescription() + " " +  form.getPrice() + " " +  form.getNeighborhood());
-            cs.create(new Changa.Builder().withUserId(UserController.currentUser.getUser_id())
+            cs.create(new Changa.Builder().withUserId(getLoggedUser().getUser_id())
                     .withDescription(form.getDescription())
                     .withTitle(form.getTitle())
                     .withPrice(form.getPrice())
@@ -68,10 +85,10 @@ public class ChangaController {
         final Changa changa = cs.getChangaById(id).getValue();
         mav.addObject("changa", changa);
         boolean userAlreadyInscribedInChanga = false;
-        if(UserController.currentUser == null) {
-            return new ModelAndView("redirect:/logIn");
+        if(!isUserLoggedIn()) {
+            return new ModelAndView("redirect:/login");
         }
-        Either<Boolean, Validation> either = is.isUserInscribedInChanga(UserController.currentUser, id);
+        Either<Boolean, Validation> either = is.isUserInscribedInChanga(getLoggedUser(), id);
         if (either.isValuePresent()) {
             userAlreadyInscribedInChanga = either.getValue();
         } else {
