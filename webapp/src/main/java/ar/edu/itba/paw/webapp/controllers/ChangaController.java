@@ -63,22 +63,17 @@ public class ChangaController {
         //final Changa currentChanga = cs.getChangaById()
     }*/
 
-    @RequestMapping(value = "/editChanga", method = RequestMethod.POST ) // todo no se tendría que poder hacer sin estar logeado
-    public ModelAndView editChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors) {
-        if (UserController.currentUser != null) {
-            cs.update(new Changa.Builder().withUserId(UserController.currentUser.getUser_id())
-                    .withDescription(form.getDescription())
-                    .withTitle(form.getTitle())
-                    .withPrice(form.getPrice())
-                    .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
-                    .createdAt(LocalDateTime.now())
-                    .build()
-            );
-            return new ModelAndView("redirect:/profile?id="+ getCurrentUser().getUser_id());
-        }
-
-        //no deberiamos nunca llegar acá, pero por las dudas de que esten jugando con la URL
-        return new ModelAndView("redirect:/signUp");
+    @RequestMapping(value = "/editChanga", method = RequestMethod.POST ) // todo no se tendría que poder hacer sin estar logeado (<--- SPRING SECURITY SE ENCARGA DE ESTO)
+    public ModelAndView editChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, HttpSession session) {
+        cs.update(new Changa.Builder().withUserId(((User)session.getAttribute("getLoggedUser")).getUser_id())
+                .withDescription(form.getDescription())
+                .withTitle(form.getTitle())
+                .withPrice(form.getPrice())
+                .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
+                .createdAt(LocalDateTime.now())
+                .build()
+        );
+        return new ModelAndView("redirect:/profile");
     }
 
     @RequestMapping("/changa")

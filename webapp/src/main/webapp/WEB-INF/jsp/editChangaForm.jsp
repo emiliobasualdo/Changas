@@ -145,7 +145,7 @@
             </div>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="issueChangaForm.button"/></button>
+            <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="issueChangaForm.btn"/></button>
         </div>
     </form:form>
 </div>
