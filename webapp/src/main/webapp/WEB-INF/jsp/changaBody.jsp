@@ -59,7 +59,7 @@
             </c:when>
             <c:otherwise>
                 <div class="alert alert-info" role="alert">
-                    <strong><spring:message code="changaBody.alert.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="/profile?id=<c:out value="${currentUser.user_id}"/>" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
+                    <strong><spring:message code="changaBody.alert.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
                 </div>
                 <br />
             </c:otherwise>

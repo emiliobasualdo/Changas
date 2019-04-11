@@ -21,6 +21,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Either<User, Validation> findByMail(String mail) {
+        return userDao.findByMail(mail);
+    }
+
+    @Override
     public  Either<User, Validation> register(User user) {
         /*TODO MAITE
         preguntar si en vez de hacer la query findByMail es mejor

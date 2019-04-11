@@ -44,7 +44,7 @@
                     </a>
                 </li>--%>
                 <c:choose>
-                    <c:when test="${currentUser == null}">
+                    <c:when test="${sessionScope.isUserLogged == false}">
                         <li class="nav-item">
                             <a class="nav-link" href="/signUp"><spring:message code="navigationBar.btn.signUp"/></a>
                         </li>
@@ -65,11 +65,11 @@
                             <label style="margin-top: 0.5cm">Hola, <c:out value="${currentUser.name}"/> </label>
                         </li>--%>
                         <li class="nav-item">
-                            <a class="nav-link" href="profile?id=<c:out value="${currentUser.user_id}"/>"><spring:message code="navigationBar.btn.profile"/></a>
+                            <a class="nav-link" href="/profile"><spring:message code="navigationBar.btn.profile"/></a>
                             <br />
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/signUp"><spring:message code="navigationBar.btn.logOut"/></a>
+                            <a class="nav-link" href="/logout"><spring:message code="navigationBar.btn.logOut"/></a>
                         </li>
                         <li class="nav-item" style="margin-left: 15cm">
                             <a class="nav-link" href="/createChanga"><spring:message code="navigationBar.btn.createChanga"/></a>
