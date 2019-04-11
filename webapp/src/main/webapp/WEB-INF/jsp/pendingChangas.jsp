@@ -14,12 +14,13 @@
 </style>
 <body>
 <div class="auto-table">
-    <c:forEach items="${pendingChangas}" var="changa">
-        <c:set var="title" value="${changa.title}" scope="request"/>
-        <c:set var="price" value="${changa.price}" scope="request"/>
-        <c:set var="neighborhood" value="${changa.neighborhood}" scope="request"/>
-        <c:set var="street" value="${changa.street}" scope="request"/>
-        <c:set var="number" value="${changa.number}" scope="request"/>
+    <c:forEach items="${pendingChangas}" var="entry">
+        <c:set var="title" value="${entry.getKey.title}" scope="request"/>
+        <c:set var="price" value="${entry.getKey.price}" scope="request"/>
+        <c:set var="neighborhood" value="${entry.getKey.neighborhood}" scope="request"/>
+        <c:set var="street" value="${entry.getKey.street}" scope="request"/>
+        <c:set var="number" value="${entry.getKey.number}" scope="request"/>
+        <c:set var="state" value="${entry.getValue.state}" scope="request"/>
         <c:import url="pendingChangaCard.jsp"/>
     </c:forEach>
 </div>

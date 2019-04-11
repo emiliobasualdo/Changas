@@ -16,10 +16,10 @@
             </small><br>
             </span>
     <hr />
-    <%--<p>
+    <p>
         <c:out value="${requestScope.state}" />
     </p>
-    <hr />--%>
+    <hr />
     <div class="price">
         <div class="front">
                 <span class="price">
