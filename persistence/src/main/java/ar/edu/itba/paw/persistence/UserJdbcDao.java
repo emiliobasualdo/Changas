@@ -54,7 +54,7 @@ public class UserJdbcDao implements UserDao {
         final List<User> list = jdbcTemplate
                 .query(String.format("SELECT * FROM %s WHERE %s = '%s'", users.TN(),email.name(), mail), ROW_MAPPER);
         if (list.isEmpty()) {
-            return Either.alternative(new Validation(INVALID_MAIL));
+            return Either.alternative(new Validation(NO_SUCH_USER));
         }
         return Either.value(list.get(0)); // todo get(0) mal
     }

@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.DATABASE_ERROR;
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.USER_ALREADY_EXISTS;
+
 @Service
 @Primary
 public class UserServiceImpl implements UserService {
@@ -34,12 +37,16 @@ public class UserServiceImpl implements UserService {
          */
         Either<User, Validation> either = userDao.findByMail(user.getEmail());
 
+        // if error is from database
+        if(!either.isValuePresent() && either.getAlternative().getEc() == DATABASE_ERROR){
+            return either;
+        }
         /*TODO MAITE
-        Hacer username unique en la tabla
         hacer un || chequeando que el username no exista. Agregar username al UserBuilder.
         */
+        // email is allready in use
         if(either.isValuePresent()) {
-            return either;
+            return Either.alternative(new Validation(USER_ALREADY_EXISTS));
         }
         return userDao.create(user);
     }

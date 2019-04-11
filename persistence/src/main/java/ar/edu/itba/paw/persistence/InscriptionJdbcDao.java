@@ -47,8 +47,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
     public InscriptionJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(ds)
-                .withTableName(user_inscribed.TN())
-                .usingGeneratedKeyColumns(changa_id.name());
+                .withTableName(user_inscribed.TN());
     }
 
     private <T> Either<Map<T, Inscription>, Validation> getter (
@@ -73,30 +72,30 @@ public class InscriptionJdbcDao implements InscriptionDao {
     @Override
     /* Return the changas the user of id=userId is inscribed in */
     public Either<Map<Changa, Inscription>, Validation> getUserInscriptions(long userId) {
-        return this.getter(changaDao, changa_id.name(), userId, Inscription::getUser_id);
+        return this.getter(changaDao, user_id.name(), userId, Inscription::getChanga_id);
     }
 
     @Override
     /* Returns the users that are inscribed in a changa of id=changaId */
     public Either<Map<User, Inscription>, Validation> getInscribedUsers(long changaId) {
-        return this.getter(userDao, changa_id.name(), changaId, Inscription::getChanga_id);
+        return this.getter(userDao, changa_id.name(), changaId, Inscription::getUser_id);
     }
 
     @Override
-    public Validation uninscribeFromChanga(long userId, long changaId, String state) {
+    public Validation uninscribeFromChanga(long userId, long changaId) {
+        //TODO pilo
         return null;
     }
 
     @Override
-    public Validation inscribeInChanga(long user_id, long changa_id) {
-        Map<String, Object> row = inscriptionToTableRow(user_id, changa_id);
+    public Validation inscribeInChanga(long userId, long changaId) {
+        //Map<String, Object> row = inscriptionToTableRow(userId, changaId);
         int rowsAffected;
         //TODO se hace con try catch o se hace una query antes para ver si el usuario ya esta inscripto en la changa? q es mejor?
         try {
-            rowsAffected = jdbcInsert.execute(row);
-            if (rowsAffected <= 0) {
-                return new Validation(DATABASE_ERROR);
-            }
+            jdbcTemplate.query(
+                    String.format("INSERT INTO %s (%s, %s) VALUES (%d,%d)", user_inscribed.TN()
+                            , user_id.name(), changa_id.name(), userId, changaId), ROW_MAPPER );
         } catch (DataIntegrityViolationException ex) {
             return new Validation(ALREADY_INSCRIBED);
             //TODO MAITE preguntar si es mejor devolver directo un Validation que tenga un codigo para sin errores en vez de hacer el either con Boolean

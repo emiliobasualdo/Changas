@@ -48,8 +48,8 @@
         </tbody>
     </table>
     <c:choose>
-        <c:when test="${alreadyInscribedUsers == false}">
-            <a href="#" class="btn btn-primary" style="margin-top: 1cm; margin-bottom: 1cm;"><spring:message code="adminchangaBody.btn.edit"/></a>
+        <c:when test="${notInscribedUsers == true}">
+            <a href="/editChanga" class="btn btn-primary" style="margin-top: 1cm; margin-bottom: 1cm;"><spring:message code="adminchangaBody.btn.edit"/></a>
             <br />
         </c:when>
         <c:otherwise>

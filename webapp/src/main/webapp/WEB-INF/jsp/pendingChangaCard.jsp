@@ -17,10 +17,10 @@
             </small><br>
             </span>
     <hr />
-    <p>
-        <spring:message code="pendingChangaCard.state"/>
-    </p>
-    <hr />
+    <%--<p>--%>
+        <%--<spring:message code="pendingChangaCard.state"/>--%>
+    <%--</p>--%>
+    <%--<hr />--%>
     <div class="price">
         <div class="front">
                 <span class="price">
