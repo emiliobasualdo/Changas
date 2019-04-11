@@ -16,4 +16,5 @@ public interface UserService {
     String toString();
     Either<User, Validation> register(User user);
     Either<User, Validation> logIn(User user);
+    Either<User, Validation> findByMail(String mail);
 }
