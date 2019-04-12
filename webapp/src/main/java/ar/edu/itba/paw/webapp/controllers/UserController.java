@@ -147,6 +147,6 @@ public class UserController {
         return new ModelAndView("indexProfile")
                 .addObject("profile", loggedUser)
                 .addObject("publishedChangas", cs.getUserOwnedChangas(loggedUser.getUser_id()).getValue())
-                .addObject("pendingChangas", is.getUserInscriptions(loggedUser.getUser_id()).getValue().entrySet());
+                .addObject("pendingChangas", is.getUserInscriptions(loggedUser.getUser_id()).getValue().keySet());
     }
 }
