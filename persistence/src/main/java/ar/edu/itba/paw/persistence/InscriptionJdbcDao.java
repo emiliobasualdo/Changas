@@ -10,7 +10,7 @@ import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.Inscription;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -22,12 +22,12 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Function;
 
 import static ar.edu.itba.paw.constants.DBInscriptionFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.user_inscribed;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.OK;
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.UNKNOWN_ERROR;
 
 @Repository
 public class InscriptionJdbcDao implements InscriptionDao {
@@ -89,16 +89,11 @@ public class InscriptionJdbcDao implements InscriptionDao {
 
     @Override
     public Validation inscribeInChanga(long userId, long changaId) {
-        //Map<String, Object> row = inscriptionToTableRow(userId, changaId);
-        int rowsAffected;
-        //TODO se hace con try catch o se hace una query antes para ver si el usuario ya esta inscripto en la changa? q es mejor?
+        Map<String, Object> row = inscriptionToTableRow(userId, changaId);
         try {
-            jdbcTemplate.query(
-                    String.format("INSERT INTO %s (%s, %s) VALUES (%d,%d)", user_inscribed.TN()
-                            , user_id.name(), changa_id.name(), userId, changaId), ROW_MAPPER );
-        } catch (DataIntegrityViolationException ex) {
-            return new Validation(ALREADY_INSCRIBED);
-            //TODO MAITE preguntar si es mejor devolver directo un Validation que tenga un codigo para sin errores en vez de hacer el either con Boolean
+            jdbcInsert.execute(row);
+        } catch (DuplicateKeyException e ){
+            return new Validation(UNKNOWN_ERROR);
         }
         return new Validation(OK);
     }
@@ -121,18 +116,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
         return null;
     }
     // todo change sate
-
-    private void generateRandomInscriptions() {
-        int N_INSCRIPTIONS = 1000;
-        int N_USERS_CHANGAS = 100;
-        Random rchanga = new Random();
-        Random ruser = new Random();
-        for (int i = 0; i < N_INSCRIPTIONS; i++) {
-            inscribeInChanga(ruser.nextInt(N_USERS_CHANGAS),rchanga.nextInt(N_USERS_CHANGAS));
-        }
-
-    }
-
+    
     /**
      * The 'state' column is not passed because it is set with a default value
      * automatically by the db

@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.Either;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -58,20 +59,16 @@ public class ChangaJdbcDao implements ChangaDao {
     public Either<Changa, Validation> create(final Changa changa) {
         // si no se insertó ninguna fila, what pass?
         Map<String, Object> changaRow = changaToTableRow(changa);
-        int rowsAffected = jdbcInsert.execute(changaRow);
-        if (rowsAffected < 1) {
+        int newId;
+        try {
+            newId = jdbcInsert.execute(changaRow);
+
+        } catch (DuplicateKeyException e ){
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
-        // todo Preguntar que onda esto
-        // todo enorme fallo de seguridad el String.format
-        final List<Changa> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = %d AND %s = '%s'", changas.TN(), user_id.name(), changa.getUser_id(), title.name(), changa.getTitle()),
-                ROW_MAPPER
-        );
-        return Either.value(list.get(0));
+        return Either.value(new Changa.Builder(changa, newId).build());
     }
 
-    // todo que casos de error podría haber?
     @Override
     public Either<List<Changa>, Validation> getAll() {
         List<Changa> resp = jdbcTemplate.query(

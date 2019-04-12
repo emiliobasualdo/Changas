@@ -62,39 +62,16 @@ public class UserJdbcDao implements UserDao {
     @Override
     public Either<User, Validation> create(final User user) {
         // todo si no se insertó ninguna fila, what pass?
-        int rowsAffected;
+        long newId;
         Map<String, Object> userRow = userToTableRow(user);
         try {
-            rowsAffected = jdbcInsert.execute(userRow);
+            newId = jdbcInsert.execute(userRow);
 
         } catch (DuplicateKeyException e ){
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
-        if (rowsAffected < 1) {
-            return Either.alternative(new Validation(DATABASE_ERROR));
-        }
-        // todo Preguntar que onda esto
-        final List<User> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s' ", users.TN(),
-                        email.name(), user.getEmail(),
-                        passwd.name(), user.getPasswd()),
-                ROW_MAPPER
-        );
-        /*TODO MAITE
-         en este punto se creó el usuario, osea que la query anterior si o si debería de devolver al usuario.
-         Este chequeo lo saco o lo dejo por si JUSTO se cayo la base de datos y no lo pudo levantar?
-         */
-        if (list.isEmpty()) {
-            return Either.alternative(new Validation(DATABASE_ERROR));
-        }
-
-        return Either.value(list.get(0));
+        return Either.value(new User.Builder(user, newId).build());
     }
-
-   /* @Override
-    public List<User> createUsers() {
-        return generateRandomUsers();
-    }*/
 
     @Override
     public Either<User, Validation> getUser(User user) { // todo No puede recibir parametro de tipo User

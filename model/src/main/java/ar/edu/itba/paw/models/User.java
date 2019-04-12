@@ -43,14 +43,23 @@ public class User {
         private String name;
         private String surname;
         private String tel;
-        private  String email;
-        private  String passwd;
+        private String email;
+        private String passwd;
 
         public Builder() {
             this.user_id = NO_ID;
         }
         public Builder(long user_id) {
             this.user_id = user_id;
+        }
+
+        public Builder(User user, long newId) {
+            this.user_id = newId;
+            this.name = user.name;
+            this.surname = user.surname ;
+            this.tel = user.tel;
+            this.email = user.email;
+            this.passwd = user.passwd;
         }
 
         public User.Builder withName(String name){

@@ -31,6 +31,7 @@ public class Validation {
         // General
         OK                      ("OK"),
         DATABASE_ERROR          ("Database error"),
+        UNKNOWN_ERROR          ("UNKNOWN_ERROR"),
 
         // Changas
 

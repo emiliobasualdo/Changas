@@ -70,6 +70,20 @@ public class Changa {
         public Builder(long changa_id) {
             this.changa_id = changa_id;
         }
+
+        public Builder(Changa changa, int newId) {
+            this.changa_id = newId;
+            this.user_id = changa.user_id;
+            this.creation_date = changa.creation_date;
+            this.title = changa.title;
+            this.description = changa.description;
+            this.state = changa.state;
+            this.price = changa.price;
+            this.street = changa.street;
+            this.neighborhood = changa.neighborhood;
+            this.number = changa.number;
+        }
+
         public Builder withUserId(long user_id){
             this.user_id = user_id;
             return this;
