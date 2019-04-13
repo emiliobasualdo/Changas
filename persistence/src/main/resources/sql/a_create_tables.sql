@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS changas
     creation_date TIMESTAMP,
     title         VARCHAR(100),
     description   VARCHAR(100),
-    state         VARCHAR(100),
+    state         VARCHAR(100) DEFAULT 'emitted',
     price         DOUBLE PRECISION,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );

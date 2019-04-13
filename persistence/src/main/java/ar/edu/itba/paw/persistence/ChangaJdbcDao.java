@@ -34,14 +34,14 @@ public class ChangaJdbcDao implements ChangaDao {
     public ChangaJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(ds)
-                .withTableName(changas.TN())
+                .withTableName(changas.name())
                 .usingGeneratedKeyColumns(changa_id.name());
     }
 
     @Override
     public Either<Changa, Validation> getById(final long id) {
         final List<Changa> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = %d",changas.TN(), changa_id.name(), id),
+                String.format("SELECT * FROM %s WHERE %s = %d",changas.name(), changa_id.name(), id),
                 ROW_MAPPER
         );
         if (list.isEmpty()) {
@@ -70,7 +70,7 @@ public class ChangaJdbcDao implements ChangaDao {
         // todo Preguntar que onda esto
         // todo enorme fallo de seguridad el String.format
         final List<Changa> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = %d AND %s = '%s'", changas.TN(), user_id.name(), changaBuilder.getUser_id(), title.name(), changaBuilder.getTitle()),
+                String.format("SELECT * FROM %s WHERE %s = %d AND %s = '%s'", changas.name(), user_id.name(), changaBuilder.getUser_id(), title.name(), changaBuilder.getTitle()),
                 ROW_MAPPER
         );
         if (list.isEmpty()) {
@@ -83,7 +83,7 @@ public class ChangaJdbcDao implements ChangaDao {
     @Override
     public Either<List<Changa>, Validation> getAll() {
         List<Changa> resp = jdbcTemplate.query(
-                String.format("SELECT * FROM %s ", changas.TN()),
+                String.format("SELECT * FROM %s ", changas.name()),
                 ROW_MAPPER
         );
 
@@ -94,7 +94,7 @@ public class ChangaJdbcDao implements ChangaDao {
     public Either<List<Changa>, Validation> getUserOwnedChangas(long id) {
         return Either.value(
             jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = %d", changas.TN(),
+                String.format("SELECT * FROM %s WHERE %s = %d", changas.name(),
                         user_id.name(), id),
                 ROW_MAPPER
             )
@@ -103,12 +103,12 @@ public class ChangaJdbcDao implements ChangaDao {
 
     @Override
     public Either<Changa, Validation> update(final long changaId, Changa.Builder changaBuilder) {
-        return null;
+        return null; // todo pilo
     }
 
     @Override
     public Validation delete(long changaId) {
-        return null;
+        return null; // todo pilo
     }
 
     private List<Changa> generateRandomChangas() {

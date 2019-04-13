@@ -40,10 +40,13 @@ public class Validation {
         NO_SUCH_USER            ("No such user"),
         INVALID_MAIL            ("Invalid mail"),
         INVALID_COMBINATION     ("The email and password combination is invalid"),
+        USER_ALREADY_EXISTS     ("The email provided is already in use"),
 
         // Inscription
-        ALREADY_INSCRIBED       ("User already inscribed in changa"),
-        USERS_INSCRIBED         ("There are users inscribed in the changa"),
+        USER_ALREADY_INSCRIBED  ("User already inscribed in changa"),
+        USER_NOT_INSCRIBED      ("The user is not inscribed in the changa"),
+        USERS_INSCRIBED         ("There are users inscribed in the changa"), // we cant edit a changa if users are inscribed
+        CHANGE_NOT_POSSIBLE     ("Such change is not allowed to be done"),
         ;
 
         private final String message;

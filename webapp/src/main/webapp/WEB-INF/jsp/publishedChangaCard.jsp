@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
@@ -26,7 +27,7 @@
                 </span>
         </div>--%>
         <div class="back">
-            <a href="admin-changa?id=<c:out value="${requestScope.changa_id}"/>" class="button">Administrar Changa</a>
+            <a href="admin-changa?id=<c:out value="${requestScope.changa_id}"/>" class="button"><spring:message code="publishedChangaCard.btn.admin"/></a>
         </div>
     </div>
 </div>

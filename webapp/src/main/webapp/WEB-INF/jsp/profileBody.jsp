@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!-- https://bootsnipp.com/snippets/K0ZmK -->
 <head>
     <style>
@@ -197,7 +198,7 @@
                     <div class="profile-img">
                         <img src="https://i.imgur.com/dGo8DOk.jpg" alt=""/>
                         <div class="file btn btn-lg btn-primary">
-                            Cambiar foto
+                            <spring:message code="label.changePhoto"/>
                             <input type="file" name="file"/>
                         </div>
                     </div>
@@ -209,10 +210,10 @@
                         </h5> -->
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="published-changas-tab" data-toggle="tab" href="#published" role="tab" aria-controls="published" aria-selected="true">Changas publicadas</a>
+                                <a class="nav-link active" id="published-changas-tab" data-toggle="tab" href="#published" role="tab" aria-controls="published" aria-selected="true"><spring:message code="profileBody.nav.publish"/></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="pending-changas-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false">Changas anotadas</a>
+                                <a class="nav-link" id="pending-changas-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false"><spring:message code="profileBody.nav.inscribed"/></a>
                             </li>
                         </ul>
                     </div>
@@ -226,7 +227,7 @@
                     <div class="profile-head" style="text-align: center">
                         <div class="row">
                             <div class="col-md-6">
-                                <label>Nombre</label>
+                                <label><spring:message code="label.name"/></label>
                             </div>
                             <div class="col-md-6">
                                 <p><c:out value="${profile.name}"/> <c:out value="${profile.surname}"/></p>
@@ -234,7 +235,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <label>Email</label>
+                                <label><spring:message code="label.mail"/></label>
                             </div>
                             <div class="col-md-6">
                                 <p><c:out value="${profile.email}"/></p>
@@ -242,7 +243,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <label>Telefono</label>
+                                <label><spring:message code="label.telephone"/></label>
                             </div>
                             <div class="col-md-6">
                                 <p><c:out value="${profile.tel}"/></p>

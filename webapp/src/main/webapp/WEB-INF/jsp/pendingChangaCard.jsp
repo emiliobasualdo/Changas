@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -16,10 +17,10 @@
             </small><br>
             </span>
     <hr />
-    <p>
-        Estado
+    <%--<p>
+        <c:out value="${requestScope.state}" />
     </p>
-    <hr />
+    <hr />--%>
     <div class="price">
         <div class="front">
                 <span class="price">

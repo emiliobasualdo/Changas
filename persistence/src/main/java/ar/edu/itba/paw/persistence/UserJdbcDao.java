@@ -33,7 +33,7 @@ public class UserJdbcDao implements UserDao {
     public UserJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(ds)
-                .withTableName(users.TN())
+                .withTableName(users.name())
                 .usingGeneratedKeyColumns(user_id.name());
     }
 
@@ -41,7 +41,7 @@ public class UserJdbcDao implements UserDao {
     public  Either<User, Validation> getById(final long id) {
         final List<User> list = jdbcTemplate
                 .query(
-                        String.format("SELECT * FROM %s WHERE %s = %d", users.TN(),user_id.name() ,id),
+                        String.format("SELECT * FROM %s WHERE %s = %d", users.name(),user_id.name() ,id),
                         ROW_MAPPER
                 );
         if (list.isEmpty()) {
@@ -53,9 +53,9 @@ public class UserJdbcDao implements UserDao {
     @Override
     public Either<User, Validation> findByMail(String mail) {
         final List<User> list = jdbcTemplate
-                .query(String.format("SELECT * FROM %s WHERE %s = '%s'", users.TN(),email.name(), mail), ROW_MAPPER);
+                .query(String.format("SELECT * FROM %s WHERE %s = '%s'", users.name(),email.name(), mail), ROW_MAPPER);
         if (list.isEmpty()) {
-            return Either.alternative(new Validation(INVALID_MAIL));
+            return Either.alternative(new Validation(NO_SUCH_USER));
         }
         return Either.value(list.get(0)); // todo get(0) mal
     }
@@ -112,7 +112,7 @@ public class UserJdbcDao implements UserDao {
     @Override
     public Either<User, Validation> getUser(final User.Builder userBuilder) {
         final List<User> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s'", users.TN(),
+                String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s'", users.name(),
                         email.name(), userBuilder.getEmail(),
                         passwd.name(), userBuilder.getPasswd()
                 ),
@@ -128,7 +128,7 @@ public class UserJdbcDao implements UserDao {
 
     private Either<User, Validation> getUserFromUserId(long userId) {
         final List<User> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = '%s'", users.TN(),
+                String.format("SELECT * FROM %s WHERE %s = '%s'", users.name(),
                         user_id.name(), userId),
                 ROW_MAPPER
         );
