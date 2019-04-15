@@ -114,13 +114,8 @@ public class UserController {
 
     @RequestMapping(value = "/unjoinChanga", method = RequestMethod.POST)
     public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
-//        if (currentUser == null){ // todo maite, current user tiene que ser un Either
-//            // nunca deberia llegar a este caso, pero por las dudas de que este jugando con las URL
-//            return  new ModelAndView("redirect:/logIn");
-//        }
         User loggedUser = ((User)session.getAttribute("getLoggedUser"));
         Validation val = is.unsubscribeFromChanga(loggedUser.getUser_id(), changaId);
-        //TODO hacer que se deshabilite el boton Anotarme en changa cuando ya está inscripto
         if (val.isOk()){
             System.out.println("user "+ loggedUser.getUser_id()+ " successfully desinscripto en changa "+ changaId);
         } else {

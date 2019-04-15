@@ -63,29 +63,44 @@ public class UserJdbcDao implements UserDao {
         System.out.println(us.toString());
 
         return Either.value(us);
-        //TODO cual te gusta mas?
-//final List<User> list = jdbcTemplate
-//                .query(String.format("SELECT * FROM %s WHERE %s = '%s'", users.name(),email.name(), mail), ROW_MAPPER);
+
+//        final List<User> list = jdbcTemplate
+//                .query(String.format("SELECT * FROM %s WHERE %s = ?", users.name(),email.name()), ROW_MAPPER, mail);
 //
 //        if (list.isEmpty()) {
 //            return Either.alternative(new Validation(NO_SUCH_USER));
 //        }
-//        return Either.value(list.get(0)); // todo get(0) mal
+//        return Either.value(list.get(0)); // todo get(0) mal. pq?
     }
 
     @Override
     public Either<User, Validation> create(final User.Builder userBuilder) {
+        //TODO hacer que la base de datos acepte la getGeneratedKeys feature. Mientras tanto usamos el código de abajo
+//        Number userId;
+//        Map<String, Object> userRow = userToTableRow(userBuilder);
+//        try {
+//            userId = jdbcInsert.executeAndReturnKey(userRow);
+//
+//        } catch (Exception e0 ){  //DuplicateKeyException e
+//            return Either.alternative(new Validation(DATABASE_ERROR));
+//        }
+//
+//        return getUserFromUserId(userId.longValue());
+
+
         int rowsAffected;
-        Number userId;
         Map<String, Object> userRow = userToTableRow(userBuilder);
         try {
-            userId = jdbcInsert.executeAndReturnKey(userRow);
+            rowsAffected = jdbcInsert.execute(userRow);
 
-        } catch (Exception e ){  //DuplicateKeyException e
+        } catch (DuplicateKeyException e ){
+            return Either.alternative(new Validation(DATABASE_ERROR));
+        }
+        if (rowsAffected < 1) {
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
 
-        return getUserFromUserId(userId.longValue());
+        return getUser(userBuilder);
     }
 
 

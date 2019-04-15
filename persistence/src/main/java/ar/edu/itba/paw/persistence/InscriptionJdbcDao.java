@@ -19,10 +19,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Function;
 
 import static ar.edu.itba.paw.constants.DBInscriptionFields.*;
@@ -170,18 +167,8 @@ public class InscriptionJdbcDao implements InscriptionDao {
 
     @Override
     public boolean hasInscribedUsers(long changaId) {
-//        todo MAITE averiguar como hacer que funcione el select TOP 1
-//        Inscription inscription =  jdbcTemplate.queryForObject( String.format("SELECT TOP 1 %s FROM %s WHERE %s = %d",
-//                            state.name() , user_inscribed.name(), changa_id.name(), 7), ROW_MAPPER);
-//        System.out.println(jdbcTemplate.queryForObject("SELECT TOP 1 state FROM user_inscribed WHERE changa_id = 7", String.class));
-
-        try {
-            jdbcTemplate.queryForObject( String.format("SELECT DISTINCT(%s) FROM %s WHERE %s = ?", changa_id.name(), user_inscribed.name() , changa_id.name()), String.class, changaId);
-        } catch (EmptyResultDataAccessException e0) {
-            return false;
-        }
-
-        return true;
+        Optional<Inscription> optional = jdbcTemplate.query(String.format("SELECT * FROM %s WHERE %s = ?", user_inscribed.name() , changa_id.name()), ROW_MAPPER, changaId).stream().findAny();
+        return optional.isPresent();
     }
 
     private void generateRandomInscriptions() {
@@ -200,6 +187,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
      * automatically by the db
      * */
     private Map<String, Object> inscriptionToTableRow(long us_id, long ch_id) {
+        System.out.println("in here");
         Map<String,Object> resp = new HashMap<>();
         resp.put(user_id.name(), us_id);
         resp.put(changa_id.name(), ch_id);
@@ -208,6 +196,8 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
     private static Inscription inscriptionFromRS(ResultSet rs) throws SQLException {
+        System.out.println("AQUI " +rs.getString(state.name()) );
+
         return new Inscription.Builder()
                 .withUserId(rs.getLong(user_id.name()))
                 .withChangaId(rs.getLong(changa_id.name()))
@@ -216,3 +206,4 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
 }
+

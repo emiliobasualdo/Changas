@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.OK;
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.USERS_INSCRIBED;
 
 @Repository
@@ -37,6 +38,8 @@ public class ChangaServiceImpl implements ChangaService {
     no fueron updateados. Si se quiere hacer un modificado más rápido, hacer funciones q updateen campos específicos. Me parece innecesario porque no tenemos
     muchos campos
     * */
+
+
     @Override
     public Either<Changa, Validation> update(final long changaId, final Changa.Builder changaBuilder) {
         Either<Changa, Validation> old = chDao.getById(changaId);

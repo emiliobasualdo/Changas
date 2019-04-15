@@ -66,7 +66,6 @@ public class ChangaJdbcDao implements ChangaDao {
 
     @Override
     public Either<Changa, Validation> getChanga(final Changa.Builder changaBuilder) {
-        String sql = String.format("SELECT * FROM %s WHERE %s = ? AND %s = '?'", changas.name(), user_id.name(), title.name());
         final List<Changa> list = jdbcTemplate.query(
                                                         String.format("SELECT * FROM %s WHERE %s = ? AND %s = ?", changas.name(), user_id.name(), title.name()),
                                                         ROW_MAPPER,
