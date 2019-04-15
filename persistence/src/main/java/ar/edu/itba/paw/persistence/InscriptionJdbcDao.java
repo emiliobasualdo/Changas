@@ -187,7 +187,6 @@ public class InscriptionJdbcDao implements InscriptionDao {
      * automatically by the db
      * */
     private Map<String, Object> inscriptionToTableRow(long us_id, long ch_id) {
-        System.out.println("in here");
         Map<String,Object> resp = new HashMap<>();
         resp.put(user_id.name(), us_id);
         resp.put(changa_id.name(), ch_id);
@@ -196,8 +195,6 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
     private static Inscription inscriptionFromRS(ResultSet rs) throws SQLException {
-        System.out.println("AQUI " +rs.getString(state.name()) );
-
         return new Inscription.Builder()
                 .withUserId(rs.getLong(user_id.name()))
                 .withChangaId(rs.getLong(changa_id.name()))
