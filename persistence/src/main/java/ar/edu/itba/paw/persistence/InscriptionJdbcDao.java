@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.constants.DBInscriptionFields;
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.daos.Dao;
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
@@ -8,6 +9,7 @@ import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -24,6 +26,7 @@ import java.util.Random;
 import java.util.function.Function;
 
 import static ar.edu.itba.paw.constants.DBInscriptionFields.*;
+import static ar.edu.itba.paw.constants.DBTableName.changas;
 import static ar.edu.itba.paw.constants.DBTableName.user_inscribed;
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
 import static ar.edu.itba.paw.models.InscriptionState.requested;
@@ -164,8 +167,26 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
     @Override
-    public Either<Boolean, Validation> hasInscribedUsers(long changa_id) {
-        return null; // todo pilo
+    public Either<Boolean, Validation > hasInscribedUsers(long changaId) {
+//        todo MAITE averiguar como hacer que funcione el select TOP 1
+//        Inscription inscription =  jdbcTemplate.queryForObject( String.format("SELECT TOP 1 %s FROM %s WHERE %s = %d",
+//                            state.name() , user_inscribed.name(), changa_id.name(), 7), ROW_MAPPER);
+//        System.out.println(jdbcTemplate.queryForObject("SELECT TOP 1 state FROM user_inscribed WHERE changa_id = 7", String.class));
+
+        try {
+            jdbcTemplate.queryForObject( String.format("SELECT DISTINCT(%s) FROM %s WHERE %s = %d", changa_id.name(), user_inscribed.name() , changa_id.name(), changaId), String.class);
+        } catch (EmptyResultDataAccessException e0) {
+//            //TODO MAITE preguntar si el chequeo del try catch de abajo hay q hacerlo acá o en otro lugar por ej en el service chequeas q exista la chagna.
+//              pongamonos de acuerdo en una cosa y mantengamosla
+//          try {
+//               jdbcTemplate.queryForObject( String.format("SELECT %s FROM %s WHERE %s = %d", changa_id.name(), changas.name() , changa_id.name(), changaId), String.class);
+//            } catch (EmptyResultDataAccessException e1) {
+//                return Either.alternative(new Validation(INEXISTENT_CHANGA));
+//            }
+            return Either.value(false);
+        }
+
+        return Either.value(true);
     }
 
     private void generateRandomInscriptions() {

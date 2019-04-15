@@ -33,27 +33,31 @@ public class ChangaServiceImpl implements ChangaService {
     }
 
     // todo NEFASTO cambiar ya
+    /*NOTA: en el parametro changaBuilder se debe de pasar un changaBuilder con los campos updateados y con los campos antiguos de los que
+    no fueron updateados. Si se quiere hacer un modificado más rápido, hacer funciones q updateen campos específicos. Me parece innecesario porque no tenemos
+    muchos campos
+    * */
+    //Todo validar q el user que quiere modificar la changa es el user dueño
     @Override
     public Either<Changa, Validation> update(final long changaId, final Changa.Builder changaBuilder) {
         Either<Changa, Validation> old = chDao.getById(changaId);
-        // if changa exists
+
         if(!old.isValuePresent()){
-            return Either.alternative(old.getAlternative());
+            return old;
         }
 
         // we will update a changa ONLY if no changueros are inscribed in it
-        Either<Boolean, Validation> either = inDao.hasInscribedUsers(changaId);
+        Either<Boolean, Validation > hasInscribedUsers = inDao.hasInscribedUsers(changaId);
 
-        // If there was no problem
-        if(!either.isValuePresent()){
-            return Either.alternative(either.getAlternative()); // todo como solucionar esto? No hay necesidad de hacer new, podría retornar la otra instancia de either
+        if (!hasInscribedUsers.isValuePresent()){
+            return Either.alternative(hasInscribedUsers.getAlternative());
         }
 
-        // if there are no changueros inscribed
-        if (!either.getValue()) {
-            return chDao.update(changaId, changaBuilder); // todo mal, cambiar de changa a builder
+        if(hasInscribedUsers.getValue()) {
+            return Either.alternative(new Validation(USERS_INSCRIBED));
         }
-        return Either.alternative(new Validation(USERS_INSCRIBED));
+
+        return chDao.update(changaId, changaBuilder);
     }
 
     @Override

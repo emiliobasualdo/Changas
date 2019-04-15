@@ -14,6 +14,6 @@ public interface InscriptionDao {
     Validation changeUserStateInChanga(Inscription insc, InscriptionState newState);
     Validation changeUserStateInChanga(long userId, long changaId, InscriptionState state);
     Either<Boolean, Validation> isUserInscribedInChanga(long userId, long changaId);
-    Either<Boolean, Validation> hasInscribedUsers(long changa_id);
+    Either<Boolean, Validation > hasInscribedUsers(long changa_id);
     public Either<Inscription, Validation> getInscription(long userId, long changaId);
 }

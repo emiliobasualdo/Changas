@@ -45,6 +45,7 @@ public class Validation {
         USER_ALREADY_INSCRIBED  ("User already inscribed in changa"),
         USER_NOT_INSCRIBED      ("The user is not inscribed in the changa"),
         USERS_INSCRIBED         ("There are users inscribed in the changa"), // we cant edit a changa if users are inscribed
+        NO_USERS_INSCRIBED      ("There are no users inscribed in the changa"),
         CHANGE_NOT_POSSIBLE     ("Such change is not allowed to be done"),
         ;
 

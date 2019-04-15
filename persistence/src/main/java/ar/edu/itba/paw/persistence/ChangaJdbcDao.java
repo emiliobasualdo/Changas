@@ -103,8 +103,28 @@ public class ChangaJdbcDao implements ChangaDao {
 
     @Override
     public Either<Changa, Validation> update(final long changaId, Changa.Builder changaBuilder) {
-        return null; // todo pilo
+        int updatedChangas = jdbcTemplate.update(String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = %d ",
+                                                                changas.name(),
+
+                                                                street.name(),
+                                                                neighborhood.name(),
+                                                                number.name(),
+                                                                creation_date.name(),
+                                                                title.name(),
+                                                                description.name(),
+                                                                state.name(),
+                                                                price.name(),
+
+                                                                changa_id.name(), changaId),
+
+                                                                changaBuilder.getStreet(),changaBuilder.getNeighborhood(),
+                                                                changaBuilder.getNumber(), changaBuilder.getCreation_date(), changaBuilder.getTitle(),
+                                                                changaBuilder.getDescription(), changaBuilder.getState(),  changaBuilder.getPrice()
+                                                );
+
+    return updatedChangas == 1 ? getById(changaId) : Either.alternative(new Validation(INEXISTENT_CHANGA));
     }
+
 
     @Override
     public Validation delete(long changaId) {
