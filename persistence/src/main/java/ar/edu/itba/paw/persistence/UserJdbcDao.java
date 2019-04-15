@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -41,8 +42,9 @@ public class UserJdbcDao implements UserDao {
     public  Either<User, Validation> getById(final long id) {
         final List<User> list = jdbcTemplate
                 .query(
-                        String.format("SELECT * FROM %s WHERE %s = %d", users.name(),user_id.name() ,id),
-                        ROW_MAPPER
+                        String.format("SELECT * FROM %s WHERE %s = ?", users.name(),user_id.name()),
+                        ROW_MAPPER,
+                        id
                 );
         if (list.isEmpty()) {
             return Either.alternative(new Validation(NO_SUCH_USER));
@@ -52,31 +54,38 @@ public class UserJdbcDao implements UserDao {
 
     @Override
     public Either<User, Validation> findByMail(String mail) {
-        final List<User> list = jdbcTemplate
-                .query(String.format("SELECT * FROM %s WHERE %s = '%s'", users.name(),email.name(), mail), ROW_MAPPER);
-        if (list.isEmpty()) {
+        User us;
+        try {
+            us = jdbcTemplate.queryForObject(String.format("SELECT * FROM %s WHERE %s = ?", users.name(), email.name()), ROW_MAPPER, mail);
+        } catch (EmptyResultDataAccessException e) {
             return Either.alternative(new Validation(NO_SUCH_USER));
         }
-        return Either.value(list.get(0)); // todo get(0) mal
+        System.out.println(us.toString());
+
+        return Either.value(us);
+        //TODO cual te gusta mas?
+//final List<User> list = jdbcTemplate
+//                .query(String.format("SELECT * FROM %s WHERE %s = '%s'", users.name(),email.name(), mail), ROW_MAPPER);
+//
+//        if (list.isEmpty()) {
+//            return Either.alternative(new Validation(NO_SUCH_USER));
+//        }
+//        return Either.value(list.get(0)); // todo get(0) mal
     }
 
     @Override
     public Either<User, Validation> create(final User.Builder userBuilder) {
-        // todo si no se insertó ninguna fila, what pass?
         int rowsAffected;
+        Number userId;
         Map<String, Object> userRow = userToTableRow(userBuilder);
         try {
-            rowsAffected = jdbcInsert.execute(userRow);
+            userId = jdbcInsert.executeAndReturnKey(userRow);
 
-        } catch (DuplicateKeyException e ){
-            return Either.alternative(new Validation(DATABASE_ERROR));
-        }
-        if (rowsAffected < 1) {
+        } catch (Exception e ){  //DuplicateKeyException e
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
 
-        //TODO investigar si hay una forma de obtener el userId cuando se hace el insert
-        return getUser(userBuilder);
+        return getUserFromUserId(userId.longValue());
     }
 
 
@@ -112,11 +121,12 @@ public class UserJdbcDao implements UserDao {
     @Override
     public Either<User, Validation> getUser(final User.Builder userBuilder) {
         final List<User> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s'", users.name(),
-                        email.name(), userBuilder.getEmail(),
-                        passwd.name(), userBuilder.getPasswd()
+                String.format("SELECT * FROM %s WHERE %s = ? AND %s = ?", users.name(),
+                        email.name(),
+                        passwd.name()
                 ),
-                ROW_MAPPER
+                ROW_MAPPER,
+                userBuilder.getEmail(), userBuilder.getPasswd()
         );
         if (list.isEmpty()) {
             //TODO chequear si es q el mail no pertenece a un usuario para hacer INVALID_EMAIL
@@ -128,9 +138,10 @@ public class UserJdbcDao implements UserDao {
 
     private Either<User, Validation> getUserFromUserId(long userId) {
         final List<User> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = '%s'", users.name(),
-                        user_id.name(), userId),
-                ROW_MAPPER
+                String.format("SELECT * FROM %s WHERE %s = ?", users.name(),
+                        user_id.name()),
+                ROW_MAPPER,
+                userId
         );
 
         if (list.isEmpty()) {

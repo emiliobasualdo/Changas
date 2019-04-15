@@ -1,10 +1,12 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.services.ChangaService;
+import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.Either;
+import ar.edu.itba.paw.models.Inscription;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -27,6 +29,9 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
     @Autowired
     private UserService us;
 
+    @Autowired //TODO MAITE borrar esto, es solamente para probar una cosa
+    private InscriptionService is;
+
     public boolean isUserLoggedIn() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return !(authentication instanceof AnonymousAuthenticationToken);
@@ -40,7 +45,6 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
 
     @RequestMapping(value = "/")
     public ModelAndView showChangas(HttpSession session) {
-        cs.update(5, new Changa.Builder());
         if (isUserLoggedIn()) {
             System.out.println("user Logged in" +  getLoggedUser().getEmail());
             session.setAttribute("isUserLogged", true);

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Map;
 
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.CHANGE_NOT_POSSIBLE;
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
 
 @Repository
 public class InscriptionServiceImpl implements InscriptionService {
@@ -27,8 +27,12 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public Validation uninscribeFromChanga(long userId, long changaId) {
-        return dao.uninscribeFromChanga(userId,changaId);
+    public Validation unsubscribeFromChanga(long userId, long changaId) {
+        if(dao.unsubscribeFromChanga(userId,changaId)) {
+            return new Validation(OK);
+        }
+        //acá podemos ver por qué es que no se pudo desuscrbir: por ej, user no existe, changa no existe, el user no estaba inscripto, etc
+        return new Validation(CHANGE_NOT_POSSIBLE);
     }
 
     @Override

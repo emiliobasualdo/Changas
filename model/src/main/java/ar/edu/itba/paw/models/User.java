@@ -98,6 +98,19 @@ public class User {
             return tel;
         }
 
+
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "user_id=" + user_id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", tel='" + tel + '\'' +
+                ", email='" + email + '\'' +
+                ", passwd='" + passwd + '\'' +
+                '}';
     }
 
 

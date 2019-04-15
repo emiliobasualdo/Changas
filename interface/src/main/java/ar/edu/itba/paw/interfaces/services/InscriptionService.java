@@ -12,7 +12,7 @@ import java.util.Map;
 public interface InscriptionService {
 
     Validation inscribeInChanga(long userId, long changaId);
-    Validation uninscribeFromChanga(long userId, long changaId);
+    Validation unsubscribeFromChanga(long userId, long changaId);
     Either<Boolean, Validation> isUserInscribedInChanga(long userId, long changaId);
     Either<Map<User, Inscription>, Validation> getInscribedUsers(long changaId);
     Either<Map<Changa, Inscription>, Validation> getUserInscriptions(long userId);

@@ -41,13 +41,13 @@ public class ChangaJdbcDao implements ChangaDao {
     @Override
     public Either<Changa, Validation> getById(final long id) {
         final List<Changa> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = %d",changas.name(), changa_id.name(), id),
-                ROW_MAPPER
+                String.format("SELECT * FROM %s WHERE %s = ?",changas.name(), changa_id.name()),
+                ROW_MAPPER, id
         );
         if (list.isEmpty()) {
             return Either.alternative(new Validation(NO_SUCH_USER));
         }
-        if(list.size() > 1){
+        if(list.size() > 1){ //TODO MAITE ver esto
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
         return Either.value(list.get(0));
@@ -55,7 +55,6 @@ public class ChangaJdbcDao implements ChangaDao {
 
     @Override
     public Either<Changa, Validation> create(final Changa.Builder changaBuilder) {
-        // si no se insertó ninguna fila, what pass?
         Map<String, Object> changaRow = changaToTableRow(changaBuilder);
         int rowsAffected = jdbcInsert.execute(changaRow);
         if (rowsAffected < 1) {
@@ -67,17 +66,18 @@ public class ChangaJdbcDao implements ChangaDao {
 
     @Override
     public Either<Changa, Validation> getChanga(final Changa.Builder changaBuilder) {
-        // todo Preguntar que onda esto
-        // todo enorme fallo de seguridad el String.format
+        String sql = String.format("SELECT * FROM %s WHERE %s = ? AND %s = '?'", changas.name(), user_id.name(), title.name());
         final List<Changa> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = %d AND %s = '%s'", changas.name(), user_id.name(), changaBuilder.getUser_id(), title.name(), changaBuilder.getTitle()),
-                ROW_MAPPER
-        );
+                                                        String.format("SELECT * FROM %s WHERE %s = ? AND %s = ?", changas.name(), user_id.name(), title.name()),
+                                                        ROW_MAPPER,
+                                                        changaBuilder.getUser_id(), changaBuilder.getTitle()
+                                                    );
         if (list.isEmpty()) {
-            return Either.alternative(new Validation(INVALID_COMBINATION)); //el error que les parezca
+            return Either.alternative(new Validation(INEXISTENT_CHANGA));
         }
         return Either.value(list.get(0));
     }
+
 
     // todo que casos de error podría haber?
     @Override
@@ -94,9 +94,10 @@ public class ChangaJdbcDao implements ChangaDao {
     public Either<List<Changa>, Validation> getUserOwnedChangas(long id) {
         return Either.value(
             jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = %d", changas.name(),
-                        user_id.name(), id),
-                ROW_MAPPER
+                String.format("SELECT * FROM %s WHERE %s = ?", changas.name(),
+                        user_id.name()),
+                ROW_MAPPER,
+                id
             )
         );
     }
@@ -128,7 +129,7 @@ public class ChangaJdbcDao implements ChangaDao {
 
     @Override
     public Validation delete(long changaId) {
-        int deletedChangas = jdbcTemplate.update(String.format("DELETE FROM %s WHERE %s = %d", changas.name(), changa_id.name(), changaId));
+        int deletedChangas = jdbcTemplate.update(String.format("DELETE FROM %s WHERE %s = ?", changas.name(), changa_id.name()), changaId);
         return deletedChangas == 1 ? new Validation (OK) : new Validation (INEXISTENT_CHANGA);
     }
 

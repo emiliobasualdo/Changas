@@ -57,9 +57,10 @@ public class InscriptionJdbcDao implements InscriptionDao {
             Dao<T> dao, String colName, long id, Function<Inscription,Long> inscGetId) {
 
         final List<Inscription> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = %d", user_inscribed // todo cambiar query() por otra cosa
-                        , colName, id ),
-                ROW_MAPPER
+                String.format("SELECT * FROM %s WHERE %s = ?", user_inscribed // todo cambiar query() por otra cosa
+                        , colName),
+                ROW_MAPPER,
+                id
         );
         final Map<T,Inscription> map = new HashMap<>();
         for (Inscription insc: list) {
@@ -85,8 +86,9 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
     @Override
-    public Validation uninscribeFromChanga(long userId, long changaId) {
-        return null; //todo pilo
+    public boolean unsubscribeFromChanga(long userId, long changaId) {
+        int rowsAffected = jdbcTemplate.update(String.format("DELETE FROM %s WHERE %s = ? AND %s = ?", user_inscribed.name(), user_id.name(), changa_id.name()), userId, changaId);
+        return rowsAffected == 1;
     }
 
     @Override
@@ -119,8 +121,8 @@ public class InscriptionJdbcDao implements InscriptionDao {
     @Override
     public Either<Inscription, Validation> getInscription(long userId, long changaId) {
         final List<Inscription> list  = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = %d  AND %s = %d", user_inscribed.name()
-                        , changa_id.name(), changaId, user_id.name(), userId), ROW_MAPPER );
+                String.format("SELECT * FROM %s WHERE %s = ?  AND %s = ?", user_inscribed.name()
+                        , changa_id.name(), user_id.name()), ROW_MAPPER, changaId, userId);
         if(list.isEmpty() ) {
             return Either.alternative(new Validation(USER_NOT_INSCRIBED));
         } else if (list.size() > 1){
@@ -167,26 +169,19 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
     @Override
-    public Either<Boolean, Validation > hasInscribedUsers(long changaId) {
+    public boolean hasInscribedUsers(long changaId) {
 //        todo MAITE averiguar como hacer que funcione el select TOP 1
 //        Inscription inscription =  jdbcTemplate.queryForObject( String.format("SELECT TOP 1 %s FROM %s WHERE %s = %d",
 //                            state.name() , user_inscribed.name(), changa_id.name(), 7), ROW_MAPPER);
 //        System.out.println(jdbcTemplate.queryForObject("SELECT TOP 1 state FROM user_inscribed WHERE changa_id = 7", String.class));
 
         try {
-            jdbcTemplate.queryForObject( String.format("SELECT DISTINCT(%s) FROM %s WHERE %s = %d", changa_id.name(), user_inscribed.name() , changa_id.name(), changaId), String.class);
+            jdbcTemplate.queryForObject( String.format("SELECT DISTINCT(%s) FROM %s WHERE %s = ?", changa_id.name(), user_inscribed.name() , changa_id.name()), String.class, changaId);
         } catch (EmptyResultDataAccessException e0) {
-//            //TODO MAITE preguntar si el chequeo del try catch de abajo hay q hacerlo acá o en otro lugar por ej en el service chequeas q exista la chagna.
-//              pongamonos de acuerdo en una cosa y mantengamosla
-//          try {
-//               jdbcTemplate.queryForObject( String.format("SELECT %s FROM %s WHERE %s = %d", changa_id.name(), changas.name() , changa_id.name(), changaId), String.class);
-//            } catch (EmptyResultDataAccessException e1) {
-//                return Either.alternative(new Validation(INEXISTENT_CHANGA));
-//            }
-            return Either.value(false);
+            return false;
         }
 
-        return Either.value(true);
+        return true;
     }
 
     private void generateRandomInscriptions() {
