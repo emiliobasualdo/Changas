@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS user_owns
     user_id   SERIAL NOT NULL,
     changa_id SERIAL UNIQUE NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id),
-    FOREIGN KEY (changa_id) REFERENCES changas (changa_id)
+    FOREIGN KEY (changa_id) REFERENCES changas (changa_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS user_inscribed

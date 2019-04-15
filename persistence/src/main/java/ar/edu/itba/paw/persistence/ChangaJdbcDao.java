@@ -108,7 +108,8 @@ public class ChangaJdbcDao implements ChangaDao {
 
     @Override
     public Validation delete(long changaId) {
-        return null; // todo pilo
+        int deletedChangas = jdbcTemplate.update(String.format("DELETE FROM %s WHERE %s = %d", changas.name(), changa_id.name(), changaId));
+        return deletedChangas == 1 ? new Validation (OK) : new Validation (INEXISTENT_CHANGA);
     }
 
     private List<Changa> generateRandomChangas() {

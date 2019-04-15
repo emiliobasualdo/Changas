@@ -1,11 +1,9 @@
 package ar.edu.itba.paw.interfaces.util;
 
-// todo interface Errors
-// todo, donde iría está implementación? porque no es una interfaz
+// todo interface Errors --- PILO: para qué?
 public class Validation {
     private final ErrorCodes ec;
 
-    //preguntar lo de final
     public Validation(final ErrorCodes ec) {
         this.ec = ec;
     }
@@ -33,6 +31,7 @@ public class Validation {
         DATABASE_ERROR          ("Database error"),
 
         // Changas
+        INEXISTENT_CHANGA       ("Invalid changa id"),
 
         // Users
         INVALID_PASSWORD        ("Invalid password"),
@@ -51,9 +50,11 @@ public class Validation {
 
         private final String message;
 
+
         ErrorCodes(String message) {
             this.message = message;
         }
+
 
         public String getMessage() {
             return message;

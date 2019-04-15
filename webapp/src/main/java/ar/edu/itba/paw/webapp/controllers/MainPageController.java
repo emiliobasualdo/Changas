@@ -40,7 +40,7 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
 
     @RequestMapping(value = "/")
     public ModelAndView showChangas(HttpSession session) {
-
+        cs.delete(1);
         if (isUserLoggedIn()) {
             System.out.println("user Logged in" +  getLoggedUser().getEmail());
             session.setAttribute("isUserLogged", true);

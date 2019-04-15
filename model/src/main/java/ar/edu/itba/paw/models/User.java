@@ -78,9 +78,6 @@ public class User {
             return this;
         }
 
-        //TODO
-        // se q los getters no son parte del pattern pero
-        //necesito de alguna forma ver la data q le pasaron al builder
         public String getEmail() {
             return email;
         }
@@ -101,17 +98,6 @@ public class User {
             return tel;
         }
 
-//        public User build(){
-//            //Here we create the actual bank account object, which is always in a fully initialised state when it's returned.
-//            User user = new User();  //Since the builder is in the BankAccount class, we can invoke its private constructor.
-//            user.user_id = this.user_id;
-//            user.name = this.name;
-//            user.surname = this.surname;
-//            user.tel = this.tel;
-//            user.email = this.email;
-//            user.passwd = this.passwd;
-//            return user;
-//        }
     }
 
 
