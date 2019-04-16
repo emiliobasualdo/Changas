@@ -39,6 +39,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
     @Autowired
     private UserDao userDao;
 
+
     @Autowired
     private ChangaDao changaDao;
 
