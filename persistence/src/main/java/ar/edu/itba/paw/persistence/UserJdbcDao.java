@@ -54,15 +54,11 @@ public class UserJdbcDao implements UserDao {
 
     @Override
     public Either<User, Validation> findByMail(String mail) {
-        User us;
-        try {
-            us = jdbcTemplate.queryForObject(String.format("SELECT * FROM %s WHERE %s = ?", users.name(), email.name()), ROW_MAPPER, mail);
-        } catch (EmptyResultDataAccessException e) {
+        Optional<User> optional = jdbcTemplate.query(String.format("SELECT * FROM %s WHERE %s = ?", users.name(), email.name()), ROW_MAPPER, mail).stream().findAny();
+        if(!optional.isPresent()) {
             return Either.alternative(new Validation(NO_SUCH_USER));
         }
-        System.out.println(us.toString());
-
-        return Either.value(us);
+        return Either.value(optional.get());
 
 //        final List<User> list = jdbcTemplate
 //                .query(String.format("SELECT * FROM %s WHERE %s = ?", users.name(),email.name()), ROW_MAPPER, mail);

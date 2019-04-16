@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS users
     name    VARCHAR(100),
     surname VARCHAR(100),
     tel     VARCHAR(100),
-    email   VARCHAR(100) NOT NULL ,
+    email   VARCHAR(100) NOT NULL UNIQUE ,
     passwd  VARCHAR(100) NOT NULL
 );
 
