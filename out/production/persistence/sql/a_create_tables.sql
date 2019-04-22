@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS users
     name    VARCHAR(100),
     surname VARCHAR(100),
     tel     VARCHAR(100),
-    email   VARCHAR(100) NOT NULL ,
+    email   VARCHAR(100) NOT NULL UNIQUE ,
     passwd  VARCHAR(100) NOT NULL
 );
 
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS changas
     creation_date TIMESTAMP,
     title         VARCHAR(100),
     description   VARCHAR(100),
-    state         VARCHAR(100),
+    state         VARCHAR(100) DEFAULT 'emitted',
     price         DOUBLE PRECISION,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS user_owns
     user_id   SERIAL NOT NULL,
     changa_id SERIAL UNIQUE NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id),
-    FOREIGN KEY (changa_id) REFERENCES changas (changa_id)
+    FOREIGN KEY (changa_id) REFERENCES changas (changa_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS user_inscribed

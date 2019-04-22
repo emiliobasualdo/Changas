@@ -102,7 +102,6 @@ public class UserController {
         User loggedUser = ((User)session.getAttribute("getLoggedUser"));
         System.out.println("current user id: " + loggedUser.getUser_id());
         Validation val = is.inscribeInChanga(loggedUser.getUser_id(), changaId);
-        //TODO hacer que se deshabilite el boton Anotarme en changa cuando ya está inscripto
         if (val.isOk()){
             System.out.println("user "+ loggedUser.getUser_id()+ " successfully inscripto en changa "+ changaId);
         } else {
@@ -112,7 +111,7 @@ public class UserController {
         return new ModelAndView("redirect:/");
     }
 
-    @RequestMapping(value = "/unjoinChanga", method = RequestMethod.POST)
+    @RequestMapping(value = "/unjoinChanga", params = "unjoinBtn", method = RequestMethod.POST)
     public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
         User loggedUser = ((User)session.getAttribute("getLoggedUser"));
         Validation val = is.unsubscribeFromChanga(loggedUser.getUser_id(), changaId);
@@ -122,7 +121,6 @@ public class UserController {
             //TODO JIME un popup de error
             System.out.println("No se pudo desinscribir en la changa pq:"+ val.getMessage());
         }
-
         return new ModelAndView("redirect:/profile");
     }
 

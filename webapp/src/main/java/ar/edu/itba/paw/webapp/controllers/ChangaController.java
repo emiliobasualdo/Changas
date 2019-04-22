@@ -55,9 +55,28 @@ public class ChangaController {
         return new ModelAndView("redirect:/");
     }
 
-   /* @RequestMapping(value = "/editChanga", method = RequestMethod.POST ) // todo no se tendría que poder hacer sin estar logeado (<--- SPRING SECURITY SE ENCARGA DE ESTO)
-    public ModelAndView editChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, HttpSession session) {
-        cs.update(new Changa.Builder().withUserId(((User)session.getAttribute("getLoggedUser")).getUser_id())
+    @RequestMapping(value = "/editChanga")
+    public ModelAndView editChanga(@RequestParam("id") final long id, @ModelAttribute("changaForm") final ChangaForm form) {
+        Either<Changa, Validation> changaEither = cs.getChangaById(id);
+        if (!changaEither.isValuePresent()) {
+            //todo error
+            //nunca estariamos en este caso igual, ver como solucionar
+            return new ModelAndView("redirect:/");
+        }
+        Changa changa = changaEither.getValue();
+        form.setTitle(changa.getTitle());
+        form.setStreet(changa.getStreet());
+        form.setPrice(changa.getPrice());
+        form.setNumber(changa.getNumber());
+        form.setNeighborhood(changa.getNeighborhood());
+        form.setDescription(changa.getDescription());
+        return new ModelAndView("editChangaForm")
+                .addObject("id", id);
+    }
+
+    @RequestMapping(value = "/editChanga", method = RequestMethod.POST )
+    public ModelAndView editChanga(@RequestParam("id") final long id, @Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, HttpSession session) {
+        cs.update(id, new Changa.Builder().withUserId(((User)session.getAttribute("getLoggedUser")).getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
@@ -65,7 +84,7 @@ public class ChangaController {
                 .createdAt(LocalDateTime.now())
         );
         return new ModelAndView("redirect:/profile");
-    }*/
+    }
 
     @RequestMapping("/changa")
     public ModelAndView showChanga(@RequestParam("id") final long id, HttpSession session) { //TODO: RE VER
