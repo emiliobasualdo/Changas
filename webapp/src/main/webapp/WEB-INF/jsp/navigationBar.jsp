@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
@@ -18,14 +18,6 @@
         p {font-size: 16px;}navbar {
                                 margin-bottom: 0;
                             }
-        .masthead {
-            height: 50px;
-            min-height: 500px;
-            background-image: url('https://www.inmo-santander.com/wp-content/uploads/2019/01/mudanzas.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
     </style>
 </head>
 <body>

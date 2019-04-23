@@ -15,8 +15,8 @@
 <body>
 
 <%@ include file="/WEB-INF/jsp/mainPageHeader.jsp" %>
-<%@ include file="/WEB-INF/jsp/mainPageBody.jsp" %>
-<%@ include file="/WEB-INF/jsp/mainPageFooter.jsp" %>
+<%--<%@ include file="/WEB-INF/jsp/mainPageBody.jsp" %>--%>
+<%--<%@ include file="/WEB-INF/jsp/mainPageFooter.jsp" %>--%>
 
 </body>
 </html>

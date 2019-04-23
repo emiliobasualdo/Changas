@@ -3,44 +3,6 @@
 
     <%@ include file="/WEB-INF/jsp/navigationBar.jsp" %>
 
-    <%--<header class="masthead">
-        <!--<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-bottom">
-            <a class="navbar-brand" href="">Changas</a>
-            <a class="navbar-brand" href="#">Subscribite</a>
-            <a class="navbar-brand" href="#" style="text-align: center">Ingresar</a>
-        </nav>-->
-
-        <!-- Full Page Image Header with Vertically Centered Content -->
-        <div class="container h-100">
-            <div class="row h-100 align-items-center">
-                <div class="col-12 text-center">
-                    <h1 class="font-weight-light">C H A N G A S</h1>
-                    <p class="lead">Ayuda al alcance de tu mano</p>
-                </div>
-            </div>
-        </div>
-
-        <!--<nav class="navbar navbar-light bg-light static-top">
-            <div class="container">No tenes una cuenta? &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<a class="btn btn-primary" href="#">Sign In</a><a class="btn btn-primary" href="#">Log In</a>
-            </div>
-        </nav>-->
-
-        &lt;%&ndash;<div class="container-fluid bg-1 text-center">
-            <div>
-                <h1 class="margin">C H A N G A S</h1>
-            </div>
-            <div>
-                <img src="/Users/jimenalozano/Desktop/logo.jpg" class="img-responsive img-circle img-center"  width="200" height="400" >
-            </div>
-            <div>
-                <button type="button" class="btn btn-primary btn-circle btn-xl" data-toggle="modal" data-target="#emitirChangaModal"><i class="fas fa-plus"></i></button>
-                </button>
-                <h4>Emitir changa</h4>
-            </div>
-        </div>&ndash;%&gt;
-
-    </header>--%>
-
     <!--Carousel Wrapper-->
     <div id="carousel-example-2" class="carousel slide carousel-fade z-depth-1-half" data-ride="carousel">
         <!--Indicators-->
@@ -97,3 +59,9 @@
     <!--/.Carousel Wrapper-->
 
 </html>
+
+<%--<html>--%>
+<%--<body>--%>
+<%--hola mundo--%>
+<%--</body>--%>
+<%--</html>--%>
