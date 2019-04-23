@@ -20,7 +20,7 @@
 
     <header>
 
-        <jsp:include page="navigationBar.jsp" />
+        <%@ include file="/WEB-INF/jsp/navigationBar.jsp" %>
 
     </header>
     <body>

@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 </head>
 
-<%--<jsp:include page="/WEB-INF/jsp/changaHeader.jsp" />--%>
-<jsp:include page="signUpBody.jsp" />
-<jsp:include page="mainPageFooter.jsp" />
+<%@ include file="/WEB-INF/jsp/changaHeader.jsp" %>
+<%@ include file="/WEB-INF/jsp/signUpBody.jsp" %>
+<%@ include file="/WEB-INF/jsp/mainPageFooter.jsp" %>
 
 </html>

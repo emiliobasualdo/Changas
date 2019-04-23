@@ -255,12 +255,12 @@
                     <div class="tab-content profile-tab" id="myTabContent">
                         <div class="tab-pane fade show active" id="published" role="tabpanel" aria-labelledby="published-changas-tab">
 
-                            <jsp:include page="publishedChangas.jsp"/>
+                            <%@ include file="/WEB-INF/jsp/publishedChangas.jsp"%>
 
                         </div>
                         <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-changas-tab">
 
-                            <jsp:include page="pendingChangas.jsp"/>
+                            <%@ include file="/WEB-INF/jsp/pendingChangas.jsp" %>
 
                         </div>
                     </div>

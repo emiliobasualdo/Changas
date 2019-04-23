@@ -14,9 +14,9 @@
 
 <body>
 
-<jsp:include page="/WEB-INF/jsp/mainPageHeader.jsp" />
-<jsp:include page="/WEB-INF/jsp/mainPageBody.jsp" />
-<jsp:include page="/WEB-INF/jsp/mainPageFooter.jsp" />
+<%@ include file="/WEB-INF/jsp/mainPageHeader.jsp" %>
+<%@ include file="/WEB-INF/jsp/mainPageBody.jsp" %>
+<%@ include file="/WEB-INF/jsp/mainPageFooter.jsp" %>
 
 </body>
 </html>

@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <html>
 
-    <jsp:include page="navigationBar.jsp" />
+    <%@ include file="/WEB-INF/jsp/navigationBar.jsp" %>
 
     <%--<header class="masthead">
         <!--<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-bottom">

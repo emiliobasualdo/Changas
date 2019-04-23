@@ -1,7 +1,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <html>
 <head>
     <head>
@@ -100,7 +100,8 @@
 </head>
 <body>
 <div class="signup-form">
-    <form:form method="post" modelAttribute="changaForm" action="/createChanga">
+    <c:url value="/createChanga" var="createUrl" />
+    <form:form method="post" modelAttribute="changaForm" action="${createUrl}">
         <h2><spring:message code="issueChangaForm.header"/></h2>
         <div class="form-group">
             <div class="input-group">

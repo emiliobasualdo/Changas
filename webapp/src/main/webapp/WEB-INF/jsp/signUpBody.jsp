@@ -1,8 +1,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<!DOCTYPE html>
-<html>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <html>
 <head>
     <style type="text/css">
@@ -83,8 +82,8 @@
 </head>
 <body>
 <div class="signup-form">
-    <!-- action="" -> aca ponemos que pasa cuando el usuario apreta en ingresar -->
-    <form:form action="/createUser" modelAttribute="signUpForm" method="post">
+    <c:url value="/createUser" var="create" />
+    <form:form action="${create}" modelAttribute="signUpForm" method="post">
         <h2><spring:message code="signUpBody.header"/></h2>
         <div class="form-group">
             <div class="input-group">
