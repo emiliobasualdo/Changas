@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import sun.security.util.Password;
 
 @Service
 @Primary
@@ -14,6 +15,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+
+//    @Autowired
+//    private PassworEncoder
 
     @Override
     public Either<User, Validation> findById(long id) {
