@@ -5,8 +5,6 @@ import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -19,7 +17,6 @@ import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBTableName.users;
 import static ar.edu.itba.paw.constants.DBUserFields.*;
-import static ar.edu.itba.paw.constants.DBUserFields.email;
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
 
 @Repository
@@ -72,31 +69,16 @@ public class UserJdbcDao implements UserDao {
     @Override
     public Either<User, Validation> create(final User.Builder userBuilder) {
         //TODO hacer que la base de datos acepte la getGeneratedKeys feature. Mientras tanto usamos el código de abajo
-//        Number userId;
-//        Map<String, Object> userRow = userToTableRow(userBuilder);
-//        try {
-//            userId = jdbcInsert.executeAndReturnKey(userRow);
-//
-//        } catch (Exception e0 ){  //DuplicateKeyException e
-//            return Either.alternative(new Validation(DATABASE_ERROR));
-//        }
-//
-//        return getUserFromUserId(userId.longValue());
-
-
-        int rowsAffected;
+        Number userId;
         Map<String, Object> userRow = userToTableRow(userBuilder);
         try {
-            rowsAffected = jdbcInsert.execute(userRow);
+            userId = jdbcInsert.executeAndReturnKey(userRow);
 
-        } catch (DuplicateKeyException e ){
-            return Either.alternative(new Validation(DATABASE_ERROR));
-        }
-        if (rowsAffected < 1) {
+        } catch (Exception e0 ){  //DuplicateKeyException e
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
 
-        return getUser(userBuilder);
+        return getUserFromUserId(userId.longValue());
     }
 
 
