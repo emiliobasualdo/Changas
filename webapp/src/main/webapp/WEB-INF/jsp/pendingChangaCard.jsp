@@ -30,7 +30,7 @@
         <div class="back">
             <form action="/unjoinChanga" method="post">
                 <input type="hidden" name="changaId" value="<c:out value="${requestScope.changa_id}"/>">
-                <input type="submit" name="unjoinBtn" class="btn btn-success btn-block" value="Desanotame" />
+                <input type="submit" class="btn btn-success btn-block" value="Desanotame" />
             </form>
         </div>
     </div>

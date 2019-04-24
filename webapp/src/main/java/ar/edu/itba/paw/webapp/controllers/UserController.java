@@ -111,7 +111,7 @@ public class UserController {
         return new ModelAndView("redirect:/");
     }
 
-    @RequestMapping(value = "/unjoinChanga", params = "unjoinBtn", method = RequestMethod.POST)
+    @RequestMapping(value = "/unjoinChanga", method = RequestMethod.POST)
     public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
         User loggedUser = ((User)session.getAttribute("getLoggedUser"));
         Validation val = is.unsubscribeFromChanga(loggedUser.getUser_id(), changaId);

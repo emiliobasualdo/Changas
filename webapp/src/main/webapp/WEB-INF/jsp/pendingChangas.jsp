@@ -20,6 +20,7 @@
         <c:set var="neighborhood" value="${changa.neighborhood}" scope="request"/>
         <c:set var="street" value="${changa.street}" scope="request"/>
         <c:set var="number" value="${changa.number}" scope="request"/>
+        <c:set var="changa_id" value="${changa.changa_id}" scope="request"/>
         <%--<c:set var="state" value="${entry.getValue.state}" scope="request"/>--%>
         <c:import url="pendingChangaCard.jsp"/>
     </c:forEach>
