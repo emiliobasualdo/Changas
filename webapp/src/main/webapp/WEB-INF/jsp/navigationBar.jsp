@@ -39,11 +39,10 @@
                         </a>
                     </li>--%>
                     <c:choose>
-                        <c:url value="/create-changa" var="createUrl" />
                         <c:when test="${sessionScope.isUserLogged == false}">
                             <li class="nav-item">
                                 <c:url value="/sign-up" var="signUpUrl" />
-                                <a class="nav-link" href="${signUp}"><spring:message code="navigationBar.btn.signUp"/></a>
+                                <a class="nav-link" href="${signUpUrl}"><spring:message code="navigationBar.btn.signUp"/></a>
                             </li>
                             <li class="nav-item">
                                 <c:url value="/log-in" var="logInUrl" />
@@ -54,6 +53,7 @@
                                 <br />
                             </li>
                             <li class="nav-item" style="margin-left: 15cm">
+                                <c:url value="/create-changa" var="createUrl" />
                                 <a class="nav-link" href="${createUrl}"><spring:message code="navigationBar.btn.createChanga"/></a>
                             </li>
                         </c:when>
@@ -71,6 +71,7 @@
                                 <a class="nav-link" href="${logoutUrl}"><spring:message code="navigationBar.btn.logOut"/></a>
                             </li>
                             <li class="nav-item" style="margin-left: 15cm">
+                                <c:url value="/create-changa" var="createUrl" />
                                 <a class="nav-link" href="${createUrl}"><spring:message code="navigationBar.btn.createChanga"/></a>
                             </li>
                         </c:otherwise>
