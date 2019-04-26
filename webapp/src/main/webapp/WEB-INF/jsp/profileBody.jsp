@@ -1,4 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!-- https://bootsnipp.com/snippets/K0ZmK -->
 <head>
@@ -192,6 +192,7 @@
 </head>
 <body>
     <div class="container emp-profile">
+        <%--TODO: cabiar form a a un spring form para que por beans se mapen las varibales y poder cambiar el contendido de las mismas--%>
         <form method="post">
             <div class="row">
                 <div class="col-md-4">
@@ -255,12 +256,12 @@
                     <div class="tab-content profile-tab" id="myTabContent">
                         <div class="tab-pane fade show active" id="published" role="tabpanel" aria-labelledby="published-changas-tab">
 
-                            <jsp:include page="publishedChangas.jsp"/>
+                            <%@ include file="/WEB-INF/jsp/publishedChangas.jsp"%>
 
                         </div>
                         <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-changas-tab">
 
-                            <jsp:include page="pendingChangas.jsp"/>
+                            <%@ include file="/WEB-INF/jsp/pendingChangas.jsp" %>
 
                         </div>
                     </div>

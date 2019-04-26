@@ -6,7 +6,7 @@
     <groupId>ar.edu.itba.paw</groupId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-    
+
   <artifactId>webapp</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
@@ -31,33 +31,9 @@
 
     <dependency>
       <groupId>org.webjars</groupId>
-      <artifactId>bootstrap</artifactId>
-      <version>4.3.1</version>
+      <artifactId>webjars-locator</artifactId>
+      <version>0.30</version>
     </dependency>
-
-      <dependency>
-          <groupId>org.webjars</groupId>
-          <artifactId>jquery</artifactId>
-          <version>2.1.1</version>
-      </dependency>
-
-      <dependency>
-          <groupId>org.webjars</groupId>
-          <artifactId>font-awesome</artifactId>
-          <version>4.7.0</version>
-      </dependency>
-
-      <!--<dependency>-->
-          <!--<groupId>org.webjars.bower</groupId>-->
-          <!--<artifactId>simple-line-icons</artifactId>-->
-          <!--<version>1.0.0</version>-->
-      <!--</dependency>-->
-
-      <dependency>
-          <groupId>org.webjars</groupId>
-          <artifactId>webjars-locator</artifactId>
-          <version>0.30</version>
-      </dependency>
 
     <dependency>
       <groupId>org.springframework</groupId>
@@ -86,11 +62,11 @@
       <scope>runtime</scope>
       <version>${project.parent.version}</version>
     </dependency>
-      <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-jdbc</artifactId>
-          <version>4.2.5.RELEASE</version>
-      </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>4.2.5.RELEASE</version>
+    </dependency>
     <dependency>
       <groupId>postgresql</groupId>
       <artifactId>postgresql</artifactId>
@@ -109,9 +85,9 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
     </dependency>
-      <dependency>
-          <groupId>org.springframework.security</groupId>
-          <artifactId>spring-security-web</artifactId> </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId> </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-config</artifactId>

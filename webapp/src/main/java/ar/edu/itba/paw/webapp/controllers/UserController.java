@@ -33,12 +33,12 @@ public class UserController {
     @Autowired
     private ChangaService cs;
 
-    @RequestMapping("/signUp")
+    @RequestMapping("/sign-up")
     public ModelAndView signUp(@ModelAttribute("signUpForm") final UserRegisterForm form) {
         return new ModelAndView("indexSignUp");
     }
 
-    @RequestMapping(value = "/createUser", method = { RequestMethod.POST })
+    @RequestMapping(value = "/create-user", method = { RequestMethod.POST })
     public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors) {
         if (errors.hasErrors()) {
             System.out.println("Errores en los campos del formulario sign up");
@@ -69,10 +69,10 @@ public class UserController {
         /* TODO redirect sin pasar por el login
          return new ModelAndView("redirect:/user?userId=" + either.getValue().getId());
         */
-        return new ModelAndView("redirect:/logIn");
+        return new ModelAndView("redirect:/log-in");
     }
 
-    @RequestMapping("/logIn")
+    @RequestMapping("/log-in")
     public ModelAndView logIn(@ModelAttribute("UserLoginForm") final UserLoginForm form) {
         return new ModelAndView("indexLogIn");
     }
@@ -93,7 +93,7 @@ public class UserController {
 //        return new ModelAndView("redirect:/");
 //    }
 
-    @RequestMapping(value = "/joinChanga", method = RequestMethod.POST)  //TODO: DEBERIA ESSTAR EN CHANGACONTROLLER NO?
+    @RequestMapping(value = "/join-changa", method = RequestMethod.POST)  //TODO: DEBERIA ESSTAR EN CHANGACONTROLLER NO?
     public ModelAndView showChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
 //        if (!isUserLoggedIn()){   // <---- DE ESTO SE ENCARGA SPRING SECURITY
 //            //TODO hacer que se loggee y que despues se redirija a la changa que estaba viendo.
@@ -111,7 +111,7 @@ public class UserController {
         return new ModelAndView("redirect:/");
     }
 
-    @RequestMapping(value = "/unjoinChanga", method = RequestMethod.POST)
+    @RequestMapping(value = "/unjoin-changa", method = RequestMethod.POST)
     public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
         User loggedUser = ((User)session.getAttribute("getLoggedUser"));
         Validation val = is.unsubscribeFromChanga(loggedUser.getUser_id(), changaId);

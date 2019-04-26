@@ -1,4 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -51,7 +51,8 @@
     <div class="container" style="margin-top: 80px">
         <c:choose>
             <c:when test="${userAlreadyInscribedInChanga == false}">
-                <form action="/joinChanga" method="post">
+                <c:url value="/join-changa" var="joinUrl" />
+                <form action="${joinUrl}" method="post">
                     <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
                     <input type="submit"  class="btn btn-success btn-block" value="Anotame en la changa" />
                 </form>
