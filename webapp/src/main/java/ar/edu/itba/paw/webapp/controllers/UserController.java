@@ -38,7 +38,7 @@ public class UserController {
         return new ModelAndView("indexSignUp");
     }
 
-    @RequestMapping(value = "/create-user", method = { RequestMethod.POST })
+    @RequestMapping(value = "/sign-up", method = { RequestMethod.POST })
     public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors) {
         if (errors.hasErrors()) {
             System.out.println("Errores en los campos del formulario sign up");

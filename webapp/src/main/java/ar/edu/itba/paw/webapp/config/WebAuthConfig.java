@@ -30,7 +30,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         http.userDetailsService(userDetailsService).sessionManagement()
 //                .invalidSessionUrl("/logIn") //upon logout, you will be forwarded here por ahora no lo usamos
                 .and().authorizeRequests()
-                    .antMatchers("/", "/sign-up", "/create-user").permitAll()
+                    .antMatchers("/", "/sign-up").permitAll()
                     .antMatchers("/log-in").anonymous()
 //                    .antMatchers("/admin/**").hasRole("ADMIN")
                     .antMatchers("/**").authenticated()
