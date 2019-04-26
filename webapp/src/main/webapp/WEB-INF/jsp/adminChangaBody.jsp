@@ -1,4 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -49,7 +49,7 @@
     </table>
     <c:choose>
         <c:when test="${notInscribedUsers == true}">
-            <a href="/editChanga?id=<c:out value="${changa.changa_id}"/>" class="btn btn-primary" style="margin-top: 1cm; margin-bottom: 1cm;"><spring:message code="adminchangaBody.btn.edit"/></a>
+            <a href="/edit-changa?id=<c:out value=" class="btn btn-primary" style="margin-top: 1cm; margin-bottom: 1cm;"><spring:message code="adminchangaBody.btn.edit"/></a>
             <br />
         </c:when>
         <c:otherwise>

@@ -1,4 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -28,7 +28,8 @@
                 </span>
         </div>
         <div class="back">
-            <form action="/unjoinChanga" method="post">
+            <c:url value="/unjoin-changa" var="unJoinUrl" />
+            <form action="${unJoinUrl}" method="post">
                 <input type="hidden" name="changaId" value="<c:out value="${requestScope.changa_id}"/>">
                 <input type="submit" name="unjoinBtn" class="btn btn-success btn-block" value="Desanotame" />
             </form>

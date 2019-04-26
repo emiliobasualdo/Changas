@@ -1,6 +1,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8"%>
 <html>
 <head>
@@ -82,8 +82,8 @@
 </head>
 <body>
 <div class="signup-form">
-    <c:url value="/createUser" var="create" />
-    <form:form action="${create}" modelAttribute="signUpForm" method="post">
+    <c:url value="/create-user" var="createUrl" />
+    <form:form action="${createUrl}" modelAttribute="signUpForm" method="post">
         <h2><spring:message code="signUpBody.header"/></h2>
         <div class="form-group">
             <div class="input-group">

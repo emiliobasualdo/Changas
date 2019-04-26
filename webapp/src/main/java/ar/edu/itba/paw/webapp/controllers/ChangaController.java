@@ -37,12 +37,12 @@ public class ChangaController {
     @Autowired
     private InscriptionService is;
 
-    @RequestMapping(value = "/createChanga")
+    @RequestMapping(value = "/create-changa")
     public ModelAndView createChanga(@ModelAttribute("changaForm") final ChangaForm form) {
         return new ModelAndView("issueChangaForm");
     }
 
-    @RequestMapping(value = "/createChanga", method = RequestMethod.POST )
+    @RequestMapping(value = "/create-changa", method = RequestMethod.POST )
     public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, HttpSession session) {
         System.out.println(form.getTitle() + " " +  form.getDescription() + " " +  form.getPrice() + " " +  form.getNeighborhood());
         cs.create(new Changa.Builder().withUserId(((User)session.getAttribute("getLoggedUser")).getUser_id())
@@ -55,7 +55,7 @@ public class ChangaController {
         return new ModelAndView("redirect:/");
     }
 
-    @RequestMapping(value = "/editChanga")
+    @RequestMapping(value = "/edit-changa")
     public ModelAndView editChanga(@RequestParam("id") final long id, @ModelAttribute("changaForm") final ChangaForm form) {
         Either<Changa, Validation> changaEither = cs.getChangaById(id);
         if (!changaEither.isValuePresent()) {
@@ -74,7 +74,7 @@ public class ChangaController {
                 .addObject("id", id);
     }
 
-    @RequestMapping(value = "/editChanga", method = RequestMethod.POST )
+    @RequestMapping(value = "/edit-changa", method = RequestMethod.POST )
     public ModelAndView editChanga(@RequestParam("id") final long id, @Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, HttpSession session) {
         cs.update(id, new Changa.Builder().withUserId(((User)session.getAttribute("getLoggedUser")).getUser_id())
                 .withDescription(form.getDescription())
