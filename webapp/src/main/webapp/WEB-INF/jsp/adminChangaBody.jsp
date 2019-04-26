@@ -49,7 +49,7 @@
     </table>
     <c:choose>
         <c:when test="${notInscribedUsers == true}">
-            <a href="/edit-changa?id=<c:out value=" class="btn btn-primary" style="margin-top: 1cm; margin-bottom: 1cm;"><spring:message code="adminchangaBody.btn.edit"/></a>
+            <a href="/edit-changa?id=<c:out value="${changa.changa_id}"/>" class="btn btn-primary" style="margin-top: 1cm; margin-bottom: 1cm;"><spring:message code="adminchangaBody.btn.edit"/></a>
             <br />
         </c:when>
         <c:otherwise>
