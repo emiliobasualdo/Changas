@@ -46,11 +46,4 @@ public class UserServiceImpl implements UserService {
         }
         return userDao.create(userBuilder);
     }
-
-    @Override
-    public  Either<User, Validation> logIn(final User.Builder userBuilder) {
-        return userDao.getUser(userBuilder);
-    }
-
-
 }
