@@ -2,17 +2,11 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<style>
-    @import url(https://fonts.googleapis.com/css?family=Josefin+Sans:400,300,300italic,400italic,600,700,600italic,700italic);
-    body {
-        font-family: "Josefin Sans", sans-serif;
-        line-height: 1;
-        padding: 20px;
-        height: 100%;
-        background: white;
-    }
 
-</style>
+<head>
+    <style><%@include file="/WEB-INF/css/changaBody.css"%></style>
+</head>
+
 <body>
 
     <div class="jumbotron jumbotron-fluid">
