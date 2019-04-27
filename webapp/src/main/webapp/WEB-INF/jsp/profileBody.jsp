@@ -255,7 +255,7 @@
                 </div>
                 <div class="col-md-8">
                     <div class="tab-content profile-tab" id="myTabContent">
-                        <div class="tab-pane fade show active" id="published" role="tabpanel" aria-labelledby="published-changas-tab">
+                        <div class="tab-pane in fade active" id="published" role="tabpanel" aria-labelledby="published-changas-tab">
 
                             <%@ include file="/WEB-INF/jsp/publishedChangas.jsp"%>
 
