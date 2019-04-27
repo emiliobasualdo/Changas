@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!-- https://bootsnipp.com/snippets/K0ZmK -->
+<html>
 <head>
     <style>
         @import url(https://fonts.googleapis.com/css?family=Josefin+Sans:400,300,300italic,400italic,600,700,600italic,700italic);
@@ -193,7 +194,7 @@
 <body>
     <div class="container emp-profile">
         <%--TODO: cabiar form a a un spring form para que por beans se mapen las varibales y poder cambiar el contendido de las mismas--%>
-        <form method="post">
+        <%--<form method="post">--%>
             <div class="row">
                 <div class="col-md-4">
                     <div class="profile-img">
@@ -267,6 +268,7 @@
                     </div>
                 </div>
             </div>
-        </form>
+        <%--</form>--%>
     </div>
 </body>
+</html>

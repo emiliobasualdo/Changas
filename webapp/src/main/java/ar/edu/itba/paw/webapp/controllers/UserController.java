@@ -33,12 +33,12 @@ public class UserController {
     @Autowired
     private ChangaService cs;
 
-    @RequestMapping("/sign-up")
+    @RequestMapping("/signup")
     public ModelAndView signUp(@ModelAttribute("signUpForm") final UserRegisterForm form) {
         return new ModelAndView("indexSignUp");
     }
 
-    @RequestMapping(value = "/sign-up", method = { RequestMethod.POST })
+    @RequestMapping(value = "/signup", method = { RequestMethod.POST })
     public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors) {
         if (errors.hasErrors()) {
             System.out.println("Errores en los campos del formulario sign up");
@@ -69,10 +69,10 @@ public class UserController {
         /* TODO redirect sin pasar por el login
          return new ModelAndView("redirect:/user?userId=" + either.getValue().getId());
         */
-        return new ModelAndView("redirect:/log-in");
+        return new ModelAndView("redirect:/login");
     }
 
-    @RequestMapping("/log-in")
+    @RequestMapping("/login")
     public ModelAndView logIn(@ModelAttribute("UserLoginForm") final UserLoginForm form) {
         return new ModelAndView("indexLogIn");
     }
@@ -115,6 +115,7 @@ public class UserController {
     public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
         User loggedUser = ((User)session.getAttribute("getLoggedUser"));
         Validation val = is.unsubscribeFromChanga(loggedUser.getUser_id(), changaId);
+        System.out.println(loggedUser.getEmail() + " desanotado de " + changaId);
         if (val.isOk()){
             System.out.println("user "+ loggedUser.getUser_id()+ " successfully desinscripto en changa "+ changaId);
         } else {

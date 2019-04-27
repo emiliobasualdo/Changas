@@ -41,11 +41,11 @@
                     <c:choose>
                         <c:when test="${sessionScope.isUserLogged == false}">
                             <li class="nav-item">
-                                <c:url value="/sign-up" var="signUpUrl" />
+                                <c:url value="/signup" var="signUpUrl" />
                                 <a class="nav-link" href="${signUpUrl}"><spring:message code="navigationBar.btn.signUp"/></a>
                             </li>
                             <li class="nav-item">
-                                <c:url value="/log-in" var="logInUrl" />
+                                <c:url value="/login" var="logInUrl" />
                                 <a class="nav-link" href="${logInUrl}"><spring:message code="navigationBar.btn.logIn"/></a>
                             </li>
                             <li class="nav-item">
@@ -81,5 +81,4 @@
         </div>
     </nav>
     </body>
-
 </html>

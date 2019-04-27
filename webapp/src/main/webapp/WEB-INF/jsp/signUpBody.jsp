@@ -82,7 +82,7 @@
 </head>
 <body>
 <div class="signup-form">
-    <c:url value="/sign-up" var="createUrl" />
+    <c:url value="/signup" var="createUrl" />
     <form:form action="${createUrl}" modelAttribute="signUpForm" method="post">
         <h2><spring:message code="signUpBody.header"/></h2>
         <div class="form-group">

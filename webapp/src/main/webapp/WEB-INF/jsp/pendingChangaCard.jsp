@@ -1,6 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <html>
 <head>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
@@ -29,12 +28,11 @@
         </div>
         <div class="back">
             <c:url value="/unjoin-changa" var="unJoinUrl" />
-            <form action="${unJoinUrl}" method="post">
+            <form method="post" action="${unJoinUrl}">
                 <input type="hidden" name="changaId" value="<c:out value="${requestScope.changa_id}"/>">
                 <input type="submit" class="btn btn-success btn-block" value="Desanotame" />
             </form>
         </div>
     </div>
 </div>
-
 </html>

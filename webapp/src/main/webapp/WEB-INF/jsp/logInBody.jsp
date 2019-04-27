@@ -92,7 +92,7 @@
 <body>
 <div class="login-form">
     <!-- action="" -> aca ponemos que pasa cuando el usuario apreta en ingresar -->
-    <c:url value="/log-in" var="loginUrl" />
+    <c:url value="/login" var="loginUrl" />
     <form action="${loginUrl}"  method="post">
         <div class="avatar">
             <img src="https://i.imgur.com/dGo8DOk.jpg" alt="Avatar">
@@ -114,7 +114,7 @@
             <a href="#" class="pull-right"><spring:message code="loginBody.alert.forgotPassword"/></a>
         </div>
     </form>
-    <p class="text-center small"><spring:message code="loginBody.alert.noAccount"/><a href="/sign-up"><spring:message code="loginBody.btn.singUp"/></a></p>
+    <p class="text-center small"><spring:message code="loginBody.alert.noAccount"/><a href="/signup"><spring:message code="loginBody.btn.singUp"/></a></p>
 </div>
 </body>
 </html>

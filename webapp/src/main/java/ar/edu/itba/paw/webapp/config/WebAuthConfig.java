@@ -30,15 +30,15 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         http.userDetailsService(userDetailsService).sessionManagement()
 //                .invalidSessionUrl("/logIn") //upon logout, you will be forwarded here por ahora no lo usamos
                 .and().authorizeRequests()
-                    .antMatchers("/", "/sign-up").permitAll()
-                    .antMatchers("/log-in").anonymous()
+                    .antMatchers("/", "/signup").permitAll()
+                    .antMatchers("/login").anonymous()
 //                    .antMatchers("/admin/**").hasRole("ADMIN")
                     .antMatchers("/**").authenticated()
                 .and().formLogin()
                     .usernameParameter("j_username")
                     .passwordParameter("j_password")
                     .defaultSuccessUrl("/", true) //the landing page after a successful login
-                    .loginPage("/log-in") //the custom login page
+                    .loginPage("/login") //the custom login page
                     //loginProcessingUrl() – the url to submit the username and password to
                 .and().rememberMe()
                     .rememberMeParameter("j_rememberme")
