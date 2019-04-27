@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sun.security.util.Password;
 
@@ -19,8 +20,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
 
-//    @Autowired
-//    private PassworEncoder
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public Either<User, Validation> findById(long id) {
@@ -48,6 +49,7 @@ public class UserServiceImpl implements UserService {
         if(either.isValuePresent()) {
             return Either.alternative(new Validation(USER_ALREADY_EXISTS));
         }
+        userBuilder.withPasswd(passwordEncoder.encode(userBuilder.getPasswd()));
         return userDao.create(userBuilder);
     }
 }
