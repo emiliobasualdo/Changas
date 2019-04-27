@@ -1,8 +1,9 @@
 @import url(https://fonts.googleapis.com/css?family=Josefin+Sans:400,300,300italic,400italic,600,700,600italic,700italic);
 body {
-    color: #fff;
-    background: #26B3BA;
+    color: #7a7a7a;
+    background: #eee;
     font-family: "Josefin Sans", sans-serif;
+    font-size: 20px;
     line-height: 1;
     padding: 20px;
     height: 100%;
@@ -16,8 +17,8 @@ body {
     color: #7a7a7a;
     border-radius: 2px;
     margin-bottom: 15px;
-    font-size: 13px;
-    background: #ececec;
+    font-size: 16px;
+    background: white;
     box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
     padding: 30px;
     position: relative;
@@ -36,7 +37,7 @@ body {
     height: 95px;
     border-radius: 50%;
     z-index: 9;
-    background: #70c5c0;
+    background: #26B3BA;
     padding: 15px;
     box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
 }
@@ -49,16 +50,16 @@ body {
 .login-form .btn {
     font-size: 16px;
     font-weight: bold;
-    background: #70c5c0;
+    background: #26B3BA;
     border: none;
     margin-bottom: 20px;
 }
 .login-form .btn:hover, .login-form .btn:focus {
-    background: #50b8b3;
+    background: #26B3BA;
     outline: none !important;
 }
 .login-form a {
-    color: #fff;
+    color: #7a7a7a;
     text-decoration: underline;
 }
 .login-form a:hover {

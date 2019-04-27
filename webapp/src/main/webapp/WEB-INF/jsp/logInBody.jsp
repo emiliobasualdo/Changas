@@ -9,7 +9,6 @@
     </head>
     <body>
         <div class="login-form">
-            <!-- action="" -> aca ponemos que pasa cuando el usuario apreta en ingresar -->
             <c:url value="/login" var="loginUrl" />
             <form action="${loginUrl}"  method="post">
                 <div class="avatar">
@@ -27,9 +26,9 @@
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-lg btn-block"><spring:message code="logInBody.button"/></button>
                 </div>
-                <div class="clearfix">
-                    <label class="pull-left checkbox-inline"><input type="checkbox" name="j_rememberme"><spring:message code="logInBody.checkbox"/></label>
-                    <a href="#" class="pull-right"><spring:message code="loginBody.alert.forgotPassword"/></a>
+                <div class="clearfix" style="text-align: center">
+                    <label class="pull-left checkbox-inline" style="margin-left: 3px"><input type="checkbox" name="j_rememberme"><spring:message code="logInBody.checkbox"/></label>
+                    <%--<a href="#" class="pull-right"><spring:message code="loginBody.alert.forgotPassword"/></a>--%>
                 </div>
             </form>
             <p class="text-center small"><spring:message code="loginBody.alert.noAccount"/><a href="/signup"><spring:message code="loginBody.btn.singUp"/></a></p>

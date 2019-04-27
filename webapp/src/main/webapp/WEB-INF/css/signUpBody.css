@@ -1,26 +1,26 @@
 @import url(https://fonts.googleapis.com/css?family=Josefin+Sans:400,300,300italic,400italic,600,700,600italic,700italic);
 body {
-    color: #999;
-    background: #26B3BA;
+    color: #7a7a7a;
+    background: #eee;
     font-family: "Josefin Sans", sans-serif;
     line-height: 1;
     padding: 20px;
     height: 100%;
 }
 .signup-form {
-    width: 390px;
+    width: 500px;
     margin: 0 auto;
     padding: 30px 0;
 }
 .signup-form h2 {
-    color: #636363;
+    color: #26B3BA;
     margin: 0 0 15px;
     text-align: center;
 }
 .signup-form form {
     border-radius: 1px;
     margin-bottom: 15px;
-    background: #fff;
+    background: white;
     border: 1px solid #f3f3f3;
     box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
     padding: 30px;
@@ -30,7 +30,7 @@ body {
 }
 .signup-form label {
     font-weight: normal;
-    font-size: 13px;
+    font-size: 16px;
 }
 .signup-form .input-group-addon {
     max-width: 42px;
@@ -59,10 +59,10 @@ body {
     text-decoration: underline;
 }
 .signup-form .fa {
-    font-size: 21px;
+    font-size: 13px;
 }
 .signup-form .fa-paper-plane {
-    font-size: 17px;
+    font-size: 13px;
 }
 .signup-form .fa-check {
     color: #fff;
