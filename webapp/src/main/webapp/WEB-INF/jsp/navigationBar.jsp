@@ -35,7 +35,7 @@
                                 </li>
                             </c:when>
                             <c:otherwise>
-                                <li class="nav-item">
+                                <li class="nav-item" style="margin-top: 0.4cm">
                                     <%--<c:url value="/profile" var="profileUrl" />
                                     <a class="nav-link" href="${profileUrl}">Hola, <c:out value="${sessionScope.getLoggedUser.name}"/></a>
                                     --%>

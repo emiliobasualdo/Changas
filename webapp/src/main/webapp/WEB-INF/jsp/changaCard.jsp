@@ -10,15 +10,15 @@
 
 <body>
     <div class="changaCard-option">
-        <h1>
+        <h2>
             <c:out value="${requestScope.title}" />
-        </h1>
+        </h2>
         <span class="">
                 <i class="fas fa-map-marker-alt fas-2x"></i>
                 <small>
-                    <c:out value="${requestScope.neighborhood}" />, <c:out value="${requestScope.street}" /> <c:out value="${requestScope.number}" />
+                    <c:out value="${requestScope.neighborhood}"/>
                 </small><br>
-                </span>
+        </span>
         <hr />
         <p>
             <c:out value="${requestScope.description}" />
