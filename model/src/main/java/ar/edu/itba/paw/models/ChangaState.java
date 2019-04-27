@@ -1,8 +1,6 @@
-package ar.edu.itba.paw.constants;
+package ar.edu.itba.paw.models;
 
-import ar.edu.itba.paw.interfaces.util.State;
-
-public enum DBChangaState implements State {
+public enum ChangaState {
 
     emitted ("emitted", "The changa has been created by a user and posted"),
     settled ("settled", "The owner of the changa has choosen one or more changueros and has closed the inscriptions"),
@@ -13,13 +11,9 @@ public enum DBChangaState implements State {
     final String name;
     final String description;
 
-    DBChangaState(String name, String descr) {
+    ChangaState(String name, String descr) {
         this.name = name;
         this.description = descr;
     }
 
-    @Override
-    public String getState() {
-        return name;
-    }
 }

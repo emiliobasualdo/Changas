@@ -1,4 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <style>
@@ -33,9 +34,9 @@
     <table class="table">
         <thead>
         <tr>
-            <th>Nombre</th>
-            <th>Telefono</th>
-            <th>Ubicacion</th>
+            <th><spring:message code="adminchangaBody.Table.name"/></th>
+            <th><spring:message code="adminchangaBody.Table.location"/></th>
+            <th><spring:message code="adminchangaBody.Table.telephone"/></th>
         </tr>
         </thead>
         <tbody>
@@ -47,14 +48,14 @@
         </tbody>
     </table>
     <c:choose>
-        <c:when test="${alreadyInscribedUsers == false}">
-            <a href="#" class="btn btn-primary" style="margin-top: 1cm; margin-bottom: 1cm;">Editar datos</a>
+        <c:when test="${notInscribedUsers == true}">
+            <a href="/edit-changa?id=<c:out value="${changa.changa_id}"/>" class="btn btn-primary" style="margin-top: 1cm; margin-bottom: 1cm;"><spring:message code="adminchangaBody.btn.edit"/></a>
             <br />
         </c:when>
         <c:otherwise>
             <div class="container" style="margin-top: 40px">
                 <div class="auto-table">
-                    <h2 style="margin-bottom: 20px">Usuarios anotados</h2>
+                    <h2 style="margin-bottom: 20px"><spring:message code="adminchangaBody.h2"/></h2>
                     <c:forEach items="${inscribedUsers}" var="user">
                         <c:set var="name" value="${user.name}" scope="request"/>
                         <c:set var="surname" value="${user.surname}" scope="request"/>

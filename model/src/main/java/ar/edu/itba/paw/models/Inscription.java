@@ -3,7 +3,7 @@ package ar.edu.itba.paw.models;
 public class Inscription {
     private long user_id;
     private long changa_id;
-    private String state;
+    private InscriptionState state;
 
     private Inscription(){
     }
@@ -16,10 +16,9 @@ public class Inscription {
         return changa_id;
     }
 
-    public String getState() {
+    public InscriptionState getState() {
         return state;
     }
-
 
 
     public static class Builder {
@@ -27,7 +26,7 @@ public class Inscription {
         private static final long NO_ID = -1;
         private long user_id;
         private long changa_id;
-        private String state;
+        private InscriptionState state;
 
         public Builder() {
             this.user_id = NO_ID;
@@ -41,7 +40,7 @@ public class Inscription {
             this.changa_id = changaId;
             return this;
         }
-        public Inscription.Builder withState(String state){
+        public Inscription.Builder withState(InscriptionState state){
             this.state = state;
             return this;
         }

@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import sun.security.util.Password;
 
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.DATABASE_ERROR;
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.USER_ALREADY_EXISTS;
+
 @Service
 @Primary
 public class UserServiceImpl implements UserService {
@@ -30,28 +33,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public  Either<User, Validation> register(User user) {
-        /*TODO MAITE
-        preguntar si en vez de hacer la query findByMail es mejor
-        directamente crear el usuario y, si ya existe, catchear la excepcion]
-        de la base de datos. como sabes q esa exception es la q viola una determinada key?
-         */
-        Either<User, Validation> either = userDao.findByMail(user.getEmail());
+    public  Either<User, Validation> register(final User.Builder userBuilder) {
 
-        /*TODO MAITE
-        Hacer username unique en la tabla
-        hacer un || chequeando que el username no exista. Agregar username al UserBuilder.
-        */
-        if(either.isValuePresent()) {
+        Either<User, Validation> either = userDao.findByMail(userBuilder.getEmail());
+
+        // if error is from database
+        if(!either.isValuePresent() && either.getAlternative().getEc() == DATABASE_ERROR){
             return either;
         }
-        return userDao.create(user);
+        /*TODO MAITE
+        hacer un || chequeando que el username no exista. Agregar username al UserBuilder.
+        */
+        // email is allready in use
+        if(either.isValuePresent()) {
+            return Either.alternative(new Validation(USER_ALREADY_EXISTS));
+        }
+        return userDao.create(userBuilder);
     }
-
-    @Override
-    public  Either<User, Validation> logIn(User user) {
-        return userDao.getUser(user);
-    }
-
-
 }

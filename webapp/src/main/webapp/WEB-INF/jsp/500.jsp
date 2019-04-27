@@ -1,3 +1,5 @@
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!-- TODO: languages y utf con ñ y tildes -->
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html lang="en">
@@ -51,10 +53,11 @@
         <div class="logo">
             <h1>503</h1>
         </div>
-        <p class="lead text-muted">Oops, an error has occurred. Service unavailable!</p>
+        <p class="lead text-muted"><spring:message code="500.message"/></p>
         <div class="clearfix"></div>
         <div class="col-lg-6 col-lg-offset-3">
-            <form action="index.html">
+            <c:url value="/" var="homeUrl" />
+            <form action="${homeUrl}">
                 <div class="input-group">
                     <input type="text" placeholder="search ..." class="form-control">
                     <span class="input-group-btn">
@@ -70,8 +73,8 @@
         <br>
         <div class="col-lg-6 col-lg-offset-3">
             <div class="btn-group btn-group-justified">
-                <a href="dashboard.html" class="btn btn-info">Return Dashboard</a>
-                <a href="index.html" class="btn btn-warning">Return Website</a>
+                <a href="dashboard.html" class="btn btn-info"><spring:message code="500.btn.dashboard"/></a>
+                <a href="index.html" class="btn btn-warning"><spring:message code="500.btn.website"/></a>
             </div>
         </div>
     </div>

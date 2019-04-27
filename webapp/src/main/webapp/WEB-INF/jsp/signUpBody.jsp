@@ -1,9 +1,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
-<!DOCTYPE html>
-<html>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <html>
 <head>
     <style type="text/css">
@@ -84,9 +82,9 @@
 </head>
 <body>
 <div class="signup-form">
-    <c:url value="/createUser" var="create" />
-    <form:form action="${create}" modelAttribute="signUpForm" method="post">
-        <h2>Create una cuenta</h2>
+    <c:url value="/signup" var="createUrl" />
+    <form:form action="${createUrl}" modelAttribute="signUpForm" method="post">
+        <h2><spring:message code="signUpBody.header"/></h2>
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
@@ -143,9 +141,9 @@
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="signUpBody.button"/></button>
         </div>
-        <p class="small text-center">Clickeando en el boton de registración, estás de acuerdo con nuestros Términos de Condiciones y Política de Privacidad <%--<br><a href="#">Terms &amp; Conditions</a>, and <a href="#">Privacy Policy</a>--%>.</p>
+        <p class="small text-center"><spring:message code="signUpBody.alert.termsAndPivacyP"/><%--<br><a href="#">Terms &amp; Conditions</a>, and <a href="#">Privacy Policy</a>--%>.</p>
     </form:form>
-    <div class="text-center" style="color: black;">Ya tenés una cuenta? <a href="/logIn" style="color: black;">Ingresá acá</a>.</div>
+    <div class="text-center" style="color: black;"><spring:message code="signUpBody.alert.logIn"/><a href="/logIn" style="color: black;"><spring:message code="signUpBody.alert.btn.logIn"/></a>.</div>
 </div>
 </body>
 </html>

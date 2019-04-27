@@ -1,11 +1,9 @@
 package ar.edu.itba.paw.interfaces.util;
 
-// todo interface Errors
-// todo, donde iría está implementación? porque no es una interfaz
+// todo interface Errors --- PILO: para qué?
 public class Validation {
     private final ErrorCodes ec;
 
-    //preguntar lo de final
     public Validation(final ErrorCodes ec) {
         this.ec = ec;
     }
@@ -33,6 +31,7 @@ public class Validation {
         DATABASE_ERROR          ("Database error"),
 
         // Changas
+        INEXISTENT_CHANGA       ("Invalid changa id"),
 
         // Users
         INVALID_PASSWORD        ("Invalid password"),
@@ -40,17 +39,23 @@ public class Validation {
         NO_SUCH_USER            ("No such user"),
         INVALID_MAIL            ("Invalid mail"),
         INVALID_COMBINATION     ("The email and password combination is invalid"),
+        USER_ALREADY_EXISTS     ("The email provided is already in use"),
 
         // Inscription
-        ALREADY_INSCRIBED       ("User already inscribed in changa"),
-        USERS_INSCRIBED         ("There are users inscribed in the changa"),
+        USER_ALREADY_INSCRIBED  ("User already inscribed in changa"),
+        USER_NOT_INSCRIBED      ("The user is not inscribed in the changa"),
+        USERS_INSCRIBED         ("There are users inscribed in the changa"), // we cant edit a changa if users are inscribed
+        NO_USERS_INSCRIBED      ("There are no users inscribed in the changa"),
+        CHANGE_NOT_POSSIBLE     ("Such change is not allowed to be done"),
         ;
 
         private final String message;
 
+
         ErrorCodes(String message) {
             this.message = message;
         }
+
 
         public String getMessage() {
             return message;

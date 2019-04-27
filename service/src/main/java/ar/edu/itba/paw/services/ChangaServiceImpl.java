@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.OK;
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.USERS_INSCRIBED;
 
 @Repository
@@ -28,42 +29,38 @@ public class ChangaServiceImpl implements ChangaService {
     }
 
     @Override
-    public Either<Changa, Validation> create(final Changa changa) {
-        return chDao.create(changa);
+    public Either<Changa, Validation> create(final Changa.Builder changaBuilder) {
+        return chDao.create(changaBuilder);
     }
 
     // todo NEFASTO cambiar ya
+    /*NOTA: en el parametro changaBuilder se debe de pasar un changaBuilder con los campos updateados y con los campos antiguos de los que
+    no fueron updateados. Si se quiere hacer un modificado más rápido, hacer funciones q updateen campos específicos. Me parece innecesario porque no tenemos
+    muchos campos
+    * */
+
+
     @Override
-    public Either<Changa, Validation> update(Changa changa) {
-        Either<Changa, Validation> old = chDao.getById(changa.getChanga_id());
-        // if changa exists
+    public Either<Changa, Validation> update(final long changaId, final Changa.Builder changaBuilder) {
+        Either<Changa, Validation> old = chDao.getById(changaId);
+
         if(!old.isValuePresent()){
-            return Either.alternative(old.getAlternative());
+            return old;
         }
 
         // we will update a changa ONLY if no changueros are inscribed in it
-        Either<Boolean, Validation> either = inDao.hasInscribedUsers(changa.getChanga_id());
+        boolean hasInscribedUsers = inDao.hasInscribedUsers(changaId);
 
-        // If there was no problem
-        if(!either.isValuePresent()){
-            return Either.alternative(either.getAlternative()); // todo como solucionar esto? No hay necesidad de hacer new, podría retornar la otra instancia de either
+        if(hasInscribedUsers) {
+            return Either.alternative(new Validation(USERS_INSCRIBED));
         }
 
-        // if there are no changueros inscribed
-        if (!either.getValue()) {
-            return chDao.update(changa); // todo mal, cambiar de changa a builder
-        }
-        return Either.alternative(new Validation(USERS_INSCRIBED));
+        return chDao.update(changaId, changaBuilder);
     }
 
     @Override
     public Validation delete(long changaId) {
         return chDao.delete(changaId);
-    }
-
-    @Override
-    public Validation delete(Changa changa) {
-        return this.delete(changa.getChanga_id());
     }
 
     @Override

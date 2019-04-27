@@ -1,5 +1,7 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!-- https://bootsnipp.com/snippets/K0ZmK -->
+<html>
 <head>
     <style>
         @import url(https://fonts.googleapis.com/css?family=Josefin+Sans:400,300,300italic,400italic,600,700,600italic,700italic);
@@ -191,13 +193,14 @@
 </head>
 <body>
     <div class="container emp-profile">
-        <form method="post">
+        <%--TODO: cabiar form a a un spring form para que por beans se mapen las varibales y poder cambiar el contendido de las mismas--%>
+        <%--<form method="post">--%>
             <div class="row">
                 <div class="col-md-4">
                     <div class="profile-img">
                         <img src="https://i.imgur.com/dGo8DOk.jpg" alt=""/>
                         <div class="file btn btn-lg btn-primary">
-                            Cambiar foto
+                            <spring:message code="label.changePhoto"/>
                             <input type="file" name="file"/>
                         </div>
                     </div>
@@ -209,10 +212,10 @@
                         </h5> -->
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="published-changas-tab" data-toggle="tab" href="#published" role="tab" aria-controls="published" aria-selected="true">Changas publicadas</a>
+                                <a class="nav-link active" id="published-changas-tab" data-toggle="tab" href="#published" role="tab" aria-controls="published" aria-selected="true"><spring:message code="profileBody.nav.publish"/></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="pending-changas-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false">Changas anotadas</a>
+                                <a class="nav-link" id="pending-changas-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false"><spring:message code="profileBody.nav.inscribed"/></a>
                             </li>
                         </ul>
                     </div>
@@ -226,7 +229,7 @@
                     <div class="profile-head" style="text-align: center">
                         <div class="row">
                             <div class="col-md-6">
-                                <label>Nombre</label>
+                                <label><spring:message code="label.name"/></label>
                             </div>
                             <div class="col-md-6">
                                 <p><c:out value="${profile.name}"/> <c:out value="${profile.surname}"/></p>
@@ -234,7 +237,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <label>Email</label>
+                                <label><spring:message code="label.mail"/></label>
                             </div>
                             <div class="col-md-6">
                                 <p><c:out value="${profile.email}"/></p>
@@ -242,7 +245,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <label>Telefono</label>
+                                <label><spring:message code="label.telephone"/></label>
                             </div>
                             <div class="col-md-6">
                                 <p><c:out value="${profile.tel}"/></p>
@@ -254,17 +257,18 @@
                     <div class="tab-content profile-tab" id="myTabContent">
                         <div class="tab-pane fade show active" id="published" role="tabpanel" aria-labelledby="published-changas-tab">
 
-                            <jsp:include page="publishedChangas.jsp"/>
+                            <%@ include file="/WEB-INF/jsp/publishedChangas.jsp"%>
 
                         </div>
                         <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-changas-tab">
 
-                            <jsp:include page="pendingChangas.jsp"/>
+                            <%@ include file="/WEB-INF/jsp/pendingChangas.jsp" %>
 
                         </div>
                     </div>
                 </div>
             </div>
-        </form>
+        <%--</form>--%>
     </div>
 </body>
+</html>

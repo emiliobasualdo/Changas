@@ -2,7 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
-import ar.edu.itba.paw.interfaces.util.State;
+import ar.edu.itba.paw.models.InscriptionState;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.Either;
@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
 
 @Repository
 public class InscriptionServiceImpl implements InscriptionService {
@@ -25,18 +27,12 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public Validation inscribeInChanga(User user, Changa changa) {
-        return this.inscribeInChanga(user.getUser_id(),changa.getChanga_id());
-    }
-
-    @Override
-    public Validation uninscribeFromChanga(long userId, long changaId, State state) {
-        return dao.uninscribeFromChanga(userId,changaId,state.getState());
-    }
-
-    @Override
-    public Validation uninscribeFromChanga(User user, Changa changa, State state) {
-        return this.uninscribeFromChanga(user.getUser_id(),changa.getChanga_id(),state);
+    public Validation unsubscribeFromChanga(long userId, long changaId) {
+        if(dao.unsubscribeFromChanga(userId,changaId)) {
+            return new Validation(OK);
+        }
+        //acá podemos ver por qué es que no se pudo desuscrbir: por ej, user no existe, changa no existe, el user no estaba inscripto, etc
+        return new Validation(CHANGE_NOT_POSSIBLE);
     }
 
     @Override
@@ -45,18 +41,20 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public Either<Map<User, Inscription>, Validation> getInscribedUsers(Changa changa) {
-        return this.getInscribedUsers(changa.getChanga_id());
+    public Validation changeUserStateInChanga(long userId, long changaId, InscriptionState newState) {
+        Either<Inscription, Validation> insc = dao.getInscription(userId, changaId);
+        if (insc.isValuePresent())
+            return this.changeUserStateInChanga(insc.getValue(), newState);
+        else
+            return insc.getAlternative();
     }
 
     @Override
-    public Validation changeUserStateInChanga(long userId, long changaId, State state) {
-        return dao.changeUserStateInChanga(userId,changaId,state.getState());
-    }
-
-    @Override
-    public Validation changeUserStateInChanga(User user, Changa changa, State state) {
-        return this.changeUserStateInChanga(user.getUser_id(), changa.getChanga_id(), state);
+    public Validation changeUserStateInChanga(Inscription insc, InscriptionState newState) {
+        if (InscriptionState.changeIsPossible(insc.getState(), newState))
+            return dao.changeUserStateInChanga(insc, newState);
+        else
+            return new Validation(CHANGE_NOT_POSSIBLE);
     }
 
     @Override
@@ -65,22 +63,8 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public Either<Map<Changa, Inscription>, Validation> getUserInscriptions(User user) {
-        return this.getUserInscriptions(user.getUser_id());
-    }
-
-    @Override
     public Either<Boolean, Validation> isUserInscribedInChanga(long userId, long changaId) {
         return dao.isUserInscribedInChanga(userId, changaId);
     }
 
-    @Override
-    public Either<Boolean, Validation> isUserInscribedInChanga(User user, Changa changa) {
-        return this.isUserInscribedInChanga(user.getUser_id(), changa.getChanga_id());
-    }
-
-    @Override
-    public Either<Boolean, Validation> isUserInscribedInChanga(User user, long changaId) {
-        return this.isUserInscribedInChanga(user.getUser_id(), changaId);
-    }
 }

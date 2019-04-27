@@ -36,22 +36,22 @@ public class User {
         return passwd;
     }
 
-    public static class Builder {
+    public User (long id, User.Builder ub) {
+        user_id = id;
+        name = ub.getName();
+        surname = ub.getSurname();
+        tel = ub.getTel();
+        email = ub.getEmail();
+        passwd = ub.getPasswd();
+    }
 
-        private static final int NO_ID = -1;
-        private long user_id;
+    public static class Builder {
         private String name;
         private String surname;
         private String tel;
         private  String email;
         private  String passwd;
 
-        public Builder() {
-            this.user_id = NO_ID;
-        }
-        public Builder(long user_id) {
-            this.user_id = user_id;
-        }
 
         public User.Builder withName(String name){
             this.name = name;
@@ -78,16 +78,40 @@ public class User {
             return this;
         }
 
-        public User build(){
-            //Here we create the actual bank account object, which is always in a fully initialised state when it's returned.
-            User user = new User();  //Since the builder is in the BankAccount class, we can invoke its private constructor.
-            user.user_id = this.user_id;
-            user.name = this.name;
-            user.surname = this.surname;
-            user.tel = this.tel;
-            user.email = this.email;
-            user.passwd = this.passwd;
-            return user;
+        public String getEmail() {
+            return email;
         }
+
+        public String getPasswd() {
+            return passwd;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getSurname() {
+            return surname;
+        }
+
+        public String getTel() {
+            return tel;
+        }
+
+
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "user_id=" + user_id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", tel='" + tel + '\'' +
+                ", email='" + email + '\'' +
+                ", passwd='" + passwd + '\'' +
+                '}';
+    }
+
+
 }

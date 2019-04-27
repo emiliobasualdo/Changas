@@ -5,15 +5,11 @@ import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
-import ar.edu.itba.paw.models.Inscription;
 import ar.edu.itba.paw.models.Either;
+import ar.edu.itba.paw.models.Inscription;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
-import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,7 +21,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Controller
 public class ChangaController {
@@ -39,12 +37,12 @@ public class ChangaController {
     @Autowired
     private InscriptionService is;
 
-    @RequestMapping(value = "/createChanga")
+    @RequestMapping(value = "/create-changa")
     public ModelAndView createChanga(@ModelAttribute("changaForm") final ChangaForm form) {
         return new ModelAndView("issueChangaForm");
     }
 
-    @RequestMapping(value = "/createChanga", method = RequestMethod.POST )
+    @RequestMapping(value = "/create-changa", method = RequestMethod.POST )
     public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, HttpSession session) {
         System.out.println(form.getTitle() + " " +  form.getDescription() + " " +  form.getPrice() + " " +  form.getNeighborhood());
         cs.create(new Changa.Builder().withUserId(((User)session.getAttribute("getLoggedUser")).getUser_id())
@@ -53,9 +51,39 @@ public class ChangaController {
                 .withPrice(form.getPrice())
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
                 .createdAt(LocalDateTime.now())
-                .build()
         );
         return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping(value = "/edit-changa")
+    public ModelAndView editChanga(@RequestParam("id") final long id, @ModelAttribute("changaForm") final ChangaForm form) {
+        Either<Changa, Validation> changaEither = cs.getChangaById(id);
+        if (!changaEither.isValuePresent()) {
+            //todo error
+            //nunca estariamos en este caso igual, ver como solucionar
+            return new ModelAndView("redirect:/");
+        }
+        Changa changa = changaEither.getValue();
+        form.setTitle(changa.getTitle());
+        form.setStreet(changa.getStreet());
+        form.setPrice(changa.getPrice());
+        form.setNumber(changa.getNumber());
+        form.setNeighborhood(changa.getNeighborhood());
+        form.setDescription(changa.getDescription());
+        return new ModelAndView("editChangaForm")
+                .addObject("id", id);
+    }
+
+    @RequestMapping(value = "/edit-changa", method = RequestMethod.POST )
+    public ModelAndView editChanga(@RequestParam("id") final long id, @Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, HttpSession session) {
+        cs.update(id, new Changa.Builder().withUserId(((User)session.getAttribute("getLoggedUser")).getUser_id())
+                .withDescription(form.getDescription())
+                .withTitle(form.getTitle())
+                .withPrice(form.getPrice())
+                .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
+                .createdAt(LocalDateTime.now())
+        );
+        return new ModelAndView("redirect:/profile");
     }
 
     @RequestMapping("/changa")
@@ -64,10 +92,7 @@ public class ChangaController {
         final Changa changa = cs.getChangaById(id).getValue();
         mav.addObject("changa", changa);
         boolean userAlreadyInscribedInChanga = false;
-//        if(!isUserLoggedIn()) {                         //SPRING SECURITY SE ENCARGA DE ESTO
-//            return new ModelAndView("redirect:/login");
-//        }
-        Either<Boolean, Validation> either = is.isUserInscribedInChanga(((User)session.getAttribute("getLoggedUser")), id);
+        Either<Boolean, Validation> either = is.isUserInscribedInChanga(((User)session.getAttribute("getLoggedUser")).getUser_id(), id);
         if (either.isValuePresent()) {
             userAlreadyInscribedInChanga = either.getValue();
         } else {
@@ -91,16 +116,11 @@ public class ChangaController {
         if (either.isValuePresent()) {
             Map<User, Inscription> map = either.getValue();
             inscribedUsers = map.keySet();
-//            inscribedUsers.add(new User.Builder().withName("p").withSurname("p").withEmail("p").withPasswd("p").withTel("1").build());
-//            inscribedUsers.add(new User.Builder().withName("pp").withSurname("pp").withEmail("pp").withPasswd("pp").withTel("11").build());
-//            inscribedUsers.add(new User.Builder().withName("ppp").withSurname("ppp").withEmail("ppp").withPasswd("ppp").withTel("111").build());
-//            inscribedUsers.add(new User.Builder().withName("pppp").withSurname("pppp").withEmail("pppp").withPasswd("pppp").withTel("1111").build());
         } else {
             //todo
         }
-        System.out.println("Usuarios inscriptos en changa " + id + " son " + inscribedUsers.size());
-        mav.addObject("alreadyInscribedUsers", !inscribedUsers.isEmpty());
-        mav.addObject("userAlreadyInscribedInChanga", inscribedUsers);
+        mav.addObject("notInscribedUsers", inscribedUsers.isEmpty());
+        mav.addObject("inscribedUsers", inscribedUsers);
         return mav;
     }
 
