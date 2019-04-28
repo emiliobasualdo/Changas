@@ -24,6 +24,10 @@ public class EmailServiceImplementation implements EmailService{
         emailSender.send(message);
     }
 
+    @Override
+    public void sendJoinRequestEmail(Changa changa, User changaOwner, User requestingUser) {
+        sendEmail(changaOwner.getEmail(), "Solicitud", joinRequestEmailBody(changa, changaOwner, requestingUser));
+    }
 
 
     //TODO INTERNACIONALIZAR

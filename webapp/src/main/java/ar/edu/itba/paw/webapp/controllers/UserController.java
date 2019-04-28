@@ -79,7 +79,6 @@ public class UserController {
 
     @RequestMapping("/login")
     public ModelAndView logIn(@ModelAttribute("UserLoginForm") final UserLoginForm form) {
-        emailService.sendEmail("herran.maite@gmail.com", "subject", "body");
         return new ModelAndView("indexLogIn");
     }
 
@@ -113,8 +112,7 @@ public class UserController {
             //TODO hacer validaciones
             Changa changa = cs.getChangaById(changaId).getValue();
             User changaOwner = us.findById(changa.getUser_id()).getValue();
-            //TODO INTERNACIONALIZAR
-            emailService.sendEmail(changaOwner.getEmail(), "Solicitud", joinRequestEmailBody(changa, changaOwner, loggedUser));
+            emailService.sendJoinRequestEmail(changa, changaOwner, loggedUser);
         } else {
             //TODO JIME un popup de error
             System.out.println("No se pudo inscribir en la changa pq:"+ val.getMessage());
@@ -146,15 +144,4 @@ public class UserController {
                 .addObject("pendingChangas", is.getUserInscriptions(loggedUser.getUser_id()).getValue().keySet());
     }
 
-
-    //TODO INTERNACIONALIZAR
-    private String joinRequestEmailBody(Changa changa, User changaOwner, User currentUser){
-        StringBuilder sb = new StringBuilder();
-        sb.append(changaOwner.getName());
-        sb.append(",\n");
-        sb.append(currentUser.getName());
-        sb.append(" quiere unirse a la changa ");
-        sb.append(changa.getDescription());
-        return sb.toString();
-    }
 }
