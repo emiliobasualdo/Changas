@@ -18,10 +18,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.net.URI;
 
 @Controller
 public class UserController {
@@ -44,7 +47,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/signup", method = { RequestMethod.POST })
-    public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors) {
+    public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors, final WebRequest request) {
         if (errors.hasErrors()) {
             System.out.println("Errores en los campos del formulario sign up");
             return signUp(form);
@@ -70,6 +73,20 @@ public class UserController {
 //                //TODO MAITE que hacemo aca. preguntarle a Juan lo de las exceptions de la base de datos cuando violas un unique
 //            }
         }
+
+
+        try {
+            String appUrl = request.getContextPath();
+            System.out.println("appurl: "+appUrl);
+            ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
+            builder.scheme("http");
+            URI uri = builder.build().toUri();
+            emailService.sendMailConfirmationEmail(either.getValue(), uri.toString());
+        } catch (Exception me) {
+            System.out.println("email error");
+            return new ModelAndView("emailError", "user", form);
+        }
+
 
         /* TODO redirect sin pasar por el login
          return new ModelAndView("redirect:/user?userId=" + either.getValue().getId());

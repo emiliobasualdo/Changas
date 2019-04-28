@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.services.EmailService;
+import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.User;
 import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
@@ -9,7 +10,11 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import javax.mail.internet.MimeMessage;
+import java.util.UUID;
 
 @Service
 public class EmailServiceImplementation implements EmailService{
@@ -19,6 +24,9 @@ public class EmailServiceImplementation implements EmailService{
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public void sendEmail(String to, String subject, String body) {
@@ -35,8 +43,38 @@ public class EmailServiceImplementation implements EmailService{
         sendEmail(changaOwner.getEmail(), subject, joinRequestEmailBody(changa, changaOwner, requestingUser));
     }
 
+    @Override
+    public void sendMailConfirmationEmail(User user, String appUrl) {
+        String token = UUID.randomUUID().toString();
+        userService.createVerificationToken(user, token);
+        String confirmUrl = appUrl + "/registrationConfirm?token=" + token;
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper;
 
-    //TODO HACER CON HTML E INTERNACIONALIZADO
+        try {
+            helper = new MimeMessageHelper(message,true);
+            helper.setTo(user.getEmail());
+            helper.setSubject(messageSource.getMessage("mailConfirmationSubject",null, LocaleContextHolder.getLocale()));
+            helper.setText(mailConfirmationEmailBody(user, confirmUrl), true);
+        } catch (javax.mail.MessagingException e) {
+            e.printStackTrace();
+        }
+
+        emailSender.send(message);
+    }
+
+
+
+    //TODO emails from html templates
+    private String mailConfirmationEmailBody(User user, String confirmUrl) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Apriete en el link para confirmar el mail\n");
+        sb.append(confirmUrl);
+        return sb.toString();
+    }
+
+
+    //TODO emails from html templates
     private String joinRequestEmailBody(Changa changa, User changaOwner, User currentUser){
         StringBuilder sb = new StringBuilder();
         sb.append(changaOwner.getName());

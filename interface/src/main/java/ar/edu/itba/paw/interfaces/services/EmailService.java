@@ -7,4 +7,5 @@ import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
 public interface EmailService {
     void sendEmail(String to, String subject, String body);
     void sendJoinRequestEmail(Changa changa, User changaOwner, User requestingUser);
+    void sendMailConfirmationEmail(User user, String appUrl);
 }

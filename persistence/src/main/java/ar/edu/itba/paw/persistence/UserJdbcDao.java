@@ -99,6 +99,7 @@ public class UserJdbcDao implements UserDao {
                                                 .withTel(rs.getString(tel.name()))
                                                 .withEmail(rs.getString(email.name()))
                                                 .withPasswd(rs.getString(passwd.name()))
+                                                .enabled(rs.getBoolean(enabled.name()))
         );
     }
 

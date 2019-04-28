@@ -17,4 +17,5 @@ public interface UserService {
     String toString();
     Either<User, Validation> findByMail(String mail);
     Either<User, Validation> register(final User.Builder userBuilder);
+    void createVerificationToken(User user, String token);
 }
