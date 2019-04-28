@@ -5,3 +5,7 @@ body {
 p {
     font-size: 16px;
 }
+.navbar-custom {
+    background:  #41d0d8
+;
+}
