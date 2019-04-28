@@ -8,7 +8,6 @@
         <style><%@include file="/WEB-INF/css/inscribedUserCard.css"%></style>
     </head>
     <body>
-        <div class="col-sm-4">
             <div class="card">
                 <div class="card-body">
                     <h3 class="card-title" style="text-align: center"><c:out value="${requestScope.name}"/> <c:out value="${requestScope.surname}"/></h3>
@@ -30,6 +29,5 @@
                     <br />
                 </div>
             </div>
-        </div>
     </body>
 </html>

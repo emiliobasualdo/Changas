@@ -51,8 +51,8 @@
             </c:when>
             <c:otherwise>
                 <div class="container" style="margin-top: 40px">
+                    <h2 style="margin-bottom: 20px"><spring:message code="adminchangaBody.h2"/></h2>
                     <div class="auto-table">
-                        <h2 style="margin-bottom: 20px"><spring:message code="adminchangaBody.h2"/></h2>
                         <c:forEach items="${inscribedUsers}" var="user">
                             <c:set var="name" value="${user.name}" scope="request"/>
                             <c:set var="surname" value="${user.surname}" scope="request"/>
