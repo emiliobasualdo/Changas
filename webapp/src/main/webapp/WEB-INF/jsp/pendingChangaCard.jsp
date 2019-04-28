@@ -33,7 +33,7 @@
                     <c:url value="/unjoin-changa" var="unJoinUrl" />
                     <form method="post" action="${unJoinUrl}">
                         <input type="hidden" name="changaId" value="<c:out value="${requestScope.changa_id}"/>">
-                        <input type="submit" class="btn btn-success btn-block" value="Desanotame" />
+                        <input type="submit" class="btn btn-danger btn-block" value="Desanotame" />
                     </form>
                 </div>
             </div>

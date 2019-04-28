@@ -1,8 +1,9 @@
-@import url(https://fonts.googleapis.com/css?family=Josefin+Sans:400,300,300italic,400italic,600,700,600italic,700italic);
+@import url('https://fonts.googleapis.com/css?family=Quicksand:400,500,700&subset=latin-ext');
 body {
     color: #7a7a7a;
     background: #eee;
-    font-family: "Josefin Sans", sans-serif;
+    font-family: "Quicksand", sans-serif;
+    font-weight: 500;
     font-size: 20px;
     line-height: 1;
     padding: 20px;

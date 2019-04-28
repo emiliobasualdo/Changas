@@ -1,6 +1,6 @@
-@import url(https://fonts.googleapis.com/css?family=Josefin+Sans:400,300,300italic,400italic,600,700,600italic,700italic);
+@import url('https://fonts.googleapis.com/css?family=Quicksand:400,500,700&subset=latin-ext');
 body {
-    font-family: "Josefin Sans", sans-serif;
+    font-family: "Quicksand", sans-serif;
     line-height: 1;
     padding: 20px;
     height: 100%;
@@ -14,7 +14,7 @@ body {
     background: #fff;
 }
 .profile-img{
-    font-family: "Josefin Sans", sans-serif;
+    font-family: "Quicksand", sans-serif;
     font-size: 20px;
     text-align: center;
 }
@@ -29,7 +29,7 @@ body {
     width: 70%;
     border: none;
     border-radius: 0;
-    font-family: "Josefin Sans", sans-serif;
+    font-family: "Quicksand", sans-serif;
     font-size: 15px;
     background: #212529b8;
 }
@@ -53,7 +53,7 @@ body {
     width: 70%;
     padding: 2%;
     font-weight: 600;
-    font: 15px Montserrat, sans-serif;
+    font: 15px "Quicksand", sans-serif;
     color: #6c757d;
     cursor: pointer;
 }
@@ -62,7 +62,7 @@ body {
 }
 .profile-head .nav-tabs .nav-link{
     font-weight:600;
-    font-family: "Josefin Sans", sans-serif;
+    font-family: "Quicksand", sans-serif;
     font-size: 20px;
     border: none;
     color: #000000;
@@ -74,13 +74,22 @@ body {
 }
 .profile-tab label{
     font-weight: 600;
-    font-family: "Josefin Sans", sans-serif;
+    font-family: "Quicksand", sans-serif;
     font-size: 20px;
     color: #000000;
 }
 .profile-tab p{
     font-weight: 600;
-    font-family: "Josefin Sans", sans-serif;
+    font-family: "Quicksand", sans-serif;
     font-size: 20px;
     color: #000000;
+}
+.auto-table {
+    margin-top: 20px;
+    /*display: table;*/
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: minmax(100px, auto);
+    /*width: 100%;*/
 }
