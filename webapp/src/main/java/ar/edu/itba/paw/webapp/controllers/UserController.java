@@ -1,13 +1,16 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.services.ChangaService;
+import ar.edu.itba.paw.interfaces.services.EmailService;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
+import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.forms.UserLoginForm;
 import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
+import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -24,12 +27,14 @@ import javax.validation.Valid;
 public class UserController {
 
     @Autowired
+    EmailService emailService;
+
+    @Autowired
     private UserService us;
 
     @Autowired
     private InscriptionService is;
 
-    // todo: esto es muy villero. ya lo voy a borrar. es solo para probar mostrar las changas en el profile
     @Autowired
     private ChangaService cs;
 
@@ -74,6 +79,7 @@ public class UserController {
 
     @RequestMapping("/login")
     public ModelAndView logIn(@ModelAttribute("UserLoginForm") final UserLoginForm form) {
+        emailService.sendEmail("herran.maite@gmail.com", "subject", "body");
         return new ModelAndView("indexLogIn");
     }
 
@@ -104,6 +110,11 @@ public class UserController {
         Validation val = is.inscribeInChanga(loggedUser.getUser_id(), changaId);
         if (val.isOk()){
             System.out.println("user "+ loggedUser.getUser_id()+ " successfully inscripto en changa "+ changaId);
+            //TODO hacer validaciones
+            Changa changa = cs.getChangaById(changaId).getValue();
+            User changaOwner = us.findById(changa.getUser_id()).getValue();
+            //TODO INTERNACIONALIZAR
+            emailService.sendEmail(changaOwner.getEmail(), "Solicitud", joinRequestEmailBody(changa, changaOwner, loggedUser));
         } else {
             //TODO JIME un popup de error
             System.out.println("No se pudo inscribir en la changa pq:"+ val.getMessage());
@@ -133,5 +144,17 @@ public class UserController {
                 .addObject("profile", loggedUser)
                 .addObject("publishedChangas", cs.getUserOwnedChangas(loggedUser.getUser_id()).getValue())
                 .addObject("pendingChangas", is.getUserInscriptions(loggedUser.getUser_id()).getValue().keySet());
+    }
+
+
+    //TODO INTERNACIONALIZAR
+    private String joinRequestEmailBody(Changa changa, User changaOwner, User currentUser){
+        StringBuilder sb = new StringBuilder();
+        sb.append(changaOwner.getName());
+        sb.append(",\n");
+        sb.append(currentUser.getName());
+        sb.append(" quiere unirse a la changa ");
+        sb.append(changa.getDescription());
+        return sb.toString();
     }
 }
