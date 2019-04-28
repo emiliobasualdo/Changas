@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
+import ar.edu.itba.paw.models.InscriptionState;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.forms.UserLoginForm;
 import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
@@ -123,28 +124,26 @@ public class UserController {
 
     @RequestMapping(value = "/accept-user", method = RequestMethod.POST)
     public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, HttpSession session) {
-        // TODO PILO
-        // Por ahora no hace nada, falta el método en el service. Esto no está bien:
-        // Validation val = is.changeUserStateInChanga(userId, changaId, new InscriptionState(1, "Accepted"));
-        /*if (val.isOk()){
+
+        Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.accepted);
+        if (val.isOk()){
             //TODO JIME popup preguntando
         } else {
             //TODO JIME un popup de error
-        }*/
-        return new ModelAndView("redirect:/profile");
+        }
+        return new ModelAndView("redirect:/admin-changa?id=" + changaId);
     }
 
     @RequestMapping(value = "/reject-user", method = RequestMethod.POST)
     public ModelAndView rejectUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, HttpSession session) {
-        // TODO PILO
-        // Por ahora no hace nada, falta el método en el service. Esto no está bien:
-        // Validation val = is.changeUserStateInChanga(userId, changaId, new InscriptionState(1, "Accepted"));
-        /*if (val.isOk()){
+
+        Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.declined);
+        if (val.isOk()){
             //TODO JIME popup preguntando
         } else {
             //TODO JIME un popup de error
-        }*/
-        return new ModelAndView("redirect:/profile");
+        }
+        return new ModelAndView("redirect:/admin-changa?id=" + changaId);
     }
 
     @RequestMapping("/profile")

@@ -26,8 +26,28 @@
     <div class="container">
         <c:choose>
             <c:when test="${notInscribedUsers == true}">
-                <a href="/edit-changa?id=<c:out value="${changa.changa_id}"/>" class="btn btn-primary btn-block" style="margin-top: 1cm; margin-bottom: 1cm;"><spring:message code="adminchangaBody.btn.edit"/></a>
-                <br />
+                <div class="btn-group">
+                    <a href="/edit-changa?id=<c:out value="${changa.changa_id}"/>" class="btn btn-info center-pill"><spring:message code="adminchangaBody.btn.edit"/></a>
+                    <br />
+
+                    <div class="container">
+                        <c:url value="/delete-changa" var="deleteUrl" />
+                        <form action="${deleteUrl}" method="post">
+                            <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
+                            <input type="submit"  class="btn btn-danger center-pill" value="Eliminar" />
+                        </form>
+                        <br />
+                    </div>
+
+                    <div class="container">
+                        <c:url value="/close-changa" var="closeUrl" />
+                        <form action="${closeUrl}" method="post">
+                            <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
+                            <input type="submit"  class="btn btn-success center-pill" value="Finalizar" />
+                        </form>
+                        <br />
+                    </div>
+                </div>
             </c:when>
             <c:otherwise>
                 <div class="container" style="margin-top: 40px">
@@ -45,17 +65,27 @@
                     </div>
                 </div>
                 <br />
+                <div class="btn-group">
+                    <div class="container">
+                        <c:url value="/delete-changa" var="deleteUrl" />
+                        <form action="${deleteUrl}" method="post">
+                            <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
+                            <input type="submit"  class="btn btn-danger center-pill" value="Eliminar" />
+                        </form>
+                        <br />
+                    </div>
+
+                    <div class="container">
+                        <c:url value="/close-changa" var="closeUrl" />
+                        <form action="${closeUrl}" method="post">
+                            <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
+                            <input type="submit"  class="btn btn-success center-pill" value="Finalizar" />
+                        </form>
+                        <br />
+                    </div>
+                </div>
             </c:otherwise>
         </c:choose>
-    </div>
-
-    <div class="container">
-        <c:url value="/delete-changa" var="deleteUrl" />
-        <form action="${deleteUrl}" method="post">
-            <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-            <input type="submit"  class="btn btn-danger btn-block" value="Eliminar" />
-        </form>
-        <br />
     </div>
 </body>
 

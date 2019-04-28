@@ -134,4 +134,15 @@ public class ChangaController {
         }
         return new ModelAndView("redirect:/profile");
     }
+
+    @RequestMapping(value = "/close-changa", method = RequestMethod.POST)
+    public ModelAndView closeChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
+        //Validation val = cs.changeState;
+        /*if (val.isOk()){
+            // TODO JIME popup confirmacion
+        } else {
+            //TODO JIME popup error
+        }*/
+        return new ModelAndView("redirect:/profile");
+    }
 }
