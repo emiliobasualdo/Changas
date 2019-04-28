@@ -124,4 +124,14 @@ public class ChangaController {
         return mav;
     }
 
+    @RequestMapping(value = "/delete-changa", method = RequestMethod.POST)
+    public ModelAndView deleteChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
+        Validation val = cs.delete(changaId);
+        if (val.isOk()){
+            // TODO JIME popup confirmacion
+        } else {
+            //TODO JIME popup error
+        }
+        return new ModelAndView("redirect:/profile");
+    }
 }

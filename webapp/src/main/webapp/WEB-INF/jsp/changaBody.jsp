@@ -9,17 +9,17 @@
 
 <body>
 
-    <div class="jumbotron jumbotron-fluid">
+    <div class="jumbotron jumbotron-fluid" style="margin-top: 2cm">
         <div class="container">
             <h2>
                 <c:out value="${changa.title}" />
             </h2>
-            <p style="font-style: italic">
+            <h5 style="margin-top: 1cm">
                 <c:out value="${changa.description}" />
-            </p>
-            <p>
+            </h5>
+            <h5>
                 <c:out value="${changa.price}" /> $
-            </p>
+            </h5>
         </div>
     </div>
 

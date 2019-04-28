@@ -8,9 +8,9 @@
 
     <body>
         <div class="changaCard-option">
-            <h1>
+            <h2>
                 <c:out value="${requestScope.title}" />
-            </h1>
+            </h2>
             <span class="">
                     <i class="fas fa-map-marker-alt fas-2x"></i>
                     <small>
@@ -26,7 +26,7 @@
             <div class="price">
                 <div class="front">
                         <span class="price">
-                            <c:out value="${requestScope.price}" />$<b>$</b>
+                            <c:out value="${requestScope.price}" />$</b>
                         </span>
                 </div>
                 <div class="back">

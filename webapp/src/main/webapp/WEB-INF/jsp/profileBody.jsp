@@ -4,7 +4,6 @@
 <html>
     <head>
         <style><%@ include file="/WEB-INF/css/profileBody.css" %></style>
-        <style><%@ include file="/WEB-INF/css/publishedChangas.css" %></style>
     </head>
     <body>
         <div class="container emp-profile">

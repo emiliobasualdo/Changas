@@ -3,20 +3,21 @@
 <html>
     <head>
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+        <style><%@include file="/WEB-INF/css/changaCard.css"%></style>
     </head>
     <body>
         <div class="changaCard-option">
-            <h1>
+            <h2>
                 <c:out value="${requestScope.title}" />
-            </h1>
-            <%--<span class="">
+            </h2>
+            <span class="">
                     <i class="fas fa-map-marker-alt fas-2x"></i>
                     <small>
-                        <c:out value="${requestScope.neighborhood}" />, <c:out value="${requestScope.street}" /> <c:out value="${requestScope.number}" />
+                        <c:out value="${requestScope.neighborhood}" />
                     </small><br>
                     </span>
             <hr />
-            <p>
+            <%--<p>
                 <c:out value="${requestScope.description}" />
             </p>
             <hr />--%>

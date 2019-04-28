@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
+import ar.edu.itba.paw.models.InscriptionState;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.forms.UserLoginForm;
 import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
@@ -95,10 +96,6 @@ public class UserController {
 
     @RequestMapping(value = "/join-changa", method = RequestMethod.POST)  //TODO: DEBERIA ESSTAR EN CHANGACONTROLLER NO?
     public ModelAndView showChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
-//        if (!isUserLoggedIn()){   // <---- DE ESTO SE ENCARGA SPRING SECURITY
-//            //TODO hacer que se loggee y que despues se redirija a la changa que estaba viendo.
-//            return  new ModelAndView("redirect:/logIn");
-//        }
         User loggedUser = ((User)session.getAttribute("getLoggedUser"));
         System.out.println("current user id: " + loggedUser.getUser_id());
         Validation val = is.inscribeInChanga(loggedUser.getUser_id(), changaId);
@@ -125,6 +122,18 @@ public class UserController {
         return new ModelAndView("redirect:/profile");
     }
 
+    @RequestMapping(value = "/accept-user", method = RequestMethod.POST)
+    public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, HttpSession session) {
+        // TODO PILO
+        // Por ahora no hace nada, falta el método en el service. Esto no está bien:
+        // Validation val = is.changeUserStateInChanga(userId, changaId, new InscriptionState(1, "Accepted"));
+        /*if (val.isOk()){
+            //TODO JIME popup preguntando
+        } else {
+            //TODO JIME un popup de error
+        }*/
+        return new ModelAndView("redirect:/profile");
+    }
 
     @RequestMapping("/profile")
     public ModelAndView profile(HttpSession session) { // Solamente podemos llegar aca si estamos autorizados por lo que no hace falta pedir el id lo tenemos guardado en session o en context

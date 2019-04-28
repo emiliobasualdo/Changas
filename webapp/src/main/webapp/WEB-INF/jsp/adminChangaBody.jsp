@@ -8,40 +8,25 @@
 </head>
 
 <body>
-    <div class="jumbotron jumbotron-fluid">
+    <div class="jumbotron jumbotron-fluid" style="margin-top: 2cm">
         <div class="container">
             <h2>
                 <c:out value="${changa.title}" />
             </h2>
-            <p style="font-style: italic">
+            <h5 style="margin-top: 1cm">
                 <c:out value="${changa.description}" />
-            </p>
-            <p>
+            </h5>
+            <h5>
                 <c:out value="${changa.price}" /> $
-            </p>
+            </h5>
+            <h5><c:out value="${changa.neighborhood}" />, <c:out value="${changa.street}" /> <c:out value="${changa.number}" /></h5>
         </div>
     </div>
 
     <div class="container">
-        <table class="table">
-            <thead>
-            <tr>
-                <th><spring:message code="adminchangaBody.Table.name"/></th>
-                <th><spring:message code="adminchangaBody.Table.location"/></th>
-                <th><spring:message code="adminchangaBody.Table.telephone"/></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td><c:out value="${changaOwner.name}"/></td>
-                <td><c:out value="${changaOwner.tel}" /></td>
-                <td><c:out value="${changa.neighborhood}" /></td>
-            </tr>
-            </tbody>
-        </table>
         <c:choose>
             <c:when test="${notInscribedUsers == true}">
-                <a href="/edit-changa?id=<c:out value="${changa.changa_id}"/>" class="btn btn-primary" style="margin-top: 1cm; margin-bottom: 1cm;"><spring:message code="adminchangaBody.btn.edit"/></a>
+                <a href="/edit-changa?id=<c:out value="${changa.changa_id}"/>" class="btn btn-primary btn-block" style="margin-top: 1cm; margin-bottom: 1cm;"><spring:message code="adminchangaBody.btn.edit"/></a>
                 <br />
             </c:when>
             <c:otherwise>
@@ -53,6 +38,8 @@
                             <c:set var="surname" value="${user.surname}" scope="request"/>
                             <c:set var="tel" value="${user.tel}" scope="request"/>
                             <c:set var="email" value="${user.email}" scope="request"/>
+                            <c:set var="changaId" value="${changa.changa_id}" scope="request"/>
+                            <c:set var="userId" value="${user.user_id}" scope="request"/>
                             <c:import url="inscribedUserCard.jsp"/>
                         </c:forEach>
                     </div>
@@ -60,6 +47,15 @@
                 <br />
             </c:otherwise>
         </c:choose>
+    </div>
+
+    <div class="container">
+        <c:url value="/delete-changa" var="deleteUrl" />
+        <form action="${deleteUrl}" method="post">
+            <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
+            <input type="submit"  class="btn btn-danger btn-block" value="Eliminar" />
+        </form>
+        <br />
     </div>
 </body>
 

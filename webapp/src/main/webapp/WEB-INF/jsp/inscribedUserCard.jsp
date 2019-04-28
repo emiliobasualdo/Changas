@@ -14,7 +14,12 @@
                     <h3 class="card-title" style="text-align: center"><c:out value="${requestScope.name}"/> <c:out value="${requestScope.surname}"/></h3>
                     <p class="card-text" style="text-align: center"><strong>Teléfono</strong>: <c:out value="${requestScope.tel}"/></p>
                     <p class="card-text" style="text-align: center"><strong>Email</strong>: <c:out value="${requestScope.email}"/></p>
-                    <input type="submit"  class="btn btn-success btn-block" value="Aceptar changuero" />
+                    <c:url value="/accept-user" var="acceptUrl" />
+                    <form action="${acceptUrl}" method="post">
+                        <input type="hidden" name="changaId" value="<c:out value="${requestScope.changaId}"/>">
+                        <input type="hidden" name="userId" value="<c:out value="${requestScope.userId}"/>">
+                        <input type="submit"  class="btn btn-success btn-block" value="Aceptar changuero" />                    </form>
+                    <br />
                 </div>
             </div>
         </div>
