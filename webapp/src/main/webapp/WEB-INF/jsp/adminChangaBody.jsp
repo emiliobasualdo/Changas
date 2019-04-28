@@ -27,14 +27,16 @@
         <c:choose>
             <c:when test="${notInscribedUsers == true}">
                 <div class="btn-group">
-                    <a href="/edit-changa?id=<c:out value="${changa.changa_id}"/>" class="btn btn-info center-pill"><spring:message code="adminchangaBody.btn.edit"/></a>
-                    <br />
+                    <div class="container">
+                        <a id="btnedit" href="/edit-changa?id=<c:out value="${changa.changa_id}"/>" class="btn btn-info center-pill"><spring:message code="adminchangaBody.btn.edit"/></a>
+                        <br />
+                    </div>
 
                     <div class="container">
                         <c:url value="/delete-changa" var="deleteUrl" />
                         <form action="${deleteUrl}" method="post">
                             <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-                            <input type="submit"  class="btn btn-danger center-pill" value="Eliminar" />
+                            <input id="btndelete1" type="submit"  class="btn btn-danger center-pill" value="Eliminar changa" />
                         </form>
                         <br />
                     </div>
@@ -43,7 +45,7 @@
                         <c:url value="/close-changa" var="closeUrl" />
                         <form action="${closeUrl}" method="post">
                             <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-                            <input type="submit"  class="btn btn-success center-pill" value="Finalizar" />
+                            <input id="btnclose1" type="submit"  class="btn btn-success center-pill" value="Finalizar changa" />
                         </form>
                         <br />
                     </div>
@@ -60,6 +62,8 @@
                             <c:set var="email" value="${user.email}" scope="request"/>
                             <c:set var="changaId" value="${changa.changa_id}" scope="request"/>
                             <c:set var="userId" value="${user.user_id}" scope="request"/>
+                            <%--todo: acá debería pasar el state de la inscription, si esta rejected lo muestro para q sepa q ya lo rechazó,
+                            si está aceptado también lo muestro, y si está pendiente muestro los botones para q decida--%>
                             <c:import url="inscribedUserCard.jsp"/>
                         </c:forEach>
                     </div>
@@ -70,7 +74,7 @@
                         <c:url value="/delete-changa" var="deleteUrl" />
                         <form action="${deleteUrl}" method="post">
                             <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-                            <input type="submit"  class="btn btn-danger center-pill" value="Eliminar" />
+                            <input id="btndelete2" type="submit"  class="btn btn-danger center-pill" value="Eliminar changa" />
                         </form>
                         <br />
                     </div>
@@ -79,7 +83,7 @@
                         <c:url value="/close-changa" var="closeUrl" />
                         <form action="${closeUrl}" method="post">
                             <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-                            <input type="submit"  class="btn btn-success center-pill" value="Finalizar" />
+                            <input id="btnclose2" type="submit"  class="btn btn-success center-pill" value="Finalizar changa" />
                         </form>
                         <br />
                     </div>
