@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces.services;
 
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
+import ar.edu.itba.paw.models.ChangaState;
 import ar.edu.itba.paw.models.Either;
 
 import java.util.List;
@@ -16,8 +17,9 @@ import java.util.List;
 public interface ChangaService {
     Either<Changa, Validation> create(final Changa.Builder changaBuilder);
     Either<Changa, Validation> update(final long changaId, final Changa.Builder changaBuilder);
-    Validation delete(long changaId);
     Either<List<Changa>, Validation> getUserOwnedChangas(final long userId);
     Either<Changa, Validation> getChangaById(final long changaId);
     Either<List<Changa>, Validation> getAllChangas();
+    Either<Changa, Validation> changeChangaState(long changaId, ChangaState newState);
+    Either<Changa, Validation> changeChangaState(Changa changa, ChangaState newState);
 }

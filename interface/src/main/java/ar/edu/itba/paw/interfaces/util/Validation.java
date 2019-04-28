@@ -31,7 +31,7 @@ public class Validation {
         DATABASE_ERROR          ("Database error"),
 
         // Changas
-        INEXISTENT_CHANGA       ("Invalid changa id"),
+        NO_SUCH_CHANGA          ("Invalid changa id"),
 
         // Users
         INVALID_PASSWORD        ("Invalid password"),

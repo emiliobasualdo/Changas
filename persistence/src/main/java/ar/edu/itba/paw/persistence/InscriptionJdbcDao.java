@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.constants.DBInscriptionFields;
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.daos.Dao;
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
@@ -9,7 +8,6 @@ import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -23,7 +21,6 @@ import java.util.*;
 import java.util.function.Function;
 
 import static ar.edu.itba.paw.constants.DBInscriptionFields.*;
-import static ar.edu.itba.paw.constants.DBTableName.changas;
 import static ar.edu.itba.paw.constants.DBTableName.user_inscribed;
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
 import static ar.edu.itba.paw.models.InscriptionState.requested;
@@ -38,7 +35,6 @@ public class InscriptionJdbcDao implements InscriptionDao {
 
     @Autowired
     private UserDao userDao;
-
 
     @Autowired
     private ChangaDao changaDao;
@@ -85,6 +81,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
 
     @Override
     public boolean unsubscribeFromChanga(long userId, long changaId) {
+        // todo MAL el DELTE
         int rowsAffected = jdbcTemplate.update(String.format("DELETE FROM %s WHERE %s = ? AND %s = ?", user_inscribed.name(), user_id.name(), changa_id.name()), userId, changaId);
         return rowsAffected == 1;
     }
