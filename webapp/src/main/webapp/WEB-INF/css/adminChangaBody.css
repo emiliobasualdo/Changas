@@ -15,3 +15,9 @@ body {
     grid-gap: 1rem;
     grid-auto-rows: minmax(100px, auto);
 }
+#btnedit, #btndelete1, #btnclose1, #btndelete2, #btnclose2 {
+    display:inline-block;
+    width: 300px;
+    height: 40px;
+    /**other codes**/
+}
