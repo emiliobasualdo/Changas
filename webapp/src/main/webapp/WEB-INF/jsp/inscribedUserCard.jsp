@@ -18,7 +18,15 @@
                     <form action="${acceptUrl}" method="post">
                         <input type="hidden" name="changaId" value="<c:out value="${requestScope.changaId}"/>">
                         <input type="hidden" name="userId" value="<c:out value="${requestScope.userId}"/>">
-                        <input type="submit"  class="btn btn-success btn-block" value="Aceptar changuero" />                    </form>
+                        <input type="submit"  class="btn btn-success btn-block" value="Aceptar changuero" />
+                    </form>
+                    <br />
+                    <c:url value="/reject-user" var="rejectUrl" />
+                    <form action="${rejectUrl}" method="post">
+                        <input type="hidden" name="changaId" value="<c:out value="${requestScope.changaId}"/>">
+                        <input type="hidden" name="userId" value="<c:out value="${requestScope.userId}"/>">
+                        <input type="submit"  class="btn btn-danger btn-block" value="Rechazar changuero" />
+                    </form>
                     <br />
                 </div>
             </div>
