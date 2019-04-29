@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.presistence;
 
 import ar.edu.itba.paw.interfaces.util.Validation;
+import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.persistence.UserJdbcDao;
 import org.junit.Before;
@@ -63,7 +64,7 @@ public class UserJdbcDaoTest {
                 .withTableName(users.name())
                 .usingGeneratedKeyColumns(user_id.name());
         MockitoAnnotations.initMocks(this);
-        MockitoAnnotations.initMocks(JdbcTemplate.class);
+        //MockitoAnnotations.initMocks(JdbcTemplate.class);
         MockitoAnnotations.initMocks(UserJdbcDao.class);
     }
 
@@ -73,15 +74,15 @@ public class UserJdbcDaoTest {
     public void testCreateUser_returnsNewUser() {
         // SETUP
         // EJERCITAR
-        final User user = userDao.create( // todo creo que está mal, porque estoy testando la BD tambien
+        final Either<User, Validation> either = userDao.create( // todo creo que está mal, porque estoy testando la BD tambien
                 new User.Builder()  // todo tendría que ser con mockito when(simpleInsert).then(123)
                 .withEmail(EMAIL)
                 .withPasswd(PASSWORD) // todo tengo que poner TODOS los campos?
-        ).getValue(); // todo asumo que Either anda bien?
+        ); // todo asumo que Either anda bien?
         // ASSERT
-        assertNotNull(user);
-        assertEquals(EMAIL, user.getEmail());
-        assertEquals(PASSWORD, user.getPasswd());
+        assertNotNull(either.getValue());
+        assertEquals(EMAIL, either.getValue().getEmail());
+        assertEquals(PASSWORD, either.getValue().getPasswd());
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, users.name()));
     }
 
@@ -138,7 +139,7 @@ public class UserJdbcDaoTest {
         User user = userDao.getById(userId.longValue()).getValue();
         // ASSERT
         assertNotNull(user);
-        assertEquals(userId, user.getUser_id());
+        assertEquals(userId.longValue(), user.getUser_id());
         assertEquals(EMAIL, user.getEmail());
         assertEquals(PASSWORD, user.getPasswd());
     }
@@ -187,7 +188,7 @@ public class UserJdbcDaoTest {
         User user = userDao.findByMail(EMAIL).getValue();
         // ASSERT
         assertNotNull(user);
-        assertEquals(userId, user.getUser_id());
+        assertEquals(userId.longValue(), user.getUser_id());
         assertEquals(EMAIL, user.getEmail());
         assertEquals(PASSWORD, user.getPasswd());
     }

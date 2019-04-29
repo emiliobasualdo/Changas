@@ -57,10 +57,10 @@ public class UserJdbcDao implements UserDao {
         Map<String, Object> userRow = userToTableRow(userBuilder);
         try {
             userId = jdbcInsert.executeAndReturnKey(userRow);
-
         } catch (DuplicateKeyException e ) {
             return Either.alternative(new Validation(USER_ALREADY_EXISTS));
-        } catch (Exception e ) {  //DuplicateKeyException e
+        } catch (Exception e ) {
+            System.err.println(e);
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
 
