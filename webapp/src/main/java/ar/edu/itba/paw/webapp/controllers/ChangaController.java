@@ -100,8 +100,13 @@ public class ChangaController {
             // el usuario podría no esxistir
             // La changa podría no existir
         }
+        boolean userOwnsChanga = false;
+        if (((User) session.getAttribute("getLoggedUser")).getUser_id() == changa.getUser_id()){
+            userOwnsChanga = true;
+        }
         mav.addObject("userAlreadyInscribedInChanga", userAlreadyInscribedInChanga);
         mav.addObject("changaOwner", us.findById(changa.getUser_id()).getValue());
+        mav.addObject("userOwnsChanga", userOwnsChanga);
         return mav;
     }
 
