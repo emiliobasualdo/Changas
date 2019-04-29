@@ -45,18 +45,38 @@
     <div class="container" style="margin-top: 80px">
         <c:choose>
             <c:when test="${userAlreadyInscribedInChanga == false}">
-                <c:url value="/join-changa" var="joinUrl" />
-                <form action="${joinUrl}" method="post">
-                    <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-                    <input type="submit"  class="btn btn-success btn-block" value="Anotame en la changa" />
-                </form>
-                <br />
+                <c:choose>
+                    <c:when test="${userOwnsChanga == true}">
+                        <div class="alert alert-info" role="alert">
+                            <spring:message code="changaBody.alertOwner"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
+                        </div>
+                        <br />
+                    </c:when>
+                    <c:otherwise>
+                        <c:url value="/join-changa" var="joinUrl" />
+                        <form action="${joinUrl}" method="post">
+                            <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
+                            <input type="submit"  class="btn btn-success btn-block" value="Anotame en la changa" />
+                        </form>
+                        <br />
+                    </c:otherwise>
+                </c:choose>
             </c:when>
             <c:otherwise>
-                <div class="alert alert-info" role="alert">
-                    <strong><spring:message code="changaBody.alert.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
-                </div>
-                <br />
+                <c:choose>
+                    <c:when test="${userOwnsChanga == true}">
+                        <div class="alert alert-info" role="alert">
+                            <spring:message code="changaBody.alertOwner"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
+                        </div>
+                        <br />
+                    </c:when>
+                    <c:otherwise>
+                        <div class="alert alert-info" role="alert">
+                            <strong><spring:message code="changaBody.alert.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
+                        </div>
+                        <br />
+                    </c:otherwise>
+                </c:choose>
             </c:otherwise>
         </c:choose>
     </div>
