@@ -37,7 +37,7 @@ public class User {
         return passwd;
     }
 
-    public boolean getEnabled() {return enabled;}
+    public boolean isEnabled() {return enabled;}
 
     public User (long id, User.Builder ub) {
         user_id = id;
@@ -46,7 +46,7 @@ public class User {
         tel = ub.getTel();
         email = ub.getEmail();
         passwd = ub.getPasswd();
-        enabled = ub.getEnabled();
+        enabled = ub.isEnabled();
     }
 
     public static class Builder {
@@ -111,7 +111,7 @@ public class User {
             return tel;
         }
 
-        public boolean getEnabled() {return enabled;}
+        public boolean isEnabled() {return enabled;}
 
 
     }
