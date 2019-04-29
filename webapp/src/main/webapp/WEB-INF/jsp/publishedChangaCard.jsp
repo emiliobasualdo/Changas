@@ -15,7 +15,7 @@
                     <small>
                         <c:out value="${requestScope.neighborhood}" />
                     </small><br>
-                    </span>
+            </span>
             <hr />
             <%--<p>
                 <c:out value="${requestScope.description}" />
