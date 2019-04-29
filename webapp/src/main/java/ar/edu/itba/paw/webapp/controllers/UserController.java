@@ -12,6 +12,7 @@ import ar.edu.itba.paw.webapp.forms.UserLoginForm;
 import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
 import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -40,6 +41,11 @@ public class UserController {
 
     @Autowired
     private ChangaService cs;
+
+    @Autowired
+    ApplicationEventPublisher eventPublisher;
+
+
 
     @RequestMapping("/signup")
     public ModelAndView signUp(@ModelAttribute("signUpForm") final UserRegisterForm form) {
@@ -86,6 +92,10 @@ public class UserController {
             System.out.println("email error");
             return new ModelAndView("emailError", "user", form);
         }
+
+//        String appUrl = request.getContextPath();
+//        System.out.println("appurl: "+appUrl);
+//        emailService.sendMailConfirmationEmail2(either.getValue(), request.getLocale(), appUrl);
 
 
         /* TODO redirect sin pasar por el login

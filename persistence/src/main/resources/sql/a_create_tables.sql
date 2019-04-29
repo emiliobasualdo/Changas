@@ -39,3 +39,11 @@ CREATE TABLE IF NOT EXISTS user_inscribed
     state     VARCHAR(100) DEFAULT 'requested',
     PRIMARY KEY (user_id, changa_id)
 );
+
+CREATE TABLE IF NOT EXISTS verification_token
+(
+   token_id SERIAL PRIMARY KEY,
+   token VARCHAR(255),
+   user_id SERIAL NOT NULL REFERENCES users (user_id),
+   expiry_date DATE NOT NULL
+);

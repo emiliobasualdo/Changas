@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.daos.UserDao;
+import ar.edu.itba.paw.interfaces.daos.VerificationTokenDao;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.services.VerificationTokenRepositoryService;
 import ar.edu.itba.paw.interfaces.util.Validation;
@@ -25,7 +26,7 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private VerificationTokenRepositoryService tokenRepository;
+    private VerificationTokenDao verificationTokenDao;
 
     @Override
     public Either<User, Validation> findById(long id) {
@@ -57,9 +58,21 @@ public class UserServiceImpl implements UserService {
         return userDao.create(userBuilder);
     }
 
+
+
     @Override
     public void createVerificationToken(User user, String token) {
-        VerificationToken myToken = new VerificationToken(token, user);
-        tokenRepository.save(myToken);
+        VerificationToken.Builder myToken = new VerificationToken.Builder(token, user.getUser_id());
+        verificationTokenDao.save(myToken);
+    }
+
+    @Override
+    public VerificationToken getVerificationToken(String VerificationToken) {
+        return verificationTokenDao.findByToken(VerificationToken).get();
+    }
+
+    @Override
+    public void setUserEnabledStatus(User user, boolean status) {
+        userDao.setUserStatus(user, status);
     }
 }

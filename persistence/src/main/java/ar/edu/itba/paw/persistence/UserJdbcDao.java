@@ -129,6 +129,17 @@ public class UserJdbcDao implements UserDao {
         return Either.value(list.get(0));
     }
 
+    @Override
+    public void setUserStatus(User user, boolean status) {
+        jdbcTemplate.update(String.format("UPDATE %s SET %s = ? WHERE %s = ? ",
+                users.name(),
+                "enabled",
+                user_id.name()),
+                status,
+                user.getUser_id()
+        );
+    }
+
 
     private Either<User, Validation> getUserFromUserId(long userId) {
         final List<User> list = jdbcTemplate.query(

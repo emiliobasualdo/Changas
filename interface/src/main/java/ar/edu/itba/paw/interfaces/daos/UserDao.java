@@ -16,5 +16,6 @@ public interface UserDao extends Dao<User>{
     Either<User, Validation> findByMail(final String mail);
     Either<User, Validation> create(final User.Builder userBuilder);
     Either<User, Validation> getUser(final User.Builder userBuilder);
+    void setUserStatus(User user, boolean status);
     //List<User> createUsers();
 }

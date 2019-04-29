@@ -4,7 +4,6 @@ import ar.edu.itba.paw.interfaces.services.EmailService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.User;
-import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -14,10 +13,11 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
+import java.util.Locale;
 import java.util.UUID;
 
 @Service
-public class EmailServiceImplementation implements EmailService{
+public class EmailServiceImplementation implements EmailService {
 
     @Autowired
     public JavaMailSender emailSender;
@@ -27,6 +27,9 @@ public class EmailServiceImplementation implements EmailService{
 
     @Autowired
     private UserService userService;
+
+//    @Autowired
+//    ApplicationEventPublisher eventPublisher;
 
     @Override
     public void sendEmail(String to, String subject, String body) {
@@ -47,7 +50,7 @@ public class EmailServiceImplementation implements EmailService{
     public void sendMailConfirmationEmail(User user, String appUrl) {
         String token = UUID.randomUUID().toString();
         userService.createVerificationToken(user, token);
-        String confirmUrl = appUrl + "/registrationConfirm?token=" + token;
+        String confirmUrl = appUrl + "/registration-confirm?token=" + token;
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper;
 
@@ -59,9 +62,9 @@ public class EmailServiceImplementation implements EmailService{
         } catch (javax.mail.MessagingException e) {
             e.printStackTrace();
         }
-
         emailSender.send(message);
     }
+
 
 
 
