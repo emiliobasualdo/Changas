@@ -10,6 +10,8 @@ import ar.edu.itba.paw.models.Inscription;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -45,7 +47,9 @@ public class ChangaController {
     @RequestMapping(value = "/create-changa", method = RequestMethod.POST )
     public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, HttpSession session) {
         System.out.println(form.getTitle() + " " +  form.getDescription() + " " +  form.getPrice() + " " +  form.getNeighborhood());
-        cs.create(new Changa.Builder().withUserId(((User)session.getAttribute("getLoggedUser")).getUser_id())
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); //TODO: este metodo tendria que poder ser accedido desde todos los controllers AOP
+        String currentUserName = authentication.getName();
+        cs.create(new Changa.Builder().withUserId(us.findByMail(currentUserName).getValue().getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
