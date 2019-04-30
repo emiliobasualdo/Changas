@@ -55,15 +55,14 @@
                 <div class="container" style="margin-top: 40px">
                     <h2 style="margin-bottom: 20px"><spring:message code="adminchangaBody.h2"/></h2>
                     <div class="auto-table">
-                        <c:forEach items="${inscribedUsers}" var="user">
-                            <c:set var="name" value="${user.name}" scope="request"/>
-                            <c:set var="surname" value="${user.surname}" scope="request"/>
-                            <c:set var="tel" value="${user.tel}" scope="request"/>
-                            <c:set var="email" value="${user.email}" scope="request"/>
+                        <c:forEach items="${inscribedUsers}" var="entry">
+                            <c:set var="name" value="${entry.key.name}" scope="request"/>
+                            <c:set var="surname" value="${entry.key.surname}" scope="request"/>
+                            <c:set var="tel" value="${entry.key.tel}" scope="request"/>
+                            <c:set var="email" value="${entry.key.email}" scope="request"/>
                             <c:set var="changaId" value="${changa.changa_id}" scope="request"/>
-                            <c:set var="userId" value="${user.user_id}" scope="request"/>
-                            <%--todo: acá debería pasar el state de la inscription, si esta rejected lo muestro para q sepa q ya lo rechazó,
-                            si está aceptado también lo muestro, y si está pendiente muestro los botones para q decida--%>
+                            <c:set var="userId" value="${entry.key.user_id}" scope="request"/>
+                            <c:set var="state" value="${entry.value.state}" scope="request"/>
                             <c:import url="inscribedUserCard.jsp"/>
                         </c:forEach>
                     </div>

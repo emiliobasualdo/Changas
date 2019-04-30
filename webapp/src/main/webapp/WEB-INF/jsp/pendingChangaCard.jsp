@@ -18,25 +18,62 @@
                     </small><br>
                     </span>
             <hr />
-            <%--<p>
-                todo
-                <c:out value="${requestScope.state}" />
-            </p>
-            <hr />--%>
-            <div class="price">
-                <div class="front">
+            <c:choose>
+                <c:when test="${requestScope.state == 'requested'}">
+                    <p>Pendiente</p>
+                    <hr />
+                    <div class="price">
+                        <div class="front">
                         <span class="price">
                             <c:out value="${requestScope.price}" />$</b>
                         </span>
-                </div>
-                <div class="back">
-                    <c:url value="/unjoin-changa" var="unJoinUrl" />
-                    <form method="post" action="${unJoinUrl}">
-                        <input type="hidden" name="changaId" value="<c:out value="${requestScope.changa_id}"/>">
-                        <input type="submit" class="btn btn-danger btn-block" value="Desanotame" />
-                    </form>
-                </div>
-            </div>
+                        </div>
+                        <div class="back">
+                            <c:url value="/unjoin-changa" var="unJoinUrl" />
+                            <form method="post" action="${unJoinUrl}">
+                                <input type="hidden" name="changaId" value="<c:out value="${requestScope.changa_id}"/>">
+                                <input type="submit" class="btn btn-danger btn-block" value="Desanotame" />
+                            </form>
+                        </div>
+                    </div>
+                </c:when>
+                <c:when test="${requestScope.state == 'accepted'}">
+                    <p style="color: green">Aceptado</p>
+                    <hr />
+                    <div class="price">
+                        <div class="front">
+                        <span class="price">
+                            <c:out value="${requestScope.price}" />$</b>
+                        </span>
+                        </div>
+                        <div class="back">
+                            <%--<c:url value="/unjoin-changa" var="unJoinUrl" />
+                            <form method="post" action="${unJoinUrl}">
+                                <input type="hidden" name="changaId" value="<c:out value="${requestScope.changa_id}"/>">--%>
+                                <input <%--type="submit"--%> class="btn btn-info btn-block" value="Archivar" />
+                            <%--</form>--%>
+                        </div>
+                    </div>
+                </c:when>
+                <c:when test="${requestScope.state == 'declined'}">
+                    <p style="color: red">Rechazado</p>
+                    <hr />
+                    <div class="price">
+                        <div class="front">
+                        <span class="price">
+                            <c:out value="${requestScope.price}" />$</b>
+                        </span>
+                        </div>
+                        <div class="back">
+                                <%--<c:url value="/unjoin-changa" var="unJoinUrl" />
+                                <form method="post" action="${unJoinUrl}">
+                                    <input type="hidden" name="changaId" value="<c:out value="${requestScope.changa_id}"/>">--%>
+                            <input <%--type="submit"--%> class="btn btn-info btn-block" value="Archivar" />
+                                <%--</form>--%>
+                        </div>
+                    </div>
+                </c:when>
+            </c:choose>
         </div>
     </body>
 

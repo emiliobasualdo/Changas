@@ -12,6 +12,7 @@
     <div class="changaCard-option">
         <h2>
             <c:out value="${requestScope.title}" />
+            <c:choose><c:when test="${requestScope.inscribed == true}"><i class="fas fa-check"></i></c:when></c:choose>
         </h2>
         <span class="">
                 <i class="fas fa-map-marker-alt fas-2x"></i>

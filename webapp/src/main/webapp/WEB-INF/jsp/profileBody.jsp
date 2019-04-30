@@ -38,10 +38,10 @@
                                 </li>
                             </ul>
                         </div>
+                        <%--<div class="col-md-2" style="alignment: right">
+                            <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Editar perfil"/>
+                        </div>--%>
                     <%--</div>--%>
-                    <div class="col-md-2">
-                        <!--<input type="submit" class="profile-edit-btn" name="btnAddMore" value="Editar perfil"/> todo: para mas adelante estaria bueno-->
-                    </div>
                 </div>
                 <div class="row">
                     <%--<div class="col-md-4">

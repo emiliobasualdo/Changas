@@ -39,7 +39,6 @@ public class ChangaServiceImpl implements ChangaService {
     muchos campos
     * */
 
-
     @Override
     public Either<Changa, Validation> update(final long changaId, final Changa.Builder changaBuilder) {
         Either<Changa, Validation> old = chDao.getById(changaId);

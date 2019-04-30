@@ -4,9 +4,7 @@ import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
-import ar.edu.itba.paw.models.Either;
-import ar.edu.itba.paw.models.InscriptionState;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.forms.UserLoginForm;
 import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -30,7 +30,6 @@ public class UserController {
     @Autowired
     private InscriptionService is;
 
-    // todo: esto es muy villero. ya lo voy a borrar. es solo para probar mostrar las changas en el profile
     @Autowired
     private ChangaService cs;
 
@@ -149,9 +148,28 @@ public class UserController {
     @RequestMapping("/profile")
     public ModelAndView profile(HttpSession session) { // Solamente podemos llegar aca si estamos autorizados por lo que no hace falta pedir el id lo tenemos guardado en session o en context
         User loggedUser = (User)session.getAttribute("getLoggedUser");
+        Either<Map<Changa, Inscription>, Validation> maybePendingChangas = is.getUserInscriptions(loggedUser.getUser_id());
+        Map<Changa, Inscription> pendingChangasMap = null;
+        if (maybePendingChangas.isValuePresent()){
+            pendingChangasMap = maybePendingChangas.getValue();
+            //todo: deberiamos chequear q el mapa tenga todos valores validos? osea q ningun key/value sea null. porq el jsp se puede romper si le paso algo null
+        }
+        else{
+            //TODO error
+        }
+
+        Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserOwnedChangas(loggedUser.getUser_id());
+        List<Changa> publishedChangas = null;
+        if (maybePublishedChangas.isValuePresent()){
+            publishedChangas = maybePublishedChangas.getValue();
+        }
+        else{
+            //TODO error
+        }
+
         return new ModelAndView("indexProfile")
                 .addObject("profile", loggedUser)
-                .addObject("publishedChangas", cs.getUserOwnedChangas(loggedUser.getUser_id()).getValue())
-                .addObject("pendingChangas", is.getUserInscriptions(loggedUser.getUser_id()).getValue().keySet());
+                .addObject("publishedChangas", publishedChangas)
+                .addObject("pendingChangas", pendingChangasMap);
     }
 }

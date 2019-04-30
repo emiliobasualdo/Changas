@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class MainPageController { //TODO: hacer que los jsp sea HTML safe
@@ -29,7 +30,7 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
     @Autowired
     private UserService us;
 
-    @Autowired //TODO MAITE borrar esto, es solamente para probar una cosa
+    @Autowired
     private InscriptionService is;
 
     public boolean isUserLoggedIn() {
@@ -55,10 +56,17 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
         }
 
         Either<List<Changa>, Validation> either = cs.getAllChangas();
+        Either<Map<Changa, Inscription>, Validation> eitherMap = is.getUserInscriptions(getLoggedUser().getUser_id());
 
         if (either.isValuePresent()) {
-            return new ModelAndView("index")
-                    .addObject("changaList", either.getValue());
+            if (eitherMap.isValuePresent()){
+                return new ModelAndView("index")
+                        .addObject("changaList", either.getValue())
+                        .addObject("userInscriptions", eitherMap.getValue().keySet());
+            }
+            else{
+                return new ModelAndView("500"); //todo: esta bien esto?
+            }
         } else {
             return new ModelAndView("500");
         }

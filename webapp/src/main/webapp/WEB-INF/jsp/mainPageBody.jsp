@@ -14,6 +14,7 @@
             <c:set var="neighborhood" value="${changa.neighborhood}" scope="request"/>
             <c:set var="street" value="${changa.street}" scope="request"/>
             <c:set var="number" value="${changa.number}" scope="request"/>
+            <c:set var="inscribed" value="${userInscriptions.contains(changa)}" scope="request"/>       <%--todo: no anda--%>
             <c:import url="/WEB-INF/jsp/changaCard.jsp"/>
         </c:forEach>
     </div>
