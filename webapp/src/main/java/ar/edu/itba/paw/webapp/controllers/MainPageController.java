@@ -29,31 +29,8 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
     @Autowired
     private UserService us;
 
-    @Autowired //TODO MAITE borrar esto, es solamente para probar una cosa
-    private InscriptionService is;
-
-    public boolean isUserLoggedIn() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return !(authentication instanceof AnonymousAuthenticationToken);
-    }
-
-    public User getLoggedUser() { //TODO: meter Either y mandarlo a una vista 500 si ocurre un error
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserName = authentication.getName();
-        return us.findByMail(currentUserName).getValue();
-    }
-
     @RequestMapping(value = "/")
-    public ModelAndView showChangas(HttpSession session) {
-        if (isUserLoggedIn()) {
-            System.out.println("user Logged in" +  getLoggedUser().getEmail());
-            session.setAttribute("isUserLogged", true);
-            session.setAttribute("getLoggedUser", getLoggedUser());
-        } else {
-            System.out.println("user NOT Logged in");
-            session.setAttribute("isUserLogged", false);
-        }
-
+    public ModelAndView showChangas() {
         Either<List<Changa>, Validation> either = cs.getAllChangas();
 
         if (either.isValuePresent()) {

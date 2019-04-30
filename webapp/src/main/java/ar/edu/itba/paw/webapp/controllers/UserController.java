@@ -44,7 +44,6 @@ public class UserController {
             System.out.println("Errores en los campos del formulario sign up");
             return signUp(form);
         }
-
         final Either<User, Validation> either = us.register(new User.Builder()
                 .withName(form.getName())
                 .withSurname(form.getSurname())
@@ -65,10 +64,6 @@ public class UserController {
 //                //TODO MAITE que hacemo aca. preguntarle a Juan lo de las exceptions de la base de datos cuando violas un unique
 //            }
         }
-
-        /* TODO redirect sin pasar por el login
-         return new ModelAndView("redirect:/user?userId=" + either.getValue().getId());
-        */
         return new ModelAndView("redirect:/login");
     }
 
@@ -77,29 +72,8 @@ public class UserController {
         return new ModelAndView("indexLogIn");
     }
 
-//    @RequestMapping(value = "/login1", method = RequestMethod.POST)
-//    public ModelAndView logIn(@ModelAttribute("UserLoginForm") final UserLoginForm form, final BindingResult errors) {
-//        System.out.println(form.toString());
-//        Either<User, Validation> either = us.logIn(new User.Builder()
-//                .withEmail(form.getUsername())
-//                .withPasswd(form.getPassword())
-//                .build());
-//        if (!either.isValuePresent()) {
-//            System.out.println(either.getAlternative());
-//            return new ModelAndView("500");
-//        }
-//
-//        currentUser = either.getValue();
-//        return new ModelAndView("redirect:/");
-//    }
-
     @RequestMapping(value = "/join-changa", method = RequestMethod.POST)  //TODO: DEBERIA ESSTAR EN CHANGACONTROLLER NO?
-    public ModelAndView showChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
-//        if (!isUserLoggedIn()){   // <---- DE ESTO SE ENCARGA SPRING SECURITY
-//            //TODO hacer que se loggee y que despues se redirija a la changa que estaba viendo.
-//            return  new ModelAndView("redirect:/logIn");
-//        }
-        User loggedUser = ((User)session.getAttribute("getLoggedUser"));
+    public ModelAndView showChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser) {
         System.out.println("current user id: " + loggedUser.getUser_id());
         Validation val = is.inscribeInChanga(loggedUser.getUser_id(), changaId);
         if (val.isOk()){
@@ -112,8 +86,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/unjoin-changa", method = RequestMethod.POST)
-    public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
-        User loggedUser = ((User)session.getAttribute("getLoggedUser"));
+    public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser) {
         Validation val = is.unsubscribeFromChanga(loggedUser.getUser_id(), changaId);
         System.out.println(loggedUser.getEmail() + " desanotado de " + changaId);
         if (val.isOk()){
@@ -127,10 +100,8 @@ public class UserController {
 
 
     @RequestMapping("/profile")
-    public ModelAndView profile(HttpSession session) { // Solamente podemos llegar aca si estamos autorizados por lo que no hace falta pedir el id lo tenemos guardado en session o en context
-        User loggedUser = (User)session.getAttribute("getLoggedUser");
+    public ModelAndView profile(@ModelAttribute("getLoggedUser") User loggedUser) {
         return new ModelAndView("indexProfile")
-                .addObject("profile", loggedUser)
                 .addObject("publishedChangas", cs.getUserOwnedChangas(loggedUser.getUser_id()).getValue())
                 .addObject("pendingChangas", is.getUserInscriptions(loggedUser.getUser_id()).getValue().keySet());
     }
