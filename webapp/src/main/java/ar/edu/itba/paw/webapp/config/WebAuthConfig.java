@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -40,13 +41,14 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 //                .invalidSessionUrl("/logIn") //upon logout, you will be forwarded here por ahora no lo usamos
                 .and().authorizeRequests()
                     .antMatchers("/", "/signup").permitAll()
+                    .antMatchers(HttpMethod.GET, "/create-changa").permitAll()
                     .antMatchers("/login").anonymous()
 //                    .antMatchers("/admin/**").hasRole("ADMIN")  // por ahora no tenemos roles de admin
                     .antMatchers("/**").authenticated()
                 .and().formLogin()
                     .usernameParameter("j_username")
                     .passwordParameter("j_password")
-                    .defaultSuccessUrl("/", true) //the landing page after a successful login
+                    //.defaultSuccessUrl("/", true) //the landing page after a successful login
                     .loginPage("/login") //the custom login page
                     //loginProcessingUrl() – the url to submit the username and password to
                 .and().rememberMe()

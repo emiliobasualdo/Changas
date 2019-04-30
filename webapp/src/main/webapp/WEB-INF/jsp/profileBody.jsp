@@ -208,7 +208,7 @@
                 <div class="col-md-6">
                     <div class="profile-head">
                         <!--<h5>
-                            <%--<c:out value="${profile.name}"/> <c:out value="${profile.surname}"/>--%>Jimena Lozano
+                            <%--<c:out value="${getLoggedUser.name}"/> <c:out value="${getLoggedUser.surname}"/>--%>Jimena Lozano
                         </h5> -->
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item">
@@ -232,7 +232,7 @@
                                 <label><spring:message code="label.name"/></label>
                             </div>
                             <div class="col-md-6">
-                                <p><c:out value="${profile.name}"/> <c:out value="${profile.surname}"/></p>
+                                <p><c:out value="${getLoggedUser.name}"/> <c:out value="${getLoggedUser.surname}"/></p>
                             </div>
                         </div>
                         <div class="row">
@@ -240,7 +240,7 @@
                                 <label><spring:message code="label.mail"/></label>
                             </div>
                             <div class="col-md-6">
-                                <p><c:out value="${profile.email}"/></p>
+                                <p><c:out value="${getLoggedUser.email}"/></p>
                             </div>
                         </div>
                         <div class="row">
@@ -248,7 +248,7 @@
                                 <label><spring:message code="label.telephone"/></label>
                             </div>
                             <div class="col-md-6">
-                                <p><c:out value="${profile.tel}"/></p>
+                                <p><c:out value="${getLoggedUser.tel}"/></p>
                             </div>
                         </div>
                     </div>

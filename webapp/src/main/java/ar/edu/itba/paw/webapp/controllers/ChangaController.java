@@ -10,6 +10,8 @@ import ar.edu.itba.paw.models.Inscription;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -43,9 +45,9 @@ public class ChangaController {
     }
 
     @RequestMapping(value = "/create-changa", method = RequestMethod.POST )
-    public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, HttpSession session) {
+    public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, @ModelAttribute("getLoggedUser") User loggedUser) {
         System.out.println(form.getTitle() + " " +  form.getDescription() + " " +  form.getPrice() + " " +  form.getNeighborhood());
-        cs.create(new Changa.Builder().withUserId(((User)session.getAttribute("getLoggedUser")).getUser_id())
+        cs.create(new Changa.Builder().withUserId(loggedUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
@@ -75,8 +77,8 @@ public class ChangaController {
     }
 
     @RequestMapping(value = "/edit-changa", method = RequestMethod.POST )
-    public ModelAndView editChanga(@RequestParam("id") final long id, @Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, HttpSession session) {
-        cs.update(id, new Changa.Builder().withUserId(((User)session.getAttribute("getLoggedUser")).getUser_id())
+    public ModelAndView editChanga(@RequestParam("id") final long id, @Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, @ModelAttribute("getLoggedUser") User loggedUser) {
+        cs.update(id, new Changa.Builder().withUserId(loggedUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
@@ -87,18 +89,20 @@ public class ChangaController {
     }
 
     @RequestMapping("/changa")
-    public ModelAndView showChanga(@RequestParam("id") final long id, HttpSession session) { //TODO: RE VER
+    public ModelAndView showChanga(@RequestParam("id") final long id, @ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged) { //TODO: RE VER
         final ModelAndView mav = new ModelAndView("indexChanga");
         final Changa changa = cs.getChangaById(id).getValue();
         mav.addObject("changa", changa);
         boolean userAlreadyInscribedInChanga = false;
-        Either<Boolean, Validation> either = is.isUserInscribedInChanga(((User)session.getAttribute("getLoggedUser")).getUser_id(), id);
-        if (either.isValuePresent()) {
-            userAlreadyInscribedInChanga = either.getValue();
-        } else {
-            // todo que carajo pasa aca?
-            // el usuario podría no esxistir
-            // La changa podría no existir
+        if (isUserLogged) {
+            Either<Boolean, Validation> either = is.isUserInscribedInChanga(loggedUser.getUser_id(), id);
+            if (either.isValuePresent()) {
+                userAlreadyInscribedInChanga = either.getValue();
+            } else {
+                // todo que carajo pasa aca?
+                // el usuario podría no esxistir
+                // La changa podría no existir
+            }
         }
         mav.addObject("userAlreadyInscribedInChanga", userAlreadyInscribedInChanga);
         mav.addObject("changaOwner", us.findById(changa.getUser_id()).getValue());
