@@ -92,31 +92,25 @@
 <body>
 <div class="login-form">
     <!-- action="" -> aca ponemos que pasa cuando el usuario apreta en ingresar -->
-    <c:url value="/login" var="loginUrl" />
-    <form action="${loginUrl}"  method="post">
-        <div class="avatar">
-            <img src="https://i.imgur.com/dGo8DOk.jpg" alt="Avatar">
-        </div>
-        <h2 class="text-center"><spring:message code="logInBody.header"/></h2>
+    <c:url value="/login/forgot-password/reset-password" var="reserPasswordUrl" />
+    <form:form action="${reserPasswordUrl}" modelAttribute="resetPasswordForm" method="post">
+        <h2 class="text-center"><spring:message code="resetPasswordBody.header"/></h2>
         <div class="form-group">
-            <label for="username"><spring:message code="UserLoginForm.username"/></label>
-            <input id="username"  name="j_username" class="form-control" />
+            <form:label path="mail"><spring:message code="resetPasswordBody.mail"/></form:label>
+            <form:input path="mail" class="form-control" />
         </div>
         <div class="form-group">
-            <label for="password"><spring:message code="UserLoginForm.password"/></label>
-            <input id="password" name="j_password" class="form-control"/>
+            <form:label path="newPassword1"><spring:message code="resetPasswordBody.newPassword1"/></form:label>
+            <form:input path="newPassword1" class="form-control" />
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-lg btn-block"><spring:message code="logInBody.button"/></button>
+            <form:label path="newPassword2"><spring:message code="resetPasswordBody.newPassword2"/></form:label>
+            <form:input path="newPassword2" class="form-control"/>
         </div>
-        <div class="clearfix">
-            <label class="pull-left checkbox-inline"><input type="checkbox" name="j_rememberme"><spring:message code="logInBody.checkbox"/></label>
-            <c:url value="/login/forgot-password" var="forgotPasswordUrl" />
-            <a href="${forgotPasswordUrl}" cl®ss="pull-right"><spring:message code="loginBody.alert.forgotPassword"/></a>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-lg btn-block"><spring:message code="resetPasswordBody.reset.btn"/></button>
         </div>
-    </form>
-    <c:url value="/signup" var="signupUrl" />
-    <p class="text-center small"><spring:message code="loginBody.alert.noAccount"/><a href="${signupUrl}"><spring:message code="loginBody.btn.singUp"/></a></p>
+    </form:form>
 </div>
 </body>
 </html>

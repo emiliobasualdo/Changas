@@ -17,5 +17,10 @@ public class ErrorController {
         return new ModelAndView("404");
     }
 
+    @RequestMapping("/500")
+    public ModelAndView serveError() {
+        return new ModelAndView("500");
+    }
+
 
 }

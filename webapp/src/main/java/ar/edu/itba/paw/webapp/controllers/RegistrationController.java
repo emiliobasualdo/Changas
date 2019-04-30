@@ -20,6 +20,7 @@ import java.util.Locale;
 @Controller
 @Component
 public class RegistrationController {
+
     @Autowired
     private UserService userService;
 

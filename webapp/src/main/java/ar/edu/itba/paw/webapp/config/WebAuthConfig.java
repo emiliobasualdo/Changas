@@ -41,9 +41,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement()
 //                .invalidSessionUrl("/logIn") //upon logout, you will be forwarded here por ahora no lo usamos
                 .and().authorizeRequests()
-                    .antMatchers("/", "/signup/**").permitAll()
+                    .antMatchers("/", "/signup/**", "/changa").permitAll()
                     .antMatchers(HttpMethod.GET, "/create-changa").permitAll()
-                    .antMatchers("/login").anonymous()
+                    .antMatchers("/login/**").anonymous()
 //                    .antMatchers("/admin/**").hasRole("ADMIN")  // por ahora no tenemos roles de admin
                     .antMatchers("/**").authenticated()
                 .and().formLogin()
