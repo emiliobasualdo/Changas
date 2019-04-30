@@ -2,7 +2,6 @@ package ar.edu.itba.paw.constants;
 
 public enum DBUserFields {
 
-
     user_id     ("user_id", "SERIAL",-1),
     name        ("name", "VARCHAR",400),
     surname     ("surname", "VARCHAR",100),

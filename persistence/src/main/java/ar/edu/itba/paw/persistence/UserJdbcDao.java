@@ -130,13 +130,13 @@ public class UserJdbcDao implements UserDao {
     }
 
     @Override
-    public void setUserStatus(User user, boolean status) {
+    public void setUserStatus(final long userId, final boolean status) {
         jdbcTemplate.update(String.format("UPDATE %s SET %s = ? WHERE %s = ? ",
                 users.name(),
                 "enabled",
                 user_id.name()),
                 status,
-                user.getUser_id()
+                userId
         );
     }
 

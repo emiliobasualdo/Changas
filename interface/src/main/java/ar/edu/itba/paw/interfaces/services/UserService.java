@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.interfaces.services;
 
-import ar.edu.itba.paw.Builder;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
@@ -19,6 +18,7 @@ public interface UserService {
     Either<User, Validation> findByMail(String mail);
     Either<User, Validation> register(final User.Builder userBuilder);
     void createVerificationToken(User user, String token);
-    VerificationToken getVerificationToken(String VerificationToken);
-    void setUserEnabledStatus(User user, boolean status);
+    Either<VerificationToken, Validation> getVerificationToken(String VerificationToken);
+    void setUserEnabledStatus(final long userId, final boolean status);
+    void confirmMailVerification(final long userId, final long tokenId);
 }

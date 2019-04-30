@@ -47,6 +47,11 @@ public class Validation {
         USERS_INSCRIBED         ("There are users inscribed in the changa"), // we cant edit a changa if users are inscribed
         NO_USERS_INSCRIBED      ("There are no users inscribed in the changa"),
         CHANGE_NOT_POSSIBLE     ("Such change is not allowed to be done"),
+
+        //Verification Token
+        INEXISTENT_TOKEN       ("Inexistent token"),
+        EXPIRED_TOKEN           ("Expired token")
+
         ;
 
         private final String message;

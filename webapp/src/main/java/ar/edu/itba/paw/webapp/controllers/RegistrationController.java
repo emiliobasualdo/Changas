@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.services.UserService;
+import ar.edu.itba.paw.interfaces.util.Validation;
+import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,31 +25,36 @@ public class RegistrationController {
 
     @RequestMapping(value = "/signup/registration-confirm", method = RequestMethod.GET)
     public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token) {
-        System.out.println("entro a registration-confirm");
         Locale locale = request.getLocale();
-
-        VerificationToken verificationToken = userService.getVerificationToken(token);
+        Either<VerificationToken, Validation> verificationToken = userService.getVerificationToken(token);
         System.out.println(verificationToken.toString());
-        if (verificationToken == null) {
-           // String message = messages.getMessage("auth.message.invalidToken", null, locale);
-           // model.addAttribute("message", message);\
-
-            System.out.println("no encontro al token");
-            //TODO ERROR PAGE
-           // return "redirect:/badUser.html?lang=" + locale.getLanguage();
-
+        if (!verificationToken.isValuePresent()) {
+            Validation.ErrorCodes errorCode = verificationToken.getAlternative().getEc();
+            if ( errorCode == Validation.ErrorCodes.INEXISTENT_TOKEN)   {
+                System.out.println("Inexistent token");
+                // String message = messages.getMessage("auth.message.invalidToken", null, locale);
+                // model.addAttribute("message", message);
+                // return "redirect:/badUser.html?lang=" + locale.getLanguage();
+                return "redirect:/login";
+            }
+            if (errorCode == Validation.ErrorCodes.EXPIRED_TOKEN) {
+                // String messageValue = messages.getMessage("auth.message.expired", null, locale)
+                // model.addAttribute("message", messageValue);
+                //TODO RESEND EMAIL. REDIRECT A PAGINA PARA RESEND EMAIL
+                //return "redirect:/badUser.html?lang=" + locale.getLanguage();
+                System.out.println("Token expired. Falta implementar el resend email");
+                return "redirect:/login";
+            }
+        }
+        Either<User, Validation> user = userService.findById(verificationToken.getValue().getUserId());
+        if(user.isValuePresent() && user.getValue().isEnabled()){
+                System.out.println("El mail esta verificado. Puede ingresar directamente");
+                return "redirect:/login";
         }
 
-        User user = userService.findById(verificationToken.getUserId()).getValue();
-        Calendar cal = Calendar.getInstance();
-        if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-           // String messageValue = messages.getMessage("auth.message.expired", null, locale)
-           // model.addAttribute("message", messageValue);
-            //return "redirect:/badUser.html?lang=" + locale.getLanguage();
-        }
-
-        userService.setUserEnabledStatus(user, true);
-//        return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
-    return "redirect:/login";
+        System.out.println("se confirmó el mail");
+        userService.setUserEnabledStatus(verificationToken.getValue().getUserId(), true);
+        return "redirect:/login";
     }
+
 }

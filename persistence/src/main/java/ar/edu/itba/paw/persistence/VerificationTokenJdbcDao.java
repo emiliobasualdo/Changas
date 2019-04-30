@@ -1,7 +1,8 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.daos.VerificationTokenDao;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.interfaces.util.Validation;
+import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.VerificationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,9 +16,9 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import static ar.edu.itba.paw.constants.DBTableName.users;
-import static ar.edu.itba.paw.constants.DBUserFields.user_id;
+import static ar.edu.itba.paw.constants.DBTableName.verification_token;
+import static ar.edu.itba.paw.constants.DBVerificationTokenFields.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
 
 @Repository
 public class VerificationTokenJdbcDao implements VerificationTokenDao {
@@ -31,21 +32,29 @@ public class VerificationTokenJdbcDao implements VerificationTokenDao {
     public VerificationTokenJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(ds)
-                .withTableName("verification_token")
-                .usingGeneratedKeyColumns("token_id");
+                .withTableName(verification_token.name())
+                .usingGeneratedKeyColumns(token_id.name());
     }
 
 
     @Override
-    public Optional<VerificationToken> findByToken(String token) {
-        return jdbcTemplate.query(String.format("SELECT * FROM %s WHERE %s = ?", "verification_token", "token"), ROW_MAPPER, token).stream().findAny();
+    public Either<VerificationToken, Validation> findByToken(String tok) {
+        Optional<VerificationToken> optional = jdbcTemplate.query(String.format("SELECT * FROM %s WHERE %s = ?", verification_token.name(), token.name()), ROW_MAPPER, tok).stream().findAny();
+        if(!optional.isPresent()) {
+            return Either.alternative(new Validation(INEXISTENT_TOKEN));
+        }
+        return Either.value(optional.get());
     }
 
     @Override
     public void save(VerificationToken.Builder tokenBuilder) {
-        Number tokenId;
         Map<String, Object> tokenRow = tokenToTableRow(tokenBuilder);
-        tokenId = jdbcInsert.executeAndReturnKey(tokenRow);
+        jdbcInsert.execute(tokenRow);
+
+    }
+
+    @Override
+    public void delete(final long tokenId) {
 
     }
 

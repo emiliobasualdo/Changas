@@ -1,10 +1,11 @@
 package ar.edu.itba.paw.interfaces.daos;
 
+import ar.edu.itba.paw.interfaces.util.Validation;
+import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.VerificationToken;
 
-import java.util.Optional;
-
 public interface VerificationTokenDao {
-    Optional<VerificationToken> findByToken(String token);
+    Either<VerificationToken, Validation> findByToken(String token);
     void save(VerificationToken.Builder token);
+    void delete(final long tokenId);
 }

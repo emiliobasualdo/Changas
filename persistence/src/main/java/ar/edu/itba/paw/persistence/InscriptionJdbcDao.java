@@ -26,6 +26,7 @@ import static ar.edu.itba.paw.constants.DBInscriptionFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.changas;
 import static ar.edu.itba.paw.constants.DBTableName.user_inscribed;
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
+import static ar.edu.itba.paw.models.InscriptionState.optout;
 import static ar.edu.itba.paw.models.InscriptionState.requested;
 
 @Repository
@@ -81,12 +82,6 @@ public class InscriptionJdbcDao implements InscriptionDao {
     /* Returns the users that are inscribed in a changa of id=changaId */
     public Either<Map<User, Inscription>, Validation> getInscribedUsers(long changaId) {
         return this.getter(userDao, changa_id.name(), changaId, Inscription::getUser_id);
-    }
-
-    @Override
-    public boolean unsubscribeFromChanga(long userId, long changaId) {
-        int rowsAffected = jdbcTemplate.update(String.format("DELETE FROM %s WHERE %s = ? AND %s = ?", user_inscribed.name(), user_id.name(), changa_id.name()), userId, changaId);
-        return rowsAffected == 1;
     }
 
     @Override

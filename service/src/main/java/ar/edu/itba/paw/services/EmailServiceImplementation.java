@@ -12,8 +12,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -28,8 +28,6 @@ public class EmailServiceImplementation implements EmailService {
     @Autowired
     private UserService userService;
 
-//    @Autowired
-//    ApplicationEventPublisher eventPublisher;
 
     @Override
     public void sendEmail(String to, String subject, String body) {
@@ -47,21 +45,18 @@ public class EmailServiceImplementation implements EmailService {
     }
 
     @Override
-    public void sendMailConfirmationEmail(User user, String appUrl) {
+    public void sendMailConfirmationEmail(User user, String appUrl) throws MessagingException {
         String token = UUID.randomUUID().toString();
         userService.createVerificationToken(user, token);
         String confirmUrl = appUrl + "/registration-confirm?token=" + token;
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper;
 
-        try {
-            helper = new MimeMessageHelper(message,true);
-            helper.setTo(user.getEmail());
-            helper.setSubject(messageSource.getMessage("mailConfirmationSubject",null, LocaleContextHolder.getLocale()));
-            helper.setText(mailConfirmationEmailBody(user, confirmUrl), true);
-        } catch (javax.mail.MessagingException e) {
-            e.printStackTrace();
-        }
+        helper = new MimeMessageHelper(message,true);
+        helper.setTo(user.getEmail());
+        helper.setSubject(messageSource.getMessage("mailConfirmationSubject",null, LocaleContextHolder.getLocale()));
+        helper.setText(mailConfirmationEmailBody(user, confirmUrl), true);
+
         emailSender.send(message);
     }
 
