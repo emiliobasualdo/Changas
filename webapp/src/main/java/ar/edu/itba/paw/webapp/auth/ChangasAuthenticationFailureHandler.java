@@ -26,7 +26,8 @@ public class ChangasAuthenticationFailureHandler extends SimpleUrlAuthentication
 
         //TODO MOSTRAR, SI ES NECESARIO, EL ERROR OCURRIDO AL USUARIO
         setDefaultFailureUrl("/login?error=true");
-        System.out.println("No se pudo loggear porque: "+exception.getMessage());
+        System.out.println("No se pudo loggear porque: "+ exception.getMessage());
+        System.out.println("si el \"user is disabled\", activar mediante el link que se mandó al mail del usuario");
         super.onAuthenticationFailure(request, response, exception);
 
 //        response.setStatus(HttpStatus.UNAUTHORIZED.value());
