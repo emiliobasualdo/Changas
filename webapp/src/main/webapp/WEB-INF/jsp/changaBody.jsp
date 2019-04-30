@@ -2,30 +2,24 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<style>
-    @import url(https://fonts.googleapis.com/css?family=Josefin+Sans:400,300,300italic,400italic,600,700,600italic,700italic);
-    body {
-        font-family: "Josefin Sans", sans-serif;
-        line-height: 1;
-        padding: 20px;
-        height: 100%;
-        background: white;
-    }
 
-</style>
+<head>
+    <style><%@include file="/WEB-INF/css/changaBody.css"%></style>
+</head>
+
 <body>
 
-    <div class="jumbotron jumbotron-fluid">
+    <div class="jumbotron jumbotron-fluid" style="margin-top: 2cm">
         <div class="container">
             <h2>
                 <c:out value="${changa.title}" />
             </h2>
-            <p style="font-style: italic">
+            <h5 style="margin-top: 1cm">
                 <c:out value="${changa.description}" />
-            </p>
-            <p>
+            </h5>
+            <h5>
                 <c:out value="${changa.price}" /> $
-            </p>
+            </h5>
         </div>
     </div>
 
@@ -51,18 +45,38 @@
     <div class="container" style="margin-top: 80px">
         <c:choose>
             <c:when test="${userAlreadyInscribedInChanga == false}">
-                <c:url value="/join-changa" var="joinUrl" />
-                <form action="${joinUrl}" method="post">
-                    <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-                    <input type="submit"  class="btn btn-success btn-block" value="Anotame en la changa" />
-                </form>
-                <br />
+                <c:choose>
+                    <c:when test="${userOwnsChanga == true}">
+                        <div class="alert alert-info" role="alert">
+                            <spring:message code="changaBody.alertOwner"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
+                        </div>
+                        <br />
+                    </c:when>
+                    <c:otherwise>
+                        <c:url value="/join-changa" var="joinUrl" />
+                        <form action="${joinUrl}" method="post">
+                            <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
+                            <input type="submit"  class="btn btn-success btn-block" value="Anotame en la changa" />
+                        </form>
+                        <br />
+                    </c:otherwise>
+                </c:choose>
             </c:when>
             <c:otherwise>
-                <div class="alert alert-info" role="alert">
-                    <strong><spring:message code="changaBody.alert.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
-                </div>
-                <br />
+                <c:choose>
+                    <c:when test="${userOwnsChanga == true}">
+                        <div class="alert alert-info" role="alert">
+                            <spring:message code="changaBody.alertOwner"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
+                        </div>
+                        <br />
+                    </c:when>
+                    <c:otherwise>
+                        <div class="alert alert-info" role="alert">
+                            <strong><spring:message code="changaBody.alert.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
+                        </div>
+                        <br />
+                    </c:otherwise>
+                </c:choose>
             </c:otherwise>
         </c:choose>
     </div>

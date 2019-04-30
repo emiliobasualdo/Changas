@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS users
     surname VARCHAR(100),
     tel     VARCHAR(100),
     email   VARCHAR(100) NOT NULL UNIQUE ,
-    passwd  VARCHAR(100) NOT NULL
+    passwd  VARCHAR(100) NOT NULL ,
+    enabled BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS changas
@@ -37,4 +38,12 @@ CREATE TABLE IF NOT EXISTS user_inscribed
     changa_id SERIAL NOT NULL  REFERENCES changas (changa_id),
     state     VARCHAR(100) DEFAULT 'requested',
     PRIMARY KEY (user_id, changa_id)
+);
+
+CREATE TABLE IF NOT EXISTS verification_token
+(
+   token_id SERIAL PRIMARY KEY,
+   token VARCHAR(255),
+   user_id SERIAL NOT NULL REFERENCES users (user_id),
+   expiry_date DATE NOT NULL
 );
