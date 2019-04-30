@@ -7,21 +7,25 @@ import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.Either;
+import ar.edu.itba.paw.models.InscriptionState;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.forms.UserLoginForm;
 import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
-import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.net.URI;
 
 @Controller
 public class UserController {
@@ -38,17 +42,23 @@ public class UserController {
     @Autowired
     private ChangaService cs;
 
+    @Autowired
+    ApplicationEventPublisher eventPublisher;
+
+
+
     @RequestMapping("/signup")
     public ModelAndView signUp(@ModelAttribute("signUpForm") final UserRegisterForm form) {
         return new ModelAndView("indexSignUp");
     }
 
     @RequestMapping(value = "/signup", method = { RequestMethod.POST })
-    public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors) {
+    public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors, final WebRequest request) {
         if (errors.hasErrors()) {
             System.out.println("Errores en los campos del formulario sign up");
             return signUp(form);
         }
+
         final Either<User, Validation> either = us.register(new User.Builder()
                 .withName(form.getName())
                 .withSurname(form.getSurname())
@@ -59,16 +69,25 @@ public class UserController {
 
         if (!either.isValuePresent()){
             Validation err = either.getAlternative();
-            //no me dejo hacer un switch pq blabla pero ver como hacerlo mas lindo
             errors.rejectValue("email","aca no se q va");
             return signUp(form);
-
-                //TODO MAITE ver q va en el errorCode de abajo
-                //TODO MAITE sacarle la E a email en todos lados
-//            else if (code == DATABASE_ERROR.getId()) {
-//                //TODO MAITE que hacemo aca. preguntarle a Juan lo de las exceptions de la base de datos cuando violas un unique
-//            }
         }
+
+        try {
+            String appUrl = request.getContextPath();
+            ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
+            builder.scheme("http");
+            URI uri = builder.build().toUri();
+            emailService.sendMailConfirmationEmail(either.getValue(), uri.toString());
+        } catch (javax.mail.MessagingException ex) {
+            System.out.println("email error");
+            return new ModelAndView("emailError", "user", form);
+        }
+
+
+        /* TODO redirect sin pasar por el login
+         return new ModelAndView("redirect:/user?userId=" + either.getValue().getId());
+        */
         return new ModelAndView("redirect:/login");
     }
 
@@ -95,8 +114,9 @@ public class UserController {
     }
 
     @RequestMapping(value = "/unjoin-changa", method = RequestMethod.POST)
-    public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser) {
-        Validation val = is.unsubscribeFromChanga(loggedUser.getUser_id(), changaId);
+    public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
+        User loggedUser = ((User)session.getAttribute("getLoggedUser"));
+        Validation val = is.changeUserStateInChanga(loggedUser.getUser_id(), changaId, InscriptionState.optout);
         System.out.println(loggedUser.getEmail() + " desanotado de " + changaId);
         if (val.isOk()){
             System.out.println("user "+ loggedUser.getUser_id()+ " successfully desinscripto en changa "+ changaId);

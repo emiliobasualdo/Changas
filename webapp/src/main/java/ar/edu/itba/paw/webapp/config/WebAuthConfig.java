@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.config;
 
+import ar.edu.itba.paw.webapp.auth.ChangasAuthenticationFailureHandler;
 import ar.edu.itba.paw.webapp.auth.CostumeUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +41,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement()
 //                .invalidSessionUrl("/logIn") //upon logout, you will be forwarded here por ahora no lo usamos
                 .and().authorizeRequests()
-                    .antMatchers("/", "/signup").permitAll()
+                    .antMatchers("/", "/signup/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/create-changa").permitAll()
                     .antMatchers("/login").anonymous()
 //                    .antMatchers("/admin/**").hasRole("ADMIN")  // por ahora no tenemos roles de admin
@@ -49,6 +50,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .usernameParameter("j_username")
                     .passwordParameter("j_password")
                     //.defaultSuccessUrl("/", true) //the landing page after a successful login
+                .failureHandler(new ChangasAuthenticationFailureHandler())
                     .loginPage("/login") //the custom login page
                     //loginProcessingUrl() – the url to submit the username and password to
                 .and().rememberMe()

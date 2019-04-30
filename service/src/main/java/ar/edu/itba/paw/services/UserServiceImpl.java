@@ -1,16 +1,20 @@
 package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.daos.UserDao;
+import ar.edu.itba.paw.interfaces.daos.VerificationTokenDao;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.VerificationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import sun.security.util.Password;
+
+import java.util.Calendar;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.DATABASE_ERROR;
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.EXPIRED_TOKEN;
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.USER_ALREADY_EXISTS;
 
 @Service
@@ -22,6 +26,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private VerificationTokenDao verificationTokenDao;
 
     @Override
     public Either<User, Validation> findById(long id) {
@@ -52,4 +59,38 @@ public class UserServiceImpl implements UserService {
         userBuilder.withPasswd(passwordEncoder.encode(userBuilder.getPasswd()));
         return userDao.create(userBuilder);
     }
+
+
+
+    @Override
+    public void createVerificationToken(User user, String token)  {
+        VerificationToken.Builder myToken = new VerificationToken.Builder(token, user.getUser_id());
+        verificationTokenDao.save(myToken);
+    }
+
+    @Override
+    public Either<VerificationToken, Validation> getVerificationToken(String VerificationToken) {
+        Either<VerificationToken, Validation> verificationToken = verificationTokenDao.findByToken(VerificationToken);
+        if(!verificationToken.isValuePresent()){
+            return verificationToken;
+        }
+        Calendar cal = Calendar.getInstance();
+        if ((verificationToken.getValue().getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            return Either.alternative(new Validation(EXPIRED_TOKEN));
+        }
+        return verificationToken;
+    }
+
+    @Override
+    public void setUserEnabledStatus(long userId, boolean status) {
+        userDao.setUserStatus(userId, status);
+    }
+
+    @Override
+    public void confirmMailVerification(final long userId, final long tokenId) {
+        setUserEnabledStatus(userId, true);
+        verificationTokenDao.delete(tokenId);
+    }
+
+
 }

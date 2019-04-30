@@ -99,6 +99,7 @@ public class UserJdbcDao implements UserDao {
                                                 .withTel(rs.getString(tel.name()))
                                                 .withEmail(rs.getString(email.name()))
                                                 .withPasswd(rs.getString(passwd.name()))
+                                                .enabled(rs.getBoolean(enabled.name()))
         );
     }
 
@@ -126,6 +127,17 @@ public class UserJdbcDao implements UserDao {
             return Either.alternative(new Validation(INVALID_COMBINATION));
         }
         return Either.value(list.get(0));
+    }
+
+    @Override
+    public void setUserStatus(final long userId, final boolean status) {
+        jdbcTemplate.update(String.format("UPDATE %s SET %s = ? WHERE %s = ? ",
+                users.name(),
+                "enabled",
+                user_id.name()),
+                status,
+                userId
+        );
     }
 
 
