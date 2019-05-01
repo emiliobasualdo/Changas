@@ -12,6 +12,10 @@ import ar.edu.itba.paw.webapp.forms.UserLoginForm;
 import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Arrays;
 
 @Controller
 public class UserController {
@@ -137,7 +142,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/login/forgot-password", method = RequestMethod.POST)
-    public ModelAndView forgotPasswordSender(@Valid @ModelAttribute("forgotPasswordForm") final ForgotPasswordForm forgotPasswordForm, final BindingResult result, final WebRequest request) {
+    public ModelAndView forgotPasswordSender(@Valid @ModelAttribute("forgotPasswordForm") final ForgotPasswordForm forgotPasswordForm, final BindingResult result, HttpServletRequest request) {
         if (result.hasErrors()) {
             return new ModelAndView("indexForgotPassword");
         }
@@ -147,9 +152,7 @@ public class UserController {
             return new ModelAndView("indexForgotPassword");
         }
         try {
-            String appUrl = request.getContextPath();
-            ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
-            builder.scheme("http");
+            ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromContextPath(request);
             URI uri = builder.build().toUri();
             emailService.sendResetPasswordEmail(user.getValue(), uri.toString());
         } catch (MessagingException e) {
@@ -159,9 +162,9 @@ public class UserController {
         return new ModelAndView("redirect:/");
     }
 
-    @RequestMapping("/login/forgot-password/reset-password")
-    public ModelAndView resetPassword( @RequestParam("id") long id, @RequestParam("token") String token, @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm) {
-        Either<VerificationToken, Validation> verificationToken = us.getVerificationToken(token);
+    @RequestMapping("/reset-password/validate")
+    public ModelAndView validateResetPassword( @RequestParam("id") long id, @RequestParam("token") String token) {
+        Either<VerificationToken, Validation> verificationToken = us.getVerificationTokenWithRole(id, token);
         System.out.println("Token =" + verificationToken.toString());
         if (!verificationToken.isValuePresent()) {
             Validation.ErrorCodes errorCode = verificationToken.getAlternative().getEc();
@@ -181,12 +184,20 @@ public class UserController {
                 return new ModelAndView("redirect:/login");
             }
         }
-        return new ModelAndView("indexResetPassword");
+        return new ModelAndView("redirect:/reset-password").addObject("id", id).addObject("token", token);
     }
 
-    @RequestMapping(value = "/login/forgot-password/reset-password", method = RequestMethod.POST)
-    public ModelAndView doResetPassword(@Valid @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm, HttpServletRequest request) {
+
+    @RequestMapping("/reset-password")
+    public ModelAndView resetPassword(@RequestParam("id") long id, @RequestParam("token") String token, @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm) {
+        return new ModelAndView("indexResetPassword").addObject("id",id);
+    }
+
+    @RequestMapping(value = "/reset-password", method = RequestMethod.POST)
+    public ModelAndView doResetPassword(@Valid @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm, @RequestParam("id") long id) {
+        us.resetPassword(id, resetPasswordForm.getNewPassword());
         System.out.println("Contraseña restablecida");
+        SecurityContextHolder.getContext().setAuthentication(null);
         return new ModelAndView("redirect:/");
     }
 

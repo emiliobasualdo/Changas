@@ -2,20 +2,12 @@ package ar.edu.itba.paw.webapp.forms;
 
 public class ResetPasswordForm {
     //    @Size(min = 6, max = 100)
-//    @Pattern(regexp = "[a-zA-Z0-9]+")
-    private String mail;
-
-    //    @Size(min = 6, max = 100)
     private String newPassword1;
 
     private String newPassword2;
 
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
+    public String getNewPassword() {
+        return newPassword1;
     }
 
     public String getNewPassword1() {
@@ -37,7 +29,6 @@ public class ResetPasswordForm {
     @Override
     public String toString() {
         return "ResetPasswordForm{" +
-                "mail='" + mail + '\'' +
                 ", newPassword1='" + newPassword1 + '\'' +
                 ", newPassword2='" + newPassword2 + '\'' +
                 '}';

@@ -92,13 +92,10 @@
 <body>
 <div class="login-form">
     <!-- action="" -> aca ponemos que pasa cuando el usuario apreta en ingresar -->
-    <c:url value="/login/forgot-password/reset-password" var="reserPasswordUrl" />
+    <c:url value="/reset-password" var="reserPasswordUrl" />
     <form:form action="${reserPasswordUrl}" modelAttribute="resetPasswordForm" method="post">
+        <input type="hidden" name="id" value="<c:out value="${id}"/>">
         <h2 class="text-center"><spring:message code="resetPasswordBody.header"/></h2>
-        <div class="form-group">
-            <form:label path="mail"><spring:message code="resetPasswordBody.mail"/></form:label>
-            <form:input path="mail" class="form-control" />
-        </div>
         <div class="form-group">
             <form:label path="newPassword1"><spring:message code="resetPasswordBody.newPassword1"/></form:label>
             <form:input path="newPassword1" class="form-control" />

@@ -64,7 +64,7 @@ public class EmailServiceImplementation implements EmailService {
     public void sendResetPasswordEmail(User user, String appUrl) throws MessagingException {
         String token = UUID.randomUUID().toString();
         userService.createVerificationToken(user, token);
-        String resetUrl = appUrl + "/reset-password?id=" + user.getUser_id() + "&token=" + token;
+        String resetUrl = appUrl + "/reset-password/validate?id=" + user.getUser_id() + "&token=" + token;
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message,true);
         helper.setTo(user.getEmail());
