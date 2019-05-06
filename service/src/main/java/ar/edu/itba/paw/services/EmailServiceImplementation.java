@@ -68,7 +68,7 @@ public class EmailServiceImplementation implements EmailService {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message,true);
         helper.setTo(user.getEmail());
-        helper.setSubject(messageSource.getMessage("resetPasswordSubject",null, LocaleContextHolder.getLocale()));
+        helper.setSubject(messageSource.getMessage("resetPassword.Subject",null, LocaleContextHolder.getLocale()));
         helper.setText(resetPasswordEmailBody(resetUrl), true);
         emailSender.send(message);
     }
@@ -83,7 +83,8 @@ public class EmailServiceImplementation implements EmailService {
 
     private String resetPasswordEmailBody(String resetUrl) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Apriete en el link para cambiar la contrseña ");
+        sb.append(messageSource.getMessage("resetPassword.Body",null, LocaleContextHolder.getLocale()));
+        sb.append(' ');
         sb.append(resetUrl);
         return sb.toString();
     }

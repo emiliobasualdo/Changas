@@ -106,8 +106,10 @@ public class ChangaController {
             }
         }
         boolean userOwnsChanga = false;
-        if (loggedUser.getUser_id() == changa.getUser_id()){
-            userOwnsChanga = true;
+        if (isUserLogged) {
+            if (loggedUser.getUser_id() == changa.getUser_id()) {
+                userOwnsChanga = true;
+            }
         }
         mav.addObject("userAlreadyInscribedInChanga", userAlreadyInscribedInChanga);
         mav.addObject("changaOwner", us.findById(changa.getUser_id()).getValue());
