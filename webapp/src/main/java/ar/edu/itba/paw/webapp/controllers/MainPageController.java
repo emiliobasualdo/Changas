@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class MainPageController { //TODO: hacer que los jsp sea HTML safe
@@ -29,15 +30,33 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
     @Autowired
     private UserService us;
 
-    @RequestMapping(value = "/")
-    public ModelAndView showChangas() {
-        Either<List<Changa>, Validation> either = cs.getAllChangas();
+    @Autowired
+    private InscriptionService is;
 
-        if (either.isValuePresent()) {
-            return new ModelAndView("index")
-                    .addObject("changaList", either.getValue());
-        } else {
-            return new ModelAndView("500");
+    @RequestMapping(value = "/")
+    public ModelAndView showChangas(@ModelAttribute("getLoggedUser") User loggedUser) {
+        Either<List<Changa>, Validation> either = cs.getAllChangas();
+        if (loggedUser != null) {
+            Either<Map<Changa, Inscription>, Validation> eitherMap = is.getUserInscriptions(loggedUser.getUser_id());
+            if (either.isValuePresent()) {
+                if (eitherMap.isValuePresent()) {
+                    return new ModelAndView("index")
+                            .addObject("changaList", either.getValue())
+                            .addObject("userInscriptions", eitherMap.getValue().keySet());
+                } else {
+                    return new ModelAndView("500"); //todo: esta bien esto?
+                }
+            } else {
+                return new ModelAndView("500");
+            }
+        }
+        else {
+            if (either.isValuePresent()) {
+                    return new ModelAndView("index")
+                            .addObject("changaList", either.getValue());
+            } else {
+                return new ModelAndView("500");
+            }
         }
     }
 

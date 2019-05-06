@@ -129,10 +129,11 @@ public class InscriptionJdbcDao implements InscriptionDao {
     public Validation changeUserStateInChanga(Inscription insc, InscriptionState newState) throws DataAccessException {
         // we assume the service has checked that the change can be done
         int rowsAffected;
+        String sql = String.format("UPDATE %s SET %s = ? WHERE %s = ? AND %s = ?", user_inscribed.name(), state.name(), user_id.name(), changa_id.name());
         try {
             rowsAffected = this.jdbcTemplate.update(
-                    "UPDATE ? set state = ? WHERE user_id = ? AND changa_id = ?",
-                    user_inscribed, newState, insc.getUser_id(), insc.getChanga_id());
+                    sql,
+                    newState.name(), insc.getUser_id(), insc.getChanga_id());
             if (rowsAffected != 1) {
                 throw new RecoverableDataAccessException("rowsAffected != 1");
             }
