@@ -46,7 +46,7 @@
                         </div>
                     </td>
                 </tr>
-                <tr>
+                <%--<tr>
                     <td>
                         <div class="form-group">
                             <div class="input-group">
@@ -62,7 +62,7 @@
                             </div>
                         </div>
                     </td>
-                </tr>
+                </tr>--%>
                 <tr>
                     <td>
                         <div class="form-group">

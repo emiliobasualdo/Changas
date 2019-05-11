@@ -31,6 +31,7 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.net.URI;
@@ -159,10 +160,10 @@ public class UserController {
     @RequestMapping("/profile")
     public ModelAndView profile(@ModelAttribute("getLoggedUser") User loggedUser) {
 
-        Either<Map<Changa, Inscription>, Validation> maybePendingChangas = is.getUserInscriptions(loggedUser.getUser_id());
-        Map<Changa, Inscription> pendingChangasMap = null;
+        Either<List<Pair<Changa, Inscription>>, Validation>  maybePendingChangas = is.getUserInscriptions(loggedUser.getUser_id());
+        List<Pair<Changa, Inscription>> pendingChangas = new LinkedList<>();
         if (maybePendingChangas.isValuePresent()){
-            pendingChangasMap = maybePendingChangas.getValue();
+            pendingChangas = maybePendingChangas.getValue();
             //todo: deberiamos chequear q el mapa tenga todos valores validos? osea q ningun key/value sea null. porq el jsp se puede romper si le paso algo null
         }
         else{
@@ -180,7 +181,7 @@ public class UserController {
 
         return new ModelAndView("indexProfile")
                 .addObject("publishedChangas", publishedChangas)
-                .addObject("pendingChangas", pendingChangasMap);
+                .addObject("pendingChangas", pendingChangas);
     }
 
     @RequestMapping("/login/forgot-password")
