@@ -120,8 +120,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/unjoin-changa", method = RequestMethod.POST)
-    public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
-        User loggedUser = ((User)session.getAttribute("getLoggedUser"));
+    public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser, HttpSession session) {
         Validation val = is.changeUserStateInChanga(loggedUser.getUser_id(), changaId, InscriptionState.optout);
         System.out.println(loggedUser.getEmail() + " desanotado de " + changaId);
         if (val.isOk()){
