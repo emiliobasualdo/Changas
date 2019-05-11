@@ -17,5 +17,6 @@ public interface UserDao extends Dao<User>{
     Either<User, Validation> create(final User.Builder userBuilder);
     Either<User, Validation> getUser(final User.Builder userBuilder);
     void setUserStatus(final long userId, boolean status);
+    void updatePassword(final long id, final String password);
     //List<User> createUsers();
 }

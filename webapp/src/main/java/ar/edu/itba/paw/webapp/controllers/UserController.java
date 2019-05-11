@@ -6,10 +6,17 @@ import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.webapp.forms.ForgotPasswordForm;
+import ar.edu.itba.paw.webapp.forms.ResetPasswordForm;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.forms.UserLoginForm;
 import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,12 +27,15 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.net.URI;
+import java.util.Arrays;
 
 @Controller
 public class UserController {
@@ -44,8 +54,6 @@ public class UserController {
 
     @Autowired
     ApplicationEventPublisher eventPublisher;
-
-
 
     @RequestMapping("/signup")
     public ModelAndView signUp(@ModelAttribute("signUpForm") final UserRegisterForm form) {
@@ -83,8 +91,6 @@ public class UserController {
             System.out.println("email error");
             return new ModelAndView("emailError", "user", form);
         }
-
-
         /* TODO redirect sin pasar por el login
          return new ModelAndView("redirect:/user?userId=" + either.getValue().getId());
         */
@@ -110,12 +116,11 @@ public class UserController {
             //TODO JIME un popup de error
             System.out.println("No se pudo inscribir en la changa pq:"+ val.getMessage());
         }
-        return new ModelAndView("redirect:/");
+        return new ModelAndView(new StringBuilder("redirect:/changa?id=").append(changaId).toString());
     }
 
     @RequestMapping(value = "/unjoin-changa", method = RequestMethod.POST)
-    public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
-        User loggedUser = ((User)session.getAttribute("getLoggedUser"));
+    public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser, HttpSession session) {
         Validation val = is.changeUserStateInChanga(loggedUser.getUser_id(), changaId, InscriptionState.optout);
         System.out.println(loggedUser.getEmail() + " desanotado de " + changaId);
         if (val.isOk()){
@@ -176,6 +181,71 @@ public class UserController {
         return new ModelAndView("indexProfile")
                 .addObject("publishedChangas", publishedChangas)
                 .addObject("pendingChangas", pendingChangas);
+    }
+
+    @RequestMapping("/login/forgot-password")
+    public ModelAndView forgotPassword(@ModelAttribute("forgotPasswordForm") final ForgotPasswordForm forgotPasswordForm) {
+        return new ModelAndView("indexForgotPassword");
+    }
+
+    @RequestMapping(value = "/login/forgot-password", method = RequestMethod.POST)
+    public ModelAndView forgotPasswordSender(@Valid @ModelAttribute("forgotPasswordForm") final ForgotPasswordForm forgotPasswordForm, final BindingResult result, HttpServletRequest request) {
+        if (result.hasErrors()) {
+            return new ModelAndView("indexForgotPassword");
+        }
+        Either<User, Validation> user = us.findByMail(forgotPasswordForm.getMail());
+        if (!user.isValuePresent()) {
+            System.out.println("User" + forgotPasswordForm.getMail() + "does not exists");
+            return new ModelAndView("indexForgotPassword");
+        }
+        try {
+            ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromContextPath(request);
+            URI uri = builder.build().toUri();
+            emailService.sendResetPasswordEmail(user.getValue(), uri.toString());
+        } catch (MessagingException e) {
+            return new ModelAndView("redirect:/500");
+        }
+        System.out.println(forgotPasswordForm.getMail());
+        return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping("/reset-password/validate")
+    public ModelAndView validateResetPassword( @RequestParam("id") long id, @RequestParam("token") String token) {
+        Either<VerificationToken, Validation> verificationToken = us.getVerificationTokenWithRole(id, token);
+        System.out.println("Token =" + verificationToken.toString());
+        if (!verificationToken.isValuePresent()) {
+            Validation.ErrorCodes errorCode = verificationToken.getAlternative().getEc();
+            if ( errorCode == Validation.ErrorCodes.INEXISTENT_TOKEN)   {
+                System.out.println("Inexistent token");
+                // String message = messages.getMessage("auth.message.invalidToken", null, locale);
+                // model.addAttribute("message", message);
+                // return "redirect:/badUser.html?lang=" + locale.getLanguage();
+                return new ModelAndView("redirect:/login");
+            }
+            if (errorCode == Validation.ErrorCodes.EXPIRED_TOKEN) {
+                // String messageValue = messages.getMessage("auth.message.expired", null, locale)
+                // model.addAttribute("message", messageValue);
+                //TODO RESEND EMAIL. REDIRECT A PAGINA PARA RESEND EMAIL
+                //return "redirect:/badUser.html?lang=" + locale.getLanguage();
+                System.out.println("Token expired. Falta implementar el resend email");
+                return new ModelAndView("redirect:/login");
+            }
+        }
+        return new ModelAndView("redirect:/reset-password").addObject("id", id).addObject("token", token);
+    }
+
+
+    @RequestMapping("/reset-password")
+    public ModelAndView resetPassword(@RequestParam("id") long id, @RequestParam("token") String token, @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm) {
+        return new ModelAndView("indexResetPassword").addObject("id",id);
+    }
+
+    @RequestMapping(value = "/reset-password", method = RequestMethod.POST)
+    public ModelAndView doResetPassword(@Valid @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm, @RequestParam("id") long id) {
+        us.resetPassword(id, resetPasswordForm.getNewPassword());
+        System.out.println("Contraseña restablecida");
+        SecurityContextHolder.getContext().setAuthentication(null);
+        return new ModelAndView("redirect:/");
     }
 
 }
