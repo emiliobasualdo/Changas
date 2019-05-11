@@ -8,6 +8,8 @@ import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.forms.UserLoginForm;
 import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
@@ -44,6 +46,8 @@ public class UserController {
     @Autowired
     ApplicationEventPublisher eventPublisher;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+
 
 
     @RequestMapping("/signup")
@@ -55,6 +59,7 @@ public class UserController {
     public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors, final WebRequest request) {
         if (errors.hasErrors()) {
             System.out.println("Errores en los campos del formulario sign up");
+            LOGGER.debug("User input error");
             return signUp(form);
         }
 
