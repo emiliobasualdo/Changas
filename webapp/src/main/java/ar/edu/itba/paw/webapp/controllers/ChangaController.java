@@ -20,10 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class ChangaController {
@@ -118,15 +115,15 @@ public class ChangaController {
         final Changa changa = cs.getChangaById(id).getValue();
         mav.addObject("changa", changa);
         mav.addObject("changaOwner", us.findById(changa.getUser_id()).getValue());
-        Either<Map<User, Inscription>, Validation> either = is.getInscribedUsers(id);
-        Map<User, Inscription> inscribedUsersMap = new HashMap<>();
+        Either<List<Pair<User, Inscription>>, Validation>  either = is.getInscribedUsers(id);
+        List<Pair<User, Inscription>> inscribedUsers = new LinkedList<>();
         if (either.isValuePresent()) {
-            inscribedUsersMap = either.getValue();
+            inscribedUsers = either.getValue();
         } else {
             //todo
         }
-        mav.addObject("notInscribedUsers", inscribedUsersMap.isEmpty());
-        mav.addObject("inscribedUsers", inscribedUsersMap);
+        mav.addObject("notInscribedUsers", inscribedUsers.isEmpty());
+        mav.addObject("inscribedUsers", inscribedUsers);
         return mav;
     }
 

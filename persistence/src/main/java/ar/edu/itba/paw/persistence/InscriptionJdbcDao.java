@@ -48,35 +48,35 @@ public class InscriptionJdbcDao implements InscriptionDao {
                 .usingColumns(user_id.name(), changa_id.name());
     }
 
-    private <T> Either<Map<T, Inscription>, Validation> getter (
+    private <T> Either<List<Pair<T, Inscription>>, Validation> getter (
             Dao<T> dao, String colName, long id, Function<Inscription,Long> inscGetId) {
 
-        final List<Inscription> list = jdbcTemplate.query(
+        final List<Inscription> inscriptionList = jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = ?", user_inscribed // todo cambiar query() por otra cosa
                         , colName),
                 ROW_MAPPER,
                 id
         );
-        final Map<T,Inscription> map = new HashMap<>();
-        for (Inscription insc: list) {
+        final List<Pair<T,Inscription>> pairList = new LinkedList<>();
+        for (Inscription insc: inscriptionList) {
             Either<T, Validation> either = dao.getById(inscGetId.apply(insc));
             if(!either.isValuePresent()){
                 return Either.alternative(either.getAlternative());
             }
-            map.put(either.getValue(),insc);
+            pairList.add(Pair.buildPair(either.getValue(),insc));
         }
-        return Either.value(map);
+        return Either.value(pairList);
     }
 
     @Override
     /* Return the changas the user of id=userId is inscribed in */
-    public Either<Map<Changa, Inscription>, Validation> getUserInscriptions(long userId) {
+    public Either<List<Pair<Changa, Inscription>>, Validation> getUserInscriptions(long userId) {
         return this.getter(changaDao, user_id.name(), userId, Inscription::getChanga_id);
     }
 
     @Override
     /* Returns the users that are inscribed in a changa of id=changaId */
-    public Either<Map<User, Inscription>, Validation> getInscribedUsers(long changaId) {
+    public Either<List<Pair<User, Inscription>>, Validation>  getInscribedUsers(long changaId) {
         return this.getter(userDao, changa_id.name(), changaId, Inscription::getUser_id);
     }
 
