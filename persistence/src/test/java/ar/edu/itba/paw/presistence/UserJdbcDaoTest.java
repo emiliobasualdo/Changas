@@ -13,8 +13,10 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -31,12 +33,13 @@ import static ar.edu.itba.paw.constants.DBUserFields.*;
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 
 @Sql("classpath:sql/a_create_tables.sql")
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
+@Rollback
 public class UserJdbcDaoTest {
 
     private static final String PASSWORD = "Password";
@@ -46,12 +49,11 @@ public class UserJdbcDaoTest {
     @Autowired
     private DataSource ds;
 
+    private JdbcTemplate jdbcTemplate;
+
     @Autowired
     @InjectMocks
     private UserJdbcDao userDao;
-
-    @Mock
-    private JdbcTemplate jdbcTemplate;
 
     private SimpleJdbcInsert jdbcInsert;
 
@@ -63,8 +65,8 @@ public class UserJdbcDaoTest {
         jdbcInsert = new SimpleJdbcInsert(ds)
                 .withTableName(users.name())
                 .usingGeneratedKeyColumns(user_id.name());
-        MockitoAnnotations.initMocks(this);
-        //MockitoAnnotations.initMocks(JdbcTemplate.class);
+        MockitoAnnotations.initMocks(JdbcTemplate.class);
+        MockitoAnnotations.initMocks(RowMapper.class);
         MockitoAnnotations.initMocks(UserJdbcDao.class);
     }
 
@@ -219,8 +221,7 @@ public class UserJdbcDaoTest {
         Mockito.when(mockedUser2.getUser_id()).thenReturn(ID+1);
         Mockito.when(mockedUser2.getEmail()).thenReturn(EMAIL);
         Mockito.when(mockedUser2.getPasswd()).thenReturn(PASSWORD);
-        Mockito.when(jdbcTemplate
-                .query(any(String.class), any(RowMapper.class), any(Object.class))).thenReturn(list);
+        Mockito.when(jdbcTemplate.query(any(String.class), any(RowMapper.class), any(Object.class))).thenReturn(list);
         // EXERCISE
         Validation validation = userDao.findByMail(EMAIL).getAlternative();
         // ASSERT

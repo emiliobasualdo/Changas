@@ -6,13 +6,13 @@ import javax.validation.constraints.Size;
 
 public class UserRegisterForm {
     //TODO MAITE DESCOMENTAR PATTERNS Y TAMAÑOS (los comento asi pueden probar rapido)
-    @NotNull
+    /*@NotNull
     //@Size(min = 4, max = 100)
     @Pattern(regexp = "[a-zA-Z0-9]+")
-    private String username;
+    private String username;*/
 
     @NotNull
-    //TODO MAITE pattern mail
+    @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
     private String email;
 
     @NotNull
@@ -36,13 +36,13 @@ public class UserRegisterForm {
     @Pattern(regexp = "[0-9]+")
     private String telephone;
 
-    public String getUsername() {
+    /*public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
-    }
+    }*/
 
     public String getPassword() {
         return password;
@@ -95,8 +95,8 @@ public class UserRegisterForm {
     @Override
     public String toString() {
         return "UserRegisterForm{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                /*"username='" + username + '\'' + */
+                "password='" + password + '\'' +
                 ", repeatPassword='" + repeatPassword + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +

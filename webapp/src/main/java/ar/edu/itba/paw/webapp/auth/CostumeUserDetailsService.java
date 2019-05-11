@@ -18,6 +18,11 @@ import java.util.Collection;
 @Component
 public class CostumeUserDetailsService implements UserDetailsService {
 
+    private boolean accountNonExpired = true;
+    private boolean credentialsNonExpired = true;
+    private boolean accountNonLocked = true;
+
+
     @Autowired
     private UserService us;
 
@@ -36,7 +41,12 @@ public class CostumeUserDetailsService implements UserDetailsService {
                 new SimpleGrantedAuthority("ROLE_USER")
                 //new SimpleGrantedAuthority("ROLE_ADMIN") // que onda los admin??
         );
-        return new org.springframework.security.core.userdetails.User(username, user.getPasswd(), authorities);
+        return new org.springframework.security.core.userdetails.User(username, user.getPasswd(),
+                user.isEnabled(),
+                accountNonExpired,
+                credentialsNonExpired,
+                accountNonLocked,
+                authorities);
     }
 
 }

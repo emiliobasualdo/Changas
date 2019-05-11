@@ -27,15 +27,6 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public Validation unsubscribeFromChanga(long userId, long changaId) {
-        if(dao.unsubscribeFromChanga(userId,changaId)) {
-            return new Validation(OK);
-        }
-        //acá podemos ver por qué es que no se pudo desuscrbir: por ej, user no existe, changa no existe, el user no estaba inscripto, etc
-        return new Validation(CHANGE_NOT_POSSIBLE);
-    }
-
-    @Override
     public Either<Map<User, Inscription>, Validation> getInscribedUsers(long changa_id) {
         return dao.getInscribedUsers(changa_id);
     }

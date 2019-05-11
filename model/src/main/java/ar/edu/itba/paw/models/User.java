@@ -8,6 +8,7 @@ public class User {
     private  String tel;
     private  String email;
     private  String passwd;
+    private boolean enabled;
 
     private User(){
     }
@@ -36,6 +37,8 @@ public class User {
         return passwd;
     }
 
+    public boolean isEnabled() {return enabled;}
+
     public User (long id, User.Builder ub) {
         user_id = id;
         name = ub.getName();
@@ -43,15 +46,20 @@ public class User {
         tel = ub.getTel();
         email = ub.getEmail();
         passwd = ub.getPasswd();
+        enabled = ub.isEnabled();
     }
 
     public static class Builder {
         private String name;
         private String surname;
         private String tel;
-        private  String email;
-        private  String passwd;
+        private String email;
+        private String passwd;
+        private boolean enabled;
 
+        public Builder() {
+            this.enabled = false;
+        }
 
         public User.Builder withName(String name){
             this.name = name;
@@ -78,6 +86,11 @@ public class User {
             return this;
         }
 
+        public User.Builder enabled (boolean enabled) {
+            this.enabled = enabled;
+            return this;
+        }
+
         public String getEmail() {
             return email;
         }
@@ -97,6 +110,8 @@ public class User {
         public String getTel() {
             return tel;
         }
+
+        public boolean isEnabled() {return enabled;}
 
 
     }

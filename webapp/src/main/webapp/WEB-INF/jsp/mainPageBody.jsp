@@ -1,16 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
-<style>
-    .auto-table {
-        margin-top: 20px;
-        /*display: table;*/
-        display: grid;
-        grid-gap: 20px;
-        grid-template-columns: repeat(3, 1fr);
-        grid-auto-rows: minmax(100px, auto);
-        /*width: 100%;*/
-    }
-</style>
+<head>
+    <style><%@include file="/WEB-INF/css/mainPageBody.css"%></style>
+</head>
 <body>
     <div class="auto-table">
         <c:forEach items="${changaList}" var="changa">
@@ -22,6 +14,7 @@
             <c:set var="neighborhood" value="${changa.neighborhood}" scope="request"/>
             <c:set var="street" value="${changa.street}" scope="request"/>
             <c:set var="number" value="${changa.number}" scope="request"/>
+            <c:set var="inscribed" value="${userInscriptions.contains(changa)}" scope="request"/>       <%--todo: no anda--%>
             <c:import url="/WEB-INF/jsp/changaCard.jsp"/>
         </c:forEach>
     </div>
