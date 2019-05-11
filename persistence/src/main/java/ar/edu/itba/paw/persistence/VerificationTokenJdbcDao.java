@@ -39,7 +39,9 @@ public class VerificationTokenJdbcDao implements VerificationTokenDao {
 
     @Override
     public Either<VerificationToken, Validation> findByToken(String tok) {
-        Optional<VerificationToken> optional = jdbcTemplate.query(String.format("SELECT * FROM %s WHERE %s = ?", verification_token.name(), token.name()), ROW_MAPPER, tok).stream().findAny();
+        Optional<VerificationToken> optional = jdbcTemplate.query(
+                String.format("SELECT * FROM %s WHERE %s = ?", verification_token.name(), token.name()),
+                ROW_MAPPER, tok).stream().findAny();
         if(!optional.isPresent()) {
             return Either.alternative(new Validation(INEXISTENT_TOKEN));
         }

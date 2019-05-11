@@ -54,10 +54,7 @@ public class UserServiceImpl implements UserService {
         if(!either.isValuePresent() && either.getAlternative().getEc() == DATABASE_ERROR){
             return either;
         }
-        /*TODO MAITE
-        hacer un || chequeando que el username no exista. Agregar username al UserBuilder.
-        */
-        // email is allready in use
+        // email is already in use
         if(either.isValuePresent()) {
             return Either.alternative(new Validation(USER_ALREADY_EXISTS));
         }
@@ -72,8 +69,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Either<VerificationToken, Validation> getVerificationToken(String VerificationToken) {
-        Either<VerificationToken, Validation> verificationToken = verificationTokenDao.findByToken(VerificationToken);
+    public Either<VerificationToken, Validation> getVerificationToken(String tokenString) {
+        Either<VerificationToken, Validation> verificationToken = verificationTokenDao.findByToken(tokenString);
         if(!verificationToken.isValuePresent()){
             return verificationToken;
         }
