@@ -4,10 +4,7 @@ import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
-import ar.edu.itba.paw.models.Changa;
-import ar.edu.itba.paw.models.Either;
-import ar.edu.itba.paw.models.Inscription;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -135,9 +132,10 @@ public class ChangaController {
 
     @RequestMapping(value = "/delete-changa", method = RequestMethod.POST)
     public ModelAndView deleteChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
-        Validation val = cs.delete(changaId);
-        if (val.isOk()){
-            // TODO JIME popup confirmacion
+        // TODO JIME popup confirmacion (estás seguro?)
+        Either<Changa, Validation> err = cs.changeChangaState(changaId, ChangaState.closed);
+        if (err.isValuePresent()){
+            // TODO JIME popup salió todo joya
         } else {
             //TODO JIME popup error
         }

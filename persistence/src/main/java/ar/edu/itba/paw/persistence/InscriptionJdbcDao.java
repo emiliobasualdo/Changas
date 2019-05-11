@@ -81,21 +81,24 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
     @Override
-    public boolean unsubscribeFromChanga(long userId, long changaId) {
-        // todo MAL el DELTE
-        int rowsAffected = jdbcTemplate.update(String.format("DELETE FROM %s WHERE %s = ? AND %s = ?", user_inscribed.name(), user_id.name(), changa_id.name()), userId, changaId);
-        return rowsAffected == 1;
-    }
-
-    @Override
+    /* An Inscription implies that the user is inscribbed OR he had inscribed him self before and optout */
     public Validation inscribeInChanga(long userId, long changaId) {
+        // We check if the user is the owner of the changa
+        Either<Changa, Validation> changa = changaDao.getById(changaId);
+        if (changa.isValuePresent()) {
+            if (changa.getValue().getUser_id() == userId){
+                return new Validation(USER_OWNS_THE_CHANGE);
+            }
+        } else {
+            return changa.getAlternative();
+        }
+
         // We check if the user is already inscribed
         Either<Inscription, Validation> insc = getInscription(userId, changaId);
         if (insc.isValuePresent()){
             return changeUserStateInChanga(insc.getValue(), requested);
-        } else { // can be OK(user needs to be inscribbed)
+        } else { // user needs to be inscribbed)
             if (insc.getAlternative().getEc() == USER_NOT_INSCRIBED){
-                // else we add him
                 return forceInscribeInChanga(userId, changaId);
             } else {
                 return insc.getAlternative();
