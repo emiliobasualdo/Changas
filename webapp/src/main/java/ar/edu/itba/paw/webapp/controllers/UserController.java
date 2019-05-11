@@ -31,11 +31,8 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.net.URI;
-import java.util.Arrays;
 
 @Controller
 public class UserController {
@@ -159,28 +156,27 @@ public class UserController {
     @RequestMapping("/profile")
     public ModelAndView profile(@ModelAttribute("getLoggedUser") User loggedUser) {
 
+        ModelAndView mav = new ModelAndView("indexProfile");
         Either<List<Pair<Changa, Inscription>>, Validation>  maybePendingChangas = is.getUserInscriptions(loggedUser.getUser_id());
-        List<Pair<Changa, Inscription>> pendingChangas = new LinkedList<>();
         if (maybePendingChangas.isValuePresent()){
-            pendingChangas = maybePendingChangas.getValue();
-            //todo: deberiamos chequear q el mapa tenga todos valores validos? osea q ningun key/value sea null. porq el jsp se puede romper si le paso algo null
+            maybePendingChangas.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout);
+            mav.addObject("pendingChangas", maybePendingChangas.getValue());
         }
         else{
-            //TODO error
+            //todo pasarlo al error controller
+            return new ModelAndView("500");
         }
 
         Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserOwnedChangas(loggedUser.getUser_id());
-        List<Changa> publishedChangas = null;
         if (maybePublishedChangas.isValuePresent()){
-            publishedChangas = maybePublishedChangas.getValue();
+            mav.addObject("publishedChangas", maybePublishedChangas.getValue());
         }
         else{
-            //TODO error
+            //todo pasarlo al error controller
+            return new ModelAndView("500");
         }
 
-        return new ModelAndView("indexProfile")
-                .addObject("publishedChangas", publishedChangas)
-                .addObject("pendingChangas", pendingChangas);
+        return mav;
     }
 
     @RequestMapping("/login/forgot-password")

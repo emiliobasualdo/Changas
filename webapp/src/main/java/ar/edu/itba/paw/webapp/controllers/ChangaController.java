@@ -86,28 +86,46 @@ public class ChangaController {
     @RequestMapping("/changa")
     public ModelAndView showChanga(@RequestParam("id") final long id, @ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged) { //TODO: RE VER
         final ModelAndView mav = new ModelAndView("indexChanga");
-        final Changa changa = cs.getChangaById(id).getValue();
-        mav.addObject("changa", changa);
-        boolean userAlreadyInscribedInChanga = false;
+
+        Either<Changa, Validation> maybeChanga = cs.getChangaById(id);
+        if (maybeChanga.isValuePresent()){
+            mav.addObject("changa", maybeChanga.getValue());
+
+            boolean userOwnsChanga = false;
+            if (isUserLogged) {
+                if (loggedUser.getUser_id() == maybeChanga.getValue().getUser_id()) {
+                    userOwnsChanga = true;
+                }
+            }
+            mav.addObject("userOwnsChanga", userOwnsChanga);
+
+            Either<User, Validation> maybeChangaOwner = us.findById(maybeChanga.getValue().getUser_id());
+            if (maybeChangaOwner.isValuePresent()){
+                mav.addObject("changaOwner", maybeChangaOwner.getValue());
+            }
+            else {
+                return new ModelAndView("500");
+            }
+        }
+        else {
+            return new ModelAndView("500");
+        }
+
         if (isUserLogged) {
             Either<Boolean, Validation> either = is.isUserInscribedInChanga(loggedUser.getUser_id(), id);
             if (either.isValuePresent()) {
-                userAlreadyInscribedInChanga = either.getValue();
+                mav.addObject("userAlreadyInscribedInChanga", either.getValue());
             } else {
-                // todo que carajo pasa aca?
-                // el usuario podría no esxistir
-                // La changa podría no existir
+                return new ModelAndView("500");
+            }
+            Either<Inscription, Validation> maybeInscription = is.getInscription(loggedUser.getUser_id(), id);
+            if (maybeInscription.isValuePresent()){
+                mav.addObject("inscriptionState", maybeInscription.getValue().getState());
+            }
+            else {
+                return new ModelAndView("500");
             }
         }
-        boolean userOwnsChanga = false;
-        if (isUserLogged) {
-            if (loggedUser.getUser_id() == changa.getUser_id()) {
-                userOwnsChanga = true;
-            }
-        }
-        mav.addObject("userAlreadyInscribedInChanga", userAlreadyInscribedInChanga);
-        mav.addObject("changaOwner", us.findById(changa.getUser_id()).getValue());
-        mav.addObject("userOwnsChanga", userOwnsChanga);
         return mav;
     }
 
@@ -118,14 +136,14 @@ public class ChangaController {
         mav.addObject("changa", changa);
         mav.addObject("changaOwner", us.findById(changa.getUser_id()).getValue());
         Either<List<Pair<User, Inscription>>, Validation>  either = is.getInscribedUsers(id);
-        List<Pair<User, Inscription>> inscribedUsers = new LinkedList<>();
         if (either.isValuePresent()) {
-            inscribedUsers = either.getValue();
+            either.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout);
+            mav.addObject("notInscribedUsers", either.getValue().isEmpty());
+            mav.addObject("inscribedUsers", either.getValue());
         } else {
-            //todo
+            //todo pasarlo al error controller
+            return new ModelAndView("500");
         }
-        mav.addObject("notInscribedUsers", inscribedUsers.isEmpty());
-        mav.addObject("inscribedUsers", inscribedUsers);
         return mav;
     }
 

@@ -55,4 +55,9 @@ public class InscriptionServiceImpl implements InscriptionService {
         return dao.isUserInscribedInChanga(userId, changaId);
     }
 
+    @Override
+    public Either<Inscription, Validation> getInscription(long userId, long changaId){
+        return dao.getInscription(userId, changaId);
+    }
+
 }

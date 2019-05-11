@@ -81,13 +81,13 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
     @Override
-    /* An Inscription implies that the user is inscribbed OR he had inscribed him self before and optout */
+    /* An Inscription implies that the user is inscribed OR he had inscribed him self before and optout */
     public Validation inscribeInChanga(long userId, long changaId) {
         // We check if the user is the owner of the changa
         Either<Changa, Validation> changa = changaDao.getById(changaId);
         if (changa.isValuePresent()) {
             if (changa.getValue().getUser_id() == userId){
-                return new Validation(USER_OWNS_THE_CHANGE);
+                return new Validation(USER_OWNS_THE_CHANGA);
             }
         } else {
             return changa.getAlternative();
@@ -165,8 +165,12 @@ public class InscriptionJdbcDao implements InscriptionDao {
         if(!insc.isValuePresent()){
             return Either.alternative(insc.getAlternative());
         }
+        if (insc.getValue().getState() == optout){
+            return Either.value(false);
+        }
         return Either.value(true);
     }
+
 
     @Override
     public boolean hasInscribedUsers(long changaId) {

@@ -65,8 +65,6 @@ public class UserServiceImpl implements UserService {
         return userDao.create(userBuilder);
     }
 
-
-
     @Override
     public void createVerificationToken(User user, String token)  {
         VerificationToken.Builder myToken = new VerificationToken.Builder(token, user.getUser_id());

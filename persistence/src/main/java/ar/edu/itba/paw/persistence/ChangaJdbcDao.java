@@ -179,7 +179,7 @@ public class ChangaJdbcDao implements ChangaDao {
                                                     .withDescription(rs.getString(description.name()))
                                                     .withPrice(rs.getDouble(price.name()))
                                                     .atAddress(rs.getString(street.name()),rs.getString(neighborhood.name()),rs.getInt(number.name()) )
-                                                    .withState((ChangaState) rs.getObject(state.name()))
+                                                    .withState((ChangaState.valueOf(rs.getString(state.name()))))
                      );
     }
 

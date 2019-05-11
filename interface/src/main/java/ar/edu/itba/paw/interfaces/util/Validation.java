@@ -47,7 +47,7 @@ public class Validation {
         USERS_INSCRIBED         ("There are users inscribed in the changa"), // we cant edit a changa if users are inscribed
         NO_USERS_INSCRIBED      ("There are no users inscribed in the changa"),
         CHANGE_NOT_POSSIBLE     ("Such change is not allowed to be done"),
-        USER_OWNS_THE_CHANGE    ("An owner can not inscribe himself in his changa"),
+        USER_OWNS_THE_CHANGA    ("An owner can not inscribe himself in his changa"),
 
         //Verification Token
         INEXISTENT_TOKEN       ("Inexistent token"),
