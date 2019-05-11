@@ -7,14 +7,8 @@ import ar.edu.itba.paw.persistence.UserJdbcDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowCallbackHandler;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,16 +17,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static ar.edu.itba.paw.constants.DBTableName.users;
 import static ar.edu.itba.paw.constants.DBUserFields.*;
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
 
 @Sql("classpath:sql/a_create_tables.sql")
 //@RunWith(MockitoJUnitRunner.class)
@@ -47,13 +38,11 @@ public class UserJdbcDaoTest {
     private static final long ID = 123;
 
     @Autowired
-    @Mock
     private DataSource ds;
 
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    @InjectMocks
     private UserJdbcDao userDao;
 
     private SimpleJdbcInsert jdbcInsert;
@@ -66,9 +55,6 @@ public class UserJdbcDaoTest {
         jdbcInsert = new SimpleJdbcInsert(ds)
                 .withTableName(users.name())
                 .usingGeneratedKeyColumns(user_id.name());
-        MockitoAnnotations.initMocks(JdbcTemplate.class);
-        MockitoAnnotations.initMocks(RowMapper.class);
-        MockitoAnnotations.initMocks(UserJdbcDao.class);
     }
 
     //TODO No puedo usar métodos auxiliares de la clase que quiero probar, solo los métodos que quiero probar
