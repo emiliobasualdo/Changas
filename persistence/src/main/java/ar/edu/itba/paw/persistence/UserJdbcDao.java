@@ -107,7 +107,17 @@ public class UserJdbcDao implements UserDao {
         } else {
             return new Validation(NO_SUCH_USER);
         }
+    }
 
+    @Override
+    public void updatePassword(long id, String password) {
+        jdbcTemplate.update(String.format("UPDATE %s SET %s = ? WHERE %s = ? ",
+                users.name(),
+                passwd.name(),
+                user_id.name()),
+                password,
+                id
+        );
     }
 
     private Either<User, Validation> getUserFromUserId(long userId) {

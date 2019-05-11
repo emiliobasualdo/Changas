@@ -20,5 +20,7 @@ public interface UserService {
     void createVerificationToken(User user, String token);
     Either<VerificationToken, Validation> getVerificationToken(String VerificationToken);
     Validation setUserEnabledStatus(final long userId, final boolean status);
+    Either<VerificationToken, Validation> getVerificationTokenWithRole(final long userId, final String VerificationToken);
+    void resetPassword(final long id, final String password);
     void confirmMailVerification(final long userId, final long tokenId);
 }
