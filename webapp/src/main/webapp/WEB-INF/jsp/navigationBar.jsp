@@ -55,7 +55,7 @@ https://mdbootstrap.com/docs/jquery/navigation/navbar/
                     </c:choose>
                 </ul>
                 <c:choose>
-                    <c:when test="${sessionScope.isUserLogged == true}">
+                    <c:when test="${isUserLogged == true}">
                         <span class="navbar-text white-text">Hola, <c:out value="${sessionScope.getLoggedUser.name}"/></span>
                     </c:when>
                     <c:otherwise></c:otherwise>
@@ -72,7 +72,7 @@ https://mdbootstrap.com/docs/jquery/navigation/navbar/
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
                         <c:choose>
-                            <c:when test="${sessionScope.isUserLogged == false}">
+                            <c:when test="${isUserLogged == false}">
                                 <li class="nav-item">
                                     <c:url value="/signup" var="signUpUrl" />
                                     <a class="nav-link" href="${signUpUrl}"><spring:message code="navigationBar.btn.signUp"/></a>

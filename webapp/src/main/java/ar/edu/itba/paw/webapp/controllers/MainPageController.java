@@ -34,9 +34,9 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
     private InscriptionService is;
 
     @RequestMapping(value = "/")
-    public ModelAndView showChangas(@ModelAttribute("getLoggedUser") User loggedUser) {
+    public ModelAndView showChangas(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged) {
         Either<List<Changa>, Validation> either = cs.getAllChangas();
-        if (loggedUser != null) {
+        if (isUserLogged) {
             Either<Map<Changa, Inscription>, Validation> eitherMap = is.getUserInscriptions(loggedUser.getUser_id());
             if (either.isValuePresent()) {
                 if (eitherMap.isValuePresent()) {
