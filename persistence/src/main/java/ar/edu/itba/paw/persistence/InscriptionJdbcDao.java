@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.constants.DBInscriptionFields;
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.daos.Dao;
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
@@ -9,7 +8,6 @@ import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -23,7 +21,6 @@ import java.util.*;
 import java.util.function.Function;
 
 import static ar.edu.itba.paw.constants.DBInscriptionFields.*;
-import static ar.edu.itba.paw.constants.DBTableName.changas;
 import static ar.edu.itba.paw.constants.DBTableName.user_inscribed;
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
 import static ar.edu.itba.paw.models.InscriptionState.optout;
@@ -40,7 +37,6 @@ public class InscriptionJdbcDao implements InscriptionDao {
     @Autowired
     private UserDao userDao;
 
-
     @Autowired
     private ChangaDao changaDao;
 
@@ -52,47 +48,57 @@ public class InscriptionJdbcDao implements InscriptionDao {
                 .usingColumns(user_id.name(), changa_id.name());
     }
 
-    private <T> Either<Map<T, Inscription>, Validation> getter (
+    private <T> Either<List<Pair<T, Inscription>>, Validation> getter (
             Dao<T> dao, String colName, long id, Function<Inscription,Long> inscGetId) {
 
-        final List<Inscription> list = jdbcTemplate.query(
+        final List<Inscription> inscriptionList = jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = ?", user_inscribed // todo cambiar query() por otra cosa
                         , colName),
                 ROW_MAPPER,
                 id
         );
-        final Map<T,Inscription> map = new HashMap<>();
-        for (Inscription insc: list) {
+        final List<Pair<T,Inscription>> pairList = new LinkedList<>();
+        for (Inscription insc: inscriptionList) {
             Either<T, Validation> either = dao.getById(inscGetId.apply(insc));
             if(!either.isValuePresent()){
                 return Either.alternative(either.getAlternative());
             }
-            map.put(either.getValue(),insc);
+            pairList.add(Pair.buildPair(either.getValue(),insc));
         }
-        return Either.value(map);
+        return Either.value(pairList);
     }
 
     @Override
     /* Return the changas the user of id=userId is inscribed in */
-    public Either<Map<Changa, Inscription>, Validation> getUserInscriptions(long userId) {
+    public Either<List<Pair<Changa, Inscription>>, Validation> getUserInscriptions(long userId) {
         return this.getter(changaDao, user_id.name(), userId, Inscription::getChanga_id);
     }
 
     @Override
     /* Returns the users that are inscribed in a changa of id=changaId */
-    public Either<Map<User, Inscription>, Validation> getInscribedUsers(long changaId) {
+    public Either<List<Pair<User, Inscription>>, Validation>  getInscribedUsers(long changaId) {
         return this.getter(userDao, changa_id.name(), changaId, Inscription::getUser_id);
     }
 
     @Override
+    /* An Inscription implies that the user is inscribbed OR he had inscribed him self before and optout */
     public Validation inscribeInChanga(long userId, long changaId) {
+        // We check if the user is the owner of the changa
+        Either<Changa, Validation> changa = changaDao.getById(changaId);
+        if (changa.isValuePresent()) {
+            if (changa.getValue().getUser_id() == userId){
+                return new Validation(USER_OWNS_THE_CHANGE);
+            }
+        } else {
+            return changa.getAlternative();
+        }
+
         // We check if the user is already inscribed
         Either<Inscription, Validation> insc = getInscription(userId, changaId);
         if (insc.isValuePresent()){
             return changeUserStateInChanga(insc.getValue(), requested);
-        } else { // can be OK(user needs to be inscribbed)
+        } else { // user needs to be inscribbed)
             if (insc.getAlternative().getEc() == USER_NOT_INSCRIBED){
-                // else we add him
                 return forceInscribeInChanga(userId, changaId);
             } else {
                 return insc.getAlternative();

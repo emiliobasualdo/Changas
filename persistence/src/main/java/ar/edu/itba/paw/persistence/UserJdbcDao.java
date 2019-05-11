@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -50,37 +51,37 @@ public class UserJdbcDao implements UserDao {
     }
 
     @Override
-    public Either<User, Validation> findByMail(String mail) {
-        Optional<User> optional = jdbcTemplate.query(String.format("SELECT * FROM %s WHERE %s = ?", users.name(), email.name()), ROW_MAPPER, mail).stream().findAny();
-        if(!optional.isPresent()) {
-            return Either.alternative(new Validation(NO_SUCH_USER));
-        }
-        return Either.value(optional.get());
-
-//        final List<User> list = jdbcTemplate
-//                .query(String.format("SELECT * FROM %s WHERE %s = ?", users.name(),email.name()), ROW_MAPPER, mail);
-//
-//        if (list.isEmpty()) {
-//            return Either.alternative(new Validation(NO_SUCH_USER));
-//        }
-//        return Either.value(list.get(0)); // todo get(0) mal. pq?
-    }
-
-    @Override
     public Either<User, Validation> create(final User.Builder userBuilder) {
         //TODO hacer que la base de datos acepte la getGeneratedKeys feature. Mientras tanto usamos el código de abajo
         Number userId;
         Map<String, Object> userRow = userToTableRow(userBuilder);
         try {
             userId = jdbcInsert.executeAndReturnKey(userRow);
-
-        } catch (Exception e0 ){  //DuplicateKeyException e
+        } catch (DuplicateKeyException e ) {
+            return Either.alternative(new Validation(USER_ALREADY_EXISTS));
+        } catch (Exception e ) {
+            System.err.println(e);
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
 
         return getUserFromUserId(userId.longValue());
     }
 
+    @Override
+    public Either<User, Validation> findByMail(String mail) {
+
+        final List<User> list = jdbcTemplate
+                .query(String.format("SELECT * FROM %s WHERE %s = ?", users.name(),email.name()),
+                        ROW_MAPPER, mail
+                );
+        if (list.isEmpty()) {
+            return Either.alternative(new Validation(NO_SUCH_USER));
+        }
+        if (list.size() > 1){
+            return Either.alternative(new Validation(DATABASE_ERROR));
+        }
+        return Either.value(list.get(0));
+    }
 
     private Map<String, Object> userToTableRow(User.Builder userBuilder) {
         Map<String, Object> resp = new HashMap<>();
@@ -140,6 +141,16 @@ public class UserJdbcDao implements UserDao {
         );
     }
 
+    @Override
+    public void updatePassword(long id, String password) {
+        jdbcTemplate.update(String.format("UPDATE %s SET %s = ? WHERE %s = ? ",
+                users.name(),
+                passwd.name(),
+                user_id.name()),
+                password,
+                id
+        );
+    }
 
     private Either<User, Validation> getUserFromUserId(long userId) {
         final List<User> list = jdbcTemplate.query(

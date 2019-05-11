@@ -8,9 +8,14 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.DATABASE_ERROR;
@@ -82,8 +87,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Either<VerificationToken, Validation> getVerificationTokenWithRole(final long userId, final String VerificationToken) {
+        Either<VerificationToken, Validation> verificationToken = verificationTokenDao.findByToken(VerificationToken);
+        if(!verificationToken.isValuePresent() || Long.compare(verificationToken.getValue().getUserId(), userId) != 0){
+            return Either.alternative(new Validation(Validation.ErrorCodes.INEXISTENT_TOKEN));
+        }
+        Calendar cal = Calendar.getInstance();
+        if ((verificationToken.getValue().getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            return Either.alternative(new Validation(EXPIRED_TOKEN));
+        }
+        Authentication auth = new UsernamePasswordAuthenticationToken(
+                this.findById(verificationToken.getValue().getUserId()), null, Arrays.asList( new SimpleGrantedAuthority("CHANGE_PASSWORD_PRIVILEGE")));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        return verificationToken;
+    }
+
+    @Override
     public void setUserEnabledStatus(long userId, boolean status) {
         userDao.setUserStatus(userId, status);
+    }
+
+    @Override
+    public void resetPassword(long id, String password) {
+        userDao.updatePassword(id, passwordEncoder.encode(password));
     }
 
     @Override

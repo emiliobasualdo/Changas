@@ -60,17 +60,34 @@ public class EmailServiceImplementation implements EmailService {
         emailSender.send(message);
     }
 
-
-
+    @Override
+    public void sendResetPasswordEmail(User user, String appUrl) throws MessagingException {
+        String token = UUID.randomUUID().toString();
+        userService.createVerificationToken(user, token);
+        String resetUrl = appUrl + "/reset-password/validate?id=" + user.getUser_id() + "&token=" + token;
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message,true);
+        helper.setTo(user.getEmail());
+        helper.setSubject(messageSource.getMessage("resetPassword.Subject",null, LocaleContextHolder.getLocale()));
+        helper.setText(resetPasswordEmailBody(resetUrl), true);
+        emailSender.send(message);
+    }
 
     //TODO emails from html templates
     private String mailConfirmationEmailBody(User user, String confirmUrl) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Apriete en el link para confirmar el mail\n");
+        sb.append("Apriete en el link para confirmar el mail\n"); //TODO: problema de idioma no internacional
         sb.append(confirmUrl);
         return sb.toString();
     }
 
+    private String resetPasswordEmailBody(String resetUrl) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(messageSource.getMessage("resetPassword.Body",null, LocaleContextHolder.getLocale()));
+        sb.append(' ');
+        sb.append(resetUrl);
+        return sb.toString();
+    }
 
     //TODO emails from html templates
     private String joinRequestEmailBody(Changa changa, User changaOwner, User currentUser){

@@ -4,14 +4,13 @@ import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.util.Validation;
-import ar.edu.itba.paw.models.Changa;
-import ar.edu.itba.paw.models.Either;
+import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.OK;
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.CHANGE_NOT_POSSIBLE;
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.USERS_INSCRIBED;
 
 @Repository
@@ -43,23 +42,16 @@ public class ChangaServiceImpl implements ChangaService {
     public Either<Changa, Validation> update(final long changaId, final Changa.Builder changaBuilder) {
         Either<Changa, Validation> old = chDao.getById(changaId);
 
-        if(!old.isValuePresent()){
+        if(!old.isValuePresent()) {
             return old;
         }
 
         // we will update a changa ONLY if no changueros are inscribed in it
-        boolean hasInscribedUsers = inDao.hasInscribedUsers(changaId);
-
-        if(hasInscribedUsers) {
+        if(inDao.hasInscribedUsers(changaId)) {
             return Either.alternative(new Validation(USERS_INSCRIBED));
         }
 
         return chDao.update(changaId, changaBuilder);
-    }
-
-    @Override
-    public Validation delete(long changaId) {
-        return chDao.delete(changaId);
     }
 
     @Override
@@ -70,5 +62,23 @@ public class ChangaServiceImpl implements ChangaService {
     @Override
     public Either<List<Changa>, Validation> getUserOwnedChangas(long user_id) {
         return chDao.getUserOwnedChangas(user_id);
+    }
+
+    @Override
+    public Either<Changa, Validation> changeChangaState(long changaId, ChangaState newState) {
+        Either<Changa, Validation> oldChanga = chDao.getById(changaId);
+        if (oldChanga.isValuePresent())
+            return this.changeChangaState(oldChanga.getValue(), newState);
+        else
+            return oldChanga;
+    }
+
+    @Override
+    public Either<Changa, Validation> changeChangaState(Changa changa, ChangaState newState) {
+        // todo check que el usuario logeado es el que la emitió
+        if (ChangaState.changeIsPossible(changa.getState(), newState))
+            return chDao.changeChangaState(changa.getChanga_id(), newState);
+        else
+            return Either.alternative(new Validation(CHANGE_NOT_POSSIBLE));
     }
 }

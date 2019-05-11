@@ -12,7 +12,7 @@ public class Changa {
     private LocalDateTime creation_date;
     private String title;
     private String description;
-    private String state;
+    private ChangaState state;
     private double price;
 
     // required to make constructor private
@@ -46,7 +46,7 @@ public class Changa {
         return price;
     }
 
-    public String getState() {
+    public ChangaState getState() {
         return state;
     }
 
@@ -68,7 +68,7 @@ public class Changa {
         private LocalDateTime creation_date;
         private String title;
         private String description;
-        private String state;
+        private ChangaState state;
         private double price;
         private String street;
         private String neighborhood;
@@ -91,7 +91,7 @@ public class Changa {
             this.description = description;
             return this;
         }
-        public Builder withState(String state){
+        public Builder withState(ChangaState state){
             this.state = state;
             return this;
         }
@@ -122,7 +122,7 @@ public class Changa {
             return description;
         }
 
-        public String getState() {
+        public ChangaState getState() {
             return state;
         }
 

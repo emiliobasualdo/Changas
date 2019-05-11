@@ -4,10 +4,7 @@ import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
-import ar.edu.itba.paw.models.Changa;
-import ar.edu.itba.paw.models.Either;
-import ar.edu.itba.paw.models.Inscription;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -23,10 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class ChangaController {
@@ -106,8 +100,10 @@ public class ChangaController {
             }
         }
         boolean userOwnsChanga = false;
-        if (loggedUser.getUser_id() == changa.getUser_id()){
-            userOwnsChanga = true;
+        if (isUserLogged) {
+            if (loggedUser.getUser_id() == changa.getUser_id()) {
+                userOwnsChanga = true;
+            }
         }
         mav.addObject("userAlreadyInscribedInChanga", userAlreadyInscribedInChanga);
         mav.addObject("changaOwner", us.findById(changa.getUser_id()).getValue());
@@ -121,23 +117,24 @@ public class ChangaController {
         final Changa changa = cs.getChangaById(id).getValue();
         mav.addObject("changa", changa);
         mav.addObject("changaOwner", us.findById(changa.getUser_id()).getValue());
-        Either<Map<User, Inscription>, Validation> either = is.getInscribedUsers(id);
-        Map<User, Inscription> inscribedUsersMap = new HashMap<>();
+        Either<List<Pair<User, Inscription>>, Validation>  either = is.getInscribedUsers(id);
+        List<Pair<User, Inscription>> inscribedUsers = new LinkedList<>();
         if (either.isValuePresent()) {
-            inscribedUsersMap = either.getValue();
+            inscribedUsers = either.getValue();
         } else {
             //todo
         }
-        mav.addObject("notInscribedUsers", inscribedUsersMap.isEmpty());
-        mav.addObject("inscribedUsers", inscribedUsersMap);
+        mav.addObject("notInscribedUsers", inscribedUsers.isEmpty());
+        mav.addObject("inscribedUsers", inscribedUsers);
         return mav;
     }
 
     @RequestMapping(value = "/delete-changa", method = RequestMethod.POST)
     public ModelAndView deleteChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
-        Validation val = cs.delete(changaId);
-        if (val.isOk()){
-            // TODO JIME popup confirmacion
+        // TODO JIME popup confirmacion (estás seguro?)
+        Either<Changa, Validation> err = cs.changeChangaState(changaId, ChangaState.closed);
+        if (err.isValuePresent()){
+            // TODO JIME popup salió todo joya
         } else {
             //TODO JIME popup error
         }

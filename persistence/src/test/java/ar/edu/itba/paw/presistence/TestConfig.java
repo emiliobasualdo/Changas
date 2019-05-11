@@ -19,12 +19,6 @@ public class TestConfig {
     @Bean
     public DataSource dataSource() {
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
- /*       ds.setDriverClass(org.postgresql.Driver.class);
-        String username = System.getenv("CHANGAS_USERNAME");
-        String passwd = System.getenv("CHANGAS_PASSWD");
-        ds.setUrl("jdbc:postgresql://localhost/changas_testing");
-        ds.setUsername(username);
-        ds.setPassword(passwd);*/
         ds.setDriverClass(JDBCDriver.class);
         ds.setUrl("jdbc:hsqldb:mem:paw");
         ds.setUsername("ha");

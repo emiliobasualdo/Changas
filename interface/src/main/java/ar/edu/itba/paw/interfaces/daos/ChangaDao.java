@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces.daos;
 
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
+import ar.edu.itba.paw.models.ChangaState;
 import ar.edu.itba.paw.models.Either;
 
 import java.util.List;
@@ -14,5 +15,5 @@ public interface ChangaDao extends Dao<Changa> {
     Either<List<Changa>, Validation> getUserOwnedChangas(final long user_id);
     Either<Changa, Validation> getChanga(final Changa.Builder changaBuilder);
     Either<Changa, Validation> update(final long changaId, Changa.Builder changaBuilder);
-    Validation delete(long changaId);
+    Either<Changa, Validation> changeChangaState(long changaId, ChangaState state);
 }

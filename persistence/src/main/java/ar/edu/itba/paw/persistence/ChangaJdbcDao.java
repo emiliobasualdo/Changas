@@ -4,8 +4,11 @@ import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.daos.UserDao;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
+import ar.edu.itba.paw.models.ChangaState;
 import ar.edu.itba.paw.models.Either;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -45,7 +48,7 @@ public class ChangaJdbcDao implements ChangaDao {
                 ROW_MAPPER, id
         );
         if (list.isEmpty()) {
-            return Either.alternative(new Validation(NO_SUCH_USER));
+            return Either.alternative(new Validation(NO_SUCH_CHANGA));
         }
         if(list.size() > 1){ //TODO MAITE ver esto
             return Either.alternative(new Validation(DATABASE_ERROR));
@@ -56,13 +59,12 @@ public class ChangaJdbcDao implements ChangaDao {
     @Override
     public Either<Changa, Validation> create(final Changa.Builder changaBuilder) {
         Map<String, Object> changaRow = changaToTableRow(changaBuilder);
-        int rowsAffected = jdbcInsert.execute(changaRow);
+        int rowsAffected = jdbcInsert.execute(changaRow); // TODO execuenteAndReturnKey
         if (rowsAffected < 1) {
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
         return getChanga(changaBuilder);
     }
-
 
     @Override
     public Either<Changa, Validation> getChanga(final Changa.Builder changaBuilder) {
@@ -72,11 +74,10 @@ public class ChangaJdbcDao implements ChangaDao {
                                                         changaBuilder.getUser_id(), changaBuilder.getTitle()
                                                     );
         if (list.isEmpty()) {
-            return Either.alternative(new Validation(INEXISTENT_CHANGA));
+            return Either.alternative(new Validation(NO_SUCH_CHANGA));
         }
         return Either.value(list.get(0));
     }
-
 
     // todo que casos de error podría haber?
     @Override
@@ -103,7 +104,7 @@ public class ChangaJdbcDao implements ChangaDao {
 
     @Override
     public Either<Changa, Validation> update(final long changaId, Changa.Builder changaBuilder) {
-        int updatedChangas = jdbcTemplate.update(String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = %d ",
+        int updatedChangas = jdbcTemplate.update(String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ? ",
                                                                 changas.name(),
                                                                 street.name(),
                                                                 neighborhood.name(),
@@ -112,21 +113,32 @@ public class ChangaJdbcDao implements ChangaDao {
                                                                 description.name(),
                                                                 state.name(),
                                                                 price.name(),
-                                                                changa_id.name(), changaId),
+                                                                changa_id.name()),
 
                                                                 changaBuilder.getStreet(),changaBuilder.getNeighborhood(),
                                                                 changaBuilder.getNumber(), changaBuilder.getTitle(),
-                                                                changaBuilder.getDescription(), changaBuilder.getState(),  changaBuilder.getPrice()
+                                                                changaBuilder.getDescription(), changaBuilder.getState(),
+                                                                changaBuilder.getPrice(), changaId
                                                 );
 
-    return updatedChangas == 1 ? getById(changaId) : Either.alternative(new Validation(INEXISTENT_CHANGA));
+    return updatedChangas == 1 ? getById(changaId) : Either.alternative(new Validation(NO_SUCH_CHANGA));
     }
 
-
     @Override
-    public Validation delete(long changaId) {
-        int deletedChangas = jdbcTemplate.update(String.format("DELETE FROM %s WHERE %s = ?", changas.name(), changa_id.name()), changaId);
-        return deletedChangas == 1 ? new Validation (OK) : new Validation (INEXISTENT_CHANGA);
+    public Either<Changa, Validation> changeChangaState(long changaId, ChangaState newState) {
+        // we assume the service has checked that the change can be done
+        try {
+            int rowsAffected = this.jdbcTemplate.update(
+                    String.format("UPDATE %s set %s = ? WHERE %s = ? ", changas.name(), state.name(), changa_id.name()),
+                    newState.name(), changaId);
+            if (rowsAffected != 1) {
+                throw new RecoverableDataAccessException("rowsAffected != 1");
+            }
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+            return Either.alternative(new Validation(DATABASE_ERROR));
+        }
+        return getById(changaId);
     }
 
     private List<Changa> generateRandomChangas() {
@@ -137,7 +149,7 @@ public class ChangaJdbcDao implements ChangaDao {
         double[] price = {13123, 123, 312, 1, 231};
         String[] neigh = {"San Telmo", "Juarez", "Martinez", "San Isidro", "San Fer"};
         String[] calle = {"calle1", "calle2", "calle3", "calle4", "calle5"};
-        String[] state = {"done", "emitted", "closed", "settled", "settled"};
+        ChangaState[] state = {ChangaState.emitted, ChangaState.settled, ChangaState.closed, ChangaState.done};
         int[] number = {13123, 123, 312, 1, 231};
         LocalDateTime[] createdAt = {LocalDateTime.now(),LocalDateTime.now(),LocalDateTime.now(),LocalDateTime.now(),LocalDateTime.now()};
         Random r = new Random();
@@ -167,7 +179,7 @@ public class ChangaJdbcDao implements ChangaDao {
                                                     .withDescription(rs.getString(description.name()))
                                                     .withPrice(rs.getDouble(price.name()))
                                                     .atAddress(rs.getString(street.name()),rs.getString(neighborhood.name()),rs.getInt(number.name()) )
-                                                    .withState(rs.getString(state.name()))
+                                                    .withState((ChangaState) rs.getObject(state.name()))
                      );
     }
 
