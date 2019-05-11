@@ -244,4 +244,32 @@ public class UserController {
         return new ModelAndView("redirect:/");
     }
 
+    @RequestMapping(value = "/edit-profile")
+    public ModelAndView editProfile(@RequestParam("id") final long id, @ModelAttribute("userForm") final UserRegisterForm form) {
+        Either<User, Validation> maybeUser = us.findById(id);
+        if (!maybeUser.isValuePresent()) {
+            //todo error
+            //nunca estariamos en este caso igual, ver como solucionar
+            return new ModelAndView("500");
+        }
+        form.setName(maybeUser.getValue().getName());
+        form.setEmail(maybeUser.getValue().getEmail());
+        form.setPassword(maybeUser.getValue().getPasswd());
+        form.setSurname(maybeUser.getValue().getSurname());
+        form.setTelephone(maybeUser.getValue().getTel());
+        return new ModelAndView("editProfileForm")
+                .addObject("id", id);
+    }
+
+    @RequestMapping(value = "/edit-profile", method = RequestMethod.POST )
+    public ModelAndView editChanga(@RequestParam("id") final long id, @Valid @ModelAttribute("userForm") final UserRegisterForm form, final BindingResult errors, @ModelAttribute("getLoggedUser") User loggedUser) {
+        /* todo
+            us.update(id, new User.Builder().withName(form.getName())
+                .withSurname(form.getSurname())
+                .withPasswd(form.getPassword())
+                .withEmail(form.getEmail())
+                .withTel(form.getTelephone()));*/
+        return new ModelAndView("redirect:/profile");
+    }
+
 }

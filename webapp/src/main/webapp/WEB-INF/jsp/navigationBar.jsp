@@ -56,7 +56,7 @@ https://mdbootstrap.com/docs/jquery/navigation/navbar/
                 </ul>
                 <c:choose>
                     <c:when test="${isUserLogged}">
-                        <span class="navbar-text white-text"><spring:message code="navigationBar.salute"/><c:out value="${sessionScope.getLoggedUser.name}"/></span>
+                        <span class="navbar-text white-text"><spring:message code="navigationBar.salute"/><c:out value="${getLoggedUser.name}"/></span>
                     </c:when>
                 </c:choose>
             </div>

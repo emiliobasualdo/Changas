@@ -50,7 +50,8 @@ body {
 .profile-edit-btn{
     border: none;
     border-radius: 1.5rem;
-    width: 70%;
+    margin-left: 80%;
+    width: 30%;
     padding: 2%;
     font-weight: 600;
     font: 15px "Quicksand", sans-serif;
