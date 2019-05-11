@@ -5,10 +5,7 @@ import ar.edu.itba.paw.interfaces.services.EmailService;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
-import ar.edu.itba.paw.models.Changa;
-import ar.edu.itba.paw.models.Either;
-import ar.edu.itba.paw.models.InscriptionState;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.forms.UserLoginForm;
 import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +22,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 import java.net.URI;
 
 @Controller
@@ -127,12 +126,55 @@ public class UserController {
         return new ModelAndView("redirect:/profile");
     }
 
+    @RequestMapping(value = "/accept-user", method = RequestMethod.POST)
+    public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, HttpSession session) {
+
+        Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.accepted);
+        if (val.isOk()){
+            //TODO JIME popup preguntando
+        } else {
+            //TODO JIME un popup de error
+        }
+        return new ModelAndView("redirect:/admin-changa?id=" + changaId);
+    }
+
+    @RequestMapping(value = "/reject-user", method = RequestMethod.POST)
+    public ModelAndView rejectUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, HttpSession session) {
+
+        Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.declined);
+        if (val.isOk()){
+            //TODO JIME popup preguntando
+        } else {
+            //TODO JIME un popup de error
+        }
+        return new ModelAndView("redirect:/admin-changa?id=" + changaId);
+    }
 
     @RequestMapping("/profile")
     public ModelAndView profile(@ModelAttribute("getLoggedUser") User loggedUser) {
+
+        Either<Map<Changa, Inscription>, Validation> maybePendingChangas = is.getUserInscriptions(loggedUser.getUser_id());
+        Map<Changa, Inscription> pendingChangasMap = null;
+        if (maybePendingChangas.isValuePresent()){
+            pendingChangasMap = maybePendingChangas.getValue();
+            //todo: deberiamos chequear q el mapa tenga todos valores validos? osea q ningun key/value sea null. porq el jsp se puede romper si le paso algo null
+        }
+        else{
+            //TODO error
+        }
+
+        Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserOwnedChangas(loggedUser.getUser_id());
+        List<Changa> publishedChangas = null;
+        if (maybePublishedChangas.isValuePresent()){
+            publishedChangas = maybePublishedChangas.getValue();
+        }
+        else{
+            //TODO error
+        }
+
         return new ModelAndView("indexProfile")
-                .addObject("publishedChangas", cs.getUserOwnedChangas(loggedUser.getUser_id()).getValue())
-                .addObject("pendingChangas", is.getUserInscriptions(loggedUser.getUser_id()).getValue().keySet());
+                .addObject("publishedChangas", publishedChangas)
+                .addObject("pendingChangas", pendingChangasMap);
     }
 
 }
