@@ -19,6 +19,8 @@
         <javax.mail.version>1.4</javax.mail.version>
         <junit.version>4.11</junit.version>
         <org.mockito.version>2.27.0</org.mockito.version>
+        <org.powermock.version>1.6.4</org.powermock.version>
+        <org.powermock-api-mockito2.version>1.6.4</org.powermock-api-mockito2.version>
     </properties>
 
     <dependencyManagement>

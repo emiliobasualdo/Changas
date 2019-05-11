@@ -82,13 +82,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setUserEnabledStatus(long userId, boolean status) {
-        userDao.setUserStatus(userId, status);
+    public Validation setUserEnabledStatus(long userId, boolean status) {
+        return userDao.setUserStatus(userId, status);
     }
 
     @Override
     public void confirmMailVerification(final long userId, final long tokenId) {
-        setUserEnabledStatus(userId, true);
+        setUserEnabledStatus(userId, true); // falta hacer if del retorno de serUser...
         verificationTokenDao.delete(tokenId);
     }
 

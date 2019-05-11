@@ -19,6 +19,6 @@ public interface UserService {
     Either<User, Validation> register(final User.Builder userBuilder);
     void createVerificationToken(User user, String token);
     Either<VerificationToken, Validation> getVerificationToken(String VerificationToken);
-    void setUserEnabledStatus(final long userId, final boolean status);
+    Validation setUserEnabledStatus(final long userId, final boolean status);
     void confirmMailVerification(final long userId, final long tokenId);
 }

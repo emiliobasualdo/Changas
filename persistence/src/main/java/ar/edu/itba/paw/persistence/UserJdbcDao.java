@@ -60,7 +60,7 @@ public class UserJdbcDao implements UserDao {
         } catch (DuplicateKeyException e ) {
             return Either.alternative(new Validation(USER_ALREADY_EXISTS));
         } catch (Exception e ) {
-            System.err.println(e);
+            System.err.println(e.getMessage());
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
 
@@ -83,64 +83,32 @@ public class UserJdbcDao implements UserDao {
         return Either.value(list.get(0));
     }
 
-    private Map<String, Object> userToTableRow(User.Builder userBuilder) {
-        Map<String, Object> resp = new HashMap<>();
-        resp.put(name.name(), userBuilder.getName());
-        resp.put(surname.name(), userBuilder.getSurname());
-        resp.put(tel.name(), userBuilder.getTel());
-        resp.put(email.name(), userBuilder.getEmail());
-        resp.put(passwd.name(), userBuilder.getPasswd());
-        return resp;
-    }
-
-    private static User userFromRS(ResultSet rs) throws SQLException {
-        return build(rs.getLong(user_id.name()), new User.Builder()
-                                                .withName(rs.getString(name.name()))
-                                                .withSurname(rs.getString(surname.name()))
-                                                .withTel(rs.getString(tel.name()))
-                                                .withEmail(rs.getString(email.name()))
-                                                .withPasswd(rs.getString(passwd.name()))
-                                                .enabled(rs.getBoolean(enabled.name()))
-        );
-    }
-
-    private static User build(long userId, User.Builder userBuilder) {
-        return new User(userId, userBuilder);
-    }
-
    /* @Override
     public List<User> createUsers() {
         return generateRandomUsers();
     }*/
 
     @Override
-    public Either<User, Validation> getUser(final User.Builder userBuilder) {
-        final List<User> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = ? AND %s = ?", users.name(),
-                        email.name(),
-                        passwd.name()
-                ),
-                ROW_MAPPER,
-                userBuilder.getEmail(), userBuilder.getPasswd()
-        );
-        if (list.isEmpty()) {
-            //TODO chequear si es q el mail no pertenece a un usuario para hacer INVALID_EMAIL
-            return Either.alternative(new Validation(INVALID_COMBINATION));
+    public Validation setUserStatus(final long userId, final boolean status) {
+        if (getById(userId).isValuePresent()) {
+            try {
+                jdbcTemplate.update(String.format("UPDATE %s SET %s = ? WHERE %s = ? ",
+                        users.name(),
+                        enabled.name(),
+                        user_id.name()),
+                        status,
+                        userId
+                );
+                return new Validation(OK);
+            } catch (Exception e ) {
+                System.err.println(e.getMessage());
+                return new Validation(DATABASE_ERROR);
+            }
+        } else {
+            return new Validation(NO_SUCH_USER);
         }
-        return Either.value(list.get(0));
-    }
 
-    @Override
-    public void setUserStatus(final long userId, final boolean status) {
-        jdbcTemplate.update(String.format("UPDATE %s SET %s = ? WHERE %s = ? ",
-                users.name(),
-                "enabled",
-                user_id.name()),
-                status,
-                userId
-        );
     }
-
 
     private Either<User, Validation> getUserFromUserId(long userId) {
         final List<User> list = jdbcTemplate.query(
@@ -178,5 +146,32 @@ public class UserJdbcDao implements UserDao {
         }
         return resp;
     }
+
+    private Map<String, Object> userToTableRow(User.Builder userBuilder) {
+        Map<String, Object> resp = new HashMap<>();
+        resp.put(name.name(), userBuilder.getName());
+        resp.put(surname.name(), userBuilder.getSurname());
+        resp.put(tel.name(), userBuilder.getTel());
+        resp.put(email.name(), userBuilder.getEmail());
+        resp.put(passwd.name(), userBuilder.getPasswd());
+        resp.put(enabled.name(), userBuilder.isEnabled());
+        return resp;
+    }
+
+    private static User userFromRS(ResultSet rs) throws SQLException {
+        return build(rs.getLong(user_id.name()), new User.Builder()
+                .withName(rs.getString(name.name()))
+                .withSurname(rs.getString(surname.name()))
+                .withTel(rs.getString(tel.name()))
+                .withEmail(rs.getString(email.name()))
+                .withPasswd(rs.getString(passwd.name()))
+                .enabled(rs.getBoolean(enabled.name()))
+        );
+    }
+
+    private static User build(long userId, User.Builder userBuilder) {
+        return new User(userId, userBuilder);
+    }
+
 
 }
