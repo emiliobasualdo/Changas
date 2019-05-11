@@ -4,10 +4,7 @@ import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
-import ar.edu.itba.paw.models.Changa;
-import ar.edu.itba.paw.models.Either;
-import ar.edu.itba.paw.models.Inscription;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,12 +34,12 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
     public ModelAndView showChangas(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged) {
         Either<List<Changa>, Validation> either = cs.getAllChangas();
         if (isUserLogged) {
-            Either<Map<Changa, Inscription>, Validation> eitherMap = is.getUserInscriptions(loggedUser.getUser_id());
+            Either<List<Pair<Changa, Inscription>>, Validation> eitherMap = is.getUserInscriptions(loggedUser.getUser_id());
             if (either.isValuePresent()) {
                 if (eitherMap.isValuePresent()) {
                     return new ModelAndView("index")
                             .addObject("changaList", either.getValue())
-                            .addObject("userInscriptions", eitherMap.getValue().keySet());
+                            .addObject("userInscriptions", eitherMap.getValue());
                 } else {
                     return new ModelAndView("500"); //todo: esta bien esto?
                 }

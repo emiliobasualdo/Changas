@@ -2,15 +2,12 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
-import ar.edu.itba.paw.models.InscriptionState;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.interfaces.util.Validation;
-import ar.edu.itba.paw.models.Changa;
-import ar.edu.itba.paw.models.Either;
-import ar.edu.itba.paw.models.Inscription;
-import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
@@ -27,7 +24,7 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public Either<Map<User, Inscription>, Validation> getInscribedUsers(long changa_id) {
+    public Either<List<Pair<User, Inscription>>, Validation> getInscribedUsers(long changa_id) {
         return dao.getInscribedUsers(changa_id);
     }
 
@@ -49,7 +46,7 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public Either<Map<Changa, Inscription>, Validation> getUserInscriptions(long userId) {
+    public Either<List<Pair<Changa, Inscription>>, Validation> getUserInscriptions(long userId) {
         return dao.getUserInscriptions(userId);
     }
 
