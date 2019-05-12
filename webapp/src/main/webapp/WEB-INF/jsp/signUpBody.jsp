@@ -5,6 +5,7 @@
 <html>
     <head>
         <style><%@ include file="/WEB-INF/css/signUpBody.css" %></style>
+        <style><%@include file="/WEB-INF/css/formError.css"%></style>
     </head>
     <body>
     <div class="signup-form">
@@ -25,6 +26,7 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <form:input class="form-control" path="name" />
+                                <form:errors cssClass="form-error" path="name" element="p"/>
                             </div>
                         </div>
                     </td>
@@ -42,27 +44,11 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <form:input class="form-control" path="surname" />
+                                <form:errors cssClass="form-error" path="surname" element="p"/>
                             </div>
                         </div>
                     </td>
                 </tr>
-                <%--<tr>
-                    <td>
-                        <div class="form-group">
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                <form:label path="username"><spring:message code="UserRegisterForm.username"/></form:label>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <div class="input-group">
-                                <form:input class="form-control" path="username" />
-                            </div>
-                        </div>
-                    </td>
-                </tr>--%>
                 <tr>
                     <td>
                         <div class="form-group">
@@ -76,7 +62,7 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <form:input class="form-control" path="telephone" />
-                                <form:errors path="telephone">error wach</form:errors>
+                                <form:errors cssClass="form-error" path="telephone" element="p"/>
                             </div>
                         </div>
                     </td>
@@ -94,6 +80,7 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <form:input class="form-control" path="email" />
+                                <form:errors cssClass="form-error" path="email" element="p"/>
                             </div>
                         </div>
                     </td>
@@ -111,6 +98,7 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <form:input class="form-control" path="password" />
+                                <form:errors cssClass="form-error" path="password" element="p"/>
                             </div>
                         </div>
                     </td>
@@ -131,6 +119,7 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <form:input class="form-control" path="repeatPassword"/>
+                                <form:errors cssClass="form-error" path="repeatPassword" element="p"/>
                             </div>
                         </div>
                     </td>

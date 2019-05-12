@@ -1,14 +1,20 @@
 package ar.edu.itba.paw.webapp.forms;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class UserLoginForm {
-//    @Size(min = 6, max = 100)
-//    @Pattern(regexp = "[a-zA-Z0-9]+")
+
+    @NotEmpty
+    @Email
     private String username;
 
-//    @Size(min = 6, max = 100)
+    @NotEmpty
+    @Size(min = 8, max = 100)
     private String password;
 
     public String getUsername() {
