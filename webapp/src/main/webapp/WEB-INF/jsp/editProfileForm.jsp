@@ -12,10 +12,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <style><%@ include file="/WEB-INF/css/signUpBody.css" %></style>
+    <style><%@include file="/WEB-INF/css/formError.css"%></style>
 </head>
 <body>
 <div class="signup-form">
-    <form:form modelAttribute="userForm" method="post">
+    <c:url value="/edit-profile" var="editProfileUrl" />
+    <form:form modelAttribute="userForm" action="${editProfileUrl}" method="post">
         <h2><spring:message code="editProfile.header"/></h2>
         <table style="width: 100%">
             <tr>
@@ -32,6 +34,7 @@
                         <div class="input-group">
                             <form:input class="form-control" path="name" />
                         </div>
+                        <form:errors cssClass="form-error" path="name" element="p"/>
                     </div>
                 </td>
             </tr>
@@ -49,26 +52,10 @@
                         <div class="input-group">
                             <form:input class="form-control" path="surname" />
                         </div>
+                        <form:errors cssClass="form-error" path="surname" element="p"/>
                     </div>
                 </td>
             </tr>
-                <%--<tr>
-                    <td>
-                        <div class="form-group">
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                <form:label path="username"><spring:message code="UserRegisterForm.username"/></form:label>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <div class="input-group">
-                                <form:input class="form-control" path="username" />
-                            </div>
-                        </div>
-                    </td>
-                </tr>--%>
             <tr>
                 <td>
                     <div class="form-group">
@@ -82,8 +69,8 @@
                     <div class="form-group">
                         <div class="input-group">
                             <form:input class="form-control" path="telephone" />
-                            <form:errors path="telephone">error wach</form:errors>
                         </div>
+                        <form:errors cssClass="form-error" path="telephone" element="p"/>
                     </div>
                 </td>
             </tr>
@@ -101,6 +88,7 @@
                         <div class="input-group">
                             <form:input class="form-control" path="email" />
                         </div>
+                        <form:errors cssClass="form-error" path="email" element="p"/>
                     </div>
                 </td>
             </tr>

@@ -40,10 +40,12 @@
                         </div>
                         <div class="col-md-6" style="alignment: right">
                             <p>
-                                <a href="/edit-profile?id=<c:out value="${getLoggedUser.user_id}"/>" class="profile-edit-btn"><spring:message code="profileBody.nav.edit"/></a>
+                                <c:url value="/edit-profile" var="editProfileUrl" />
+                                <a href="${editProfileUrl}" class="profile-edit-btn"><spring:message code="profileBody.nav.edit"/></a>
                             </p>
                             <p>
-                                <a href="/reset-password?id=<c:out value="${getLoggedUser.user_id}"/>" class="profile-edit-btn" style="margin-left: 65%"><spring:message code="profileBody.nav.reset"/></a>
+                                <c:url value="/edit-password" var="resetPasswordUrl" />
+                                <a href="${resetPasswordUrl}" class="profile-edit-btn" style="margin-left: 65%"><spring:message code="profileBody.nav.reset"/></a>
                             </p>
                         </div>
                     <%--</div>--%>

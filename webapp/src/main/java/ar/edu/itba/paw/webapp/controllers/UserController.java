@@ -6,11 +6,8 @@ import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.webapp.forms.ForgotPasswordForm;
-import ar.edu.itba.paw.webapp.forms.ResetPasswordForm;
+import ar.edu.itba.paw.webapp.forms.*;
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.webapp.forms.UserLoginForm;
-import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -227,48 +224,50 @@ public class UserController {
         return new ModelAndView("redirect:/reset-password").addObject("id", id);
     }
 
+    @RequestMapping("/edit-password")
+    public ModelAndView editPassword(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm) {
+        return new ModelAndView("indexResetPassword").addObject("id", loggedUser.getUser_id());
+    }
+
     @RequestMapping("/reset-password")
     public ModelAndView resetPassword(@RequestParam("id") long id, @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm) {
         return new ModelAndView("indexResetPassword").addObject("id",id);
     }
 
     @RequestMapping(value = "/reset-password", method = RequestMethod.POST)
-    public ModelAndView doResetPassword(@Valid @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm, final BindingResult result, @RequestParam("id") long id) {
+    public ModelAndView doResetPassword(@Valid @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm, final BindingResult result, @RequestParam("id") long id, @ModelAttribute("isUserLogged") boolean isUserLogged, @ModelAttribute("getLoggedUser") User loggedUser) {
         if (result.hasErrors()) {
+            if (isUserLogged) { //TODO: emprolijar
+                return editPassword(loggedUser ,resetPasswordForm);
+            }
             return resetPassword(id, resetPasswordForm);
         }
-        us.resetPassword(id, resetPasswordForm.getNewPassword());
+        us.resetPassword(id, resetPasswordForm.getNewPassword()); //TODO: aca va a romper cambiar el reset passowrd para el usuario
         System.out.println("Contraseña restablecida");
         SecurityContextHolder.getContext().setAuthentication(null);
         return new ModelAndView("redirect:/");
     }
 
     @RequestMapping(value = "/edit-profile")
-    public ModelAndView editProfile(@RequestParam("id") final long id, @ModelAttribute("userForm") final UserRegisterForm form) {
-        Either<User, Validation> maybeUser = us.findById(id);
-        if (!maybeUser.isValuePresent()) {
-            //todo error
-            //nunca estariamos en este caso igual, ver como solucionar
-            return new ModelAndView("500");
-        }
-        form.setName(maybeUser.getValue().getName());
-        form.setEmail(maybeUser.getValue().getEmail());
-        form.setPassword(maybeUser.getValue().getPasswd());
-        form.setSurname(maybeUser.getValue().getSurname());
-        form.setTelephone(maybeUser.getValue().getTel());
-        return new ModelAndView("editProfileForm")
-                .addObject("id", id);
+    public ModelAndView editProfile(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("userForm") final EditUserForm form) {
+        form.setName(loggedUser.getName());
+        form.setEmail(loggedUser.getEmail());
+        form.setSurname(loggedUser.getSurname());
+        form.setTelephone(loggedUser.getTel());
+        return new ModelAndView("editProfileForm");
     }
 
     @RequestMapping(value = "/edit-profile", method = RequestMethod.POST )
-    public ModelAndView editChanga(@RequestParam("id") final long id, @Valid @ModelAttribute("userForm") final UserRegisterForm form, final BindingResult errors, @ModelAttribute("getLoggedUser") User loggedUser) {
-        us.update(id, new User.Builder()
+    public ModelAndView editChanga(@Valid @ModelAttribute("userForm") final EditUserForm form, final BindingResult errors, @ModelAttribute("getLoggedUser") User loggedUser) {
+        if (errors.hasErrors()) {
+            return editProfile(loggedUser, form);
+        }
+        us.update(loggedUser.getUser_id(), new User.Builder()
                 .withName(form.getName())
                 .withSurname(form.getSurname())
-                .withPasswd(form.getPassword())
                 .withEmail(form.getEmail())
                 .withTel(form.getTelephone()));
-        return new ModelAndView(new StringBuilder("redirect:/profile?id=").append(id).toString());
+        return new ModelAndView("redirect:/profile");
     }
 
 }

@@ -16,9 +16,8 @@
 </head>
 <body>
     <div class="signup-form">
-        <%--TODO: cabiar form a a un spring form para que por beans se mapen las varibales y poder cambiar el contendido de las mismas--%>
         <form:form method="post" modelAttribute="changaForm">
-            <h2>Editá tu changa</h2>
+            <h2><spring:message code="editChangaForm.header"/></h2>
             <table style="width: 100%;">
                 <tr>
                     <td>
