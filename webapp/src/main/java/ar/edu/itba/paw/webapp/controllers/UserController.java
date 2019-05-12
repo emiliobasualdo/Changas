@@ -169,6 +169,7 @@ public class UserController {
 
         Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserOwnedChangas(loggedUser.getUser_id());
         if (maybePublishedChangas.isValuePresent()){
+            maybePublishedChangas.getValue().removeIf(e -> e.getState() == ChangaState.settled || e.getState() == ChangaState.closed || e.getState() == ChangaState.done);
             mav.addObject("publishedChangas", maybePublishedChangas.getValue());
         }
         else{
