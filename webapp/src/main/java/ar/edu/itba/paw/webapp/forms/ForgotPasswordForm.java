@@ -1,13 +1,11 @@
 package ar.edu.itba.paw.webapp.forms;
 
 import org.hibernate.validator.constraints.Email;
-
-import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.NotEmpty;
 
 public class ForgotPasswordForm {
-    //    @Size(min = 6, max = 100)
-//    @Pattern(regexp = "[a-zA-Z0-9]+")
-    @NotNull
+
+    @NotEmpty
     @Email
     private String mail;
 

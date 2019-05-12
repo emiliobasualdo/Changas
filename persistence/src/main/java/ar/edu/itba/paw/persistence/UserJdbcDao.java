@@ -80,8 +80,44 @@ public class UserJdbcDao implements UserDao {
         }
         return Either.value(list.get(0));
     }
+/*
 
     @Override
+    public Either<User, Validation> getUser(final User.Builder userBuilder) {
+        final List<User> list = jdbcTemplate.query(
+                String.format("SELECT * FROM %s WHERE %s = ? AND %s = ?", users.name(),
+                        email.name(),
+                        passwd.name()
+                ),
+                ROW_MAPPER,
+                userBuilder.getEmail(), userBuilder.getPasswd()
+        );
+        if (list.isEmpty()) {
+            //TODO chequear si es q el mail no pertenece a un usuario para hacer INVALID_EMAIL
+            return Either.alternative(new Validation(INVALID_COMBINATION));
+        }
+        return Either.value(list.get(0));
+    }
+*/
+
+    @Override
+    public Either<User, Validation> update(final long userId, User.Builder userBuilder){
+        int updatedUser = jdbcTemplate.update(String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ? ",
+                                                    users.name(),
+                                                    name.name(),
+                                                    surname.name(),
+                                                    tel.name(),
+                                                    email.name(),
+                                                    user_id.name()),
+
+                                                    userBuilder.getName(),
+                                                    userBuilder.getSurname(),
+                                                    userBuilder.getTel(),
+                                                    userBuilder.getEmail(),
+                                                    userId);
+
+        return updatedUser == 1 ? getById(userId) : Either.alternative(new Validation(NO_SUCH_USER));
+    }
     public Validation setUserStatus(final long userId, final boolean status) {
         if (getById(userId).isValuePresent()) {
             try {

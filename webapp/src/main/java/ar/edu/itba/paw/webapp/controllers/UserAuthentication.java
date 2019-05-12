@@ -34,6 +34,6 @@ public class UserAuthentication {
         if (isUserLogged()) {
             return Optional.of(us.findByMail(currentUserName).getValue());
         }
-        return Optional.empty();
+        return Optional.empty(); // por tiempo limitado
     }
 }

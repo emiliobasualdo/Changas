@@ -15,4 +15,5 @@ public interface ChangaDao extends Dao<Changa> {
     Either<List<Changa>, Validation> getUserOwnedChangas(final long user_id);
     Either<Changa, Validation> update(final long changaId, Changa.Builder changaBuilder);
     Either<Changa, Validation> changeChangaState(long changaId, ChangaState state);
+
 }

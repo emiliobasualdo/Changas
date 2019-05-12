@@ -44,7 +44,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/", "/signup/**", "/changa").permitAll()
                     .antMatchers(HttpMethod.GET, "/create-changa").permitAll()
                     .antMatchers("/reset-password/validate").permitAll()
-                    .antMatchers("/reset-password").hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
+                    .antMatchers("/reset-password").hasAnyAuthority("CHANGE_PASSWORD_PRIVILEGE", "ROLE_USER")
                     .antMatchers("/login/**").anonymous()
 //                    .antMatchers("/admin/**").hasRole("ADMIN")  // por ahora no tenemos roles de admin
                     .antMatchers("/**").authenticated()

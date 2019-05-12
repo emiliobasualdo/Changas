@@ -114,5 +114,9 @@ public class UserServiceImpl implements UserService {
         verificationTokenDao.delete(tokenId);
     }
 
+    @Override
+    public Either<User, Validation> update(final long userId, User.Builder userBuilder) {
+        return userDao.update(userId, userBuilder);
+    }
 
 }

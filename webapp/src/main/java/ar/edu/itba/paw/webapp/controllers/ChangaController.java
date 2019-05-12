@@ -42,6 +42,9 @@ public class ChangaController {
     @RequestMapping(value = "/create-changa", method = RequestMethod.POST )
     public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, @ModelAttribute("getLoggedUser") User loggedUser) {
         System.out.println(form.getTitle() + " " +  form.getDescription() + " " +  form.getPrice() + " " +  form.getNeighborhood());
+        if (errors.hasErrors()) {
+            return createChanga(form);
+        }
         cs.create(new Changa.Builder().withUserId(loggedUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
@@ -55,11 +58,7 @@ public class ChangaController {
     @RequestMapping(value = "/edit-changa")
     public ModelAndView editChanga(@RequestParam("id") final long id, @ModelAttribute("changaForm") final ChangaForm form) {
         Either<Changa, Validation> changaEither = cs.getChangaById(id);
-        if (!changaEither.isValuePresent()) {
-            //todo error
-            //nunca estariamos en este caso igual, ver como solucionar
-            return new ModelAndView("redirect:/");
-        }
+        if (!changaEither.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", changaEither.getAlternative().getMessage());
         Changa changa = changaEither.getValue();
         form.setTitle(changa.getTitle());
         form.setStreet(changa.getStreet());
@@ -73,7 +72,10 @@ public class ChangaController {
 
     @RequestMapping(value = "/edit-changa", method = RequestMethod.POST )
     public ModelAndView editChanga(@RequestParam("id") final long id, @Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, @ModelAttribute("getLoggedUser") User loggedUser) {
-        cs.update(id, new Changa.Builder()
+       if (errors.hasErrors()) {
+           return editChanga(id, form);
+       }
+        cs.update(id, new Changa.Builder().withUserId(loggedUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
@@ -82,49 +84,96 @@ public class ChangaController {
         return new ModelAndView("redirect:/profile");
     }
 
-    @RequestMapping("/changa")
-    public ModelAndView showChanga(@RequestParam("id") final long id, @ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged) { //TODO: RE VER
-        final ModelAndView mav = new ModelAndView("indexChanga");
-        final Changa changa = cs.getChangaById(id).getValue();
-        mav.addObject("changa", changa);
+    @RequestMapping({"/changa"})
+    public ModelAndView showChanga(@RequestParam("id") long id, @ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged) {
+        ModelAndView mav = new ModelAndView("indexChanga");
+        Either<Changa, Validation> changa = this.cs.getChangaById(id);
+        if (!changa.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", changa.getAlternative().getMessage());
+        mav.addObject("changa", changa.getValue());
         boolean userAlreadyInscribedInChanga = false;
         if (isUserLogged) {
-            Either<Boolean, Validation> either = is.isUserInscribedInChanga(loggedUser.getUser_id(), id);
-            if (either.isValuePresent()) {
-                userAlreadyInscribedInChanga = either.getValue();
+            if (loggedUser.getUser_id() == changa.getValue().getUser_id()) {
+                mav.addObject("changaOwner", loggedUser);
+                mav.addObject("userOwnsChanga", true);
+                mav.addObject("userAlreadyInscribedInChanga", false);
+                return mav;
             } else {
-                // todo que carajo pasa aca?
-                // el usuario podría no esxistir
-                // La changa podría no existir
+                Either<Boolean, Validation> isUserInscribedInChanga = this.is.isUserInscribedInChanga(loggedUser.getUser_id(), id);
+                if (!isUserInscribedInChanga.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", isUserInscribedInChanga.getAlternative().getMessage());
+                if (isUserInscribedInChanga.getValue()) {
+                     userAlreadyInscribedInChanga = true;
+                    Either<Inscription, Validation> inscriptionState = is.getInscription(loggedUser.getUser_id(), id);
+                    if (!inscriptionState.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", inscriptionState.getAlternative().getMessage());
+                    mav.addObject("inscriptionState", inscriptionState.getValue().getState());
+                } else {
+                    userAlreadyInscribedInChanga = false;
+                }
             }
         }
-        boolean userOwnsChanga = false;
-        if (isUserLogged) {
-            if (loggedUser.getUser_id() == changa.getUser_id()) {
-                userOwnsChanga = true;
-            }
-        }
+        Either<User, Validation> changaOwner = us.findById(changa.getValue().getUser_id());
+        if (!changaOwner.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", changaOwner.getAlternative().getMessage());
+        mav.addObject("changaOwner", changaOwner.getValue());
         mav.addObject("userAlreadyInscribedInChanga", userAlreadyInscribedInChanga);
-        mav.addObject("changaOwner", us.findById(changa.getUser_id()).getValue());
-        mav.addObject("userOwnsChanga", userOwnsChanga);
+        mav.addObject("userOwnsChanga", false);
         return mav;
     }
 
+//    @RequestMapping("/changa")
+//    public ModelAndView showChanga2(@RequestParam("id") final long id, @ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged) { //TODO: RE VER
+//        final ModelAndView mav = new ModelAndView("indexChanga");
+//
+//        Either<Changa, Validation> maybeChanga = cs.getChangaById(id);
+//        if (maybeChanga.isValuePresent()){
+//            mav.addObject("changa", maybeChanga.getValue());
+//
+//            boolean userOwnsChanga = false;
+//            if (isUserLogged) {
+//                if (loggedUser.getUser_id() == maybeChanga.getValue().getUser_id()) {
+//                    userOwnsChanga = true;
+//                }
+//            }
+//            mav.addObject("userOwnsChanga", userOwnsChanga);
+//
+//            Either<User, Validation> maybeChangaOwner = us.findById(maybeChanga.getValue().getUser_id());
+//            if (maybeChangaOwner.isValuePresent()){
+//                mav.addObject("changaOwner", maybeChangaOwner.getValue());
+//            }
+//            else {
+//                return new ModelAndView("500");
+//            }
+//        }
+//        else {
+//            return new ModelAndView("500");
+//        }
+//
+//        if (isUserLogged) {
+//            Either<Boolean, Validation> either = is.isUserInscribedInChanga(loggedUser.getUser_id(), id);
+//            if (either.isValuePresent()) {
+//                mav.addObject("userAlreadyInscribedInChanga", either.getValue());
+//            } else {
+//                return new ModelAndView("500");
+//            }
+//            Either<Inscription, Validation> maybeInscription = is.getInscription(loggedUser.getUser_id(), id);
+//            if (maybeInscription.isValuePresent()){
+//                mav.addObject("inscriptionState", maybeInscription.getValue().getState());
+//            }
+//            else {
+//                return new ModelAndView("500");
+//            }
+//        }
+//        return mav;
+//    }
+
     @RequestMapping("/admin-changa")
-    public ModelAndView showAdminChanga(@RequestParam("id") final long id) {
+    public ModelAndView showAdminChanga(@RequestParam("id") final long id, @ModelAttribute("getLoggedUser") User loggedUser) {
         final ModelAndView mav = new ModelAndView("indexAdminChanga");
         final Changa changa = cs.getChangaById(id).getValue();
         mav.addObject("changa", changa);
         mav.addObject("changaOwner", us.findById(changa.getUser_id()).getValue());
-        Either<List<Pair<User, Inscription>>, Validation>  either = is.getInscribedUsers(id);
-        List<Pair<User, Inscription>> inscribedUsers = new LinkedList<>();
-        if (either.isValuePresent()) {
-            inscribedUsers = either.getValue();
-        } else {
-            //todo
-        }
-        mav.addObject("notInscribedUsers", inscribedUsers.isEmpty());
-        mav.addObject("inscribedUsers", inscribedUsers);
+        Either<List<Pair<User, Inscription>>, Validation> inscribedUsers = is.getInscribedUsers(id);
+        if (!inscribedUsers.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", inscribedUsers.getAlternative().getMessage());
+        mav.addObject("notInscribedUsers", inscribedUsers.getValue().isEmpty());
+        mav.addObject("inscribedUsers", inscribedUsers.getValue());
         return mav;
     }
 
@@ -132,11 +181,7 @@ public class ChangaController {
     public ModelAndView deleteChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
         // TODO JIME popup confirmacion (estás seguro?)
         Either<Changa, Validation> err = cs.changeChangaState(changaId, ChangaState.closed);
-        if (err.isValuePresent()){
-            // TODO JIME popup salió todo joya
-        } else {
-            //TODO JIME popup error
-        }
+        if (!err.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", err.getAlternative().getMessage());
         return new ModelAndView("redirect:/profile");
     }
 
