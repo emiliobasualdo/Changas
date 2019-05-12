@@ -166,7 +166,7 @@ public class ChangaController {
 //    }
 
     @RequestMapping("/admin-changa")
-    public ModelAndView showAdminChanga(@RequestParam("id") final long id) {
+    public ModelAndView showAdminChanga(@RequestParam("id") final long id, @ModelAttribute("getLoggedUser") User loggedUser) {
         final ModelAndView mav = new ModelAndView("indexAdminChanga");
         final Changa changa = cs.getChangaById(id).getValue();
         mav.addObject("changa", changa);
