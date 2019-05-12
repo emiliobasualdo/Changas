@@ -1,48 +1,39 @@
 package ar.edu.itba.paw.webapp.forms;
 
-import javax.validation.constraints.NotNull;
+import ar.edu.itba.paw.webapp.constraints.EqualFields;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+@EqualFields(field = "password", fieldMatch = "repeatPassword")
 public class UserRegisterForm {
-    //TODO MAITE DESCOMENTAR PATTERNS Y TAMAÑOS (los comento asi pueden probar rapido)
-    /*@NotNull
-    //@Size(min = 4, max = 100)
-    @Pattern(regexp = "[a-zA-Z0-9]+")
-    private String username;*/
 
-    @NotNull
-    @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
+    @NotEmpty
+    @Email
     private String email;
 
-    @NotNull
-    //@Size(min = 6, max = 100)
+    @NotEmpty
+    @Size(min = 8, max = 100)
     private String password;
 
-    @NotNull
-    //@Size(min = 6, max = 100)
+    //TODO: solucionar problema que no muestra mensaje de error
+    @NotEmpty
+    @Size(min = 8, max = 100)
     private String repeatPassword;
 
-    @NotNull
-    @Pattern(regexp = "[a-zA-Z]+[ ]*[a-zA-z]*")
+    @NotEmpty
+    @Pattern(regexp = "[a-zA-Z ]+")
     private String name;
 
-    @NotNull
-    @Pattern(regexp = "[a-zA-Z]+[ ]*[a-zA-z]*")
+    @NotEmpty
+    @Pattern(regexp = "[a-zA-Z ]+")
     private String surname;
 
-    @NotNull
-    //@Size(min = 6, max = 25)
+    @NotEmpty
+    @Size(min = 6, max = 25)
     @Pattern(regexp = "[0-9]+")
     private String telephone;
-
-    /*public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }*/
 
     public String getPassword() {
         return password;

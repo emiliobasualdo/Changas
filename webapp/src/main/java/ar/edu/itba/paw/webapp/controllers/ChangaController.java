@@ -42,6 +42,11 @@ public class ChangaController {
     @RequestMapping(value = "/create-changa", method = RequestMethod.POST )
     public ModelAndView createChanga(@Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, @ModelAttribute("getLoggedUser") User loggedUser) {
         System.out.println(form.getTitle() + " " +  form.getDescription() + " " +  form.getPrice() + " " +  form.getNeighborhood());
+
+        if (errors.hasErrors()) {
+            return createChanga(form);
+        }
+
         cs.create(new Changa.Builder().withUserId(loggedUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())

@@ -195,6 +195,7 @@ public class UserController {
         }
         Either<User, Validation> user = us.findByMail(forgotPasswordForm.getMail());
         if (!user.isValuePresent()) {
+            //TODO: mostrarle mensaje al usario!!
             System.out.println("User" + forgotPasswordForm.getMail() + "does not exists");
             return new ModelAndView("indexForgotPassword");
         }
@@ -231,17 +232,20 @@ public class UserController {
                 return new ModelAndView("redirect:/login");
             }
         }
-        return new ModelAndView("redirect:/reset-password").addObject("id", id).addObject("token", token);
+        return new ModelAndView("redirect:/reset-password").addObject("id", id);
     }
 
 
     @RequestMapping("/reset-password")
-    public ModelAndView resetPassword(@RequestParam("id") long id, @RequestParam("token") String token, @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm) {
+    public ModelAndView resetPassword(@RequestParam("id") long id, @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm) {
         return new ModelAndView("indexResetPassword").addObject("id",id);
     }
 
     @RequestMapping(value = "/reset-password", method = RequestMethod.POST)
-    public ModelAndView doResetPassword(@Valid @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm, @RequestParam("id") long id) {
+    public ModelAndView doResetPassword(@Valid @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm, final BindingResult result, @RequestParam("id") long id) {
+        if (result.hasErrors()) {
+            return resetPassword(id, resetPasswordForm);
+        }
         us.resetPassword(id, resetPasswordForm.getNewPassword());
         System.out.println("Contraseña restablecida");
         SecurityContextHolder.getContext().setAuthentication(null);
