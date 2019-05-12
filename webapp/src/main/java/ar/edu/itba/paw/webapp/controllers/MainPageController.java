@@ -40,7 +40,7 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
             if (isUserLogged) {
                 Either<List<Pair<Changa, Inscription>>, Validation> maybeInscriptions = is.getUserInscriptions(loggedUser.getUser_id());
                 if (maybeInscriptions.isValuePresent()) {
-                    maybeInscriptions.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout);
+                    maybeInscriptions.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout); //TODO: hacer esto en una query
                     List<Pair<Changa, Boolean>> changaList = new ArrayList<>();
                     for (Changa c : maybeChangas.getValue()){
                         boolean notFound = true;

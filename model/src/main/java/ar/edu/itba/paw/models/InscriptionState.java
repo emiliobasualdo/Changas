@@ -22,7 +22,7 @@ public enum InscriptionState {
                 {0, 1, 1, 1}, // from requested
                 {0, 0, 1, 1}, // from accepted
                 {0, 1, 0, 0}, // from declined
-                {1, 0, 0, 0}
+                {1, 0, 0, 0}, // from optout
         };
         return posibleChanges[oldState.num][newState.num] == 1;
     }
