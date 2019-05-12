@@ -31,6 +31,9 @@ public class UserAuthentication {
     public User getLoggedUser() { //TODO: meter Either y mandarlo a una vista 500 si ocurre un error
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
-        return us.findByMail(currentUserName).getValue();
+        if (isUserLogged()) {
+            return us.findByMail(currentUserName).getValue();
+        }
+        return null; // por tiempo limitado
     }
 }
