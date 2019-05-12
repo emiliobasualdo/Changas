@@ -33,8 +33,8 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <form:input class="form-control" path="title"/>
-                                    <form:errors cssClass="form-error" path="title" element="p"/>
                                 </div>
+                                <form:errors cssClass="form-error" path="title" element="p"/>
                             </div>
                         </td>
                     </tr>
@@ -50,8 +50,8 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <form:textarea rows="3" class="form-control" path="description"/>
-                                    <form:errors cssClass="form-error" path="description" element="p"/>
                                 </div>
+                                <form:errors cssClass="form-error" path="description" element="p"/>
                             </div>
                         </td>
                     </tr>
@@ -67,8 +67,8 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <form:input class="form-control" path="neighborhood"/>
-                                    <form:errors cssClass="form-error" path="neighborhood" element="p"/>
                                 </div>
+                                <form:errors cssClass="form-error" path="neighborhood" element="p"/>
                             </div>
                         </td>
                     </tr>
@@ -84,8 +84,8 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <form:input class="form-control" path="street"/>
-                                    <form:errors cssClass="form-error" path="street" element="p"/>
                                 </div>
+                                <form:errors cssClass="form-error" path="street" element="p"/>
                             </div>
                         </td>
                     </tr>
@@ -101,8 +101,8 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <form:input class="form-control" path="number"/>
-                                    <form:errors cssClass="form-error" path="number" element="p"/>
                                 </div>
+                                <form:errors cssClass="form-error" path="number" element="p"/>
                             </div>
                         </td>
                     </tr>
@@ -118,8 +118,8 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <form:input class="form-control" path="price"/>
-                                    <form:errors cssClass="form-error" path="price" element="p"/>
                                 </div>
+                                <form:errors cssClass="form-error" path="price" element="p"/>
                             </div>
                         </td>
                     </tr>
