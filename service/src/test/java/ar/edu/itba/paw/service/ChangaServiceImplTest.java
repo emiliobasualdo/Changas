@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.daos.UserDao;
 import ar.edu.itba.paw.interfaces.daos.VerificationTokenDao;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
+import ar.edu.itba.paw.models.ChangaState;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.services.ChangaServiceImpl;
@@ -24,8 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 
@@ -165,7 +167,7 @@ public class ChangaServiceImplTest {
         // preparamos el falso dao
         when(chDao.getById(CHANGA_ID)).thenReturn(Either.value(mockedChanga));
         // EJERCITAR
-        Changa changa = changaService.create(mockedBuilder).getValue();
+        Changa changa = changaService.getChangaById(CHANGA_ID).getValue();
         // ASSERT
         assertEquals(changa, mockedChanga);
     }
@@ -176,7 +178,7 @@ public class ChangaServiceImplTest {
         // preparamos el falso dao
         when(chDao.getById(CHANGA_ID)).thenReturn(Either.alternative(mockedVal));
         // EJERCITAR
-        Validation val = changaService.create(mockedBuilder).getAlternative();
+        Validation val = changaService.getChangaById(CHANGA_ID).getAlternative();
         // ASSERT
         assertEquals(mockedVal, val);
     }
@@ -201,11 +203,42 @@ public class ChangaServiceImplTest {
     public void testGetUserOwnedChangas_returnsError() {
         // SETUP
         // preparamos el falso dao
-        when(chDao.getById(CHANGA_ID)).thenReturn(Either.alternative(mockedVal));
+        when(chDao.getUserOwnedChangas(USER_ID)).thenReturn(Either.alternative(mockedVal));
         // EJERCITAR
         Validation val = changaService.getUserOwnedChangas(USER_ID).getAlternative();
         // ASSERT
         assertEquals(mockedVal, val);
     }
+
+    @Test
+    public void testChangeChangaState1_returnsChanga() {
+        // SETUP
+        // preparamos la changa
+        when(mockedChanga.getState()).thenReturn(ChangaState.settled); // para ChangaState.changeIsPossible
+        // preparamos una segunda changa
+        Changa mockedChanga2 = Mockito.mock(Changa.class);
+        when(mockedChanga2.getState()).thenReturn(ChangaState.closed); // mockedState es el nuevo state al que queiro cambiar
+        // preparamos el falso dao
+        when(chDao.getById(CHANGA_ID)).thenReturn(Either.value(mockedChanga)); // mocked changa tendría que quedar igual
+        when(chDao.changeChangaState(eq(CHANGA_ID), any(ChangaState.class))).thenReturn(Either.value(mockedChanga2));
+        // EJERCITAR
+        Changa changa = changaService.changeChangaState(CHANGA_ID, ChangaState.closed).getValue();
+        // ASSERT
+        assertNotEquals(mockedChanga, changa);
+        assertEquals(mockedChanga2, changa);
+    }
+
+    @Test
+    public void testChangeChangaState1_returnsError() {
+        // SETUP
+        // preparamos el falso dao
+        when(chDao.getById(CHANGA_ID)).thenReturn(Either.alternative(mockedVal));
+        // EJERCITAR
+        Validation val = changaService.changeChangaState(CHANGA_ID, ChangaState.closed).getAlternative();
+        // ASSERT
+        assertEquals(mockedVal, val);
+    }
+
+
 }
 
