@@ -98,7 +98,8 @@
                 </td>
             </tr>
             <tr>
-                <td>
+                <a href="/reset-password">Reset password</a>
+                <%--<td>
                     <div class="form-group">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-lock"></i></span>
@@ -112,27 +113,7 @@
                             <form:input class="form-control" path="password" />
                         </div>
                     </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="form-group">
-                        <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-lock"></i>
-                                    <i class="fa fa-check"></i>
-                                </span>
-                            <form:label path="repeatPassword"><spring:message code="UserRegisterForm.repeatPassword"/></form:label>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <form:input class="form-control" path="repeatPassword"/>
-                        </div>
-                    </div>
-                </td>
+                </td>--%>
             </tr>
         </table>
 
