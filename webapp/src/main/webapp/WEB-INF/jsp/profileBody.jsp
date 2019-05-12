@@ -24,7 +24,7 @@
                         <div class="profile-head">
 
                             <%--DATOS DEL USUARIO--%>
-                            <h5><c:out value="${getLoggedUser.name}"/> <c:out value="${profile.surname}"/></h5>
+                            <h5><c:out value="${getLoggedUser.name}"/> <c:out value="${getLoggedUser.surname}"/></h5>
                             <h6><c:out value="${getLoggedUser.email}"/></h6>
                             <p><c:out value="${getLoggedUser.tel}"/></p>
 
@@ -38,9 +38,14 @@
                                 </li>
                             </ul>
                         </div>
-                        <%--<div class="col-md-2" style="alignment: right">
-                            <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Editar perfil"/>
-                        </div>--%>
+                        <div class="col-md-6" style="alignment: right">
+                            <p>
+                                <a href="/edit-profile?id=<c:out value="${getLoggedUser.user_id}"/>" class="profile-edit-btn"><spring:message code="profileBody.nav.edit"/></a>
+                            </p>
+                            <p>
+                                <a href="/reset-password?id=<c:out value="${getLoggedUser.user_id}"/>" class="profile-edit-btn" style="margin-left: 65%"><spring:message code="profileBody.nav.reset"/></a>
+                            </p>
+                        </div>
                     <%--</div>--%>
                 </div>
                 <div class="row">

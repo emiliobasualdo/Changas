@@ -65,8 +65,6 @@ public class UserServiceImpl implements UserService {
         return userDao.create(userBuilder);
     }
 
-
-
     @Override
     public void createVerificationToken(User user, String token)  {
         VerificationToken.Builder myToken = new VerificationToken.Builder(token, user.getUser_id());
@@ -118,5 +116,9 @@ public class UserServiceImpl implements UserService {
         verificationTokenDao.delete(tokenId);
     }
 
+    @Override
+    public Either<User, Validation> update(final long userId, User.Builder userBuilder) {
+        return userDao.update(userId, userBuilder);
+    }
 
 }

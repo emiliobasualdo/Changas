@@ -23,4 +23,5 @@ public interface UserService {
     void setUserEnabledStatus(final long userId, final boolean status);
     void resetPassword(final long id, final String password);
     void confirmMailVerification(final long userId, final long tokenId);
+    Either<User, Validation> update(final long userId, User.Builder userBuilder);
 }

@@ -81,13 +81,13 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
     @Override
-    /* An Inscription implies that the user is inscribbed OR he had inscribed him self before and optout */
+    /* An Inscription implies that the user is inscribed OR he had inscribed him self before and optout */
     public Validation inscribeInChanga(long userId, long changaId) {
         // We check if the user is the owner of the changa
         Either<Changa, Validation> changa = changaDao.getById(changaId);
         if (changa.isValuePresent()) {
             if (changa.getValue().getUser_id() == userId){
-                return new Validation(USER_OWNS_THE_CHANGE);
+                return new Validation(USER_OWNS_THE_CHANGA);
             }
         } else {
             return changa.getAlternative();
@@ -161,11 +161,19 @@ public class InscriptionJdbcDao implements InscriptionDao {
 
     @Override
     public Either<Boolean, Validation> isUserInscribedInChanga(long userId, long changaId) {
-        Either<Inscription, Validation> insc = getInscription(userId,changaId);
-        if(!insc.isValuePresent()){
-            return Either.alternative(insc.getAlternative());
+        final List<Inscription> list  = jdbcTemplate.query(
+                String.format("SELECT * FROM %s WHERE %s = ?  AND %s = ?", user_inscribed.name()
+                        , changa_id.name(), user_id.name()), ROW_MAPPER, changaId, userId);
+
+        if (list.size() > 1) {
+            return Either.alternative(new Validation(DATABASE_ERROR));
+        } else if (list.isEmpty()) {
+            return Either.value(false);
+        } else if (list.get(0).getState().compareTo(InscriptionState.optout) == 0) {
+                return Either.value(false);
+        } else {
+            return Either.value(true);
         }
-        return Either.value(true);
     }
 
     @Override

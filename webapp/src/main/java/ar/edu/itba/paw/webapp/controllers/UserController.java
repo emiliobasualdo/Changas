@@ -32,11 +32,8 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.net.URI;
-import java.util.Arrays;
 
 @Controller
 public class UserController {
@@ -158,14 +155,27 @@ public class UserController {
 
     @RequestMapping("/profile")
     public ModelAndView profile(@ModelAttribute("getLoggedUser") User loggedUser) {
-        Either<List<Pair<Changa, Inscription>>, Validation>  pendingChangas = is.getUserInscriptions(loggedUser.getUser_id());
-        if (!pendingChangas.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", pendingChangas.getAlternative().getMessage());
-            //todo: deberiamos chequear q el mapa tenga todos valores validos? osea q ningun key/value sea null. porq el jsp se puede romper si le paso algo null
-        Either<List<Changa>, Validation> publishedChangas = cs.getUserOwnedChangas(loggedUser.getUser_id());
-        if (!publishedChangas.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", publishedChangas.getAlternative().getMessage());
-        return new ModelAndView("indexProfile")
-                .addObject("publishedChangas", publishedChangas.getValue())
-                .addObject("pendingChangas", pendingChangas.getValue());
+
+        ModelAndView mav = new ModelAndView("indexProfile");
+        Either<List<Pair<Changa, Inscription>>, Validation>  maybePendingChangas = is.getUserInscriptions(loggedUser.getUser_id());
+        if (maybePendingChangas.isValuePresent()){
+            maybePendingChangas.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout);
+            mav.addObject("pendingChangas", maybePendingChangas.getValue());
+        }
+        else{
+            return new ModelAndView("redirect:/error").addObject("message", maybePendingChangas.getAlternative().getMessage());
+        }
+
+        Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserEmittedChangas(loggedUser.getUser_id());
+        if (maybePublishedChangas.isValuePresent()){
+            maybePublishedChangas.getValue().removeIf(e -> e.getState() == ChangaState.settled || e.getState() == ChangaState.closed || e.getState() == ChangaState.done);
+            mav.addObject("publishedChangas", maybePublishedChangas.getValue());
+        }
+        else{
+            return new ModelAndView("redirect:/error").addObject("message", maybePublishedChangas.getAlternative().getMessage());
+        }
+
+        return mav;
     }
 
     @RequestMapping("/login/forgot-password")
@@ -231,6 +241,34 @@ public class UserController {
         System.out.println("Contraseña restablecida");
         SecurityContextHolder.getContext().setAuthentication(null);
         return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping(value = "/edit-profile")
+    public ModelAndView editProfile(@RequestParam("id") final long id, @ModelAttribute("userForm") final UserRegisterForm form) {
+        Either<User, Validation> maybeUser = us.findById(id);
+        if (!maybeUser.isValuePresent()) {
+            //todo error
+            //nunca estariamos en este caso igual, ver como solucionar
+            return new ModelAndView("500");
+        }
+        form.setName(maybeUser.getValue().getName());
+        form.setEmail(maybeUser.getValue().getEmail());
+        form.setPassword(maybeUser.getValue().getPasswd());
+        form.setSurname(maybeUser.getValue().getSurname());
+        form.setTelephone(maybeUser.getValue().getTel());
+        return new ModelAndView("editProfileForm")
+                .addObject("id", id);
+    }
+
+    @RequestMapping(value = "/edit-profile", method = RequestMethod.POST )
+    public ModelAndView editChanga(@RequestParam("id") final long id, @Valid @ModelAttribute("userForm") final UserRegisterForm form, final BindingResult errors, @ModelAttribute("getLoggedUser") User loggedUser) {
+        us.update(id, new User.Builder()
+                .withName(form.getName())
+                .withSurname(form.getSurname())
+                .withPasswd(form.getPassword())
+                .withEmail(form.getEmail())
+                .withTel(form.getTelephone()));
+        return new ModelAndView(new StringBuilder("redirect:/profile?id=").append(id).toString());
     }
 
 }

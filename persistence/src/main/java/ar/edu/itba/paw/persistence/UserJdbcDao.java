@@ -131,6 +131,25 @@ public class UserJdbcDao implements UserDao {
     }
 
     @Override
+    public Either<User, Validation> update(final long userId, User.Builder userBuilder){
+        int updatedUser = jdbcTemplate.update(String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ? ",
+                                                    users.name(),
+                                                    name.name(),
+                                                    surname.name(),
+                                                    tel.name(),
+                                                    email.name(),
+                                                    user_id.name()),
+
+                                                    userBuilder.getName(),
+                                                    userBuilder.getSurname(),
+                                                    userBuilder.getTel(),
+                                                    userBuilder.getEmail(),
+                                                    userId);
+
+        return updatedUser == 1 ? getById(userId) : Either.alternative(new Validation(NO_SUCH_USER));
+    }
+
+    @Override
     public void setUserStatus(final long userId, final boolean status) {
         jdbcTemplate.update(String.format("UPDATE %s SET %s = ? WHERE %s = ? ",
                 users.name(),
