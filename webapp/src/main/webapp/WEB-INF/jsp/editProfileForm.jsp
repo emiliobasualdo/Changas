@@ -4,6 +4,13 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <html>
 <head>
+    <meta charset="utf-32">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <style><%@ include file="/WEB-INF/css/signUpBody.css" %></style>
 </head>
 <body>
@@ -97,28 +104,10 @@
                     </div>
                 </td>
             </tr>
-            <tr>
-                <a href="/reset-password">Reset password</a>
-                <%--<td>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                            <form:label path="password"><spring:message code="UserRegisterForm.password"/></form:label>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <form:input class="form-control" path="password" />
-                        </div>
-                    </div>
-                </td>--%>
-            </tr>
         </table>
 
         <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="signUpBody.button"/></button>
+            <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="editProfile.btn"/></button>
         </div>
     </form:form>
 </div>

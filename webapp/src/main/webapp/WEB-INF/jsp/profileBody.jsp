@@ -39,7 +39,12 @@
                             </ul>
                         </div>
                         <div class="col-md-6" style="alignment: right">
-                            <a href="/edit-profile?id=<c:out value="${getLoggedUser.user_id}"/>" class="profile-edit-btn"><spring:message code="profileBody.nav.edit"/></a>
+                            <p>
+                                <a href="/edit-profile?id=<c:out value="${getLoggedUser.user_id}"/>" class="profile-edit-btn"><spring:message code="profileBody.nav.edit"/></a>
+                            </p>
+                            <p>
+                                <a href="/reset-password?id=<c:out value="${getLoggedUser.user_id}"/>" class="profile-edit-btn" style="margin-left: 65%"><spring:message code="profileBody.nav.reset"/></a>
+                            </p>
                         </div>
                     <%--</div>--%>
                 </div>

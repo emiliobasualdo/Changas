@@ -264,13 +264,13 @@ public class UserController {
 
     @RequestMapping(value = "/edit-profile", method = RequestMethod.POST )
     public ModelAndView editChanga(@RequestParam("id") final long id, @Valid @ModelAttribute("userForm") final UserRegisterForm form, final BindingResult errors, @ModelAttribute("getLoggedUser") User loggedUser) {
-        /* todo
-            us.update(id, new User.Builder().withName(form.getName())
+        us.update(id, new User.Builder()
+                .withName(form.getName())
                 .withSurname(form.getSurname())
                 .withPasswd(form.getPassword())
                 .withEmail(form.getEmail())
-                .withTel(form.getTelephone()));*/
-        return new ModelAndView("redirect:/profile");
+                .withTel(form.getTelephone()));
+        return new ModelAndView(new StringBuilder("redirect:/profile?id=").append(id).toString());
     }
 
 }
