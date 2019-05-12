@@ -167,7 +167,7 @@ public class UserController {
             return new ModelAndView("500");
         }
 
-        Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserOwnedChangas(loggedUser.getUser_id());
+        Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserEmittedChangas(loggedUser.getUser_id());
         if (maybePublishedChangas.isValuePresent()){
             mav.addObject("publishedChangas", maybePublishedChangas.getValue());
         }
