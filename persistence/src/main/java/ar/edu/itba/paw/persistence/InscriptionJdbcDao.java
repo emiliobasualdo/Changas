@@ -139,7 +139,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
         try {
             rowsAffected = this.jdbcTemplate.update(
                     sql,
-                    newState.name(), insc.getUser_id(), insc.getChanga_id());
+                    newState.toString(), insc.getUser_id(), insc.getChanga_id());
             if (rowsAffected != 1) {
                 throw new RecoverableDataAccessException("rowsAffected != 1");
             }
@@ -193,7 +193,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
         Map<String,Object> resp = new HashMap<>();
         resp.put(user_id.name(), us_id);
         resp.put(changa_id.name(), ch_id);
-        resp.put(state.name(), requested);
+        resp.put(state.name(), requested.toString());
         return resp;
     }
 

@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users
 
 CREATE TABLE IF NOT EXISTS changas
 (
-    changa_id     INTEGER PRIMARY KEY,
+    changa_id     INTEGER IDENTITY PRIMARY KEY,
     user_id       INTEGER NOT NULL ,
     street        VARCHAR(100),
     neighborhood  VARCHAR(100),

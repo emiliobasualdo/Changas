@@ -58,6 +58,7 @@ public class UserServiceImpl implements UserService {
         if(either.isValuePresent()) {
             return Either.alternative(new Validation(USER_ALREADY_EXISTS));
         }
+        // else (!either.isValuePresent() && either.getAlternative() == NO_SUCH_USER o similar)
         userBuilder.withPasswd(passwordEncoder.encode(userBuilder.getPasswd()));
         return userDao.create(userBuilder);
     }

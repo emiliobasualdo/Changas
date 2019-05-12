@@ -20,6 +20,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
+import static ar.edu.itba.paw.constants.DBTableName.changas;
 import static ar.edu.itba.paw.constants.DBTableName.users;
 import static ar.edu.itba.paw.constants.DBUserFields.*;
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
@@ -69,15 +70,14 @@ public class UserJdbcDaoTest {
                 .withArguments(anyString(), anyInt())
                 .thenReturn(user);*/
         // EJERCITAR
-        final Either<User, Validation> either = userDao.create(
+        User user = userDao.create(
                 new User.Builder()
                 .withEmail(EMAIL)
                 .withPasswd(PASSWORD)
-        );
+        ).getValue();
         // ASSERT
-        assertNotNull(either.getValue());
-        assertEquals(EMAIL, either.getValue().getEmail());
-        assertEquals(PASSWORD, either.getValue().getPasswd());
+        assertEquals(EMAIL, user.getEmail());
+        assertEquals(PASSWORD, user.getPasswd());
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, users.name()));
     }
 
@@ -88,7 +88,7 @@ public class UserJdbcDaoTest {
         Map<String, Object> userRow = new HashMap<>();
         userRow.put(email.name(), EMAIL);
         userRow.put(passwd.name(), PASSWORD);
-        jdbcInsert.executeAndReturnKey(userRow);
+        Number id = jdbcInsert.executeAndReturnKey(userRow);
         // EXERCISE
         final Validation validation = userDao.create(
                 new User.Builder()
@@ -96,9 +96,8 @@ public class UserJdbcDaoTest {
                         .withPasswd(PASSWORD)
         ).getAlternative();
         // ASSERT
-        assertNotNull(validation);
-        assertNotNull(validation.getEc());
         assertEquals(USER_ALREADY_EXISTS, validation.getEc());
+        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, users.name(), String.format("%s = %d", user_id, id.longValue())));
     }
 
     @Test
@@ -112,26 +111,10 @@ public class UserJdbcDaoTest {
         // EXERCISE
         User user = userDao.getById(userId.longValue()).getValue();
         // ASSERT
-        assertNotNull(user);
-        assertEquals(EMAIL, user.getEmail());
-        assertEquals(PASSWORD, user.getPasswd());
-    }
-
-    @Test
-    public void testGetById_returnsUser2() {
-        // Testeamos el método considerando el query
-        // SETUP: Make sure the user is in the DB
-        Map<String, Object> userRow = new HashMap<>();
-        userRow.put(email.name(), EMAIL);
-        userRow.put(passwd.name(), PASSWORD);
-        Number userId = jdbcInsert.executeAndReturnKey(userRow);
-        // EXERCISE
-        User user = userDao.getById(userId.longValue()).getValue();
-        // ASSERT
-        assertNotNull(user);
         assertEquals(userId.longValue(), user.getUser_id());
         assertEquals(EMAIL, user.getEmail());
         assertEquals(PASSWORD, user.getPasswd());
+        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, users.name(), String.format("%s = %d", user_id, userId.longValue())));
     }
 
     @Test
@@ -141,7 +124,6 @@ public class UserJdbcDaoTest {
         // EXERCISE
         Validation validation = userDao.getById(ID).getAlternative();
         // ASSERT
-        assertNotNull(validation);
         assertEquals(validation.getEc(), NO_SUCH_USER);
     }
 
@@ -156,7 +138,6 @@ public class UserJdbcDaoTest {
         // EXERCISE
         User user = userDao.findByMail(EMAIL).getValue();
         // ASSERT
-        assertNotNull(user);
         assertEquals(userId.longValue(), user.getUser_id());
         assertEquals(EMAIL, user.getEmail());
         assertEquals(PASSWORD, user.getPasswd());
@@ -173,7 +154,6 @@ public class UserJdbcDaoTest {
         // EXERCISE
         User user = userDao.findByMail(EMAIL).getValue();
         // ASSERT
-        assertNotNull(user);
         assertEquals(userId.longValue(), user.getUser_id());
         assertEquals(EMAIL, user.getEmail());
         assertEquals(PASSWORD, user.getPasswd());
@@ -186,7 +166,6 @@ public class UserJdbcDaoTest {
         // EXERCISE
         Validation validation = userDao.findByMail(EMAIL).getAlternative();
         // ASSERT
-        assertNotNull(validation);
         assertEquals(validation.getEc(), NO_SUCH_USER);
     }
 
@@ -203,10 +182,8 @@ public class UserJdbcDaoTest {
         Validation val = userDao.setUserStatus(userId.longValue(), true);
         Validation val2 = userDao.setUserStatus(userId.longValue(), false);
         // ASSERT
-        assertNotNull(val);
         assertEquals(val.getEc(), OK);
-        assertNotNull(val2);
-        assertEquals(val.getEc(), OK);
+        assertEquals(val2.getEc(), OK);
     }
 
     @Test
@@ -216,9 +193,6 @@ public class UserJdbcDaoTest {
         // EXERCISE
         Validation val = userDao.setUserStatus(ID, true);
         // ASSERT
-        assertNotNull(val);
-        assertNotEquals(val.getEc(), OK);
-        assertNotEquals(val.getEc(), DATABASE_ERROR);
         assertEquals(val.getEc(), NO_SUCH_USER);
     }
 }

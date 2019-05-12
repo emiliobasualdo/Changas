@@ -73,12 +73,11 @@ public class ChangaController {
 
     @RequestMapping(value = "/edit-changa", method = RequestMethod.POST )
     public ModelAndView editChanga(@RequestParam("id") final long id, @Valid @ModelAttribute("changaForm") final ChangaForm form, final BindingResult errors, @ModelAttribute("getLoggedUser") User loggedUser) {
-        cs.update(id, new Changa.Builder().withUserId(loggedUser.getUser_id())
+        cs.update(id, new Changa.Builder()
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
-                .createdAt(LocalDateTime.now())
         );
         return new ModelAndView("redirect:/profile");
     }

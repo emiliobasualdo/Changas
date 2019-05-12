@@ -40,8 +40,14 @@ public class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
+    private User mockedUser;
+    private Validation mockedVal;
+    private User.Builder mockedUserBuilder;
     @Before
     public void setUp() {
+        mockedUser = Mockito.mock(User.class);
+        mockedVal = Mockito.mock(Validation.class);
+        mockedUserBuilder = Mockito.mock(User.Builder.class);
     }
 
     //TODO No puedo usar métodos auxiliares de la clase que quiero probar, solo los métodos que quiero probar
@@ -50,59 +56,45 @@ public class UserServiceImplTest {
     public void testfFindById_returnsUser() {
         // SETUP
         // preparamos el falso usuario
-        User user = Mockito.mock(User.class);
-        when(user.getUser_id()).thenReturn(ID);
-        when(user.getPasswd()).thenReturn(PASSWORD);
-        when(user.getEmail()).thenReturn(EMAIL);
-        // preparamos el falso either
-        Either<User, Validation> mockedEither = Mockito.mock(Either.class); // no si esto está bien
-        when(mockedEither.getValue()).thenReturn(user);
+        when(mockedUser.getUser_id()).thenReturn(ID);
+        when(mockedUser.getPasswd()).thenReturn(PASSWORD);
+        when(mockedUser.getEmail()).thenReturn(EMAIL);
         // preparamos el falso dao
-        when(userDao.getById(ID)).thenReturn(mockedEither);
+        when(userDao.getById(ID)).thenReturn(Either.value(mockedUser));
         // EJERCITAR
-        final Either<User, Validation> either = userService.findById(ID);
+        User user = userService.findById(ID).getValue();
         // ASSERT
-        assertNotNull(either);
-        assertNotNull(either.getValue());
-        assertEquals(EMAIL, either.getValue().getEmail());
-        assertEquals(PASSWORD, either.getValue().getPasswd());
-        assertEquals(ID, either.getValue().getUser_id());
+        assertEquals(EMAIL, user.getEmail());
+        assertEquals(PASSWORD, user.getPasswd());
+        assertEquals(ID, user.getUser_id());
     }
 
     @Test
     public void testfFindById_returnsError() {
         // SETUP
         // preparamos el falso dao
-        when(userDao.getById(ID)).thenReturn(Either.alternative(new Validation(DATABASE_ERROR)));
+        when(userDao.getById(ID)).thenReturn(Either.alternative(mockedVal));
         // EJERCITAR
-        final Either<User, Validation> either = userService.findById(ID);
+        Validation val = userService.findById(ID).getAlternative();
         // ASSERT
-        assertNotNull(either);
-        assertNotNull(either.getAlternative());
-        assertEquals(DATABASE_ERROR, either.getAlternative().getEc());
+        assertEquals(mockedVal, val);
     }
 
     @Test
     public void testfFindByEmail_returnsUser() {
         // SETUP
         // preparamos el falso usuario
-        User user = Mockito.mock(User.class);
-        when(user.getUser_id()).thenReturn(ID);
-        when(user.getPasswd()).thenReturn(PASSWORD);
-        when(user.getEmail()).thenReturn(EMAIL);
-        // preparamos el falso either
-        Either<User, Validation> mockedEither = Mockito.mock(Either.class); // no si esto está bien
-        when(mockedEither.getValue()).thenReturn(user);
+        when(mockedUser.getUser_id()).thenReturn(ID);
+        when(mockedUser.getPasswd()).thenReturn(PASSWORD);
+        when(mockedUser.getEmail()).thenReturn(EMAIL);
         // preparamos el falso dao
-        when(userDao.findByMail(EMAIL)).thenReturn(mockedEither);
+        when(userDao.findByMail(EMAIL)).thenReturn(Either.value(mockedUser));
         // EJERCITAR
-        final Either<User, Validation> either = userService.findByMail(EMAIL);
+        User user = userService.findByMail(EMAIL).getValue();
         // ASSERT
-        assertNotNull(either);
-        assertNotNull(either.getValue());
-        assertEquals(EMAIL, either.getValue().getEmail());
-        assertEquals(PASSWORD, either.getValue().getPasswd());
-        assertEquals(ID, either.getValue().getUser_id());
+        assertEquals(EMAIL, user.getEmail());
+        assertEquals(PASSWORD, user.getPasswd());
+        assertEquals(ID, user.getUser_id());
     }
 
     @Test
@@ -111,51 +103,41 @@ public class UserServiceImplTest {
         // preparamos el falso dao
         when(userDao.findByMail(EMAIL)).thenReturn(Either.alternative(new Validation(DATABASE_ERROR)));
         // EJERCITAR
-        final Either<User, Validation> either = userService.findByMail(EMAIL);
+        Validation val = userService.findByMail(EMAIL).getAlternative();
         // ASSERT
-        assertNotNull(either);
-        assertNotNull(either.getAlternative());
-        assertEquals(DATABASE_ERROR, either.getAlternative().getEc());
+        assertEquals(DATABASE_ERROR, val.getEc());
     }
 
     @Test
     public void testRegister_returnsUser() {
         // SETUP
         // preparamos el builder
-        User.Builder userBuilder = Mockito.mock(User.Builder.class);
-        when(userBuilder.getEmail()).thenReturn(EMAIL);
-        when(userBuilder.getPasswd()).thenReturn(PASSWORD);
+        when(mockedUserBuilder.getEmail()).thenReturn(EMAIL);
+        when(mockedUserBuilder.getPasswd()).thenReturn(PASSWORD);
         // preparamos el falso usuario
-        User user = Mockito.mock(User.class);
-        when(user.getUser_id()).thenReturn(ID);
-        when(user.getPasswd()).thenReturn(PASSWORD);
-        when(user.getEmail()).thenReturn(EMAIL);
+        when(mockedUser.getUser_id()).thenReturn(ID);
+        when(mockedUser.getPasswd()).thenReturn(PASSWORD);
+        when(mockedUser.getEmail()).thenReturn(EMAIL);
         // preparamos el dao
         when(userDao.findByMail(EMAIL)).thenReturn(Either.alternative(new Validation(NO_SUCH_USER)));
-        when(userDao.create(userBuilder)).thenReturn(Either.value(user));
+        when(userDao.create(mockedUserBuilder)).thenReturn(Either.value(mockedUser));
         // EJERCITAR
-        final Either<User, Validation> either = userService.register(userBuilder);
+        User user = userService.register(mockedUserBuilder).getValue();
         // ASSERT
-        assertNotNull(either);
-        assertNotNull(either.getValue());
-        assertEquals(EMAIL, either.getValue().getEmail());
-        assertEquals(PASSWORD, either.getValue().getPasswd());
-        assertEquals(ID, either.getValue().getUser_id());
+        assertEquals(EMAIL, user.getEmail());
+        assertEquals(PASSWORD, user.getPasswd());
+        assertEquals(ID, user.getUser_id());
     }
 
     @Test
     public void testRegister_returnsErrorUSER_ALREADY_EXISTS() {
         // SETUP
-        // preparamos el falso usuario
-        User user = Mockito.mock(User.class);
         // preparamos el dao
-        when(userDao.findByMail(EMAIL)).thenReturn(Either.value(user));
+        when(userDao.findByMail(EMAIL)).thenReturn(Either.value(mockedUser));
         // EJERCITAR
-        final Either<User, Validation> either = userService.register(new User.Builder().withEmail(EMAIL));
+        Validation val = userService.register(new User.Builder().withEmail(EMAIL)).getAlternative();
         // ASSERT
-        assertNotNull(either);
-        assertNotNull(either.getAlternative());
-        assertEquals(USER_ALREADY_EXISTS, either.getAlternative().getEc());
+        assertEquals(USER_ALREADY_EXISTS, val.getEc());
     }
 
     @Test
@@ -174,13 +156,11 @@ public class UserServiceImplTest {
     @Test
     public void testSetUserEnabledStatus_returnsOriginalVal() {
         // SETUP
-        Validation mockedVal = Mockito.mock(Validation.class);
         // preparamos el dao
         when(userDao.setUserStatus(ID, true)).thenReturn(mockedVal);
         // EJERCITAR
         Validation val = userService.setUserEnabledStatus(ID, true);
         // ASSERT
-        assertNotNull(val);
         assertEquals(val, mockedVal);
     }
 
@@ -192,8 +172,6 @@ public class UserServiceImplTest {
         // EJERCITAR
         Validation val = userService.setUserEnabledStatus(ID, true);
         // ASSERT
-        assertNotNull(val);
-        assertNotNull(val.getEc());
         assertEquals(val.getEc(), OK);
     }
 

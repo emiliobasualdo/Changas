@@ -52,7 +52,6 @@ public class UserJdbcDao implements UserDao {
 
     @Override
     public Either<User, Validation> create(final User.Builder userBuilder) {
-        //TODO hacer que la base de datos acepte la getGeneratedKeys feature. Mientras tanto usamos el código de abajo
         Number userId;
         Map<String, Object> userRow = userToTableRow(userBuilder);
         try {
@@ -63,8 +62,7 @@ public class UserJdbcDao implements UserDao {
             System.err.println(e.getMessage());
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
-
-        return getUserFromUserId(userId.longValue());
+        return getById(userId.longValue());
     }
 
     @Override
@@ -82,11 +80,6 @@ public class UserJdbcDao implements UserDao {
         }
         return Either.value(list.get(0));
     }
-
-   /* @Override
-    public List<User> createUsers() {
-        return generateRandomUsers();
-    }*/
 
     @Override
     public Validation setUserStatus(final long userId, final boolean status) {
@@ -118,20 +111,6 @@ public class UserJdbcDao implements UserDao {
                 password,
                 id
         );
-    }
-
-    private Either<User, Validation> getUserFromUserId(long userId) {
-        final List<User> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = ?", users.name(),
-                        user_id.name()),
-                ROW_MAPPER,
-                userId
-        );
-
-        if (list.isEmpty()) {
-            return Either.alternative(new Validation(DATABASE_ERROR));
-        }
-        return Either.value(list.get(0));
     }
 
     private List<User> generateRandomUsers() {

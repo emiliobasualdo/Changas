@@ -8,6 +8,8 @@ import ar.edu.itba.paw.models.ChangaState;
 import ar.edu.itba.paw.models.Either;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,6 +17,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -30,8 +33,6 @@ public class ChangaJdbcDao implements ChangaDao {
 
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert jdbcInsert;
-    @Autowired
-    private UserDao usersDao;
 
     @Autowired
     public ChangaJdbcDao(final DataSource ds) {
@@ -50,7 +51,7 @@ public class ChangaJdbcDao implements ChangaDao {
         if (list.isEmpty()) {
             return Either.alternative(new Validation(NO_SUCH_CHANGA));
         }
-        if(list.size() > 1){ //TODO MAITE ver esto
+        if(list.size() > 1){
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
         return Either.value(list.get(0));
@@ -58,25 +59,17 @@ public class ChangaJdbcDao implements ChangaDao {
 
     @Override
     public Either<Changa, Validation> create(final Changa.Builder changaBuilder) {
+        Number changaId;
         Map<String, Object> changaRow = changaToTableRow(changaBuilder);
-        int rowsAffected = jdbcInsert.execute(changaRow); // TODO execuenteAndReturnKey
-        if (rowsAffected < 1) {
+        try {
+            changaId = jdbcInsert.executeAndReturnKey(changaRow);
+        } catch (DataIntegrityViolationException e ) {
+            return Either.alternative(new Validation(NO_SUCH_USER));
+        } catch (Exception e ) {
+            System.err.println(e.getMessage());
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
-        return getChanga(changaBuilder);
-    }
-
-    @Override
-    public Either<Changa, Validation> getChanga(final Changa.Builder changaBuilder) {
-        final List<Changa> list = jdbcTemplate.query(
-                                                        String.format("SELECT * FROM %s WHERE %s = ? AND %s = ?", changas.name(), user_id.name(), title.name()),
-                                                        ROW_MAPPER,
-                                                        changaBuilder.getUser_id(), changaBuilder.getTitle()
-                                                    );
-        if (list.isEmpty()) {
-            return Either.alternative(new Validation(NO_SUCH_CHANGA));
-        }
-        return Either.value(list.get(0));
+        return getById(changaId.longValue());
     }
 
     // todo que casos de error podría haber?
@@ -104,23 +97,25 @@ public class ChangaJdbcDao implements ChangaDao {
 
     @Override
     public Either<Changa, Validation> update(final long changaId, Changa.Builder changaBuilder) {
-        int updatedChangas = jdbcTemplate.update(String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ? ",
-                                                                changas.name(),
-                                                                street.name(),
-                                                                neighborhood.name(),
-                                                                number.name(),
-                                                                title.name(),
-                                                                description.name(),
-                                                                state.name(),
-                                                                price.name(),
-                                                                changa_id.name()),
+        int updatedChangas = jdbcTemplate.update(
+                String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ? ",
+                    changas.name(),
+                    street.name(),
+                    neighborhood.name(),
+                    number.name(),
+                    title.name(),
+                    description.name(),
+                    state.name(),
+                    price.name(),
+                    changa_id.name()),
 
-                                                                changaBuilder.getStreet(),changaBuilder.getNeighborhood(),
-                                                                changaBuilder.getNumber(), changaBuilder.getTitle(),
-                                                                changaBuilder.getDescription(), changaBuilder.getState(),
-                                                                changaBuilder.getPrice(), changaId
-                                                );
+                changaBuilder.getStreet(), changaBuilder.getNeighborhood(),
+                changaBuilder.getNumber(), changaBuilder.getTitle(),
+                changaBuilder.getDescription(), changaBuilder.getState().toString(),
+                changaBuilder.getPrice(), changaId
+        );
 
+        // updatedChangas != 1 => rollback! fue un error
     return updatedChangas == 1 ? getById(changaId) : Either.alternative(new Validation(NO_SUCH_CHANGA));
     }
 
@@ -179,7 +174,7 @@ public class ChangaJdbcDao implements ChangaDao {
                                                     .withDescription(rs.getString(description.name()))
                                                     .withPrice(rs.getDouble(price.name()))
                                                     .atAddress(rs.getString(street.name()),rs.getString(neighborhood.name()),rs.getInt(number.name()) )
-                                                    .withState(ChangaState.valueOf(rs.getString(state.name())))
+                                                    .withState(ChangaState. valueOf(rs.getString(state.name())))
         );
 
     }
@@ -197,8 +192,13 @@ public class ChangaJdbcDao implements ChangaDao {
         resp.put(street.toString(),  changaBuilder.getStreet());
         resp.put(neighborhood.toString(),  changaBuilder.getNeighborhood());
         resp.put(number.toString(),  changaBuilder.getNumber());
-        //resp.put(creation_date.toString(), Timestamp.valueOf(ch.getCreationDate()));
-        resp.put(state.toString(), changaBuilder.getState());
+        // date convertion
+        java.sql.Date sqldate = java.sql.Date.valueOf(changaBuilder.getCreation_date().toLocalDate());
+        resp.put(creation_date.toString(), sqldate);
+        if(changaBuilder.getState() == null) {
+            changaBuilder.withState(ChangaState.emitted);
+        }
+        resp.put(state.toString(), changaBuilder.getState().toString());
         return resp;
     }
 }

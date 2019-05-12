@@ -32,7 +32,6 @@ public class ChangaServiceImpl implements ChangaService {
         return chDao.create(changaBuilder);
     }
 
-    // todo NEFASTO cambiar ya
     /*NOTA: en el parametro changaBuilder se debe de pasar un changaBuilder con los campos updateados y con los campos antiguos de los que
     no fueron updateados. Si se quiere hacer un modificado más rápido, hacer funciones q updateen campos específicos. Me parece innecesario porque no tenemos
     muchos campos
@@ -47,6 +46,7 @@ public class ChangaServiceImpl implements ChangaService {
         }
 
         // we will update a changa ONLY if no changueros are inscribed in it
+        // todo permitir cambiar campos menores como fotos
         if(inDao.hasInscribedUsers(changaId)) {
             return Either.alternative(new Validation(USERS_INSCRIBED));
         }
