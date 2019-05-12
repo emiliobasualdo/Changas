@@ -1,16 +1,29 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: fermingomez
-  Date: 5/12/19
-  Time: 12:00
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
-    <title>$Title$</title>
+    <style><%@include file="/WEB-INF/css/error.css"%></style>
 </head>
-<body>
-$END$
-</body>
+
+<div class="container">
+
+    <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" width="795.9" height="433" viewBox="0 0 795.9 433"/>
+
+    <div class="text">
+        <div class="text-inner">
+            <h1> Oh no. </h1>
+
+            <h2> <c:out value="${message}"/> </h2>
+
+            <c:url value="/" var="homeUrl" />
+            <a href="${homeUrl}">
+                <div id="home" class="button">
+                    <h3> <spring:message code="error.home"/> </h3>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+</div>
 </html>

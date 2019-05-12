@@ -41,10 +41,10 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
                             .addObject("changaList", either.getValue())
                             .addObject("userInscriptions", eitherMap.getValue());
                 } else {
-                    return new ModelAndView("500"); //todo: esta bien esto?
+                    return new ModelAndView("redirect:/error").addObject("message", eitherMap.getAlternative().getMessage());
                 }
             } else {
-                return new ModelAndView("500");
+                return new ModelAndView("redirect:/error").addObject("message", either.getAlternative().getMessage());
             }
         }
         else {
@@ -52,7 +52,7 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
                     return new ModelAndView("index")
                             .addObject("changaList", either.getValue());
             } else {
-                return new ModelAndView("500");
+                return new ModelAndView("redirect:/error").addObject("message", either.getAlternative().getMessage());
             }
         }
     }
