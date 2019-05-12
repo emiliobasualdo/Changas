@@ -56,9 +56,11 @@ https://mdbootstrap.com/docs/jquery/navigation/navbar/
                 </ul>
                 <c:choose>
                     <c:when test="${isUserLogged == true}">
-                        <span class="navbar-text white-text">Hola, <c:out value="${getLoggedUser.name}"/></span>
+                        <span class="navbar-text white-text">Hola, <c:out value="${getLoggedUser.name}"/> </span>
                     </c:when>
-                    <c:otherwise></c:otherwise>
+                    <c:otherwise>
+
+                    </c:otherwise>
                 </c:choose>
             </div>
         </nav>
