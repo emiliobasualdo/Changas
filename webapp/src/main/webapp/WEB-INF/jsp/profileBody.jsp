@@ -42,9 +42,9 @@
                             <p>
                                 <a href="/edit-profile?id=<c:out value="${getLoggedUser.user_id}"/>" class="profile-edit-btn"><spring:message code="profileBody.nav.edit"/></a>
                             </p>
-                            <p>
+                            <%--<p>
                                 <a href="/reset-password?id=<c:out value="${getLoggedUser.user_id}"/>" class="profile-edit-btn" style="margin-left: 65%"><spring:message code="profileBody.nav.reset"/></a>
-                            </p>
+                            </p>--%>
                         </div>
                     <%--</div>--%>
                 </div>
