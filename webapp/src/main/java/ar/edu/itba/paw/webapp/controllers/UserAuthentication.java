@@ -28,12 +28,9 @@ public class UserAuthentication {
     }
 
     @ModelAttribute("getLoggedUser")
-    public Optional<User> getLoggedUser() { //TODO: meter Either y mandarlo a una vista 500 si ocurre un error
+    public User getLoggedUser() { //TODO: meter Either y mandarlo a una vista 500 si ocurre un error
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
-        if (isUserLogged()) {
-            return Optional.of(us.findByMail(currentUserName).getValue());
-        }
-        return Optional.empty();
+        return us.findByMail(currentUserName).getValue();
     }
 }

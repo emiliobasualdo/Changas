@@ -161,16 +161,20 @@ public class InscriptionJdbcDao implements InscriptionDao {
 
     @Override
     public Either<Boolean, Validation> isUserInscribedInChanga(long userId, long changaId) {
-        Either<Inscription, Validation> insc = getInscription(userId,changaId);
-        if(!insc.isValuePresent()){
-            return Either.alternative(insc.getAlternative());
-        }
-        if (insc.getValue().getState() == optout){
-            return Either.value(false);
-        }
-        return Either.value(true);
-    }
+        final List<Inscription> list  = jdbcTemplate.query(
+                String.format("SELECT * FROM %s WHERE %s = ?  AND %s = ?", user_inscribed.name()
+                        , changa_id.name(), user_id.name()), ROW_MAPPER, changaId, userId);
 
+        if (list.size() > 1) {
+            return Either.alternative(new Validation(DATABASE_ERROR));
+        } else if (list.isEmpty()) {
+            return Either.value(false);
+        } else if (list.get(0).getState().compareTo(InscriptionState.optout) == 0) {
+                return Either.value(false);
+        } else {
+            return Either.value(true);
+        }
+    }
 
     @Override
     public boolean hasInscribedUsers(long changaId) {
