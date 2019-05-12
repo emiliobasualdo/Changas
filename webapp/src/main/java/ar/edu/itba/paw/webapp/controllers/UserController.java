@@ -163,8 +163,7 @@ public class UserController {
             mav.addObject("pendingChangas", maybePendingChangas.getValue());
         }
         else{
-            //todo pasarlo al error controller
-            return new ModelAndView("500");
+            return new ModelAndView("redirect:/error").addObject("message", maybePendingChangas.getAlternative().getMessage());
         }
 
         Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserEmittedChangas(loggedUser.getUser_id());
@@ -172,8 +171,7 @@ public class UserController {
             mav.addObject("publishedChangas", maybePublishedChangas.getValue());
         }
         else{
-            //todo pasarlo al error controller
-            return new ModelAndView("500");
+            return new ModelAndView("redirect:/error").addObject("message", maybePublishedChangas.getAlternative().getMessage());
         }
 
         return mav;

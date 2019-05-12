@@ -57,14 +57,14 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
                     return new ModelAndView("index")
                             .addObject("changaList", changaList);
                 } else {
-                    return new ModelAndView("500");
+                    return new ModelAndView("redirect:/error").addObject("message", maybeInscriptions.getAlternative().getMessage());
                 }
             } else {
                 return new ModelAndView("index")
                         .addObject("changaList", maybeChangas.getValue());
             }
         } else {
-            return new ModelAndView("500");
+            return new ModelAndView("redirect:/error").addObject("message", maybeChangas.getAlternative().getMessage());
         }
     }
 }
