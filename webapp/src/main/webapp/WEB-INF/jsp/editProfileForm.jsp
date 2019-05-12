@@ -52,23 +52,6 @@
                     </div>
                 </td>
             </tr>
-                <%--<tr>
-                    <td>
-                        <div class="form-group">
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                <form:label path="username"><spring:message code="UserRegisterForm.username"/></form:label>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <div class="input-group">
-                                <form:input class="form-control" path="username" />
-                            </div>
-                        </div>
-                    </td>
-                </tr>--%>
             <tr>
                 <td>
                     <div class="form-group">

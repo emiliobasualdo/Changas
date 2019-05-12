@@ -83,7 +83,7 @@ public class ChangaJdbcDao implements ChangaDao {
     @Override
     public Either<List<Changa>, Validation> getAll() {
         List<Changa> resp = jdbcTemplate.query(
-                String.format("SELECT * FROM %s ", changas.name()),
+                String.format("SELECT * FROM %s ORDER BY %s ASC", changas.name(), title.name()),
                 ROW_MAPPER
         );
 

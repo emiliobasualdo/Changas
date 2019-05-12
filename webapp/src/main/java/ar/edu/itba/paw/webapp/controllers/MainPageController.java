@@ -37,6 +37,7 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
 
         Either<List<Changa>, Validation> maybeChangas = cs.getAllChangas();
         if (maybeChangas.isValuePresent()) {
+            maybeChangas.getValue().removeIf(e -> e.getState() == ChangaState.settled || e.getState() == ChangaState.done || e.getState() == ChangaState.closed); //TODO: hacer esto en una query
             if (isUserLogged) {
                 Either<List<Pair<Changa, Inscription>>, Validation> maybeInscriptions = is.getUserInscriptions(loggedUser.getUser_id());
                 if (maybeInscriptions.isValuePresent()) {
