@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.CHANGE_NOT_POSSIBLE;
 
 @Repository
 public class InscriptionServiceImpl implements InscriptionService {
@@ -20,6 +19,9 @@ public class InscriptionServiceImpl implements InscriptionService {
 
     @Override
     public Validation inscribeInChanga(long user_id, long changa_id) {
+        /*if(loggedInUser_id != user_id) {
+            return ILLEGAL_VALUE.withMessage("UserId must be same as the logged in user"));
+        }*/
         return dao.inscribeInChanga(user_id,changa_id);
     }
 
@@ -42,7 +44,7 @@ public class InscriptionServiceImpl implements InscriptionService {
         if (InscriptionState.changeIsPossible(insc.getState(), newState))
             return dao.changeUserStateInChanga(insc, newState);
         else
-            return new Validation(CHANGE_NOT_POSSIBLE);
+            return CHANGE_NOT_POSSIBLE;
     }
 
     @Override

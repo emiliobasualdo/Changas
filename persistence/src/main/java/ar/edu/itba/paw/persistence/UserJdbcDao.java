@@ -18,7 +18,7 @@ import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBTableName.users;
 import static ar.edu.itba.paw.constants.DBUserFields.*;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.*;
 
 @Repository
 public class UserJdbcDao implements UserDao {
@@ -45,7 +45,7 @@ public class UserJdbcDao implements UserDao {
                         id
                 );
         if (list.isEmpty()) {
-            return Either.alternative(new Validation(NO_SUCH_USER));
+            return Either.alternative(NO_SUCH_USER);
         }
         return Either.value(list.get(0));
     }
@@ -57,10 +57,10 @@ public class UserJdbcDao implements UserDao {
         try {
             userId = jdbcInsert.executeAndReturnKey(userRow);
         } catch (DuplicateKeyException e ) {
-            return Either.alternative(new Validation(USER_ALREADY_EXISTS));
+            return Either.alternative(USER_ALREADY_EXISTS);
         } catch (Exception e ) {
             System.err.println(e.getMessage());
-            return Either.alternative(new Validation(DATABASE_ERROR));
+            return Either.alternative(DATABASE_ERROR);
         }
         return getById(userId.longValue());
     }
@@ -73,10 +73,10 @@ public class UserJdbcDao implements UserDao {
                         ROW_MAPPER, mail
                 );
         if (list.isEmpty()) {
-            return Either.alternative(new Validation(NO_SUCH_USER));
+            return Either.alternative(NO_SUCH_USER);
         }
         if (list.size() > 1){
-            return Either.alternative(new Validation(DATABASE_ERROR));
+            return Either.alternative(DATABASE_ERROR);
         }
         return Either.value(list.get(0));
     }
@@ -94,7 +94,7 @@ public class UserJdbcDao implements UserDao {
         );
         if (list.isEmpty()) {
             //TODO chequear si es q el mail no pertenece a un usuario para hacer INVALID_EMAIL
-            return Either.alternative(new Validation(INVALID_COMBINATION));
+            return Either.alternative(INVALID_COMBINATION));
         }
         return Either.value(list.get(0));
     }
@@ -116,7 +116,7 @@ public class UserJdbcDao implements UserDao {
                                                     userBuilder.getEmail(),
                                                     userId);
 
-        return updatedUser == 1 ? getById(userId) : Either.alternative(new Validation(NO_SUCH_USER));
+        return updatedUser == 1 ? getById(userId) : Either.alternative(NO_SUCH_USER);
     }
     public Validation setUserStatus(final long userId, final boolean status) {
         if (getById(userId).isValuePresent()) {
@@ -128,13 +128,13 @@ public class UserJdbcDao implements UserDao {
                         status,
                         userId
                 );
-                return new Validation(OK);
+                return OK;
             } catch (Exception e ) {
                 System.err.println(e.getMessage());
-                return new Validation(DATABASE_ERROR);
+                return DATABASE_ERROR;
             }
         } else {
-            return new Validation(NO_SUCH_USER);
+            return NO_SUCH_USER;
         }
     }
 

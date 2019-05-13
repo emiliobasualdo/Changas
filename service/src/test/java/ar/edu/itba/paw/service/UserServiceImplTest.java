@@ -15,7 +15,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
@@ -101,11 +101,11 @@ public class UserServiceImplTest {
     public void testfFindByEmail_returnsError() {
         // SETUP
         // preparamos el falso dao
-        when(userDao.findByMail(EMAIL)).thenReturn(Either.alternative(new Validation(DATABASE_ERROR)));
+        when(userDao.findByMail(EMAIL)).thenReturn(Either.alternative(DATABASE_ERROR));
         // EJERCITAR
         Validation val = userService.findByMail(EMAIL).getAlternative();
         // ASSERT
-        assertEquals(DATABASE_ERROR, val.getEc());
+        assertEquals(DATABASE_ERROR, val);
     }
 
     @Test
@@ -119,7 +119,7 @@ public class UserServiceImplTest {
         when(mockedUser.getPasswd()).thenReturn(PASSWORD);
         when(mockedUser.getEmail()).thenReturn(EMAIL);
         // preparamos el dao
-        when(userDao.findByMail(EMAIL)).thenReturn(Either.alternative(new Validation(NO_SUCH_USER)));
+        when(userDao.findByMail(EMAIL)).thenReturn(Either.alternative(NO_SUCH_USER));
         when(userDao.create(mockedUserBuilder)).thenReturn(Either.value(mockedUser));
         // EJERCITAR
         User user = userService.register(mockedUserBuilder).getValue();
@@ -137,20 +137,20 @@ public class UserServiceImplTest {
         // EJERCITAR
         Validation val = userService.register(new User.Builder().withEmail(EMAIL)).getAlternative();
         // ASSERT
-        assertEquals(USER_ALREADY_EXISTS, val.getEc());
+        assertEquals(USER_ALREADY_EXISTS, val);
     }
 
     @Test
     public void testRegister_returnsErrorDATABASE_ERROR() {
         // SETUP
         // preparamos el falso dao
-        when(userDao.findByMail(EMAIL)).thenReturn(Either.alternative(new Validation(DATABASE_ERROR)));
+        when(userDao.findByMail(EMAIL)).thenReturn(Either.alternative(DATABASE_ERROR));
         // EJERCITAR
         final Either<User, Validation> either = userService.register(new User.Builder().withEmail(EMAIL));
         // ASSERT
         assertNotNull(either);
         assertNotNull(either.getAlternative());
-        assertEquals(DATABASE_ERROR, either.getAlternative().getEc());
+        assertEquals(DATABASE_ERROR, either.getAlternative());
     }
 
     @Test
@@ -168,11 +168,11 @@ public class UserServiceImplTest {
     public void testConfirmMailVerification_returnsOK() {
         // SETUP
         // preparamos el dao
-        when(userDao.setUserStatus(ID, true)).thenReturn(new Validation(OK));
+        when(userDao.setUserStatus(ID, true)).thenReturn(OK);
         // EJERCITAR
         Validation val = userService.setUserEnabledStatus(ID, true);
         // ASSERT
-        assertEquals(val.getEc(), OK);
+        assertEquals(val, OK);
     }
 
 }

@@ -22,7 +22,7 @@ import java.util.function.Function;
 
 import static ar.edu.itba.paw.constants.DBInscriptionFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.user_inscribed;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.*;
 import static ar.edu.itba.paw.models.InscriptionState.requested;
 
 @Repository
@@ -96,7 +96,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
         Either<Changa, Validation> changa = changaDao.getById(changaId);
         if (changa.isValuePresent()) {
             if (changa.getValue().getUser_id() == userId){
-                return new Validation(USER_OWNS_THE_CHANGA);
+                return USER_OWNS_THE_CHANGA;
             }
         } else {
             return changa.getAlternative();
@@ -107,7 +107,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
         if (insc.isValuePresent()){
             return changeUserStateInChanga(insc.getValue(), requested);
         } else { // user needs to be inscribbed)
-            if (insc.getAlternative().getEc() == USER_NOT_INSCRIBED){
+            if (insc.getAlternative() == USER_NOT_INSCRIBED){
                 return forceInscribeInChanga(userId, changaId);
             } else {
                 return insc.getAlternative();
@@ -121,9 +121,9 @@ public class InscriptionJdbcDao implements InscriptionDao {
             jdbcInsert
                     .execute(row);
         } catch (DataAccessException ex) {
-            return new Validation(DATABASE_ERROR);
+            return DATABASE_ERROR;
         }
-        return new Validation(OK);
+        return OK;
     }
 
     @Override
@@ -132,9 +132,9 @@ public class InscriptionJdbcDao implements InscriptionDao {
                 String.format("SELECT * FROM %s WHERE %s = ?  AND %s = ?", user_inscribed.name()
                         , changa_id.name(), user_id.name()), ROW_MAPPER, changaId, userId);
         if(list.isEmpty() ) {
-            return Either.alternative(new Validation(USER_NOT_INSCRIBED));
+            return Either.alternative(USER_NOT_INSCRIBED);
         } else if (list.size() > 1){
-            return Either.alternative(new Validation(DATABASE_ERROR));
+            return Either.alternative(DATABASE_ERROR);
         } else {
             return Either.value(list.get(0));
         }
@@ -154,9 +154,9 @@ public class InscriptionJdbcDao implements InscriptionDao {
             }
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
-            return new Validation(DATABASE_ERROR);
+            return DATABASE_ERROR;
         }
-        return new Validation(OK);
+        return OK;
     }
 
     @Override
@@ -175,7 +175,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
                         , changa_id.name(), user_id.name()), ROW_MAPPER, changaId, userId);
 
         if (list.size() > 1) {
-            return Either.alternative(new Validation(DATABASE_ERROR));
+            return Either.alternative(DATABASE_ERROR);
         } else if (list.isEmpty()) {
             return Either.value(false);
         } else if (list.get(0).getState().compareTo(InscriptionState.optout) == 0) {

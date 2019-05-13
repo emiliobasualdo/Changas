@@ -22,7 +22,7 @@ import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBChangaFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.changas;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.*;
 
 @Repository
 public class ChangaJdbcDao implements ChangaDao {
@@ -47,10 +47,10 @@ public class ChangaJdbcDao implements ChangaDao {
                 ROW_MAPPER, id
         );
         if (list.isEmpty()) {
-            return Either.alternative(new Validation(NO_SUCH_CHANGA));
+            return Either.alternative(NO_SUCH_CHANGA);
         }
         if(list.size() > 1){
-            return Either.alternative(new Validation(DATABASE_ERROR));
+            return Either.alternative(DATABASE_ERROR);
         }
         return Either.value(list.get(0));
     }
@@ -62,10 +62,10 @@ public class ChangaJdbcDao implements ChangaDao {
         try {
             changaId = jdbcInsert.executeAndReturnKey(changaRow);
         } catch (DataIntegrityViolationException e ) {
-            return Either.alternative(new Validation(NO_SUCH_USER));
+            return Either.alternative(NO_SUCH_USER);
         } catch (Exception e ) {
             System.err.println(e.getMessage());
-            return Either.alternative(new Validation(DATABASE_ERROR));
+            return Either.alternative(DATABASE_ERROR);
         }
         return getById(changaId.longValue());
     }
@@ -73,7 +73,7 @@ public class ChangaJdbcDao implements ChangaDao {
     @Override
     public Either<List<Changa>, Validation> getAll(ChangaState filterState, int pageNum) {
         if (pageNum < 0) {
-            return Either.alternative(new Validation(ILLEGAL_VALUE.withMessage("Page number must be greater than zero")));
+            return Either.alternative(ILLEGAL_VALUE.withMessage("Page number must be greater than zero"));
         }
 
         List<Changa> resp = jdbcTemplate.query(
@@ -119,7 +119,7 @@ public class ChangaJdbcDao implements ChangaDao {
         );
 
         // updatedChangas != 1 => rollback! fue un error
-    return updatedChangas == 1 ? getById(changaId) : Either.alternative(new Validation(NO_SUCH_CHANGA));
+    return updatedChangas == 1 ? getById(changaId) : Either.alternative(NO_SUCH_CHANGA);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class ChangaJdbcDao implements ChangaDao {
             }
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
-            return Either.alternative(new Validation(DATABASE_ERROR));
+            return Either.alternative(DATABASE_ERROR);
         }
         return getById(changaId);
     }

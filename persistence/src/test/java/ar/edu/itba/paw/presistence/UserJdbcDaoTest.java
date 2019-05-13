@@ -20,10 +20,9 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ar.edu.itba.paw.constants.DBTableName.changas;
 import static ar.edu.itba.paw.constants.DBTableName.users;
 import static ar.edu.itba.paw.constants.DBUserFields.*;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.*;
 import static org.junit.Assert.*;
 
 @Sql("classpath:sql/a_create_tables.sql")
@@ -96,7 +95,7 @@ public class UserJdbcDaoTest {
                         .withPasswd(PASSWORD)
         ).getAlternative();
         // ASSERT
-        assertEquals(USER_ALREADY_EXISTS, validation.getEc());
+        assertEquals(USER_ALREADY_EXISTS, validation);
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, users.name(), String.format("%s = %d", user_id, id.longValue())));
     }
 
@@ -124,7 +123,7 @@ public class UserJdbcDaoTest {
         // EXERCISE
         Validation validation = userDao.getById(ID).getAlternative();
         // ASSERT
-        assertEquals(validation.getEc(), NO_SUCH_USER);
+        assertEquals(validation, NO_SUCH_USER);
     }
 
     @Test
@@ -166,7 +165,7 @@ public class UserJdbcDaoTest {
         // EXERCISE
         Validation validation = userDao.findByMail(EMAIL).getAlternative();
         // ASSERT
-        assertEquals(validation.getEc(), NO_SUCH_USER);
+        assertEquals(validation, NO_SUCH_USER);
     }
 
     @Test
@@ -182,8 +181,8 @@ public class UserJdbcDaoTest {
         Validation val = userDao.setUserStatus(userId.longValue(), true);
         Validation val2 = userDao.setUserStatus(userId.longValue(), false);
         // ASSERT
-        assertEquals(val.getEc(), OK);
-        assertEquals(val2.getEc(), OK);
+        assertEquals(val, OK);
+        assertEquals(val2, OK);
     }
 
     @Test
@@ -193,7 +192,7 @@ public class UserJdbcDaoTest {
         // EXERCISE
         Validation val = userDao.setUserStatus(ID, true);
         // ASSERT
-        assertEquals(val.getEc(), NO_SUCH_USER);
+        assertEquals(val, NO_SUCH_USER);
     }
 }
 

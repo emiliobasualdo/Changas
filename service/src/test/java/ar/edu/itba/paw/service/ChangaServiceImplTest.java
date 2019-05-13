@@ -24,7 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.USERS_INSCRIBED;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -62,7 +62,6 @@ public class ChangaServiceImplTest {
     }
 
     //TODO No puedo usar métodos auxiliares de la clase que quiero probar, solo los métodos que quiero probar
-
     @Test
     public void testGetAll_returnsList() {
         // SETUP
@@ -142,7 +141,7 @@ public class ChangaServiceImplTest {
         // EJERCITAR
         Validation val = changaService.update(CHANGA_ID, mockedBuilder).getAlternative();
         // ASSERT
-        assertEquals(USERS_INSCRIBED, val.getEc());
+        assertEquals(USERS_INSCRIBED, val);
     }
 
     @Test
