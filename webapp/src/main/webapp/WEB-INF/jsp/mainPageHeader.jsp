@@ -1,5 +1,7 @@
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%--https://bootsnipp.com/snippets/WMlMa--%>
+<%--https://dzone.com/articles/spring-mvc-jsp-form-tags-example--%>
+<%--https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/spring-form-tld.html#spring-form.tld.select--%>
 <html>
     <head>
         <style>
@@ -58,15 +60,9 @@
                         <div class="col-lg-12">
                             <div class="row">
                                 <div class="col-lg-6 col-md-3 col-sm-12 p-0">
-                                    <form:label path="search"><spring:message code="mainPageHeader.placeholder"/></form:label>
-                                    <form:input type="text" class="form-control search-slt"/>
-                                    <form:errors cssClass="form-error" path="name" element="p"/>        <%--todo--%>
+                                    <input type="text" class="form-control search-slt" placeholder="<spring:message code="mainPageHeader.placeholder"/>"/>
                                 </div>
-                                <%--<div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                    <input type="text" class="form-control search-slt" placeholder="Enter Drop City">
-                                </div>--%>
                                 <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                    <form:label path="search"><spring:message code="mainPageHeader.placeholder"/></form:label>
                                     <select class="form-control search-slt" id="exampleFormControlSelect1">
                                         <option><spring:message code="mainPageHeader.categories"/></option>
                                         <option><spring:message code="mainPageHeader.categories1"/></option>
@@ -76,6 +72,23 @@
                                         <option><spring:message code="mainPageHeader.categories5"/></option>
                                     </select>
                                 </div>
+
+                                <%--NO ANDA--%>
+                                <%--<div class="col-lg-6 col-md-3 col-sm-12 p-0">
+                                    <form:label path="search"><spring:message code="mainPageHeader.placeholder"/></form:label>
+                                    <form:input type="text" class="form-control search-slt"/>
+                                    <form:errors cssClass="form-error" path="name" element="p"/>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                    <form:select path="category" class="form-control search-slt" id="exampleFormControlSelect1" items="${categories}">
+                                        <form:option><spring:message code="mainPageHeader.categories"/></form:option>
+                                        <form:option><spring:message code="mainPageHeader.categories1"/></form:option>
+                                        <form:option><spring:message code="mainPageHeader.categories2"/></form:option>
+                                        <form:option><spring:message code="mainPageHeader.categories3"/></form:option>
+                                        <form:option><spring:message code="mainPageHeader.categories4"/></form:option>
+                                        <form:option><spring:message code="mainPageHeader.categories5"/></form:option>
+                                    </form:select>
+                                </div>--%>
                                 <div class="col-lg-3 col-md-3 col-sm-12 p-0">
                                     <button type="button" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPageHeader.searchBtn"/></button>
                                 </div>

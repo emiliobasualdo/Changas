@@ -40,6 +40,10 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
     public ModelAndView showChangas(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged) {
 
         Either<List<Changa>, Validation> maybeChangas = cs.getAllChangas();
+        ArrayList<String> categorias = new ArrayList<>();
+        categorias.add("categoria 1");
+        categorias.add("categoria 2");
+        categorias.add("categoria 3");
         if (maybeChangas.isValuePresent()) {
             maybeChangas.getValue().removeIf(e -> e.getState() == ChangaState.settled || e.getState() == ChangaState.done || e.getState() == ChangaState.closed); //TODO: hacer esto en una query
             if (isUserLogged) {
@@ -60,13 +64,15 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
                         }
                     }
                     return new ModelAndView("index")
-                            .addObject("changaList", changaList);
+                            .addObject("changaList", changaList)
+                            .addObject("categories", categorias);
                 } else {
                     return new ModelAndView("redirect:/error").addObject("message", maybeInscriptions.getAlternative().getMessage());
                 }
             } else {
                 return new ModelAndView("index")
-                        .addObject("changaList", maybeChangas.getValue());
+                        .addObject("changaList", maybeChangas.getValue())
+                        .addObject("categories", categorias);
             }
         } else {
             return new ModelAndView("redirect:/error").addObject("message", maybeChangas.getAlternative().getMessage());
@@ -77,6 +83,6 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
     public ModelAndView showSearch(@Valid @ModelAttribute("signUpForm") final SearchForm form, @ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged) {
         /* aca obtenemos las changas segun la busqueda */
         System.out.println("Search= " + form.getSearch() + " and category= " + form.getCategory());
-        return showChangas(/*changas buscadas, */loggedUser, isUserLogged);
+        return showChangas(/*changas buscadas, */loggedUser, isUserLogged);     /* todo: metodo q muestre changas dado una lista*/
     }
 }
