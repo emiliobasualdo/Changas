@@ -175,7 +175,7 @@ public class UserController {
             return new ModelAndView("redirect:/error").addObject("message", maybePublishedChangas.getAlternative().getMessage());
         }
 
-        return mav;
+        return mav.addObject("administrator", true);
     }
 
     @RequestMapping("/login/forgot-password")

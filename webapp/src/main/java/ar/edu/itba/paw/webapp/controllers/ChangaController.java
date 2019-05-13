@@ -195,4 +195,12 @@ public class ChangaController {
         }*/
         return new ModelAndView("redirect:/profile");
     }
+
+    @RequestMapping(value = "/report-changa", method = RequestMethod.POST)
+    public ModelAndView reportChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
+        // TODO JIME popup confirmacion (estás seguro?)
+        Either<Changa, Validation> err = cs.changeChangaState(changaId, ChangaState.closed);
+        if (!err.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", err.getAlternative().getMessage());
+        return new ModelAndView("redirect:/profile");
+    }
 }

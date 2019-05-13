@@ -43,8 +43,15 @@
                                 <a href="/edit-profile?id=<c:out value="${getLoggedUser.user_id}"/>" class="profile-edit-btn"><spring:message code="profileBody.nav.edit"/></a>
                             </p>
                             <p>
-                                <a href="/reset-password?id=<c:out value="${getLoggedUser.user_id}"/>" class="profile-edit-btn" style="margin-left: 65%"><spring:message code="profileBody.nav.reset"/></a>
+                                <a href="/reset-password?id=<c:out value="${getLoggedUser.user_id}"/>" class="profile-edit-btn"><spring:message code="profileBody.nav.reset"/></a>
                             </p>
+                            <c:choose>
+                                <c:when test="${administrator}">
+                                    <p>
+                                        <a href="/administrator" class="profile-edit-btn"><spring:message code="profileBody.nav.admin"/></a>
+                                    </p>
+                                </c:when>
+                            </c:choose>
                         </div>
                     <%--</div>--%>
                 </div>

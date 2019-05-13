@@ -97,5 +97,15 @@
             </c:otherwise>
         </c:choose>
     </div>
+    <div>
+        <div class="container">
+            <c:url value="/report-changa" var="reportUrl" />
+            <form action="${reportUrl}" method="post">
+                <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
+                <input id="btnreport" type="submit"  class="btn btn-warning center-pill" value="<spring:message code="changaBody.reportBtn"/>"/>
+            </form>
+            <br />
+        </div>
+    </div>
 </body>
 </html>
