@@ -23,4 +23,5 @@ public interface UserService {
     Either<VerificationToken, Validation> getVerificationTokenWithRole(final long userId, final String VerificationToken);
     void resetPassword(final long id, final String password);
     void confirmMailVerification(final long userId, final long tokenId);
+    Either<User, Validation> update(final long userId, User.Builder userBuilder);
 }

@@ -22,4 +22,6 @@ public interface ChangaService {
     Either<List<Changa>, Validation> getAllChangas();
     Either<Changa, Validation> changeChangaState(long changaId, ChangaState newState);
     Either<Changa, Validation> changeChangaState(Changa changa, ChangaState newState);
+    Either<List<Changa>, Validation> getUserEmittedChangas(long id);
+
 }

@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Changa {
 
@@ -142,7 +143,27 @@ public class Changa {
             return number;
         }
 
-//        public Changa build(){
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Builder)) return false;
+            Builder builder = (Builder) o;
+            return user_id == builder.user_id &&
+                    Double.compare(builder.price, price) == 0 &&
+                    number == builder.number &&
+                    creation_date.equals(builder.creation_date) &&
+                    title.equals(builder.title) &&
+                    description.equals(builder.description) &&
+                    state == builder.state &&
+                    street.equals(builder.street) &&
+                    neighborhood.equals(builder.neighborhood);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(user_id, creation_date, title, description, state, price, street, neighborhood, number);
+        }
+        //        public Changa build(){
 //            Changa changa = new Changa();
 //            changa.changa_id = this.changa_id;
 //            changa.user_id = this.user_id;

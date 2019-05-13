@@ -19,6 +19,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,11 +32,8 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.net.URI;
-import java.util.Arrays;
 
 @Controller
 public class UserController {
@@ -66,7 +64,6 @@ public class UserController {
             System.out.println("Errores en los campos del formulario sign up");
             return signUp(form);
         }
-
         final Either<User, Validation> either = us.register(new User.Builder()
                 .withName(form.getName())
                 .withSurname(form.getSurname())
@@ -74,13 +71,11 @@ public class UserController {
                 .withEmail(form.getEmail())
                 .withPasswd(form.getPassword())
                 );
-
-        if (!either.isValuePresent()){
+        if (!either.isValuePresent()) {
             Validation err = either.getAlternative();
             errors.rejectValue("email","aca no se q va");
             return signUp(form);
         }
-
         try {
             String appUrl = request.getContextPath();
             ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
@@ -113,14 +108,14 @@ public class UserController {
             User changaOwner = us.findById(changa.getUser_id()).getValue();
             emailService.sendJoinRequestEmail(changa, changaOwner, loggedUser);
         } else {
-            //TODO JIME un popup de error
             System.out.println("No se pudo inscribir en la changa pq:"+ val.getMessage());
+            return new ModelAndView("redirect:/error").addObject("message", val.getMessage());
         }
         return new ModelAndView(new StringBuilder("redirect:/changa?id=").append(changaId).toString());
     }
 
     @RequestMapping(value = "/unjoin-changa", method = RequestMethod.POST)
-    public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser, HttpSession session) {
+    public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser) {
         Validation val = is.changeUserStateInChanga(loggedUser.getUser_id(), changaId, InscriptionState.optout);
         System.out.println(loggedUser.getEmail() + " desanotado de " + changaId);
         if (val.isOk()){
@@ -128,30 +123,32 @@ public class UserController {
         } else {
             //TODO JIME un popup de error
             System.out.println("No se pudo desinscribir en la changa pq:"+ val.getMessage());
+            return new ModelAndView("redirect:/error").addObject("message", val.getMessage());
         }
         return new ModelAndView("redirect:/profile");
     }
 
     @RequestMapping(value = "/accept-user", method = RequestMethod.POST)
-    public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, HttpSession session) {
-
+    public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId) {
         Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.accepted);
         if (val.isOk()){
             //TODO JIME popup preguntando
         } else {
             //TODO JIME un popup de error
+            return new ModelAndView("redirect:/error").addObject("message", val.getMessage());
         }
         return new ModelAndView("redirect:/admin-changa?id=" + changaId);
     }
 
     @RequestMapping(value = "/reject-user", method = RequestMethod.POST)
-    public ModelAndView rejectUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, HttpSession session) {
+    public ModelAndView rejectUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId) {
 
         Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.declined);
         if (val.isOk()){
             //TODO JIME popup preguntando
         } else {
             //TODO JIME un popup de error
+            return new ModelAndView("redirect:/error").addObject("message", val.getMessage());
         }
         return new ModelAndView("redirect:/admin-changa?id=" + changaId);
     }
@@ -159,28 +156,26 @@ public class UserController {
     @RequestMapping("/profile")
     public ModelAndView profile(@ModelAttribute("getLoggedUser") User loggedUser) {
 
+        ModelAndView mav = new ModelAndView("indexProfile");
         Either<List<Pair<Changa, Inscription>>, Validation>  maybePendingChangas = is.getUserInscriptions(loggedUser.getUser_id());
-        List<Pair<Changa, Inscription>> pendingChangas = new LinkedList<>();
         if (maybePendingChangas.isValuePresent()){
-            pendingChangas = maybePendingChangas.getValue();
-            //todo: deberiamos chequear q el mapa tenga todos valores validos? osea q ningun key/value sea null. porq el jsp se puede romper si le paso algo null
+            maybePendingChangas.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout);
+            mav.addObject("pendingChangas", maybePendingChangas.getValue());
         }
         else{
-            //TODO error
+            return new ModelAndView("redirect:/error").addObject("message", maybePendingChangas.getAlternative().getMessage());
         }
 
-        Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserOwnedChangas(loggedUser.getUser_id());
-        List<Changa> publishedChangas = null;
+        Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserEmittedChangas(loggedUser.getUser_id());
         if (maybePublishedChangas.isValuePresent()){
-            publishedChangas = maybePublishedChangas.getValue();
+            maybePublishedChangas.getValue().removeIf(e -> e.getState() == ChangaState.settled || e.getState() == ChangaState.closed || e.getState() == ChangaState.done);
+            mav.addObject("publishedChangas", maybePublishedChangas.getValue());
         }
         else{
-            //TODO error
+            return new ModelAndView("redirect:/error").addObject("message", maybePublishedChangas.getAlternative().getMessage());
         }
 
-        return new ModelAndView("indexProfile")
-                .addObject("publishedChangas", publishedChangas)
-                .addObject("pendingChangas", pendingChangas);
+        return mav;
     }
 
     @RequestMapping("/login/forgot-password")
@@ -191,12 +186,12 @@ public class UserController {
     @RequestMapping(value = "/login/forgot-password", method = RequestMethod.POST)
     public ModelAndView forgotPasswordSender(@Valid @ModelAttribute("forgotPasswordForm") final ForgotPasswordForm forgotPasswordForm, final BindingResult result, HttpServletRequest request) {
         if (result.hasErrors()) {
-            return new ModelAndView("indexForgotPassword");
+            return forgotPassword(forgotPasswordForm);
         }
         Either<User, Validation> user = us.findByMail(forgotPasswordForm.getMail());
         if (!user.isValuePresent()) {
-            System.out.println("User" + forgotPasswordForm.getMail() + "does not exists");
-            return new ModelAndView("indexForgotPassword");
+            result.rejectValue("mail", "error.invalidMail", new Object[] {forgotPasswordForm.getMail()}, "");
+            return forgotPassword(forgotPasswordForm);
         }
         try {
             ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromContextPath(request);
@@ -215,37 +210,65 @@ public class UserController {
         System.out.println("Token =" + verificationToken.toString());
         if (!verificationToken.isValuePresent()) {
             Validation.ErrorCodes errorCode = verificationToken.getAlternative().getEc();
-            if ( errorCode == Validation.ErrorCodes.INEXISTENT_TOKEN)   {
-                System.out.println("Inexistent token");
-                // String message = messages.getMessage("auth.message.invalidToken", null, locale);
-                // model.addAttribute("message", message);
-                // return "redirect:/badUser.html?lang=" + locale.getLanguage();
-                return new ModelAndView("redirect:/login");
-            }
             if (errorCode == Validation.ErrorCodes.EXPIRED_TOKEN) {
-                // String messageValue = messages.getMessage("auth.message.expired", null, locale)
-                // model.addAttribute("message", messageValue);
                 //TODO RESEND EMAIL. REDIRECT A PAGINA PARA RESEND EMAIL
-                //return "redirect:/badUser.html?lang=" + locale.getLanguage();
-                System.out.println("Token expired. Falta implementar el resend email");
                 return new ModelAndView("redirect:/login");
+            } else {
+                return new ModelAndView("redirect:/error").addObject("message", verificationToken.getAlternative().getMessage());
             }
+//            if ( errorCode == Validation.ErrorCodes.INEXISTENT_TOKEN)   {
+//                System.out.println("Inexistent token");
+//                // String message = messages.getMessage("auth.message.invalidToken", null, locale);
+//                // model.addAttribute("message", message);
+//                // return "redirect:/badUser.html?lang=" + locale.getLanguage();
+//                return new ModelAndView("redirect:/login");
+//            }
         }
-        return new ModelAndView("redirect:/reset-password").addObject("id", id).addObject("token", token);
+        return new ModelAndView("redirect:/reset-password").addObject("id", id);
     }
 
-
     @RequestMapping("/reset-password")
-    public ModelAndView resetPassword(@RequestParam("id") long id, @RequestParam("token") String token, @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm) {
+    public ModelAndView resetPassword(@RequestParam("id") long id, @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm) {
         return new ModelAndView("indexResetPassword").addObject("id",id);
     }
 
     @RequestMapping(value = "/reset-password", method = RequestMethod.POST)
-    public ModelAndView doResetPassword(@Valid @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm, @RequestParam("id") long id) {
+    public ModelAndView doResetPassword(@Valid @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm, final BindingResult result, @RequestParam("id") long id) {
+        if (result.hasErrors()) {
+            return resetPassword(id, resetPasswordForm);
+        }
         us.resetPassword(id, resetPasswordForm.getNewPassword());
         System.out.println("Contraseña restablecida");
         SecurityContextHolder.getContext().setAuthentication(null);
         return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping(value = "/edit-profile")
+    public ModelAndView editProfile(@RequestParam("id") final long id, @ModelAttribute("userForm") final UserRegisterForm form) {
+        Either<User, Validation> maybeUser = us.findById(id);
+        if (!maybeUser.isValuePresent()) {
+            //todo error
+            //nunca estariamos en este caso igual, ver como solucionar
+            return new ModelAndView("500");
+        }
+        form.setName(maybeUser.getValue().getName());
+        form.setEmail(maybeUser.getValue().getEmail());
+        form.setPassword(maybeUser.getValue().getPasswd());
+        form.setSurname(maybeUser.getValue().getSurname());
+        form.setTelephone(maybeUser.getValue().getTel());
+        return new ModelAndView("editProfileForm")
+                .addObject("id", id);
+    }
+
+    @RequestMapping(value = "/edit-profile", method = RequestMethod.POST )
+    public ModelAndView editChanga(@RequestParam("id") final long id, @Valid @ModelAttribute("userForm") final UserRegisterForm form, final BindingResult errors, @ModelAttribute("getLoggedUser") User loggedUser) {
+        us.update(id, new User.Builder()
+                .withName(form.getName())
+                .withSurname(form.getSurname())
+                .withPasswd(form.getPassword())
+                .withEmail(form.getEmail())
+                .withTel(form.getTelephone()));
+        return new ModelAndView(new StringBuilder("redirect:/profile?id=").append(id).toString());
     }
 
 }

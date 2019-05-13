@@ -64,6 +64,7 @@
             </c:when>
             <c:otherwise>
                 <c:choose>
+                    <%--esto nunca debería pasar--%>
                     <c:when test="${userOwnsChanga == true}">
                         <div class="alert alert-info" role="alert">
                             <spring:message code="changaBody.alertOwner"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
@@ -71,10 +72,26 @@
                         <br />
                     </c:when>
                     <c:otherwise>
-                        <div class="alert alert-info" role="alert">
-                            <strong><spring:message code="changaBody.alert.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
-                        </div>
-                        <br />
+                        <c:choose>
+                            <c:when test="${inscriptionState == 'requested'}">
+                                <div class="alert alert-info" role="alert">
+                                    <strong><spring:message code="changaBody.alert.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
+                                </div>
+                                <br />
+                            </c:when>
+                            <c:when test="${inscriptionState == 'declined'}">
+                                <div class="alert alert-danger" role="alert">
+                                    <strong><spring:message code="changaBody.alertRejection.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
+                                </div>
+                                <br />
+                            </c:when>
+                            <c:when test="${inscriptionState == 'accepted'}">
+                                <div class="alert alert-success" role="alert">
+                                    <strong><spring:message code="changaBody.alertAccepted.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
+                                </div>
+                                <br />
+                            </c:when>
+                        </c:choose>
                     </c:otherwise>
                 </c:choose>
             </c:otherwise>
