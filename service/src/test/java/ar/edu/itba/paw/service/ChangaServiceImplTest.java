@@ -72,9 +72,9 @@ public class ChangaServiceImplTest {
         mockedList.add(Mockito.mock(Changa.class));
         mockedList.add(Mockito.mock(Changa.class));
         // preparamos el falso dao
-        when(chDao.getAll()).thenReturn(Either.value(mockedList));
+        when(chDao.getAll(ChangaState.emitted, 0)).thenReturn(Either.value(mockedList));
         // EJERCITAR
-        List<Changa> list = chDao.getAll().getValue();
+        List<Changa> list = changaService.getAllEmittedChangas(0).getValue();
         // ASSERT
         assertEquals(3, list.size());
         assertEquals(mockedList, list);

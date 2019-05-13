@@ -154,7 +154,7 @@ public class ChangaJdbcDaoTest {
         Number changaId2 = chJdbcInsert.executeAndReturnKey(changaRow);
 
         // EJERCITAR
-        final Either<List<Changa>, Validation> either = changaDao.getAll();
+        final Either<List<Changa>, Validation> either = changaDao.getAll(ChangaState.emitted,0);
         // ASSERT
         // asumimos que vuelven en el mismo orden
         assertEquals(changaId1.longValue(), either.getValue().get(0).getChanga_id());
