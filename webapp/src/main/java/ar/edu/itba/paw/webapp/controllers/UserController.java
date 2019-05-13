@@ -6,12 +6,10 @@ import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.webapp.forms.ForgotPasswordForm;
-import ar.edu.itba.paw.webapp.forms.ResetPasswordForm;
-import ar.edu.itba.paw.webapp.forms.UserLoginForm;
-import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
+import ar.edu.itba.paw.webapp.forms.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -28,6 +26,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
 import java.net.URI;
+
+import static ar.edu.itba.paw.interfaces.util.Validation.EXPIRED_TOKEN;
+import static ar.edu.itba.paw.interfaces.util.Validation.USER_ALREADY_EXISTS;
 
 @Controller
 public class UserController {
@@ -46,6 +47,9 @@ public class UserController {
 
     @Autowired
     ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @RequestMapping("/signup")
     public ModelAndView signUp(@ModelAttribute("signUpForm") final UserRegisterForm form) {
@@ -66,7 +70,7 @@ public class UserController {
                 .withPasswd(form.getPassword())
                 );
         if (!either.isValuePresent()) {
-            if (either.getAlternative().getEc().compareTo(Validation.ErrorCodes.USER_ALREADY_EXISTS) == 0) {
+            if (either.getAlternative().compareTo(USER_ALREADY_EXISTS) == 0) {
                 errors.rejectValue("email", "error.mailInUse", new Object[] {form.getEmail()}, "");
                 return signUp(form);
             }
@@ -207,7 +211,7 @@ public class UserController {
         System.out.println("Token =" + verificationToken.toString());
         if (!verificationToken.isValuePresent()) {
             Validation errorCode = verificationToken.getAlternative();
-            if (errorCode == Validation.EXPIRED_TOKEN) {
+            if (errorCode == EXPIRED_TOKEN) {
                 //TODO RESEND EMAIL. REDIRECT A PAGINA PARA RESEND EMAIL
                 return new ModelAndView("redirect:/login");
             } else {
@@ -269,5 +273,4 @@ public class UserController {
         System.out.println("Contraseña restablecida");
         return new ModelAndView("redirect:/");
     }
-
 }

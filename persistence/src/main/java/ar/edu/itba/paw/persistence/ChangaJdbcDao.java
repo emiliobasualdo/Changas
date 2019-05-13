@@ -77,10 +77,10 @@ public class ChangaJdbcDao implements ChangaDao {
         }
 
         List<Changa> resp = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = ? ORDER BY %s ASC LIMIT %d OFFSET %d",
+                String.format("SELECT * FROM %s WHERE %s = ? ORDER BY %s LIMIT %d OFFSET %d",
                         changas.name(), state.name(), title.name(), PAGE_SIZE, PAGE_SIZE * pageNum),
                  ROW_MAPPER,
-                filterState
+                filterState.name()
         );
         return Either.value(resp);
     }
