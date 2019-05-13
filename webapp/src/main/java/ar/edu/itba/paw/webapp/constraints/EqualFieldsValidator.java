@@ -6,6 +6,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public class EqualFieldsValidator implements ConstraintValidator<EqualFields, Object> {
+
     private String field;
     private String fieldMatch;
 
