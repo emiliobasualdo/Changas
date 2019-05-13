@@ -10,12 +10,13 @@ CREATE TABLE IF NOT EXISTS users
     surname VARCHAR(100),
     tel     VARCHAR(100),
     email   VARCHAR(100) UNIQUE NOT NULL,
-    passwd  VARCHAR(100) NOT NULL
+    passwd  VARCHAR(100) NOT NULL,
+    enabled BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS changas
 (
-    changa_id     INTEGER PRIMARY KEY,
+    changa_id     INTEGER IDENTITY PRIMARY KEY,
     user_id       INTEGER NOT NULL ,
     street        VARCHAR(100),
     neighborhood  VARCHAR(100),
