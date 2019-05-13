@@ -6,7 +6,7 @@ public enum DBUserFields {
     name        ("name", "VARCHAR",400),
     surname     ("surname", "VARCHAR",100),
     tel         ("tel", "VARCHAR",100),
-    email        ("email", "VARCHAR",100),
+    email       ("email", "VARCHAR",100),
     passwd      ("passwd", "VARCHAR",100),
     enabled     ("enabled", "BOOLEAN", -1);
 

@@ -49,7 +49,6 @@ public class ChangaController {
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
-                .withState(ChangaState.emitted)
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
                 .createdAt(LocalDateTime.now())
         );
@@ -80,9 +79,7 @@ public class ChangaController {
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
-                .withState(ChangaState.emitted)
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
-                .createdAt(LocalDateTime.now())
         );
         return new ModelAndView("redirect:/profile");
     }

@@ -2,18 +2,16 @@ package ar.edu.itba.paw.models;
 
 public enum ChangaState {
 
-    emitted (0,"emitted",   "The changa has been created by a user and posted"),
-    settled (1,"settled",   "The owner of the changa has choosen one or more changueros and has closed the inscriptions"),
-    done    (2,"done",      "The changa has been taken care of"),
-    closed  (3,"closed",    "The changa has been closed by user for any reason or after inactivity or by admin"),
+    emitted ("emitted",   "The changa has been created by a user and posted"),
+    settled ("settled",   "The owner of the changa has choosen one or more changueros and has closed the inscriptions"),
+    done    ("done",      "The changa has been taken care of"),
+    closed  ("closed",    "The changa has been closed by user for any reason or after inactivity or by admin"),
     ;
 
-    final int num;
     final String name;
     final String description;
 
-    ChangaState(int num, String name, String descr) {
-        this.num = num;
+    ChangaState(String name, String descr) {
         this.name = name;
         this.description = descr;
     }
@@ -26,6 +24,6 @@ public enum ChangaState {
                 {0, 0, 0, 0}, // from done
                 {0, 0, 0, 0}, // from closed
         };
-        return posibleChanges[oldState.num][newState.num] == 1;
+        return posibleChanges[oldState.ordinal()][newState.ordinal()] == 1;
     }
 }

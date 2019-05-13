@@ -4,14 +4,15 @@ import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.util.Validation;
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Changa;
+import ar.edu.itba.paw.models.ChangaState;
+import ar.edu.itba.paw.models.Either;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.CHANGE_NOT_POSSIBLE;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.USERS_INSCRIBED;
+import static ar.edu.itba.paw.interfaces.util.Validation.*;
 
 @Repository
 public class ChangaServiceImpl implements ChangaService {
@@ -23,8 +24,11 @@ public class ChangaServiceImpl implements ChangaService {
     private InscriptionDao inDao;
 
     @Override
-    public Either<List<Changa>, Validation> getAllChangas() {
-        return chDao.getAll();
+    public Either<List<Changa>, Validation> getAllEmittedChangas(int pageNum) {
+        if (pageNum < 0) {
+            return Either.alternative(ILLEGAL_VALUE.withMessage("Page number must be greater than zero"));
+        }
+        return chDao.getAll(ChangaState.emitted, pageNum);
     }
 
     @Override
@@ -32,7 +36,6 @@ public class ChangaServiceImpl implements ChangaService {
         return chDao.create(changaBuilder);
     }
 
-    // todo NEFASTO cambiar ya
     /*NOTA: en el parametro changaBuilder se debe de pasar un changaBuilder con los campos updateados y con los campos antiguos de los que
     no fueron updateados. Si se quiere hacer un modificado más rápido, hacer funciones q updateen campos específicos. Me parece innecesario porque no tenemos
     muchos campos
@@ -47,8 +50,9 @@ public class ChangaServiceImpl implements ChangaService {
         }
 
         // we will update a changa ONLY if no changueros are inscribed in it
+        // todo permitir cambiar campos menores como fotos
         if(inDao.hasInscribedUsers(changaId)) {
-            return Either.alternative(new Validation(USERS_INSCRIBED));
+            return Either.alternative(USERS_INSCRIBED);
         }
 
         return chDao.update(changaId, changaBuilder);
@@ -79,7 +83,7 @@ public class ChangaServiceImpl implements ChangaService {
         if (ChangaState.changeIsPossible(changa.getState(), newState))
             return chDao.changeChangaState(changa.getChanga_id(), newState);
         else
-            return Either.alternative(new Validation(CHANGE_NOT_POSSIBLE));
+            return Either.alternative(CHANGE_NOT_POSSIBLE);
     }
 
     @Override

@@ -6,17 +6,15 @@ import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.webapp.forms.*;
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.webapp.forms.ForgotPasswordForm;
+import ar.edu.itba.paw.webapp.forms.ResetPasswordForm;
+import ar.edu.itba.paw.webapp.forms.UserLoginForm;
+import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,7 +25,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.*;
 import java.net.URI;
@@ -157,7 +154,7 @@ public class UserController {
     public ModelAndView profile(@ModelAttribute("getLoggedUser") User loggedUser) {
 
         ModelAndView mav = new ModelAndView("indexProfile");
-        Either<List<Pair<Changa, Inscription>>, Validation>  maybePendingChangas = is.getUserInscriptions(loggedUser.getUser_id());
+        Either<List<Pair<Changa, Inscription>>, Validation>  maybePendingChangas = is.getOpenUserInscriptions(loggedUser.getUser_id());
         if (maybePendingChangas.isValuePresent()){
             maybePendingChangas.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout);
             mav.addObject("pendingChangas", maybePendingChangas.getValue());
@@ -209,8 +206,8 @@ public class UserController {
         Either<VerificationToken, Validation> verificationToken = us.getVerificationTokenWithRole(id, token);
         System.out.println("Token =" + verificationToken.toString());
         if (!verificationToken.isValuePresent()) {
-            Validation.ErrorCodes errorCode = verificationToken.getAlternative().getEc();
-            if (errorCode == Validation.ErrorCodes.EXPIRED_TOKEN) {
+            Validation errorCode = verificationToken.getAlternative();
+            if (errorCode == Validation.EXPIRED_TOKEN) {
                 //TODO RESEND EMAIL. REDIRECT A PAGINA PARA RESEND EMAIL
                 return new ModelAndView("redirect:/login");
             } else {

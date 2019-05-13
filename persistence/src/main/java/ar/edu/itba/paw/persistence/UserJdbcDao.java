@@ -18,7 +18,7 @@ import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBTableName.users;
 import static ar.edu.itba.paw.constants.DBUserFields.*;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.*;
 
 @Repository
 public class UserJdbcDao implements UserDao {
@@ -45,26 +45,24 @@ public class UserJdbcDao implements UserDao {
                         id
                 );
         if (list.isEmpty()) {
-            return Either.alternative(new Validation(NO_SUCH_USER));
+            return Either.alternative(NO_SUCH_USER);
         }
         return Either.value(list.get(0));
     }
 
     @Override
     public Either<User, Validation> create(final User.Builder userBuilder) {
-        //TODO hacer que la base de datos acepte la getGeneratedKeys feature. Mientras tanto usamos el código de abajo
         Number userId;
         Map<String, Object> userRow = userToTableRow(userBuilder);
         try {
             userId = jdbcInsert.executeAndReturnKey(userRow);
         } catch (DuplicateKeyException e ) {
-            return Either.alternative(new Validation(USER_ALREADY_EXISTS));
+            return Either.alternative(USER_ALREADY_EXISTS);
         } catch (Exception e ) {
-            System.err.println(e);
-            return Either.alternative(new Validation(DATABASE_ERROR));
+            System.err.println(e.getMessage());
+            return Either.alternative(DATABASE_ERROR);
         }
-
-        return getUserFromUserId(userId.longValue());
+        return getById(userId.longValue());
     }
 
     @Override
@@ -75,43 +73,14 @@ public class UserJdbcDao implements UserDao {
                         ROW_MAPPER, mail
                 );
         if (list.isEmpty()) {
-            return Either.alternative(new Validation(NO_SUCH_USER));
+            return Either.alternative(NO_SUCH_USER);
         }
         if (list.size() > 1){
-            return Either.alternative(new Validation(DATABASE_ERROR));
+            return Either.alternative(DATABASE_ERROR);
         }
         return Either.value(list.get(0));
     }
-
-    private Map<String, Object> userToTableRow(User.Builder userBuilder) {
-        Map<String, Object> resp = new HashMap<>();
-        resp.put(name.name(), userBuilder.getName());
-        resp.put(surname.name(), userBuilder.getSurname());
-        resp.put(tel.name(), userBuilder.getTel());
-        resp.put(email.name(), userBuilder.getEmail());
-        resp.put(passwd.name(), userBuilder.getPasswd());
-        return resp;
-    }
-
-    private static User userFromRS(ResultSet rs) throws SQLException {
-        return build(rs.getLong(user_id.name()), new User.Builder()
-                                                .withName(rs.getString(name.name()))
-                                                .withSurname(rs.getString(surname.name()))
-                                                .withTel(rs.getString(tel.name()))
-                                                .withEmail(rs.getString(email.name()))
-                                                .withPasswd(rs.getString(passwd.name()))
-                                                .enabled(rs.getBoolean(enabled.name()))
-        );
-    }
-
-    private static User build(long userId, User.Builder userBuilder) {
-        return new User(userId, userBuilder);
-    }
-
-   /* @Override
-    public List<User> createUsers() {
-        return generateRandomUsers();
-    }*/
+/*
 
     @Override
     public Either<User, Validation> getUser(final User.Builder userBuilder) {
@@ -125,10 +94,11 @@ public class UserJdbcDao implements UserDao {
         );
         if (list.isEmpty()) {
             //TODO chequear si es q el mail no pertenece a un usuario para hacer INVALID_EMAIL
-            return Either.alternative(new Validation(INVALID_COMBINATION));
+            return Either.alternative(INVALID_COMBINATION));
         }
         return Either.value(list.get(0));
     }
+*/
 
     @Override
     public Either<User, Validation> update(final long userId, User.Builder userBuilder){
@@ -146,18 +116,26 @@ public class UserJdbcDao implements UserDao {
                                                     userBuilder.getEmail(),
                                                     userId);
 
-        return updatedUser == 1 ? getById(userId) : Either.alternative(new Validation(NO_SUCH_USER));
+        return updatedUser == 1 ? getById(userId) : Either.alternative(NO_SUCH_USER);
     }
-
-    @Override
-    public void setUserStatus(final long userId, final boolean status) {
-        jdbcTemplate.update(String.format("UPDATE %s SET %s = ? WHERE %s = ? ",
-                users.name(),
-                "enabled",
-                user_id.name()),
-                status,
-                userId
-        );
+    public Validation setUserStatus(final long userId, final boolean status) {
+        if (getById(userId).isValuePresent()) {
+            try {
+                jdbcTemplate.update(String.format("UPDATE %s SET %s = ? WHERE %s = ? ",
+                        users.name(),
+                        enabled.name(),
+                        user_id.name()),
+                        status,
+                        userId
+                );
+                return OK;
+            } catch (Exception e ) {
+                System.err.println(e.getMessage());
+                return DATABASE_ERROR;
+            }
+        } else {
+            return NO_SUCH_USER;
+        }
     }
 
     @Override
@@ -169,20 +147,6 @@ public class UserJdbcDao implements UserDao {
                 password,
                 id
         );
-    }
-
-    private Either<User, Validation> getUserFromUserId(long userId) {
-        final List<User> list = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = ?", users.name(),
-                        user_id.name()),
-                ROW_MAPPER,
-                userId
-        );
-
-        if (list.isEmpty()) {
-            return Either.alternative(new Validation(DATABASE_ERROR));
-        }
-        return Either.value(list.get(0));
     }
 
     private List<User> generateRandomUsers() {
@@ -207,5 +171,32 @@ public class UserJdbcDao implements UserDao {
         }
         return resp;
     }
+
+    private Map<String, Object> userToTableRow(User.Builder userBuilder) {
+        Map<String, Object> resp = new HashMap<>();
+        resp.put(name.name(), userBuilder.getName());
+        resp.put(surname.name(), userBuilder.getSurname());
+        resp.put(tel.name(), userBuilder.getTel());
+        resp.put(email.name(), userBuilder.getEmail());
+        resp.put(passwd.name(), userBuilder.getPasswd());
+        resp.put(enabled.name(), userBuilder.isEnabled());
+        return resp;
+    }
+
+    private static User userFromRS(ResultSet rs) throws SQLException {
+        return build(rs.getLong(user_id.name()), new User.Builder()
+                .withName(rs.getString(name.name()))
+                .withSurname(rs.getString(surname.name()))
+                .withTel(rs.getString(tel.name()))
+                .withEmail(rs.getString(email.name()))
+                .withPasswd(rs.getString(passwd.name()))
+                .enabled(rs.getBoolean(enabled.name()))
+        );
+    }
+
+    private static User build(long userId, User.Builder userBuilder) {
+        return new User(userId, userBuilder);
+    }
+
 
 }
