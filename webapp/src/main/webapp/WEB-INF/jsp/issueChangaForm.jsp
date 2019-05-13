@@ -117,7 +117,7 @@
                         <td>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <form:input class="form-control" path="price"/>
+                                    <form:input  class="form-control" path="price"/>
                                 </div>
                                 <form:errors cssClass="form-error" path="price" element="p"/>
                             </div>

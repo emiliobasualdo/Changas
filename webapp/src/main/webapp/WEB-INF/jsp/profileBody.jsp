@@ -7,8 +7,6 @@
     </head>
     <body>
         <div class="container emp-profile">
-            <%--TODO: cabiar form a a un spring form para que por beans se mapen las varibales y poder cambiar el contendido de las mismas--%>
-            <%--<form method="post">--%>
                 <div class="row">
                     <%-- todo
                     <div class="col-md-4">
@@ -94,7 +92,6 @@
                         </div>
                     <%--</div>--%>
                 </div>
-            <%--</form>--%>
         </div>
     </body>
 </html>

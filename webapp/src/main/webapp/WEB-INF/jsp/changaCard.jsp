@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 
 <head>
@@ -42,12 +42,14 @@
             <div class="back">
                 <c:choose>
                     <c:when test="${requestScope.inscribed}">
-                        <a href="changa?id=<c:out value="${requestScope.changa_id}"/>" class="button" style="background-color: grey">
+                        <c:url value="changa?id=${requestScope.changa_id}" var="changaUrl" />
+                        <a href="${changaUrl}" class="button" style="background-color: grey">
                             <spring:message code="changaCard.button" />
                         </a>
                     </c:when>
                     <c:otherwise>
-                        <a href="changa?id=<c:out value="${requestScope.changa_id}"/>" class="button">
+                        <c:url value="changa?id=${requestScope.changa_id}" var="changaUrl" />
+                        <a href="${changaUrl}" class="button">
                             <spring:message code="changaCard.button" />
                         </a>
                     </c:otherwise>

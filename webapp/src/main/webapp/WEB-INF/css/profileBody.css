@@ -79,7 +79,7 @@ body {
     font-size: 20px;
     color: #000000;
 }
-.tab-content { /*TODO: tratar de buscarle otra solucion Problema: tab-content o tab-pane no aprovecha todo el ancho en algunos casos*/
+.tab-content {
     width: 100%;
 }
 .profile-tab p{

@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +10,6 @@
     </head>
 
     <body>
-        <%--<%@ include file="/WEB-INF/jsp/changaHeader.jsp" %>--%>
         <%@ include file="/WEB-INF/jsp/signUpBody.jsp" %>
         <%@ include file="/WEB-INF/jsp/mainPageFooter.jsp" %>
     </body>

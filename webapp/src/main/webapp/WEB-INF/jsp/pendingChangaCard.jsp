@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8"%>
 <html>
 
@@ -20,7 +21,7 @@
             <hr />
             <c:choose>
                 <c:when test="${requestScope.state == 'requested'}">
-                    <p>Pendiente</p>
+                    <p><spring:message code="pendingChangaCard.pending"/></p>
                     <hr />
                     <div class="price">
                         <div class="front">
@@ -38,7 +39,7 @@
                     </div>
                 </c:when>
                 <c:when test="${requestScope.state == 'accepted'}">
-                    <p style="color: green">Aceptado</p>
+                    <p style="color: green"><spring:message code="pendingChangaCard.acepted"/></p>
                     <hr />
                     <div class="price">
                         <div class="front">
@@ -56,7 +57,7 @@
                     </div>
                 </c:when>
                 <c:when test="${requestScope.state == 'declined'}">
-                    <p style="color: red">Rechazado</p>
+                    <p style="color: red"><spring:message code="pendingChangaCard.rejected"/></p>
                     <hr />
                     <div class="price">
                         <div class="front">

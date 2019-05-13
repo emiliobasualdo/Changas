@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.config;
 
-import ar.edu.itba.paw.webapp.auth.ChangasAuthenticationFailureHandler;
 import ar.edu.itba.paw.webapp.auth.CostumeUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,7 +51,6 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .usernameParameter("j_username")
                     .passwordParameter("j_password")
                     //.defaultSuccessUrl("/", true) //the landing page after a successful login
-                .failureHandler(new ChangasAuthenticationFailureHandler())
                     .loginPage("/login") //the custom login page
                     //loginProcessingUrl() – the url to submit the username and password to
                 .and().rememberMe()
@@ -90,7 +88,6 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         } catch (IOException e){
             throw new RuntimeException(e);
         }
-
         return stringWriter.toString();
     }
 }

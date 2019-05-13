@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 
 <head>
@@ -40,15 +40,15 @@
             </tr>
             </tbody>
         </table>
-        <!--<a href="#" class="btn btn-primary" style="margin-top: 1cm; margin-bottom: 1cm;">Aceptar</a>-->
     </div>
     <div class="container" style="margin-top: 80px">
+        <c:url value="/profile" var="profileUrl" />
         <c:choose>
             <c:when test="${userAlreadyInscribedInChanga == false}">
                 <c:choose>
                     <c:when test="${userOwnsChanga == true}">
                         <div class="alert alert-info" role="alert">
-                            <spring:message code="changaBody.alertOwner"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
+                            <spring:message code="changaBody.alertOwner"/><strong><a href="${profileUrl}" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
                         </div>
                         <br />
                     </c:when>
@@ -67,7 +67,7 @@
                     <%--esto nunca debería pasar--%>
                     <c:when test="${userOwnsChanga == true}">
                         <div class="alert alert-info" role="alert">
-                            <spring:message code="changaBody.alertOwner"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
+                            <spring:message code="changaBody.alertOwner"/><strong><a href="${profileUrl}" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
                         </div>
                         <br />
                     </c:when>
@@ -75,19 +75,19 @@
                         <c:choose>
                             <c:when test="${inscriptionState == 'requested'}">
                                 <div class="alert alert-info" role="alert">
-                                    <strong><spring:message code="changaBody.alert.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
+                                    <strong><spring:message code="changaBody.alert.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="${profileUrl}" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
                                 </div>
                                 <br />
                             </c:when>
                             <c:when test="${inscriptionState == 'declined'}">
                                 <div class="alert alert-danger" role="alert">
-                                    <strong><spring:message code="changaBody.alertRejection.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
+                                    <strong><spring:message code="changaBody.alertRejection.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="${profileUrl}" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
                                 </div>
                                 <br />
                             </c:when>
                             <c:when test="${inscriptionState == 'accepted'}">
                                 <div class="alert alert-success" role="alert">
-                                    <strong><spring:message code="changaBody.alertAccepted.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="/profile" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
+                                    <strong><spring:message code="changaBody.alertAccepted.bold"/></strong><spring:message code="changaBody.alert"/><strong><a href="${profileUrl}" class="alert-link"><spring:message code="changaBody.alert.btn"/></a></strong>.
                                 </div>
                                 <br />
                             </c:when>

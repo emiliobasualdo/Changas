@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,7 +9,6 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     </head>
     <body>
-        <%--<%@ include file="/WEB-INF/jsp/changaHeader.jsp" %>--%>
         <%@ include file="/WEB-INF/jsp/logInBody.jsp" %>
         <%@ include file="/WEB-INF/jsp/mainPageFooter.jsp" %>
     </body>

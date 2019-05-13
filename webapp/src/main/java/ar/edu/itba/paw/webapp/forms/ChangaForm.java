@@ -3,7 +3,7 @@ package ar.edu.itba.paw.webapp.forms;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.constraints.*;
 
-public class ChangaForm { //TODO: el NOTNULL es una caca
+public class ChangaForm {
 
     @NotEmpty
     @Size(min = 6, max = 100) @Pattern(regexp = "[A-Za-z0-9 ]+")
@@ -13,7 +13,7 @@ public class ChangaForm { //TODO: el NOTNULL es una caca
     @Size(min = 6, max = 100) @Pattern(regexp = "[A-Za-z0-9\\s_.,!\"'/$]+")
     private String description;
 
-    //TODO; verificar que no este vacio
+    @NotNull
     @Min(1)
     private double price;
 
@@ -25,7 +25,7 @@ public class ChangaForm { //TODO: el NOTNULL es una caca
     @Size(min = 6, max = 100) @Pattern(regexp = "[a-zA-Z 0-9]+")
     private String street;
 
-    //TODO; verificar que no este vacio
+    @NotNull
     @Min(0)
     private int number;
 

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class MainPageController { //TODO: hacer que los jsp sea HTML safe
+public class MainPageController {
 
     @Autowired
     private ChangaService cs;

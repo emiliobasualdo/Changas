@@ -1,9 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%--
-https://mdbootstrap.com/docs/jquery/navigation/navbar/
---%>
 <html>
     <head>
         <style><%@include file="/WEB-INF/css/navigationBar.css"%></style>
@@ -11,7 +8,8 @@ https://mdbootstrap.com/docs/jquery/navigation/navbar/
     <body>
         <nav class="navbar navbar-expand-lg navbar-light shadow fixed-top navbar-custom">
             <img src="https://svgsilh.com/svg/1901457.svg" style="width: 1cm; height: 1cm" \>
-            <a class="navbar-brand" href="/" style="margin-left: 3px">C H A N G A S</a>
+            <c:url value="/" var="homeUrl" />
+            <a class="navbar-brand" href="${homeUrl}" style="margin-left: 3px"><spring:message code="changas.title"/></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
                     aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

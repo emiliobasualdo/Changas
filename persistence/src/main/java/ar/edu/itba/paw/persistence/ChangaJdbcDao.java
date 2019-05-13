@@ -50,7 +50,7 @@ public class ChangaJdbcDao implements ChangaDao {
         if (list.isEmpty()) {
             return Either.alternative(new Validation(NO_SUCH_CHANGA));
         }
-        if(list.size() > 1){ //TODO MAITE ver esto
+        if(list.size() > 1) {
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
         return Either.value(list.get(0));
@@ -59,7 +59,7 @@ public class ChangaJdbcDao implements ChangaDao {
     @Override
     public Either<Changa, Validation> create(final Changa.Builder changaBuilder) {
         Map<String, Object> changaRow = changaToTableRow(changaBuilder);
-        int rowsAffected = jdbcInsert.execute(changaRow); // TODO execuenteAndReturnKey
+        int rowsAffected = jdbcInsert.execute(changaRow); // TODO: execuenteAndReturnKey
         if (rowsAffected < 1) {
             return Either.alternative(new Validation(DATABASE_ERROR));
         }
@@ -86,7 +86,6 @@ public class ChangaJdbcDao implements ChangaDao {
                 String.format("SELECT * FROM %s ", changas.name()),
                 ROW_MAPPER
         );
-
         return Either.value(resp);
     }
 
