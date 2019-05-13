@@ -117,7 +117,7 @@ public class ChangaJdbcDao implements ChangaDao {
 
                                                                 changaBuilder.getStreet(),changaBuilder.getNeighborhood(),
                                                                 changaBuilder.getNumber(), changaBuilder.getTitle(),
-                                                                changaBuilder.getDescription(), changaBuilder.getState(),
+                                                                changaBuilder.getDescription(), changaBuilder.getState().name(),
                                                                 changaBuilder.getPrice(), changaId
                                                 );
 

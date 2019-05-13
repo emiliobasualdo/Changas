@@ -69,9 +69,12 @@ public class UserController {
                 .withPasswd(form.getPassword())
                 );
         if (!either.isValuePresent()) {
-            Validation err = either.getAlternative();
-            errors.rejectValue("email","aca no se q va");
-            return signUp(form);
+            if (either.getAlternative().getEc().compareTo(Validation.ErrorCodes.USER_ALREADY_EXISTS) == 0) {
+                errors.rejectValue("email", "error.mailInUse", new Object[] {form.getEmail()}, "");
+                return signUp(form);
+            }
+            // si cae aca seria muy extraño mas bien excepcional, que onda??
+            return new ModelAndView("redirect:/error").addObject("message", either.getAlternative().getMessage());
         }
         try {
             String appUrl = request.getContextPath();
