@@ -40,7 +40,7 @@ public class EmailServiceImplementation implements EmailService {
 
     @Override
     public void sendJoinRequestEmail(Changa changa, User changaOwner, User requestingUser) {
-        String subject = messageSource.getMessage("sendJoinRequestSubject", null, LocaleContextHolder.getLocale());
+        String subject = messageSource.getMessage("sendJoinRequest.Subject", null, LocaleContextHolder.getLocale());
         sendEmail(changaOwner.getEmail(), subject, joinRequestEmailBody(changa, changaOwner, requestingUser));
     }
 
@@ -54,7 +54,7 @@ public class EmailServiceImplementation implements EmailService {
 
         helper = new MimeMessageHelper(message,true);
         helper.setTo(user.getEmail());
-        helper.setSubject(messageSource.getMessage("mailConfirmationSubject",null, LocaleContextHolder.getLocale()));
+        helper.setSubject(messageSource.getMessage("mailConfirmation.Subject",null, LocaleContextHolder.getLocale()));
         helper.setText(mailConfirmationEmailBody(user, confirmUrl), true);
 
         emailSender.send(message);
@@ -76,7 +76,8 @@ public class EmailServiceImplementation implements EmailService {
     //TODO emails from html templates
     private String mailConfirmationEmailBody(User user, String confirmUrl) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Apriete en el link para confirmar el mail\n"); //TODO: problema de idioma no internacional
+        sb.append(messageSource.getMessage("mailConfirmation.Body",null, LocaleContextHolder.getLocale()));
+        sb.append("\n");
         sb.append(confirmUrl);
         return sb.toString();
     }
@@ -95,7 +96,7 @@ public class EmailServiceImplementation implements EmailService {
         sb.append(changaOwner.getName());
         sb.append(",\n");
         sb.append(currentUser.getName());
-        sb.append(" quiere unirse a la changa ");
+        sb.append(messageSource.getMessage("sendJoinRequest.Body",null, LocaleContextHolder.getLocale()));
         sb.append(changa.getDescription());
         return sb.toString();
     }

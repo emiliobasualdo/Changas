@@ -11,14 +11,14 @@
 
     <div class="text">
         <div class="text-inner">
-            <h1> Oh no. </h1>
+            <h1> <spring:message code="error.title"/> </h1>
 
             <h2> <c:out value="${message}"/> </h2>
 
             <c:url value="/" var="homeUrl" />
             <a href="${homeUrl}">
                 <div id="home" class="button">
-                    <h3> <spring:message code="error.home"/> </h3>
+                    <h3> <spring:message code="error.home.btn"/> </h3>
                 </div>
             </a>
         </div>

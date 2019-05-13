@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.interfaces.util;
 
-// todo interface Errors --- PILO: para qué?
 public class Validation {
     private final ErrorCodes ec;
 
