@@ -16,5 +16,4 @@ public interface InscriptionDao {
     Either<Boolean, Validation> isUserInscribedInChanga(long userId, long changaId);
     boolean hasInscribedUsers(long changa_id);
     Either<Inscription, Validation> getInscription(long userId, long changaId);
-    void banal(long userId, long changaId);
 }

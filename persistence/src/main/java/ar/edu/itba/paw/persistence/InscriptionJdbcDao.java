@@ -57,24 +57,25 @@ public class InscriptionJdbcDao implements InscriptionDao {
                 ROW_MAPPER,
                 id
         );
+
         final List<Pair<T,Inscription>> pairList = new LinkedList<>();
         for (Inscription insc: inscriptionList) {
             Either<T, Validation> either = dao.getById(inscGetId.apply(insc));
             if(!either.isValuePresent()){
                 return Either.alternative(either.getAlternative());
             }
-            pairList.add(Pair.buildPair(either.getValue(),insc));
+            pairList.add(Pair.buildPair(either.getValue(), insc));
         }
+
         return Either.value(pairList);
     }
 
-    //DONE
+
     @Override
     /* Return the changas the user of id=userId is inscribed in */
     public Either<List<Pair<Changa, Inscription>>, Validation> getUserInscriptions(long userId) {
         return this.getter(changaDao, user_id.name(), userId, Inscription::getChanga_id);
     }
-
 
 
     @Override
@@ -83,19 +84,9 @@ public class InscriptionJdbcDao implements InscriptionDao {
         return this.getter(userDao, changa_id.name(), changaId, Inscription::getUser_id);
     }
 
-    //TODO BORRAR
-    @Override
-    public void banal(long userId, long changaId){
-       System.out.println(changaDao);
-        System.out.println(userDao);
-//       changaDao.getById(changaId);
-       getInscription(userId, changaId);
-//        System.out.println("BANAL");
-    }
-
 
     @Override
-    /* An Inscription implies that the user is inscribed OR he had inscribed him self before and optout */
+    /* An Inscription implies that the user is inscribed OR he had inscribed himself before and optout */
     public Validation inscribeInChanga(long userId, long changaId) {
         // We check if the user is the owner of the changa
         Either<Changa, Validation> changa = changaDao.getById(changaId);
@@ -110,8 +101,9 @@ public class InscriptionJdbcDao implements InscriptionDao {
         // We check if the user is already inscribed
         Either<Inscription, Validation> insc = getInscription(userId, changaId);
         if (insc.isValuePresent()){
-            return changeUserStateInChanga(insc.getValue(), requested);
-        } else { // user needs to be inscribbed)
+            //if the user had previously been inscribed and opted out, we change the state to requested. Else, we return user already inscribed.
+            return insc.getValue().getState() == optout ? changeUserStateInChanga(insc.getValue(), requested) : new Validation(USER_ALREADY_INSCRIBED);
+        } else { // user needs to be inscribbed
             if (insc.getAlternative().getEc() == USER_NOT_INSCRIBED){
                 return forceInscribeInChanga(userId, changaId);
             } else {
@@ -120,7 +112,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
         }
     }
 
-    //NO SE HACE NO?
+
     private Validation forceInscribeInChanga(long userId, long changaId) {
         Map<String, Object> row = inscriptionToTableRow(userId, changaId);
         try {
@@ -133,7 +125,6 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
 
-    //DONE
     @Override
     public Either<Inscription, Validation> getInscription(long userId, long changaId) {
         final List<Inscription> list  = jdbcTemplate.query(
@@ -148,7 +139,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
         }
     }
 
-    //DONE
+
     @Override
     public Validation changeUserStateInChanga(Inscription insc, InscriptionState newState) throws DataAccessException {
         // we assume the service has checked that the change can be done
@@ -162,11 +153,11 @@ public class InscriptionJdbcDao implements InscriptionDao {
                 throw new RecoverableDataAccessException("rowsAffected != 1");
             }
         } catch (DataAccessException e) {
-            System.out.println(e.getMessage());
             return new Validation(DATABASE_ERROR);
         }
         return new Validation(OK);
     }
+
 
     @Override
     public Validation changeUserStateInChanga(long userId, long changaId, InscriptionState state) {
@@ -176,6 +167,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
         }
         return changeUserStateInChanga(insc.getValue(), state);
     }
+
 
 
     @Override
@@ -195,7 +187,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
         }
     }
 
-    //DONE
+
     @Override
     public boolean hasInscribedUsers(long changaId) {
         Optional<Inscription> optional = jdbcTemplate.query(String.format("SELECT * FROM %s WHERE %s = ?", user_inscribed.name() , changa_id.name()), ROW_MAPPER, changaId).stream().findAny();
