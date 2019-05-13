@@ -29,6 +29,7 @@ public class Validation {
         // General
         OK                      ("OK"),
         DATABASE_ERROR          ("Database error"),
+        ILLEGAL_VALUE           ("This value is not allowed"),
 
         // Changas
         NO_SUCH_CHANGA          ("Invalid changa id"),
@@ -50,12 +51,12 @@ public class Validation {
         USER_OWNS_THE_CHANGA    ("An owner can not inscribe himself in his changa"),
 
         //Verification Token
-        INEXISTENT_TOKEN       ("Inexistent token"),
+        INEXISTENT_TOKEN        ("Inexistent token"),
         EXPIRED_TOKEN           ("Expired token")
 
         ;
 
-        private final String message;
+        private String message; // NOT final on purpose
 
 
         ErrorCodes(String message) {
@@ -65,6 +66,11 @@ public class Validation {
 
         public String getMessage() {
             return message;
+        }
+
+        public ErrorCodes withMessage(String msg) {
+            this.message = this.message + ": "+ msg;
+            return this;
         }
     }
 }

@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
-import ar.edu.itba.paw.interfaces.daos.UserDao;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.ChangaState;
@@ -9,7 +8,6 @@ import ar.edu.itba.paw.models.Either;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,7 +15,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -30,6 +27,7 @@ import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
 @Repository
 public class ChangaJdbcDao implements ChangaDao {
     private final static RowMapper<Changa> ROW_MAPPER = (rs, rowNum) -> changaFromRS(rs);
+    private final static int PAGE_SIZE = 50;
 
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert jdbcInsert;
@@ -72,12 +70,17 @@ public class ChangaJdbcDao implements ChangaDao {
         return getById(changaId.longValue());
     }
 
-    // todo que casos de error podría haber?
     @Override
-    public Either<List<Changa>, Validation> getAll() {
+    public Either<List<Changa>, Validation> getAll(ChangaState filterState, int pageNum) {
+        if (pageNum < 0) {
+            return Either.alternative(new Validation(ILLEGAL_VALUE.withMessage("Page number must be greater than zero")));
+        }
+
         List<Changa> resp = jdbcTemplate.query(
-                String.format("SELECT * FROM %s ORDER BY %s ASC", changas.name(), title.name()),
-                ROW_MAPPER
+                String.format("SELECT * FROM %s WHERE %s = ? ORDER BY %s ASC LIMIT %d OFFSET %d",
+                        changas.name(), state.name(), title.name(), PAGE_SIZE, PAGE_SIZE * pageNum),
+                 ROW_MAPPER,
+                filterState
         );
 
         return Either.value(resp);

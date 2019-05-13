@@ -46,8 +46,8 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public Either<List<Pair<Changa, Inscription>>, Validation> getUserInscriptions(long userId) {
-        return dao.getUserInscriptions(userId);
+    public Either<List<Pair<Changa, Inscription>>, Validation> getOpenUserInscriptions(long userId) {
+        return dao.getUserInscriptions(false, InscriptionState.optout, userId);
     }
 
     @Override
