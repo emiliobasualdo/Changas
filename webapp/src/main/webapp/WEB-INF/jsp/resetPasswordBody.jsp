@@ -11,7 +11,7 @@
 </head>
 <body>
 <div class="login-form">
-    <c:url value="/reset-password" var="reserPasswordUrl" />
+    <c:url value="${actionUrl}" var="reserPasswordUrl" />
     <form:form action="${reserPasswordUrl}" modelAttribute="resetPasswordForm" method="post">
         <input type="hidden" name="id" value="<c:out value="${id}"/>">
         <h2 class="text-center"><spring:message code="resetPasswordBody.header"/></h2>

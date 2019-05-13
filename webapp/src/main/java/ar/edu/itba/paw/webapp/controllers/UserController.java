@@ -216,36 +216,21 @@ public class UserController {
             } else {
                 return new ModelAndView("redirect:/error").addObject("message", verificationToken.getAlternative().getMessage());
             }
-//            if ( errorCode == Validation.ErrorCodes.INEXISTENT_TOKEN)   {
-//                System.out.println("Inexistent token");
-//                // String message = messages.getMessage("auth.message.invalidToken", null, locale);
-//                // model.addAttribute("message", message);
-//                // return "redirect:/badUser.html?lang=" + locale.getLanguage();
-//                return new ModelAndView("redirect:/login");
-//            }
         }
         return new ModelAndView("redirect:/reset-password").addObject("id", id);
     }
 
-    @RequestMapping("/edit-password")
-    public ModelAndView editPassword(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm) {
-        return new ModelAndView("indexResetPassword").addObject("id", loggedUser.getUser_id());
-    }
-
     @RequestMapping("/reset-password")
     public ModelAndView resetPassword(@RequestParam("id") long id, @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm) {
-        return new ModelAndView("indexResetPassword").addObject("id",id);
+        return new ModelAndView("indexResetPassword").addObject("id",id).addObject("actionUrl", "/reset-password");
     }
 
     @RequestMapping(value = "/reset-password", method = RequestMethod.POST)
-    public ModelAndView doResetPassword(@Valid @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm, final BindingResult result, @RequestParam("id") long id, @ModelAttribute("isUserLogged") boolean isUserLogged, @ModelAttribute("getLoggedUser") User loggedUser) {
+    public ModelAndView doResetPassword(@Valid @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm, final BindingResult result, @RequestParam("id") long id) {
         if (result.hasErrors()) {
-            if (isUserLogged) { //TODO: emprolijar
-                return editPassword(loggedUser ,resetPasswordForm);
-            }
             return resetPassword(id, resetPasswordForm);
         }
-        us.resetPassword(id, resetPasswordForm.getNewPassword()); //TODO: aca va a romper cambiar el reset passowrd para el usuario
+        us.resetPassword(id, resetPasswordForm.getNewPassword());
         System.out.println("Contraseña restablecida");
         SecurityContextHolder.getContext().setAuthentication(null);
         return new ModelAndView("redirect:/");
@@ -271,6 +256,21 @@ public class UserController {
                 .withEmail(form.getEmail())
                 .withTel(form.getTelephone()));
         return new ModelAndView("redirect:/profile");
+    }
+
+    @RequestMapping("/edit-password")
+    public ModelAndView editPassword(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm) {
+        return new ModelAndView("indexResetPassword").addObject("id", loggedUser.getUser_id()).addObject("actionUrl", "/edit-password");
+    }
+
+    @RequestMapping(value = "/edit-password", method = RequestMethod.POST)
+    public ModelAndView editPassword(@Valid @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm, final BindingResult result, @ModelAttribute("getLoggedUser") User loggedUser) {
+        if (result.hasErrors()) {
+            return editPassword(loggedUser, resetPasswordForm);
+        }
+        us.resetPassword(loggedUser.getUser_id(), resetPasswordForm.getNewPassword());
+        System.out.println("Contraseña restablecida");
+        return new ModelAndView("redirect:/");
     }
 
 }
