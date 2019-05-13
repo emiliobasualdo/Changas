@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.webapp.forms.SearchForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,9 +14,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -67,5 +71,12 @@ public class MainPageController { //TODO: hacer que los jsp sea HTML safe
         } else {
             return new ModelAndView("redirect:/error").addObject("message", maybeChangas.getAlternative().getMessage());
         }
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.POST)
+    public ModelAndView showSearch(@Valid @ModelAttribute("signUpForm") final SearchForm form, @ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged) {
+        /* aca obtenemos las changas segun la busqueda */
+        System.out.println("Search= " + form.getSearch() + " and category= " + form.getCategory());
+        return showChangas(/*changas buscadas, */loggedUser, isUserLogged);
     }
 }

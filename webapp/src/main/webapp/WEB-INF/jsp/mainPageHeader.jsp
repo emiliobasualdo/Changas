@@ -52,17 +52,21 @@
         </section>
         <section class="search-sec">
             <div class="container">
-                <form action="#" method="post" novalidate="novalidate">
+                <c:url value="/" var="searchUrl" />
+                <form:form action="${searchUrl}" modelAttribute="searchForm" method="post">
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="row">
                                 <div class="col-lg-6 col-md-3 col-sm-12 p-0">
-                                    <input type="text" class="form-control search-slt" placeholder="<spring:message code="mainPageHeader.placeholder"/>">
+                                    <form:label path="search"><spring:message code="mainPageHeader.placeholder"/></form:label>
+                                    <form:input type="text" class="form-control search-slt"/>
+                                    <form:errors cssClass="form-error" path="name" element="p"/>        <%--todo--%>
                                 </div>
                                 <%--<div class="col-lg-3 col-md-3 col-sm-12 p-0">
                                     <input type="text" class="form-control search-slt" placeholder="Enter Drop City">
                                 </div>--%>
                                 <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                    <form:label path="search"><spring:message code="mainPageHeader.placeholder"/></form:label>
                                     <select class="form-control search-slt" id="exampleFormControlSelect1">
                                         <option><spring:message code="mainPageHeader.categories"/></option>
                                         <option><spring:message code="mainPageHeader.categories1"/></option>
@@ -78,7 +82,7 @@
                             </div>
                         </div>
                     </div>
-                </form>
+                </form:form>
             </div>
         </section>
         <%--<div id="carousel-example-2" class="carousel slide carousel-fade z-depth-1-half" data-ride="carousel">
