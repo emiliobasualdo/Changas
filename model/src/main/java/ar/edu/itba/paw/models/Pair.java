@@ -1,5 +1,8 @@
 package ar.edu.itba.paw.models;
 
+import java.util.Map;
+import java.util.Objects;
+
 public class Pair<K, V> {
 
     private K key;
@@ -21,4 +24,27 @@ public class Pair<K, V> {
     public V getValue() {
         return value;
     }
+
+
+    public boolean equalsS(final Object obj) {
+              if (obj == this) {
+                     return true;
+               }
+              if (obj instanceof Map.Entry<?, ?>) {
+                     final Map.Entry<?, ?> other = (Map.Entry<?, ?>) obj;
+                      return Objects.equals(getKey(), other.getKey())
+                              && Objects.equals(getValue(), other.getValue());
+              }
+               return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pair<?, ?> pair = (Pair<?, ?>) o;
+
+        return key.equals(pair.key) && value.equals(pair.value);
+    }
+
 }

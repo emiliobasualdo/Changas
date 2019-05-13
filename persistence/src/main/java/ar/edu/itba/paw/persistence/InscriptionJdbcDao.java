@@ -68,17 +68,31 @@ public class InscriptionJdbcDao implements InscriptionDao {
         return Either.value(pairList);
     }
 
+    //DONE
     @Override
     /* Return the changas the user of id=userId is inscribed in */
     public Either<List<Pair<Changa, Inscription>>, Validation> getUserInscriptions(long userId) {
         return this.getter(changaDao, user_id.name(), userId, Inscription::getChanga_id);
     }
 
+
+
     @Override
     /* Returns the users that are inscribed in a changa of id=changaId */
     public Either<List<Pair<User, Inscription>>, Validation>  getInscribedUsers(long changaId) {
         return this.getter(userDao, changa_id.name(), changaId, Inscription::getUser_id);
     }
+
+    //TODO BORRAR
+    @Override
+    public void banal(long userId, long changaId){
+       System.out.println(changaDao);
+        System.out.println(userDao);
+//       changaDao.getById(changaId);
+       getInscription(userId, changaId);
+//        System.out.println("BANAL");
+    }
+
 
     @Override
     /* An Inscription implies that the user is inscribbed OR he had inscribed him self before and optout */
@@ -106,6 +120,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
         }
     }
 
+    //NO SE HACE NO?
     private Validation forceInscribeInChanga(long userId, long changaId) {
         Map<String, Object> row = inscriptionToTableRow(userId, changaId);
         try {
@@ -117,6 +132,8 @@ public class InscriptionJdbcDao implements InscriptionDao {
         return new Validation(OK);
     }
 
+
+    //DONE
     @Override
     public Either<Inscription, Validation> getInscription(long userId, long changaId) {
         final List<Inscription> list  = jdbcTemplate.query(
@@ -131,6 +148,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
         }
     }
 
+    //DONE
     @Override
     public Validation changeUserStateInChanga(Inscription insc, InscriptionState newState) throws DataAccessException {
         // we assume the service has checked that the change can be done
@@ -159,6 +177,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
         return changeUserStateInChanga(insc.getValue(), state);
     }
 
+
     @Override
     public Either<Boolean, Validation> isUserInscribedInChanga(long userId, long changaId) {
         Either<Inscription, Validation> insc = getInscription(userId,changaId);
@@ -168,6 +187,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
         return Either.value(true);
     }
 
+    //DONE
     @Override
     public boolean hasInscribedUsers(long changaId) {
         Optional<Inscription> optional = jdbcTemplate.query(String.format("SELECT * FROM %s WHERE %s = ?", user_inscribed.name() , changa_id.name()), ROW_MAPPER, changaId).stream().findAny();
