@@ -23,7 +23,6 @@ import java.util.function.Function;
 import static ar.edu.itba.paw.constants.DBInscriptionFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.user_inscribed;
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
-import static ar.edu.itba.paw.models.InscriptionState.optout;
 import static ar.edu.itba.paw.models.InscriptionState.requested;
 
 @Repository
@@ -49,11 +48,11 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
     private <T> Either<List<Pair<T, Inscription>>, Validation> getter (
-            Dao<T> dao, String colName, long id, Function<Inscription,Long> inscGetId) {
+            Dao<T> dao, String colName, long id, Function<Inscription,Long> inscGetId, String secondWhere) {
 
         final List<Inscription> inscriptionList = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = ?", user_inscribed // todo cambiar query() por otra cosa
-                        , colName),
+                String.format("SELECT * FROM %s WHERE %s = ? %s", user_inscribed
+                        , colName, secondWhere),
                 ROW_MAPPER,
                 id
         );
@@ -73,15 +72,25 @@ public class InscriptionJdbcDao implements InscriptionDao {
 
     @Override
     /* Return the changas the user of id=userId is inscribed in */
-    public Either<List<Pair<Changa, Inscription>>, Validation> getUserInscriptions(long userId) {
-        return this.getter(changaDao, user_id.name(), userId, Inscription::getChanga_id);
+    public Either<List<Pair<Changa, Inscription>>, Validation> getUserInscriptions(boolean equals, InscriptionState filterState, long userId) {
+        String secondWhere = "";
+        if(filterState != null) {
+            secondWhere = "AND "+ state.name();
+            if (equals) {
+                secondWhere = secondWhere + " = ";
+            } else {
+                secondWhere = secondWhere + " != ";
+            }
+            secondWhere = secondWhere + "'" + filterState.name() + "'";
+        }
+        return this.getter(changaDao, user_id.name(), userId, Inscription::getChanga_id, secondWhere);
     }
 
 
     @Override
     /* Returns the users that are inscribed in a changa of id=changaId */
     public Either<List<Pair<User, Inscription>>, Validation>  getInscribedUsers(long changaId) {
-        return this.getter(userDao, changa_id.name(), changaId, Inscription::getUser_id);
+        return this.getter(userDao, changa_id.name(), changaId, Inscription::getUser_id, "");
     }
 
 

@@ -10,8 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.CHANGE_NOT_POSSIBLE;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.USERS_INSCRIBED;
+import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
 
 @Repository
 public class ChangaServiceImpl implements ChangaService {
@@ -23,8 +22,11 @@ public class ChangaServiceImpl implements ChangaService {
     private InscriptionDao inDao;
 
     @Override
-    public Either<List<Changa>, Validation> getAllChangas() {
-        return chDao.getAll();
+    public Either<List<Changa>, Validation> getAllEmittedChangas(int pageNum) {
+        if (pageNum < 0) {
+            return Either.alternative(new Validation(ILLEGAL_VALUE.withMessage("Page number must be greater than zero")));
+        }
+        return chDao.getAll(ChangaState.emitted, pageNum);
     }
 
     @Override
