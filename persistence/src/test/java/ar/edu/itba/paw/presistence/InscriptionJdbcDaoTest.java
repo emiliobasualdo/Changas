@@ -466,6 +466,7 @@ public class InscriptionJdbcDaoTest {
         assertEquals(DATABASE_ERROR, validation.getEc());
     }
 
+    //pasar este test a service
     @Test
     public void testInscribeInChanga_returnsCorrectValidation() {
         //Make sure the user owner of the changa is in the DB
@@ -478,9 +479,6 @@ public class InscriptionJdbcDaoTest {
         //Make sure the user to be inscribed is in the DB
         Number userInscribedId =  addUserToDatabase(USER2_EMAIL, PASSWORD);
 
-        //Mock changaDao
-        Mockito.when(changaDao.getById(changaId.longValue())).thenReturn(Either.value(changa));
-
         //EXERCISE
         Validation validation = inscriptionDao.inscribeInChanga(userInscribedId.longValue(), changaId.longValue());
 
@@ -490,77 +488,11 @@ public class InscriptionJdbcDaoTest {
     }
 
     @Test
-    public void testInscribeInChanga_returnsUserOwnsChanga() {
-        //Make sure the user owner of the changa is in the DB
-        Number userOwnerId =  addUserToDatabase(USER1_EMAIL, PASSWORD);
-
-        //Make sure the changa is in the DB
-        Number changaId =  addChangaToDatabase(userOwnerId.longValue());
-        Changa changa = new Changa(changaId.longValue(), new Changa.Builder().withUserId(userOwnerId.longValue()));
-
-        //Mock changaDao
-        Mockito.when(changaDao.getById(changaId.longValue())).thenReturn(Either.value(changa));
-
+    public void testInscribeInChanga_returnsError() {
         //EXERCISE
-        Validation validation = inscriptionDao.inscribeInChanga(userOwnerId.longValue(), changaId.longValue());
-
+        Validation validation = inscriptionDao.inscribeInChanga(USER1_ID, CHANGA_ID);
         //ASSERT
-        assertEquals(USER_OWNS_THE_CHANGA, validation.getEc());
-    }
-
-    @Test
-    public void testInscribeInChanga_returnsUserAlreadyInscribed() {
-        //Make sure the user owner of the changa is in the DB
-        Number userOwnerId =  addUserToDatabase(USER1_EMAIL, PASSWORD);
-
-        //Make sure the changa is in the DB
-        Number changaId =  addChangaToDatabase(userOwnerId.longValue());
-        Changa changa = new Changa(changaId.longValue(), new Changa.Builder().withUserId(userOwnerId.longValue()));
-
-        //Make sure the user inscribed is in the DB
-        Number userInscribedId =  addUserToDatabase(USER2_EMAIL, PASSWORD);
-
-        // Make sure the inscription is in the DB
-        addInscriptionToDataBase(userInscribedId.longValue(), changaId.longValue());
-
-        //Mock changaDao
-        Mockito.when(changaDao.getById(changaId.longValue())).thenReturn(Either.value(changa));
-
-        //EXERCISE
-        Validation validation = inscriptionDao.inscribeInChanga(userInscribedId.longValue(), changaId.longValue());
-
-        //ASSERT
-        assertEquals(USER_ALREADY_INSCRIBED, validation.getEc());
-    }
-
-    @Test
-    public void testInscribeInChanga_returnsOkAfterChangingOptoutToRequested() {
-        //Make sure the user owner of the changa is in the DB
-        Number userOwnerId =  addUserToDatabase(USER1_EMAIL, PASSWORD);
-
-        //Make sure the changa is in the DB
-        Number changaId =  addChangaToDatabase(userOwnerId.longValue());
-        Changa changa = new Changa(changaId.longValue(), new Changa.Builder().withUserId(userOwnerId.longValue()));
-
-        //Make sure the user who opted out is in the DB
-        Number userWhoOptedOutId =  addUserToDatabase(USER2_EMAIL, PASSWORD);
-
-        // Make sure the inscription is in the DB with the state in opt out
-        Map<String, Object> userInscribedRow = new HashMap<>();
-        userInscribedRow.put(user_id.name(), userWhoOptedOutId);
-        userInscribedRow.put(changa_id.name(), changaId);
-        userInscribedRow.put(state.name(), optout.toString());
-        jdbcInsertUserInscribedRow.execute(userInscribedRow);
-
-        //Mock changaDao
-        Mockito.when(changaDao.getById(changaId.longValue())).thenReturn(Either.value(changa));
-
-        //EXERCISE
-        Validation validation = inscriptionDao.inscribeInChanga(userWhoOptedOutId.longValue(), changaId.longValue());
-
-        //ASSERT
-        assertEquals(OK, validation.getEc());
-
+        assertEquals(DATABASE_ERROR, validation.getEc());
     }
 
 

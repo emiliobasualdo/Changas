@@ -32,6 +32,9 @@ public class Validation {
 
         // Changas
         NO_SUCH_CHANGA          ("Invalid changa id"),
+        CHANGA_CLOSED           ("The changa has been closed by user for any reason or after inactivity or by admin"),
+        CHANGA_DONE             ( "The changa has been taken care of"),
+        CHANGA_SETTLED          ("The owner of the changa has choosen one or more changueros and has closed the inscriptions"),
 
         // Users
         INVALID_PASSWORD        ("Invalid password"),
