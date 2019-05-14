@@ -55,6 +55,31 @@
                             </div>
                         </td>
                     </tr>
+
+                    <tr>
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <form:label path="description"><spring:message code="ChangaForm.category"/></form:label>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <%--todo mal implementado, solucionar--%>
+                                    <form:select  class="form-control" path="category">
+                                        <option value="home"><spring:message code="ChangaFrom.categories.home"/></option>
+                                        <option value="software"><spring:message code="ChangaFrom.categories.software"/></option>
+                                        <option value="education"><spring:message code="ChangaFrom.categories.education"/></option>
+                                        <option value="other"><spring:message code="ChangaFrom.categories.other"/></option>
+                                    </form:select>
+                                </div>
+                                <form:errors cssClass="form-error" path="category" element="p"/>
+                            </div>
+                        </td>
+                    </tr>
+
                     <tr>
                         <td>
                             <div class="form-group">

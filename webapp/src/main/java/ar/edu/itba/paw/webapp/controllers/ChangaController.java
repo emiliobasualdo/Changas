@@ -67,6 +67,7 @@ public class ChangaController {
         form.setNumber(changa.getNumber());
         form.setNeighborhood(changa.getNeighborhood());
         form.setDescription(changa.getDescription());
+        form.setCategory(changa.getCategory());
         return new ModelAndView("editChangaForm")
                 .addObject("id", id);
     }

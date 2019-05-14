@@ -24,11 +24,19 @@ public class ChangaServiceImpl implements ChangaService {
     private InscriptionDao inDao;
 
     @Override
-    public Either<List<Changa>, Validation> getAllEmittedChangas(int pageNum) {
+    public Either<List<Changa>, Validation> getEmittedChangas(int pageNum) {
         if (pageNum < 0) {
             return Either.alternative(ILLEGAL_VALUE.withMessage("Page number must be greater than zero"));
         }
         return chDao.getAll(ChangaState.emitted, pageNum);
+    }
+
+    @Override
+    public Either<List<Changa>, Validation> getEmittedChangasByCategory(int pageNum, String category) {
+        if (pageNum < 0) {
+            return Either.alternative(ILLEGAL_VALUE.withMessage("Page number must be greater than zero"));
+        }
+        return chDao.getByCategory(ChangaState.emitted, pageNum, category);
     }
 
     @Override

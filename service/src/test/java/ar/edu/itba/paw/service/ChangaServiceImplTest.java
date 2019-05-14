@@ -2,15 +2,11 @@ package ar.edu.itba.paw.service;
 
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
-import ar.edu.itba.paw.interfaces.daos.UserDao;
-import ar.edu.itba.paw.interfaces.daos.VerificationTokenDao;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.ChangaState;
 import ar.edu.itba.paw.models.Either;
-import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.services.ChangaServiceImpl;
-import ar.edu.itba.paw.services.UserServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,8 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +67,7 @@ public class ChangaServiceImplTest {
         // preparamos el falso dao
         when(chDao.getAll(ChangaState.emitted, 0)).thenReturn(Either.value(mockedList));
         // EJERCITAR
-        List<Changa> list = changaService.getAllEmittedChangas(0).getValue();
+        List<Changa> list = changaService.getEmittedChangas(0).getValue();
         // ASSERT
         assertEquals(3, list.size());
         assertEquals(mockedList, list);
