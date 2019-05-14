@@ -97,7 +97,7 @@
                     <td>
                         <div class="form-group">
                             <div class="input-group">
-                                <form:input class="form-control" path="password" />
+                                <form:input type="password" class="form-control" path="password" />
                             </div>
                             <form:errors cssClass="form-error" path="password" element="p"/>
                         </div>
@@ -118,7 +118,7 @@
                     <td>
                         <div class="form-group">
                             <div class="input-group">
-                                <form:input class="form-control" path="repeatPassword"/>
+                                <form:input type="password" class="form-control" path="repeatPassword"/>
                             </div>
                             <form:errors cssClass="form-error" path="repeatPassword" element="p"/>
                         </div>
@@ -130,7 +130,8 @@
             </div>
             <p class="small text-center"><spring:message code="signUpBody.alert.termsAndPivacyP"/><%--<br><a href="#">Terms &amp; Conditions</a>, and <a href="#">Privacy Policy</a>--%>.</p>
         </form:form>
-        <div class="text-center" style="color: black;"><spring:message code="signUpBody.alert.logIn"/><a href="/logIn" style="color: black;"><spring:message code="signUpBody.alert.btn.logIn"/></a>.</div>
+        <c:url value="/login" var="logInUrl" />
+        <div class="text-center" style="color: black;"><spring:message code="signUpBody.alert.logIn"/><a href="${logInUrl}" style="color: black;"><spring:message code="signUpBody.alert.btn.logIn"/></a>.</div>
     </div>
     </body>
 </html>

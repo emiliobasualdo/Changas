@@ -15,6 +15,7 @@ public class ChangaForm {
 
     @NotNull
     @Min(1)
+    @Max(20000)
     private double price;
 
     @NotEmpty

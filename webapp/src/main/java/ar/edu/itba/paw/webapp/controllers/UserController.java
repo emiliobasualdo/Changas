@@ -77,11 +77,6 @@ public class UserController {
                 .withPasswd(form.getPassword())
                 );
         if (!either.isValuePresent()) {
-            if (either.getAlternative().compareTo(USER_ALREADY_EXISTS) == 0) {
-                errors.rejectValue("email", "error.mailInUse", new Object[] {form.getEmail()}, "");
-                return signUp(form);
-            }
-            // si cae aca seria muy extraño mas bien excepcional, que onda??
             return new ModelAndView("redirect:/error").addObject("message", either.getAlternative().getMessage());
         }
         try {
