@@ -45,14 +45,15 @@ public class ChangaController {
         if (errors.hasErrors()) {
             return createChanga(form);
         }
-        cs.create(new Changa.Builder().withUserId(loggedUser.getUser_id())
+        Either<Changa, Validation> changa = cs.create(new Changa.Builder().withUserId(loggedUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
                 .createdAt(LocalDateTime.now())
         );
-        return new ModelAndView("redirect:/");
+        if (!changa.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", changa.getAlternative().getMessage());
+        return new ModelAndView("redirect:/changa").addObject("id", changa.getValue().getChanga_id());
     }
 
     @RequestMapping(value = "/edit-changa")
@@ -84,7 +85,7 @@ public class ChangaController {
         return new ModelAndView("redirect:/profile");
     }
 
-    @RequestMapping({"/changa"})
+    @RequestMapping("/changa")
     public ModelAndView showChanga(@RequestParam("id") long id, @ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged) {
         ModelAndView mav = new ModelAndView("indexChanga");
         Either<Changa, Validation> changa = this.cs.getChangaById(id);
@@ -93,10 +94,11 @@ public class ChangaController {
         boolean userAlreadyInscribedInChanga = false;
         if (isUserLogged) {
             if (loggedUser.getUser_id() == changa.getValue().getUser_id()) {
-                mav.addObject("changaOwner", loggedUser);
-                mav.addObject("userOwnsChanga", true);
-                mav.addObject("userAlreadyInscribedInChanga", false);
-                return mav;
+//                mav.addObject("changaOwner", loggedUser);
+//                mav.addObject("userOwnsChanga", true);
+//                mav.addObject("userAlreadyInscribedInChanga", false);
+//                return mav;
+                return new ModelAndView("forward:/admin-changa").addObject("id", id);
             } else {
                 Either<Boolean, Validation> isUserInscribedInChanga = this.is.isUserInscribedInChanga(loggedUser.getUser_id(), id);
                 if (!isUserInscribedInChanga.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", isUserInscribedInChanga.getAlternative().getMessage());

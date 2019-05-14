@@ -9,10 +9,12 @@ public class EqualFieldsValidator implements ConstraintValidator<EqualFields, Ob
 
     private String field;
     private String fieldMatch;
+    private String message;
 
     public void initialize(EqualFields constraintAnnotation) {
         this.field = constraintAnnotation.field();
         this.fieldMatch = constraintAnnotation.fieldMatch();
+        this.message = constraintAnnotation.message();
     }
 
     public boolean isValid(Object value, ConstraintValidatorContext context) {
@@ -20,10 +22,13 @@ public class EqualFieldsValidator implements ConstraintValidator<EqualFields, Ob
         Object fieldValue = new BeanWrapperImpl(value).getPropertyValue(field);
         Object fieldMatchValue = new BeanWrapperImpl(value).getPropertyValue(fieldMatch);
 
-        if (fieldValue != null) {
-            return fieldValue.equals(fieldMatchValue);
-        } else {
-            return fieldMatchValue == null;
+        boolean valid = fieldValue == null && fieldMatchValue == null || fieldValue != null && fieldValue.equals(fieldMatchValue);
+        if (!valid){
+            context.buildConstraintViolationWithTemplate(message)
+                    .addNode(field)
+                    .addConstraintViolation()
+                    .disableDefaultConstraintViolation();
         }
+        return valid;
     }
 }
