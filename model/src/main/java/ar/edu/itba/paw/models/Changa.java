@@ -178,4 +178,20 @@ public class Changa {
 //            return changa;
 //        }
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof Changa)) {
+            return false;
+        }
+
+        Changa c = (Changa) o;
+
+        return c.changa_id == changa_id;
+    }
 }

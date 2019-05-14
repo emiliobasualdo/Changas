@@ -54,4 +54,19 @@ public class Inscription {
             return insc;
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof Inscription)) {
+            return false;
+        }
+
+        Inscription i = (Inscription) o;
+
+        return i.changa_id == changa_id && i.user_id == user_id;
+    }
 }
