@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.forms;
 
+import ar.edu.itba.paw.webapp.constraints.EmailInUse;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -9,6 +10,7 @@ public class EditUserForm {
 
     @NotEmpty
     @Email
+    @EmailInUse
     private String email;
 
     @NotEmpty
