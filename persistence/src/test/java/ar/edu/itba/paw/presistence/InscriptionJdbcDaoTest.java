@@ -30,7 +30,9 @@ import static ar.edu.itba.paw.constants.DBTableName.*;
 import static ar.edu.itba.paw.constants.DBUserFields.email;
 import static ar.edu.itba.paw.constants.DBUserFields.passwd;
 import static ar.edu.itba.paw.constants.DBUserFields.user_id;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.DATABASE_ERROR;
+import static ar.edu.itba.paw.interfaces.util.Validation.OK;
+import static ar.edu.itba.paw.interfaces.util.Validation.USER_NOT_INSCRIBED;
 import static ar.edu.itba.paw.models.InscriptionState.accepted;
 import static ar.edu.itba.paw.models.InscriptionState.optout;
 import static ar.edu.itba.paw.models.InscriptionState.requested;
@@ -130,7 +132,7 @@ public class InscriptionJdbcDaoTest {
         // ASSERT
         //assertNotNull(inscriptionEither);
         assertNotNull(inscriptionEither.getAlternative());
-        assertEquals(USER_NOT_INSCRIBED, inscriptionEither.getAlternative().getEc());
+        assertEquals(USER_NOT_INSCRIBED, inscriptionEither.getAlternative());
     }
 
 
@@ -284,7 +286,7 @@ public class InscriptionJdbcDaoTest {
         Mockito.when(changaDao.getById(changa3Id.longValue())).thenReturn(Either.value(changa3));
 
         //EXERCISE
-        Either<List<Pair<Changa, Inscription>>, Validation> userInscriptions = inscriptionDao.getUserInscriptions(userInscribedId.longValue());
+        Either<List<Pair<Changa, Inscription>>, Validation> userInscriptions = inscriptionDao.getUserInscriptions(true, null , userInscribedId.longValue());
 
         //ASSERT
         assertEquals(expectedUserInscriptions.size(), userInscriptions.getValue().size());
@@ -300,7 +302,7 @@ public class InscriptionJdbcDaoTest {
         Number userId =  addUserToDatabase(USER1_EMAIL, PASSWORD);
 
         //EXERCISE
-        Either<List<Pair<Changa, Inscription>>, Validation> userInscriptions = inscriptionDao.getUserInscriptions(userId.longValue());
+        Either<List<Pair<Changa, Inscription>>, Validation> userInscriptions = inscriptionDao.getUserInscriptions(true, null, userId.longValue());
 
         //ASSERT
         assertEquals(0, userInscriptions.getValue().size());
@@ -410,7 +412,7 @@ public class InscriptionJdbcDaoTest {
         Validation validation = inscriptionDao.changeUserStateInChanga(inscripiton, accepted);
 
         //ASSERT
-        assertEquals(OK, validation.getEc());
+        assertEquals(OK.withMessage("hola"), validation);
         //se que esto no se puede hacer, pero me gustaria hacerlo para verificar q se haya updateado bien y no simplemente el return OK.
         //assertEquals(accepted, inscriptionDao.getInscription(userInscribedId.longValue(), changaId.longValue()).getValue().getState());
     }
@@ -425,7 +427,7 @@ public class InscriptionJdbcDaoTest {
         Validation validation = inscriptionDao.changeUserStateInChanga(inscripiton, accepted);
 
         //ASSERT
-        assertEquals(DATABASE_ERROR, validation.getEc());
+        assertEquals(DATABASE_ERROR, validation);
     }
 
     @Test
@@ -448,7 +450,7 @@ public class InscriptionJdbcDaoTest {
         Validation validation = inscriptionDao.changeUserStateInChanga(userInscribedId.longValue(), changaId.longValue(), accepted);
 
         //ASSERT
-        assertEquals(OK, validation.getEc());
+        assertEquals(OK, validation);
         //se que esto no se puede hacer, pero me gustaria hacerlo para verificar q se haya updateado bien y no simplemente el return OK.
         //assertEquals(accepted, inscriptionDao.getInscription(userInscribedId.longValue(), changaId.longValue()).getValue().getState());
     }
@@ -463,7 +465,7 @@ public class InscriptionJdbcDaoTest {
         Validation validation = inscriptionDao.changeUserStateInChanga(inscripiton, accepted);
 
         //ASSERT
-        assertEquals(DATABASE_ERROR, validation.getEc());
+        assertEquals(DATABASE_ERROR, validation);
     }
 
     //pasar este test a service
@@ -483,7 +485,7 @@ public class InscriptionJdbcDaoTest {
         Validation validation = inscriptionDao.inscribeInChanga(userInscribedId.longValue(), changaId.longValue());
 
         //ASSERT
-        assertEquals(OK, validation.getEc());
+        assertEquals(OK, validation);
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, user_inscribed.name(), String.format("%s = %d", user_id, userInscribedId.longValue())));
     }
 
@@ -492,7 +494,7 @@ public class InscriptionJdbcDaoTest {
         //EXERCISE
         Validation validation = inscriptionDao.inscribeInChanga(USER1_ID, CHANGA_ID);
         //ASSERT
-        assertEquals(DATABASE_ERROR, validation.getEc());
+        assertEquals(DATABASE_ERROR, validation);
     }
 
 

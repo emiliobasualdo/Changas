@@ -9,6 +9,7 @@ public enum Validation {
 
     // Changas,
     NO_SUCH_CHANGA("Invalid changa id"),
+    ILLEGAL_ACTION("This action is not alloed:"),
 
     // Users
     INVALID_PASSWORD("Invalid password"),

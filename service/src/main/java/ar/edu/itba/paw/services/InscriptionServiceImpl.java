@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
+import ar.edu.itba.paw.interfaces.daos.UserDao;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.interfaces.util.Validation;
@@ -10,7 +11,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
+
+import static ar.edu.itba.paw.interfaces.util.Validation.*;
 import static ar.edu.itba.paw.models.ChangaState.*;
 import static ar.edu.itba.paw.models.InscriptionState.optout;
 import static ar.edu.itba.paw.models.InscriptionState.requested;
@@ -25,38 +27,37 @@ public class InscriptionServiceImpl implements InscriptionService {
     @Autowired
     private ChangaDao changaDao;
 
+    @Autowired
+    private UserDao userDao;
+
     @Override
     /* An Inscription implies that the user is inscribed OR he had inscribed himself before and optout */
     public Validation inscribeInChanga(long userId, long changaId) {
         // We check if the user is the owner of the changa
         Either<Changa, Validation> changa = changaDao.getById(changaId);
-        if (changa.isValuePresent()) {
-            ChangaState changaState = changa.getValue().getState();
-            if(changaState != emitted) {
-                if (changaState == closed) {
-                    return new Validation(CHANGA_CLOSED);
-                }
-                if (changaState == done) {
-                    return new Validation(CHANGA_DONE);
-                }
-                if (changaState == settled) {
-                    return new Validation(CHANGA_SETTLED);
-                }
-            }
-            if (changa.getValue().getUser_id() == userId){
-                return new Validation(USER_OWNS_THE_CHANGA);
-            }
-        } else {
+        if (!changa.isValuePresent())  {
             return changa.getAlternative();
+        }
+        Either<User, Validation> user = userDao.getById(userId);
+        if (!user.isValuePresent())  {
+            return user.getAlternative();
+        }
+
+        ChangaState changaState = changa.getValue().getState();
+        if(changaState != emitted) {
+            return ILLEGAL_ACTION.withMessage("Can not inscribe to non emitted changa.");
+        }
+        if (changa.getValue().getUser_id() == userId){
+            return USER_OWNS_THE_CHANGA;
         }
 
         // We check if the user is already inscribed
         Either<Inscription, Validation> insc = getInscription(userId, changaId);
         if (insc.isValuePresent()){
             //if the user had previously been inscribed and opted out, we change the state to requested. Else, we return user already inscribed.
-            return insc.getValue().getState() == optout ? changeUserStateInChanga(insc.getValue(), requested) : new Validation(USER_ALREADY_INSCRIBED);
+            return insc.getValue().getState() == optout ? changeUserStateInChanga(insc.getValue(), requested) : USER_ALREADY_INSCRIBED;
         } else { // user needs to be inscribbed
-            if (insc.getAlternative().getEc() == USER_NOT_INSCRIBED){
+            if (insc.getAlternative() == USER_NOT_INSCRIBED){
                 return inscriptionDao.inscribeInChanga(userId, changaId);
             } else {
                 return insc.getAlternative();
