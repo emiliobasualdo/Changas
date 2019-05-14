@@ -50,7 +50,8 @@ body {
 .profile-edit-btn{
     border: none;
     border-radius: 1.5rem;
-    width: 70%;
+    margin-left: 80%;
+    width: 30%;
     padding: 2%;
     font-weight: 600;
     font: 15px "Quicksand", sans-serif;
@@ -78,7 +79,7 @@ body {
     font-size: 20px;
     color: #000000;
 }
-.tab-content { /*TODO: tratar de buscarle otra solucion Problema: tab-content o tab-pane no aprovecha todo el ancho en algunos casos*/
+.tab-content {
     width: 100%;
 }
 .profile-tab p{

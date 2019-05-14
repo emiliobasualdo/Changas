@@ -13,6 +13,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
         <style><%@include file="/WEB-INF/css/signUpBody.css"%></style>
+        <style><%@include file="/WEB-INF/css/formError.css"%></style>
     </head>
     <body>
         <div class="signup-form">
@@ -32,8 +33,8 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <form:input class="form-control" path="title"/>
-                                    <form:errors path="title" element="p">Inválido</form:errors>
                                 </div>
+                                <form:errors cssClass="form-error" path="title" element="p"/>
                             </div>
                         </td>
                     </tr>
@@ -49,8 +50,8 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <form:textarea rows="3" class="form-control" path="description"/>
-                                    <form:errors path="description" element="p">Inválido</form:errors>
                                 </div>
+                                <form:errors cssClass="form-error" path="description" element="p"/>
                             </div>
                         </td>
                     </tr>
@@ -66,8 +67,8 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <form:input class="form-control" path="neighborhood"/>
-                                    <form:errors path="neighborhood" element="p">Inválido</form:errors>
                                 </div>
+                                <form:errors cssClass="form-error" path="neighborhood" element="p"/>
                             </div>
                         </td>
                     </tr>
@@ -83,8 +84,8 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <form:input class="form-control" path="street"/>
-                                    <form:errors path="street" element="p">Inválido</form:errors>
                                 </div>
+                                <form:errors cssClass="form-error" path="street" element="p"/>
                             </div>
                         </td>
                     </tr>
@@ -100,8 +101,8 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <form:input class="form-control" path="number"/>
-                                    <form:errors path="number" element="p">Inválido</form:errors>
                                 </div>
+                                <form:errors cssClass="form-error" path="number" element="p"/>
                             </div>
                         </td>
                     </tr>
@@ -116,9 +117,9 @@
                         <td>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <form:input class="form-control" path="price"/>
-                                    <form:errors path="price" element="p">Inválido</form:errors>
+                                    <form:input  class="form-control" path="price"/>
                                 </div>
+                                <form:errors cssClass="form-error" path="price" element="p"/>
                             </div>
                         </td>
                     </tr>

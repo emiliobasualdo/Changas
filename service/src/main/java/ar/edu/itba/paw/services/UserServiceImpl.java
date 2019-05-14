@@ -18,9 +18,9 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Calendar;
 
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.DATABASE_ERROR;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.EXPIRED_TOKEN;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.USER_ALREADY_EXISTS;
+import static ar.edu.itba.paw.interfaces.util.Validation.DATABASE_ERROR;
+import static ar.edu.itba.paw.interfaces.util.Validation.EXPIRED_TOKEN;
+import static ar.edu.itba.paw.interfaces.util.Validation.USER_ALREADY_EXISTS;
 
 @Service
 @Primary
@@ -51,21 +51,17 @@ public class UserServiceImpl implements UserService {
         Either<User, Validation> either = userDao.findByMail(userBuilder.getEmail());
 
         // if error is from database
-        if(!either.isValuePresent() && either.getAlternative().getEc() == DATABASE_ERROR){
+        if(!either.isValuePresent() && either.getAlternative() == DATABASE_ERROR){
             return either;
         }
-        /*TODO MAITE
-        hacer un || chequeando que el username no exista. Agregar username al UserBuilder.
-        */
-        // email is allready in use
+        // email is already in use
         if(either.isValuePresent()) {
-            return Either.alternative(new Validation(USER_ALREADY_EXISTS));
+            return Either.alternative(USER_ALREADY_EXISTS);
         }
+        // else (!either.isValuePresent() && either.getAlternative() == NO_SUCH_USER o similar)
         userBuilder.withPasswd(passwordEncoder.encode(userBuilder.getPasswd()));
         return userDao.create(userBuilder);
     }
-
-
 
     @Override
     public void createVerificationToken(User user, String token)  {
@@ -74,14 +70,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Either<VerificationToken, Validation> getVerificationToken(String VerificationToken) {
-        Either<VerificationToken, Validation> verificationToken = verificationTokenDao.findByToken(VerificationToken);
+    public Either<VerificationToken, Validation> getVerificationToken(String tokenString) {
+        Either<VerificationToken, Validation> verificationToken = verificationTokenDao.findByToken(tokenString);
         if(!verificationToken.isValuePresent()){
             return verificationToken;
         }
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getValue().getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            return Either.alternative(new Validation(EXPIRED_TOKEN));
+            return Either.alternative(EXPIRED_TOKEN);
         }
         return verificationToken;
     }
@@ -90,11 +86,11 @@ public class UserServiceImpl implements UserService {
     public Either<VerificationToken, Validation> getVerificationTokenWithRole(final long userId, final String VerificationToken) {
         Either<VerificationToken, Validation> verificationToken = verificationTokenDao.findByToken(VerificationToken);
         if(!verificationToken.isValuePresent() || Long.compare(verificationToken.getValue().getUserId(), userId) != 0){
-            return Either.alternative(new Validation(Validation.ErrorCodes.INEXISTENT_TOKEN));
+            return Either.alternative(Validation.INEXISTENT_TOKEN);
         }
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getValue().getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            return Either.alternative(new Validation(EXPIRED_TOKEN));
+            return Either.alternative(EXPIRED_TOKEN);
         }
         Authentication auth = new UsernamePasswordAuthenticationToken(
                 this.findById(verificationToken.getValue().getUserId()), null, Arrays.asList( new SimpleGrantedAuthority("CHANGE_PASSWORD_PRIVILEGE")));
@@ -103,8 +99,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setUserEnabledStatus(long userId, boolean status) {
-        userDao.setUserStatus(userId, status);
+    public Validation setUserEnabledStatus(long userId, boolean status) {
+        return userDao.setUserStatus(userId, status);
     }
 
     @Override
@@ -114,9 +110,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void confirmMailVerification(final long userId, final long tokenId) {
-        setUserEnabledStatus(userId, true);
+        setUserEnabledStatus(userId, true); // falta hacer if del retorno de serUser...
         verificationTokenDao.delete(tokenId);
     }
 
+    @Override
+    public Either<User, Validation> update(final long userId, User.Builder userBuilder) {
+        return userDao.update(userId, userBuilder);
+    }
 
 }

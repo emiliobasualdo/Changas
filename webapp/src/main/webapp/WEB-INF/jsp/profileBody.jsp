@@ -7,8 +7,6 @@
     </head>
     <body>
         <div class="container emp-profile">
-            <%--TODO: cabiar form a a un spring form para que por beans se mapen las varibales y poder cambiar el contendido de las mismas--%>
-            <%--<form method="post">--%>
                 <div class="row">
                     <%-- todo
                     <div class="col-md-4">
@@ -24,7 +22,7 @@
                         <div class="profile-head">
 
                             <%--DATOS DEL USUARIO--%>
-                            <h5><c:out value="${getLoggedUser.name}"/> <c:out value="${profile.surname}"/></h5>
+                            <h5><c:out value="${getLoggedUser.name}"/> <c:out value="${getLoggedUser.surname}"/></h5>
                             <h6><c:out value="${getLoggedUser.email}"/></h6>
                             <p><c:out value="${getLoggedUser.tel}"/></p>
 
@@ -38,9 +36,16 @@
                                 </li>
                             </ul>
                         </div>
-                        <%--<div class="col-md-2" style="alignment: right">
-                            <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Editar perfil"/>
-                        </div>--%>
+                        <div class="col-md-6" style="alignment: right">
+                            <p>
+                                <c:url value="/edit-profile" var="editProfileUrl" />
+                                <a href="${editProfileUrl}" class="profile-edit-btn"><spring:message code="profileBody.nav.edit"/></a>
+                            </p>
+                            <p>
+                                <c:url value="/edit-password" var="resetPasswordUrl" />
+                                <a href="${resetPasswordUrl}" class="profile-edit-btn" style="margin-left: 65%"><spring:message code="profileBody.nav.reset"/></a>
+                            </p>
+                        </div>
                     <%--</div>--%>
                 </div>
                 <div class="row">
@@ -87,7 +92,6 @@
                         </div>
                     <%--</div>--%>
                 </div>
-            <%--</form>--%>
         </div>
     </body>
 </html>

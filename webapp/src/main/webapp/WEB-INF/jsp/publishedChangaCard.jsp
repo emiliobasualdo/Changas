@@ -17,18 +17,10 @@
                     </small><br>
             </span>
             <hr />
-            <%--<p>
-                <c:out value="${requestScope.description}" />
-            </p>
-            <hr />--%>
             <div class="price">
-                <%--<div class="front">
-                        <span class="price">
-                            <c:out value="${requestScope.price}" />$<b>$</b>
-                        </span>
-                </div>--%>
                 <div class="back">
-                    <a href="admin-changa?id=<c:out value="${requestScope.changa_id}"/>" class="button"><spring:message code="publishedChangaCard.btn.admin"/></a>
+                    <c:url value="admin-changa?id=${requestScope.changa_id}" var="adminChangaUrl" />
+                    <a href="${adminChangaUrl}" class="button"><spring:message code="publishedChangaCard.btn.admin"/></a>
                 </div>
             </div>
         </div>

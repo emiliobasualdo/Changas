@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 
 <head>
@@ -28,7 +28,8 @@
             <c:when test="${notInscribedUsers == true}">
                 <div class="btn-group">
                     <div class="container">
-                        <a id="btnedit" href="/edit-changa?id=<c:out value="${changa.changa_id}"/>" class="btn btn-info center-pill"><spring:message code="adminchangaBody.btn.edit"/></a>
+                        <c:url value="/edit-changa?id=${changa.changa_id}" var="editChangaUrl" />
+                        <a id="btnedit" href="${editChangaUrl}" class="btn btn-info center-pill"><spring:message code="adminchangaBody.btn.edit"/></a>
                         <br />
                     </div>
 

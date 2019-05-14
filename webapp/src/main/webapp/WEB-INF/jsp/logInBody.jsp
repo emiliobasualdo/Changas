@@ -32,8 +32,9 @@
             </form>
             <c:url value="/login/forgot-password" var="forgotPasswordUrl" />
             <div style="text-align: center">
-            <a href="${forgotPasswordUrl}" class="pull-right text-center small"><spring:message code="loginBody.alert.forgotPassword"/></a>
-            <p class="text-center small"><spring:message code="loginBody.alert.noAccount"/><a href="/signup"><spring:message code="loginBody.btn.singUp"/></a></p>
+                <a href="${forgotPasswordUrl}" class="pull-right text-center small"><spring:message code="loginBody.alert.forgotPassword"/></a>
+                <c:url value="/signup" var="signupUrl" />
+                <p class="text-center small"><spring:message code="loginBody.alert.noAccount"/><a href="${signupUrl}"><spring:message code="loginBody.btn.singUp"/></a></p>
             </div>
         </div>
     </body>

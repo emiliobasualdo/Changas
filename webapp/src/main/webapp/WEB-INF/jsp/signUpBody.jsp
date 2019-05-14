@@ -5,6 +5,7 @@
 <html>
     <head>
         <style><%@ include file="/WEB-INF/css/signUpBody.css" %></style>
+        <style><%@include file="/WEB-INF/css/formError.css"%></style>
     </head>
     <body>
     <div class="signup-form">
@@ -26,6 +27,7 @@
                             <div class="input-group">
                                 <form:input class="form-control" path="name" />
                             </div>
+                            <form:errors cssClass="form-error" path="name" element="p"/>
                         </div>
                     </td>
                 </tr>
@@ -43,26 +45,10 @@
                             <div class="input-group">
                                 <form:input class="form-control" path="surname" />
                             </div>
+                            <form:errors cssClass="form-error" path="surname" element="p"/>
                         </div>
                     </td>
                 </tr>
-                <%--<tr>
-                    <td>
-                        <div class="form-group">
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                <form:label path="username"><spring:message code="UserRegisterForm.username"/></form:label>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <div class="input-group">
-                                <form:input class="form-control" path="username" />
-                            </div>
-                        </div>
-                    </td>
-                </tr>--%>
                 <tr>
                     <td>
                         <div class="form-group">
@@ -76,8 +62,8 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <form:input class="form-control" path="telephone" />
-                                <form:errors path="telephone">error wach</form:errors>
                             </div>
+                            <form:errors cssClass="form-error" path="telephone" element="p"/>
                         </div>
                     </td>
                 </tr>
@@ -95,6 +81,7 @@
                             <div class="input-group">
                                 <form:input class="form-control" path="email" />
                             </div>
+                            <form:errors cssClass="form-error" path="email" element="p"/>
                         </div>
                     </td>
                 </tr>
@@ -112,6 +99,7 @@
                             <div class="input-group">
                                 <form:input class="form-control" path="password" />
                             </div>
+                            <form:errors cssClass="form-error" path="password" element="p"/>
                         </div>
                     </td>
                 </tr>
@@ -132,63 +120,11 @@
                             <div class="input-group">
                                 <form:input class="form-control" path="repeatPassword"/>
                             </div>
+                            <form:errors cssClass="form-error" path="repeatPassword" element="p"/>
                         </div>
                     </td>
                 </tr>
             </table>
-            <%--<div class="form-group">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                    <form:label path="name"><spring:message code="UserRegisterForm.name"/></form:label>
-                    <form:input class="form-control" path="name" />
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                    <form:label path="surname"><spring:message code="UserRegisterForm.surname"/></form:label>
-                    <form:input class="form-control" path="surname" />
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                    <form:label path="username"><spring:message code="UserRegisterForm.username"/></form:label>
-                    <form:input class="form-control" path="username" />
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-phone"></i></span>
-                    <form:label path="telephone"><spring:message code="UserRegisterForm.telephone"/></form:label>
-                    <form:input class="form-control" path="telephone" />
-                    <form:errors path="telephone">error wach</form:errors>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-paper-plane"></i></span>
-                    <form:label path="email"><spring:message code="UserRegisterForm.email"/></form:label>
-                    <form:input class="form-control" path="email" />
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                    <form:label path="password"><spring:message code="UserRegisterForm.password"/></form:label>
-                    <form:input class="form-control" path="password" />
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <span class="input-group-addon">
-                        <i class="fa fa-lock"></i>
-                        <i class="fa fa-check"></i>
-                    </span>
-                    <form:label path="repeatPassword"><spring:message code="UserRegisterForm.repeatPassword"/></form:label>
-                    <form:input class="form-control" path="repeatPassword"/>
-                </div>
-            </div>--%>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="signUpBody.button"/></button>
             </div>

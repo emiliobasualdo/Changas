@@ -22,8 +22,7 @@ import java.util.function.Function;
 
 import static ar.edu.itba.paw.constants.DBInscriptionFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.user_inscribed;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
-import static ar.edu.itba.paw.models.InscriptionState.optout;
+import static ar.edu.itba.paw.interfaces.util.Validation.*;
 import static ar.edu.itba.paw.models.InscriptionState.requested;
 
 @Repository
@@ -49,11 +48,11 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
     private <T> Either<List<Pair<T, Inscription>>, Validation> getter (
-            Dao<T> dao, String colName, long id, Function<Inscription,Long> inscGetId) {
+            Dao<T> dao, String colName, long id, Function<Inscription,Long> inscGetId, String secondWhere) {
 
         final List<Inscription> inscriptionList = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = ?", user_inscribed // todo cambiar query() por otra cosa
-                        , colName),
+                String.format("SELECT * FROM %s WHERE %s = ? %s", user_inscribed
+                        , colName, secondWhere),
                 ROW_MAPPER,
                 id
         );
@@ -70,24 +69,34 @@ public class InscriptionJdbcDao implements InscriptionDao {
 
     @Override
     /* Return the changas the user of id=userId is inscribed in */
-    public Either<List<Pair<Changa, Inscription>>, Validation> getUserInscriptions(long userId) {
-        return this.getter(changaDao, user_id.name(), userId, Inscription::getChanga_id);
+    public Either<List<Pair<Changa, Inscription>>, Validation> getUserInscriptions(boolean equals, InscriptionState filterState, long userId) {
+        String secondWhere = "";
+        if(filterState != null) {
+            secondWhere = "AND "+ state.name();
+            if (equals) {
+                secondWhere = secondWhere + " = ";
+            } else {
+                secondWhere = secondWhere + " != ";
+            }
+            secondWhere = secondWhere + "'" + filterState.name() + "'";
+        }
+        return this.getter(changaDao, user_id.name(), userId, Inscription::getChanga_id, secondWhere);
     }
 
     @Override
     /* Returns the users that are inscribed in a changa of id=changaId */
     public Either<List<Pair<User, Inscription>>, Validation>  getInscribedUsers(long changaId) {
-        return this.getter(userDao, changa_id.name(), changaId, Inscription::getUser_id);
+        return this.getter(userDao, changa_id.name(), changaId, Inscription::getUser_id, "");
     }
 
     @Override
-    /* An Inscription implies that the user is inscribbed OR he had inscribed him self before and optout */
+    /* An Inscription implies that the user is inscribed OR he had inscribed him self before and optout */
     public Validation inscribeInChanga(long userId, long changaId) {
         // We check if the user is the owner of the changa
         Either<Changa, Validation> changa = changaDao.getById(changaId);
         if (changa.isValuePresent()) {
             if (changa.getValue().getUser_id() == userId){
-                return new Validation(USER_OWNS_THE_CHANGE);
+                return USER_OWNS_THE_CHANGA;
             }
         } else {
             return changa.getAlternative();
@@ -98,7 +107,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
         if (insc.isValuePresent()){
             return changeUserStateInChanga(insc.getValue(), requested);
         } else { // user needs to be inscribbed)
-            if (insc.getAlternative().getEc() == USER_NOT_INSCRIBED){
+            if (insc.getAlternative() == USER_NOT_INSCRIBED){
                 return forceInscribeInChanga(userId, changaId);
             } else {
                 return insc.getAlternative();
@@ -112,9 +121,9 @@ public class InscriptionJdbcDao implements InscriptionDao {
             jdbcInsert
                     .execute(row);
         } catch (DataAccessException ex) {
-            return new Validation(DATABASE_ERROR);
+            return DATABASE_ERROR;
         }
-        return new Validation(OK);
+        return OK;
     }
 
     @Override
@@ -123,9 +132,9 @@ public class InscriptionJdbcDao implements InscriptionDao {
                 String.format("SELECT * FROM %s WHERE %s = ?  AND %s = ?", user_inscribed.name()
                         , changa_id.name(), user_id.name()), ROW_MAPPER, changaId, userId);
         if(list.isEmpty() ) {
-            return Either.alternative(new Validation(USER_NOT_INSCRIBED));
+            return Either.alternative(USER_NOT_INSCRIBED);
         } else if (list.size() > 1){
-            return Either.alternative(new Validation(DATABASE_ERROR));
+            return Either.alternative(DATABASE_ERROR);
         } else {
             return Either.value(list.get(0));
         }
@@ -139,15 +148,15 @@ public class InscriptionJdbcDao implements InscriptionDao {
         try {
             rowsAffected = this.jdbcTemplate.update(
                     sql,
-                    newState.name(), insc.getUser_id(), insc.getChanga_id());
+                    newState.toString(), insc.getUser_id(), insc.getChanga_id());
             if (rowsAffected != 1) {
                 throw new RecoverableDataAccessException("rowsAffected != 1");
             }
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
-            return new Validation(DATABASE_ERROR);
+            return DATABASE_ERROR;
         }
-        return new Validation(OK);
+        return OK;
     }
 
     @Override
@@ -161,11 +170,19 @@ public class InscriptionJdbcDao implements InscriptionDao {
 
     @Override
     public Either<Boolean, Validation> isUserInscribedInChanga(long userId, long changaId) {
-        Either<Inscription, Validation> insc = getInscription(userId,changaId);
-        if(!insc.isValuePresent()){
-            return Either.alternative(insc.getAlternative());
+        final List<Inscription> list  = jdbcTemplate.query(
+                String.format("SELECT * FROM %s WHERE %s = ?  AND %s = ?", user_inscribed.name()
+                        , changa_id.name(), user_id.name()), ROW_MAPPER, changaId, userId);
+
+        if (list.size() > 1) {
+            return Either.alternative(DATABASE_ERROR);
+        } else if (list.isEmpty()) {
+            return Either.value(false);
+        } else if (list.get(0).getState().compareTo(InscriptionState.optout) == 0) {
+                return Either.value(false);
+        } else {
+            return Either.value(true);
         }
-        return Either.value(true);
     }
 
     @Override
@@ -193,7 +210,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
         Map<String,Object> resp = new HashMap<>();
         resp.put(user_id.name(), us_id);
         resp.put(changa_id.name(), ch_id);
-        resp.put(state.name(), requested);
+        resp.put(state.name(), requested.toString());
         return resp;
     }
 

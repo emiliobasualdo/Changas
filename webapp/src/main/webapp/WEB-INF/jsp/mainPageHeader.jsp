@@ -16,7 +16,7 @@
                     <div class="mask rgba-black-light"></div>
                 </div>
                 <div class="carousel-caption">
-                    <h1 class="h1-responsive" style="color: #26B3BA">C H A N G A S</h1>
+                    <h1 class="h1-responsive" style="color: #26B3BA"><spring:message code="changas.title"/></h1>
                 </div>
             </div>
             <div class="carousel-item">
@@ -25,7 +25,7 @@
                     <div class="mask rgba-black-light"></div>
                 </div>
                 <div class="carousel-caption">
-                    <h1 class="h1-responsive" style="color: #26B3BA">C H A N G A S</h1>
+                    <h1 class="h1-responsive" style="color: #26B3BA"><spring:message code="changas.title"/></h1>
                 </div>
             </div>
             <div class="carousel-item">
@@ -34,7 +34,7 @@
                     <div class="mask rgba-black-light"></div>
                 </div>
                 <div class="carousel-caption">
-                    <h1 class="h1-responsive" style="color: #26B3BA">C H A N G A S</h1>
+                    <h1 class="h1-responsive" style="color: #26B3BA"><spring:message code="changas.title"/></h1>
                 </div>
             </div>
         </div>

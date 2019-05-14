@@ -7,14 +7,8 @@ import ar.edu.itba.paw.persistence.UserJdbcDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowCallbackHandler;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,20 +17,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static ar.edu.itba.paw.constants.DBTableName.users;
 import static ar.edu.itba.paw.constants.DBUserFields.*;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.*;
+import static org.junit.Assert.*;
 
 @Sql("classpath:sql/a_create_tables.sql")
 //@RunWith(MockitoJUnitRunner.class)
+//@PrepareForTest(fullyQualifiedNames = "ar.edu.itba.paw.presistence.*")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 @Rollback
@@ -52,7 +43,6 @@ public class UserJdbcDaoTest {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    @InjectMocks
     private UserJdbcDao userDao;
 
     private SimpleJdbcInsert jdbcInsert;
@@ -65,26 +55,28 @@ public class UserJdbcDaoTest {
         jdbcInsert = new SimpleJdbcInsert(ds)
                 .withTableName(users.name())
                 .usingGeneratedKeyColumns(user_id.name());
-        MockitoAnnotations.initMocks(JdbcTemplate.class);
-        MockitoAnnotations.initMocks(RowMapper.class);
-        MockitoAnnotations.initMocks(UserJdbcDao.class);
     }
 
     //TODO No puedo usar métodos auxiliares de la clase que quiero probar, solo los métodos que quiero probar
 
     @Test
-    public void testCreateUser_returnsNewUser() {
-        // SETUP
+    public void testCreateUser_returnsNewUser() throws Exception {
+        // SETUP // todo private methods
+        /*User user = PowerMockito.mock(User.class);
+        PowerMockito.when(user.getEmail()).thenReturn(EMAIL);
+        PowerMockito.when(user.getPasswd()).thenReturn(PASSWORD);
+        PowerMockito.when(userDao, method(UserJdbcDao.class, "getUserFromUserId", long.class))
+                .withArguments(anyString(), anyInt())
+                .thenReturn(user);*/
         // EJERCITAR
-        final Either<User, Validation> either = userDao.create( // todo creo que está mal, porque estoy testando la BD tambien
-                new User.Builder()  // todo tendría que ser con mockito when(simpleInsert).then(123)
+        User user = userDao.create(
+                new User.Builder()
                 .withEmail(EMAIL)
-                .withPasswd(PASSWORD) // todo tengo que poner TODOS los campos?
-        ); // todo asumo que Either anda bien?
+                .withPasswd(PASSWORD)
+        ).getValue();
         // ASSERT
-        assertNotNull(either.getValue());
-        assertEquals(EMAIL, either.getValue().getEmail());
-        assertEquals(PASSWORD, either.getValue().getPasswd());
+        assertEquals(EMAIL, user.getEmail());
+        assertEquals(PASSWORD, user.getPasswd());
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, users.name()));
     }
 
@@ -95,7 +87,7 @@ public class UserJdbcDaoTest {
         Map<String, Object> userRow = new HashMap<>();
         userRow.put(email.name(), EMAIL);
         userRow.put(passwd.name(), PASSWORD);
-        jdbcInsert.executeAndReturnKey(userRow);
+        Number id = jdbcInsert.executeAndReturnKey(userRow);
         // EXERCISE
         final Validation validation = userDao.create(
                 new User.Builder()
@@ -103,35 +95,13 @@ public class UserJdbcDaoTest {
                         .withPasswd(PASSWORD)
         ).getAlternative();
         // ASSERT
-        assertNotNull(validation);
-        assertNotNull(validation.getEc());
-        assertEquals(USER_ALREADY_EXISTS, validation.getEc());
+        assertEquals(USER_ALREADY_EXISTS, validation);
+        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, users.name(), String.format("%s = %d", user_id, id.longValue())));
     }
 
     @Test
     public void testGetById_returnsUser1() {
         // Testeamos el método, independientemente del query, jdbcTemplate y la DB.
-        // SETUP: Make sure the user is in the DB
-        User mockedUser = Mockito.mock(User.class);
-        List<User> list = new ArrayList<>();
-        list.add(mockedUser);
-        Mockito.when(mockedUser.getUser_id()).thenReturn(ID);
-        Mockito.when(mockedUser.getEmail()).thenReturn(EMAIL);
-        Mockito.when(mockedUser.getPasswd()).thenReturn(PASSWORD);
-        Mockito.when(jdbcTemplate
-                .query(any(String.class), any(RowMapper.class), any(Object.class))).thenReturn(list);
-        // EXERCISE
-        User user = userDao.getById(ID).getValue();
-        // ASSERT
-        assertNotNull(user);
-        assertEquals(ID, user.getUser_id());
-        assertEquals(EMAIL, user.getEmail());
-        assertEquals(PASSWORD, user.getPasswd());
-    }
-
-    @Test
-    public void testGetById_returnsUser2() {
-        // Testeamos el método considerando el query
         // SETUP: Make sure the user is in the DB
         Map<String, Object> userRow = new HashMap<>();
         userRow.put(email.name(), EMAIL);
@@ -140,10 +110,10 @@ public class UserJdbcDaoTest {
         // EXERCISE
         User user = userDao.getById(userId.longValue()).getValue();
         // ASSERT
-        assertNotNull(user);
         assertEquals(userId.longValue(), user.getUser_id());
         assertEquals(EMAIL, user.getEmail());
         assertEquals(PASSWORD, user.getPasswd());
+        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, users.name(), String.format("%s = %d", user_id, userId.longValue())));
     }
 
     @Test
@@ -153,27 +123,21 @@ public class UserJdbcDaoTest {
         // EXERCISE
         Validation validation = userDao.getById(ID).getAlternative();
         // ASSERT
-        assertNotNull(validation);
-        assertEquals(validation.getEc(), NO_SUCH_USER);
+        assertEquals(validation, NO_SUCH_USER);
     }
 
     @Test
     public void testFindByMail_returnsUser1() {
         // Testeamos el método, independientemente del query, jdbcTemplate y la DB.
         // SETUP: Make sure the user is in the DB
-        User mockedUser = Mockito.mock(User.class);
-        List<User> list = new ArrayList<>();
-        list.add(mockedUser);
-        Mockito.when(mockedUser.getUser_id()).thenReturn(ID);
-        Mockito.when(mockedUser.getEmail()).thenReturn(EMAIL);
-        Mockito.when(mockedUser.getPasswd()).thenReturn(PASSWORD);
-        Mockito.when(jdbcTemplate
-                .query(any(String.class), any(RowMapper.class), any(Object.class))).thenReturn(list);
+        Map<String, Object> userRow = new HashMap<>();
+        userRow.put(email.name(), EMAIL);
+        userRow.put(passwd.name(), PASSWORD);
+        Number userId = jdbcInsert.executeAndReturnKey(userRow);
         // EXERCISE
         User user = userDao.findByMail(EMAIL).getValue();
         // ASSERT
-        assertNotNull(user);
-        assertEquals(ID, user.getUser_id());
+        assertEquals(userId.longValue(), user.getUser_id());
         assertEquals(EMAIL, user.getEmail());
         assertEquals(PASSWORD, user.getPasswd());
     }
@@ -189,7 +153,6 @@ public class UserJdbcDaoTest {
         // EXERCISE
         User user = userDao.findByMail(EMAIL).getValue();
         // ASSERT
-        assertNotNull(user);
         assertEquals(userId.longValue(), user.getUser_id());
         assertEquals(EMAIL, user.getEmail());
         assertEquals(PASSWORD, user.getPasswd());
@@ -202,30 +165,34 @@ public class UserJdbcDaoTest {
         // EXERCISE
         Validation validation = userDao.findByMail(EMAIL).getAlternative();
         // ASSERT
-        assertNotNull(validation);
-        assertEquals(validation.getEc(), NO_SUCH_USER);
+        assertEquals(validation, NO_SUCH_USER);
     }
 
     @Test
-    public void testFindByMail_returnsError2() {
-        // Testeamos que retorne error si hay más de uno
-        // SETUP: Metemos 2 en la "bd"
-        User mockedUser1 = Mockito.mock(User.class);
-        User mockedUser2 = Mockito.mock(User.class);
-        List<User> list = new ArrayList<>();
-        list.add(mockedUser1);
-        list.add(mockedUser2);
-        Mockito.when(mockedUser1.getUser_id()).thenReturn(ID);
-        Mockito.when(mockedUser1.getEmail()).thenReturn(EMAIL);
-        Mockito.when(mockedUser1.getPasswd()).thenReturn(PASSWORD);
-        Mockito.when(mockedUser2.getUser_id()).thenReturn(ID+1);
-        Mockito.when(mockedUser2.getEmail()).thenReturn(EMAIL);
-        Mockito.when(mockedUser2.getPasswd()).thenReturn(PASSWORD);
-        Mockito.when(jdbcTemplate.query(any(String.class), any(RowMapper.class), any(Object.class))).thenReturn(list);
+    public void testSetUserStatus__returnsCorrectValidation() {
+        // Testeamos que se pueda cambair al estado que queremos
+        // SETUP: Make sure the user is in the DB
+        Map<String, Object> userRow = new HashMap<>();
+        userRow.put(email.name(), EMAIL);
+        userRow.put(passwd.name(), PASSWORD);
+        userRow.put(enabled.name(), false);
+        Number userId = jdbcInsert.executeAndReturnKey(userRow);
         // EXERCISE
-        Validation validation = userDao.findByMail(EMAIL).getAlternative();
+        Validation val = userDao.setUserStatus(userId.longValue(), true);
+        Validation val2 = userDao.setUserStatus(userId.longValue(), false);
         // ASSERT
-        assertNotNull(validation);
-        assertEquals(validation.getEc(), DATABASE_ERROR);
+        assertEquals(val, OK);
+        assertEquals(val2, OK);
+    }
+
+    @Test
+    public void testSetUserStatus__returnsErrorValidation() {
+        // Testeamos que retorne el usuario que buscamos
+        // SETUP: Make sure the user is NO user in the DB
+        // EXERCISE
+        Validation val = userDao.setUserStatus(ID, true);
+        // ASSERT
+        assertEquals(val, NO_SUCH_USER);
     }
 }
+
