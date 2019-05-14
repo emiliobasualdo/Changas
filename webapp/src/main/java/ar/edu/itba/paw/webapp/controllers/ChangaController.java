@@ -128,6 +128,7 @@ public class ChangaController {
         Either<List<Pair<User, Inscription>>, Validation> inscribedUsers = is.getInscribedUsers(id);
         if (!inscribedUsers.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", inscribedUsers.getAlternative().getMessage());
         mav.addObject("notInscribedUsers", inscribedUsers.getValue().isEmpty());
+        inscribedUsers.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout);
         mav.addObject("inscribedUsers", inscribedUsers.getValue());
         return mav;
     }

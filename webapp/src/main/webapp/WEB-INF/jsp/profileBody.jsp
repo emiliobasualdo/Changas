@@ -43,7 +43,7 @@
                             </p>
                             <p>
                                 <c:url value="/edit-password" var="resetPasswordUrl" />
-                                <a href="${resetPasswordUrl}" class="profile-edit-btn" style="margin-left: 65%"><spring:message code="profileBody.nav.reset"/></a>
+                                <a href="${resetPasswordUrl}" class="profile-edit-btn"><spring:message code="profileBody.nav.reset"/></a>
                             </p>
                         </div>
                     <%--</div>--%>

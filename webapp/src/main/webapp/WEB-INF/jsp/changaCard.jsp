@@ -12,7 +12,7 @@
     <div class="changaCard-option">
         <h2>
             <c:out value="${requestScope.title}" />
-            <c:choose><c:when test="${requestScope.inscribed}"><p><i class="fas fa-check"></i></p></c:when></c:choose>
+            <%--<c:choose><c:when test="${requestScope.inscribed}"><p><i class="fas fa-check"></i></p></c:when></c:choose>--%>
         </h2>
         <span class="">
             <c:choose>

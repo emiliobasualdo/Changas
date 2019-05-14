@@ -3,7 +3,7 @@
 
     <%@ include file="/WEB-INF/jsp/navigationBar.jsp" %>
 
-    <div id="carousel-example-2" class="carousel slide carousel-fade z-depth-1-half" data-ride="carousel">
+    <div id="carousel-example-2" class="carousel slide carousel-fade z-depth-1-half" data-ride="carousel" style="margin-top: 80px">
         <ol class="carousel-indicators">
             <li data-target="#carousel-example-2" data-slide-to="0" class="active"></li>
             <li data-target="#carousel-example-2" data-slide-to="1"></li>

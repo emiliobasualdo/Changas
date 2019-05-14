@@ -26,7 +26,7 @@
                                 <c:url value="/login" var="logInUrl" />
                                 <a class="nav-link" href="${logInUrl}"><spring:message code="navigationBar.btn.logIn"/></a>
                             </li>
-                            <li class="nav-item" style="alignment: right">
+                            <li class="nav-item">
                                 <c:url value="/create-changa" var="createUrl" />
                                 <a class="nav-link" href="${createUrl}"><spring:message code="navigationBar.btn.createChanga"/></a>
                             </li>
@@ -35,24 +35,23 @@
                             <li class="nav-item">
                                 <c:url value="/profile" var="profileUrl" />
                                 <a class="nav-link" href="${profileUrl}"><spring:message code="navigationBar.btn.profile"/></a>
-                                <br />
+                            </li>
+                            <li class="nav-item">
+                                <c:url value="/create-changa" var="createUrl" />
+                                <a class="nav-link" href="${createUrl}"><spring:message code="navigationBar.btn.createChanga"/></a>
                             </li>
                             <li class="nav-item">
                                 <c:url value="/logout" var="logoutUrl" />
                                 <a class="nav-link" href="${logoutUrl}"><spring:message code="navigationBar.btn.logOut"/></a>
                             </li>
-                            <li class="nav-item" style="alignment: right">
-                                <c:url value="/create-changa" var="createUrl" />
-                                <a class="nav-link" href="${createUrl}"><spring:message code="navigationBar.btn.createChanga"/></a>
-                            </li>
                         </c:otherwise>
                     </c:choose>
                 </ul>
-                <c:choose>
+                <%--<c:choose>
                     <c:when test="${isUserLogged}">
                         <span class="navbar-text white-text"><spring:message code="navigationBar.salute"/><c:out value="${getLoggedUser.name}"/></span>
                     </c:when>
-                </c:choose>
+                </c:choose>--%>
             </div>
         </nav>
     </body>
