@@ -11,15 +11,12 @@
         <div class="profile-head">
 
             <%--DATOS DEL USUARIO--%>
-            <h5>Administrando</h5>
+            <h5>Administrador</h5>
 
             <%--TABS--%>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link active" id="published-changas-tab" data-toggle="tab" href="#published" role="tab" aria-controls="published" aria-selected="true">Changas reportadas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="pending-changas-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false">Estadísticas</a>
                 </li>
             </ul>
         </div>
@@ -29,11 +26,6 @@
             <div class="tab-pane fade show active" id="published" role="tabpanel" aria-labelledby="published-changas-tab">
 
                 <%@ include file="/WEB-INF/jsp/reportedChangas.jsp"%>
-
-            </div>
-            <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-changas-tab">
-
-
 
             </div>
         </div>
