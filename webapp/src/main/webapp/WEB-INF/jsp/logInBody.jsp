@@ -21,7 +21,7 @@
                 </div>
                 <div class="form-group">
                     <label for="password"><spring:message code="UserLoginForm.password"/></label>
-                    <input id="password" name="j_password" class="form-control"/>
+                    <input id="password" type="password" name="j_password" class="form-control"/>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-lg btn-block"><spring:message code="logInBody.button"/></button>

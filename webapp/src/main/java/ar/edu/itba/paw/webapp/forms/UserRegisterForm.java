@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.forms;
 
+import ar.edu.itba.paw.webapp.constraints.EmailInUse;
 import ar.edu.itba.paw.webapp.constraints.EqualFields;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -11,6 +12,7 @@ public class UserRegisterForm {
 
     @NotEmpty
     @Email
+    @EmailInUse
     private String email;
 
     @NotEmpty
