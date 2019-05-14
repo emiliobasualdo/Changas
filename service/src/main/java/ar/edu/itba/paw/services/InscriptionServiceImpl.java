@@ -55,7 +55,7 @@ public class InscriptionServiceImpl implements InscriptionService {
         Either<Inscription, Validation> insc = getInscription(userId, changaId);
         if (insc.isValuePresent()){
             //if the user had previously been inscribed and opted out, we change the state to requested. Else, we return user already inscribed.
-            return insc.getValue().getState() == optout ? changeUserStateInChanga(insc.getValue(), requested) : USER_ALREADY_INSCRIBED;
+            return insc.getValue().getState() == optout ? changeUserStateInChanga(insc.getValue(), requested, userId) : USER_ALREADY_INSCRIBED;
         } else { // user needs to be inscribbed
             if (insc.getAlternative() == USER_NOT_INSCRIBED){
                 return inscriptionDao.inscribeInChanga(userId, changaId);
@@ -71,20 +71,40 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public Validation changeUserStateInChanga(long userId, long changaId, InscriptionState newState) {
+    public Validation changeUserStateInChanga(long userId, long changaId, InscriptionState newState, long loggedUser) {
         Either<Inscription, Validation> insc = inscriptionDao.getInscription(userId, changaId);
         if (insc.isValuePresent())
-            return this.changeUserStateInChanga(insc.getValue(), newState);
+            return this.changeUserStateInChanga(insc.getValue(), newState, loggedUser);
         else
             return insc.getAlternative();
     }
 
     @Override
-    public Validation changeUserStateInChanga(Inscription insc, InscriptionState newState) {
-        if (InscriptionState.changeIsPossible(insc.getState(), newState))
-            return inscriptionDao.changeUserStateInChanga(insc, newState);
-        else
-            return CHANGE_NOT_POSSIBLE;
+    public Validation changeUserStateInChanga(Inscription insc, InscriptionState newState, long userMakingTheChange) {
+        Either<Changa, Validation> eitherChangaInInscription = changaDao.getById(insc.getChanga_id());
+        if (!eitherChangaInInscription.isValuePresent()) {
+            return NO_SUCH_CHANGA;
+        }
+
+        if(!isUserAuthorizedToChangeInscriptionState(insc.getUser_id(), eitherChangaInInscription.getValue().getUser_id(), newState, userMakingTheChange)){
+            return UNAUTHORIZED;
+        }
+
+        ChangaState changaState = eitherChangaInInscription.getValue().getState();
+        if(changaState == closed || changaState == done || !InscriptionState.changeIsPossible(insc.getState(), newState) ) {
+           return CHANGE_NOT_POSSIBLE;
+        }
+
+        return inscriptionDao.changeUserStateInChanga(insc, newState);
+    }
+
+    private boolean isUserAuthorizedToChangeInscriptionState(long inscriptedUserId, long changaOwnerId, InscriptionState newState, long userMakingTheChange){
+        //the inscribed user can only change from requested to optout and viceversa
+        if(userMakingTheChange == inscriptedUserId && (newState == optout || newState == requested)) {
+            return true;
+        }
+        //the changa owner can only change state from: requested to accepted, requeted to declined or accepted to declined. He can't change the state of an inscription to optout
+       return userMakingTheChange == changaOwnerId && (newState != optout);
     }
 
     @Override

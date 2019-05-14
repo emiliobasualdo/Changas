@@ -6,6 +6,7 @@ public enum Validation {
     OK("OK"),
     DATABASE_ERROR("Database error"),
     ILLEGAL_VALUE("This value is not allowed"),
+    UNAUTHORIZED("Unauthorized action"),
 
     // Changas,
     NO_SUCH_CHANGA("Invalid changa id"),

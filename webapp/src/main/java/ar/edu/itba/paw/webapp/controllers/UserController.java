@@ -119,7 +119,7 @@ public class UserController {
 
     @RequestMapping(value = "/unjoin-changa", method = RequestMethod.POST)
     public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser) {
-        Validation val = is.changeUserStateInChanga(loggedUser.getUser_id(), changaId, InscriptionState.optout);
+        Validation val = is.changeUserStateInChanga(loggedUser.getUser_id(), changaId, InscriptionState.optout, loggedUser.getUser_id());
         System.out.println(loggedUser.getEmail() + " desanotado de " + changaId);
         if (val.isOk()){
             System.out.println("user "+ loggedUser.getUser_id()+ " successfully desinscripto en changa "+ changaId);
@@ -132,8 +132,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "/accept-user", method = RequestMethod.POST)
-    public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId) {
-        Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.accepted);
+    public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser) {
+        Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.accepted, loggedUser.getUser_id());
         if (val.isOk()){
             //TODO JIME popup preguntando
         } else {
@@ -144,9 +144,9 @@ public class UserController {
     }
 
     @RequestMapping(value = "/reject-user", method = RequestMethod.POST)
-    public ModelAndView rejectUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId) {
+    public ModelAndView rejectUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser) {
 
-        Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.declined);
+        Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.declined, loggedUser.getUser_id());
         if (val.isOk()){
             //TODO JIME popup preguntando
         } else {
