@@ -6,23 +6,24 @@ import javax.validation.constraints.*;
 public class ChangaForm {
 
     @NotEmpty
-    @Size(min = 6, max = 100) @Pattern(regexp = "[A-Za-z0-9 ]+")
+    @Size(max = 100) @Pattern(regexp = "[A-Za-z0-9 ]+")
     private String title;
 
     @NotEmpty
-    @Size(min = 6, max = 100) @Pattern(regexp = "[A-Za-z0-9\\s_.,!\"'/$]+")
+    @Size(max = 100) @Pattern(regexp = "[A-Za-z0-9\\s_.,!\"'/$]+")
     private String description;
 
     @NotNull
     @Min(1)
+    @Max(20000)
     private double price;
 
     @NotEmpty
-    @Size(min = 6, max = 100) @Pattern(regexp = "[a-zA-Z 0-9]+")
+    @Size(max = 100) @Pattern(regexp = "[a-zA-Z 0-9]+")
     private String neighborhood;
 
     @NotEmpty
-    @Size(min = 6, max = 100) @Pattern(regexp = "[a-zA-Z 0-9]+")
+    @Size(max = 100) @Pattern(regexp = "[a-zA-Z 0-9]+")
     private String street;
 
     @NotNull

@@ -6,6 +6,15 @@ import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.configurers.provisioning.UserDetailsManagerConfigurer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetails.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,8 +24,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Controller
 @Component
@@ -53,11 +65,19 @@ public class RegistrationController {
         Either<User, Validation> user = userService.findById(verificationToken.getValue().getUserId());
         if(user.isValuePresent() && user.getValue().isEnabled()){
                 System.out.println("El mail esta verificado. Puede ingresar directamente");
-                return new ModelAndView("redirect:/login");
+                authWithoutPassword(user.getValue());
+                return new ModelAndView("redirect:/");
         }
         System.out.println("se confirmó el mail");
         userService.setUserEnabledStatus(verificationToken.getValue().getUserId(), true);
-        return new ModelAndView("redirect:/login");
+        authWithoutPassword(user.getValue());
+        return new ModelAndView("redirect:/");
+    }
+
+    private void authWithoutPassword(User user){
+        List<GrantedAuthority> authorities = Arrays.asList( new SimpleGrantedAuthority("ROLE_USER"));
+        Authentication auth = new UsernamePasswordAuthenticationToken(new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPasswd(), authorities) ,null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
 }

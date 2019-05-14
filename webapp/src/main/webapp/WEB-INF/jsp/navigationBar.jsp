@@ -26,10 +26,6 @@
                                 <c:url value="/login" var="logInUrl" />
                                 <a class="nav-link" href="${logInUrl}"><spring:message code="navigationBar.btn.logIn"/></a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="${logInUrl}"><spring:message code="navigationBar.btn.profile"/></a>
-                                <br />
-                            </li>
                             <li class="nav-item" style="alignment: right">
                                 <c:url value="/create-changa" var="createUrl" />
                                 <a class="nav-link" href="${createUrl}"><spring:message code="navigationBar.btn.createChanga"/></a>

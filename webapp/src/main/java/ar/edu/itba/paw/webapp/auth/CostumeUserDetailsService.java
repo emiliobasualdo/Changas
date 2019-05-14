@@ -18,18 +18,13 @@ import java.util.Collection;
 @Component
 public class CostumeUserDetailsService implements UserDetailsService {
 
-    private boolean accountNonExpired = true;
-    private boolean credentialsNonExpired = true;
-    private boolean accountNonLocked = true;
-
-
     @Autowired
     private UserService us;
 
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
 
-        final Either<User, Validation> either = us.findByMail(username); // en nuestro caso username es el mail
+        final Either<User, Validation> either = us.findByMail(username);
 
         if (!either.isValuePresent()) {
             throw new UsernameNotFoundException("No user by the name " + username);
@@ -39,13 +34,12 @@ public class CostumeUserDetailsService implements UserDetailsService {
 
         final Collection<? extends GrantedAuthority> authorities = Arrays.asList(
                 new SimpleGrantedAuthority("ROLE_USER")
-                //new SimpleGrantedAuthority("ROLE_ADMIN") // que onda los admin??
         );
-        return new org.springframework.security.core.userdetails.User(username, user.getPasswd(),
+        return new org.springframework.security.core.userdetails.User(username, user.getPasswd(), //TODO: preguntar que onda aca, la pass va a ser cualquier cosa ya que esta hasheada, se usa para algo??
                 user.isEnabled(),
-                accountNonExpired,
-                credentialsNonExpired,
-                accountNonLocked,
+                true,
+                true,
+                true,
                 authorities);
     }
 
