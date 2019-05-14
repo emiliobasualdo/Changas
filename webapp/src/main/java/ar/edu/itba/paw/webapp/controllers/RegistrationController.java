@@ -39,7 +39,6 @@ public class RegistrationController {
 
     @RequestMapping(value = "/signup/registration-confirm", method = RequestMethod.GET)
     public ModelAndView confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token) {
-        Locale locale = request.getLocale();
         Either<VerificationToken, Validation> verificationToken = userService.getVerificationToken(token);
         System.out.println(verificationToken.toString());
         if (!verificationToken.isValuePresent()) {

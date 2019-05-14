@@ -30,7 +30,6 @@ public class MainPageController {
     @RequestMapping(value = "/")
     public ModelAndView showChangas(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged, @ModelAttribute("catFilter") String categoryFilter) {
 
-        //Either<List<Changa>, Validation> maybeChangas = cs.getEmittedChangas(0);
         Either<List<Changa>, Validation> maybeChangas = cs.getEmittedChangasByCategory(0, categoryFilter);
         if (!maybeChangas.isValuePresent()) {
             return new ModelAndView("redirect:/error").addObject("message", maybeChangas.getAlternative().getMessage());

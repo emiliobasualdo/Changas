@@ -5,8 +5,8 @@ public enum DBTableName {
     changas(),
     users(),
     user_inscribed(),
-    user_owns(),
-    verification_token()
+    verification_token(),
+    categories()
     ;
 
 }

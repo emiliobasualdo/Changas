@@ -29,7 +29,10 @@ public enum Validation {
     //Verification Token
     INEXISTENT_TOKEN("Inexistent token"),
     EXPIRED_TOKEN("Expired token"),
-    USER_NOT_LOGGED_IN("User must be logged in to user such functionality");
+    USER_NOT_LOGGED_IN("User must be logged in to user such functionality"),
+
+    // Categories
+    NO_SUCH_LOCALE("This locale is not defined in the db");
 
     private String message; // NOT final on purpose
 

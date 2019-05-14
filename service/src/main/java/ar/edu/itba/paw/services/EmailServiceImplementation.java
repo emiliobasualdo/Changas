@@ -75,29 +75,21 @@ public class EmailServiceImplementation implements EmailService {
 
     //TODO emails from html templates
     private String mailConfirmationEmailBody(User user, String confirmUrl) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(messageSource.getMessage("mailConfirmation.Body",null, LocaleContextHolder.getLocale()));
-        sb.append("\n");
-        sb.append(confirmUrl);
-        return sb.toString();
+        return messageSource.getMessage("mailConfirmation.Body", null, LocaleContextHolder.getLocale()) +
+                "\n" + confirmUrl;
     }
 
     private String resetPasswordEmailBody(String resetUrl) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(messageSource.getMessage("resetPassword.Body",null, LocaleContextHolder.getLocale()));
-        sb.append(' ');
-        sb.append(resetUrl);
-        return sb.toString();
+        return messageSource.getMessage("resetPassword.Body", null, LocaleContextHolder.getLocale()) +
+                ' ' + resetUrl;
     }
 
     //TODO emails from html templates
     private String joinRequestEmailBody(Changa changa, User changaOwner, User currentUser){
-        StringBuilder sb = new StringBuilder();
-        sb.append(changaOwner.getName());
-        sb.append(",\n");
-        sb.append(currentUser.getName());
-        sb.append(messageSource.getMessage("sendJoinRequest.Body",null, LocaleContextHolder.getLocale()));
-        sb.append(changa.getDescription());
-        return sb.toString();
+        return changaOwner.getName() +
+                ",\n" +
+                currentUser.getName() +
+                messageSource.getMessage("sendJoinRequest.Body", null, LocaleContextHolder.getLocale()) +
+                changa.getDescription();
     }
 }
