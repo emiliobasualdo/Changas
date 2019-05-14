@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 import static ar.edu.itba.paw.constants.DBTableName.verification_token;
 import static ar.edu.itba.paw.constants.DBVerificationTokenFields.*;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.INEXISTENT_TOKEN;
 
 @Repository
 public class VerificationTokenJdbcDao implements VerificationTokenDao {
@@ -43,7 +43,7 @@ public class VerificationTokenJdbcDao implements VerificationTokenDao {
                 String.format("SELECT * FROM %s WHERE %s = ?", verification_token.name(), token.name()),
                 ROW_MAPPER, tok).stream().findAny();
         if(!optional.isPresent()) {
-            return Either.alternative(new Validation(INEXISTENT_TOKEN));
+            return Either.alternative(INEXISTENT_TOKEN);
         }
         return Either.value(optional.get());
     }

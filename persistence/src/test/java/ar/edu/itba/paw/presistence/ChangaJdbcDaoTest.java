@@ -31,7 +31,7 @@ import static ar.edu.itba.paw.constants.DBTableName.changas;
 import static ar.edu.itba.paw.constants.DBTableName.users;
 import static ar.edu.itba.paw.constants.DBUserFields.email;
 import static ar.edu.itba.paw.constants.DBUserFields.passwd;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.when;
@@ -105,7 +105,7 @@ public class ChangaJdbcDaoTest {
         // EJERCITAR
         final Either<Changa, Validation> either = changaDao.getById(CHANGA_ID);
         // ASSERT
-        assertEquals(NO_SUCH_CHANGA, either.getAlternative().getEc());
+        assertEquals(NO_SUCH_CHANGA, either.getAlternative());
         assertEquals(0, JdbcTestUtils.countRowsInTableWhere(chJdbcTemplate, changas.name(), String.format("%s = %d", changa_id, CHANGA_ID)));
     }
 
@@ -134,7 +134,7 @@ public class ChangaJdbcDaoTest {
         // EJERCITAR
         final Either<Changa, Validation> either = changaDao.create(chBuilder);
         // ASSERT
-        assertEquals(NO_SUCH_USER, either.getAlternative().getEc());
+        assertEquals(NO_SUCH_USER, either.getAlternative());
         assertEquals(0, JdbcTestUtils.countRowsInTable(chJdbcTemplate, changas.name()));
     }
 
@@ -256,7 +256,7 @@ public class ChangaJdbcDaoTest {
                 changaBuilder
         ).getAlternative();
         // ASSERT
-        assertEquals(NO_SUCH_CHANGA, val.getEc());
+        assertEquals(NO_SUCH_CHANGA, val);
     }
 
     @Test
@@ -305,7 +305,7 @@ public class ChangaJdbcDaoTest {
                 ChangaState.closed
         ).getAlternative();
         // ASSERT
-        assertEquals(DATABASE_ERROR, val.getEc());
+        assertEquals(DATABASE_ERROR, val);
     }
 }
 

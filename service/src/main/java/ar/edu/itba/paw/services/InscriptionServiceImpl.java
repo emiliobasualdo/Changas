@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
 import static ar.edu.itba.paw.models.ChangaState.*;
 import static ar.edu.itba.paw.models.InscriptionState.optout;
 import static ar.edu.itba.paw.models.InscriptionState.requested;
+import static ar.edu.itba.paw.interfaces.util.Validation.CHANGE_NOT_POSSIBLE;
 
 @Repository
 public class InscriptionServiceImpl implements InscriptionService {
@@ -64,7 +64,6 @@ public class InscriptionServiceImpl implements InscriptionService {
         }
     }
 
-
     @Override
     public Either<List<Pair<User, Inscription>>, Validation> getInscribedUsers(long changa_id) {
         return inscriptionDao.getInscribedUsers(changa_id);
@@ -84,7 +83,7 @@ public class InscriptionServiceImpl implements InscriptionService {
         if (InscriptionState.changeIsPossible(insc.getState(), newState))
             return inscriptionDao.changeUserStateInChanga(insc, newState);
         else
-            return new Validation(CHANGE_NOT_POSSIBLE);
+            return CHANGE_NOT_POSSIBLE;
     }
 
     @Override

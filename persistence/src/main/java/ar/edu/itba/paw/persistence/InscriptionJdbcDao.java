@@ -22,7 +22,7 @@ import java.util.function.Function;
 
 import static ar.edu.itba.paw.constants.DBInscriptionFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.user_inscribed;
-import static ar.edu.itba.paw.interfaces.util.Validation.ErrorCodes.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.*;
 import static ar.edu.itba.paw.models.InscriptionState.requested;
 
 @Repository
@@ -69,7 +69,6 @@ public class InscriptionJdbcDao implements InscriptionDao {
         return Either.value(pairList);
     }
 
-
     @Override
     /* Return the changas the user of id=userId is inscribed in */
     public Either<List<Pair<Changa, Inscription>>, Validation> getUserInscriptions(boolean equals, InscriptionState filterState, long userId) {
@@ -86,26 +85,24 @@ public class InscriptionJdbcDao implements InscriptionDao {
         return this.getter(changaDao, user_id.name(), userId, Inscription::getChanga_id, secondWhere);
     }
 
-
     @Override
     /* Returns the users that are inscribed in a changa of id=changaId */
     public Either<List<Pair<User, Inscription>>, Validation>  getInscribedUsers(long changaId) {
         return this.getter(userDao, changa_id.name(), changaId, Inscription::getUser_id, "");
     }
 
-
     @Override
+    /* An Inscription implies that the user is inscribed OR he had inscribed him self before and optout */
     public Validation inscribeInChanga(long userId, long changaId) {
         Map<String, Object> row = inscriptionToTableRow(userId, changaId);
         try {
             jdbcInsert
                     .execute(row);
         } catch (DataAccessException ex) {
-            return new Validation(DATABASE_ERROR);
+            return DATABASE_ERROR;
         }
-        return new Validation(OK);
+        return OK;
     }
-
 
     @Override
     public Either<Inscription, Validation> getInscription(long userId, long changaId) {
@@ -113,14 +110,13 @@ public class InscriptionJdbcDao implements InscriptionDao {
                 String.format("SELECT * FROM %s WHERE %s = ?  AND %s = ?", user_inscribed.name()
                         , changa_id.name(), user_id.name()), ROW_MAPPER, changaId, userId);
         if(list.isEmpty() ) {
-            return Either.alternative(new Validation(USER_NOT_INSCRIBED));
+            return Either.alternative(USER_NOT_INSCRIBED);
         } else if (list.size() > 1){
-            return Either.alternative(new Validation(DATABASE_ERROR));
+            return Either.alternative(DATABASE_ERROR);
         } else {
             return Either.value(list.get(0));
         }
     }
-
 
     @Override
     public Validation changeUserStateInChanga(Inscription insc, InscriptionState newState) throws DataAccessException {
@@ -135,11 +131,11 @@ public class InscriptionJdbcDao implements InscriptionDao {
                 throw new RecoverableDataAccessException("rowsAffected != 1");
             }
         } catch (DataAccessException e) {
-            return new Validation(DATABASE_ERROR);
+            System.out.println(e.getMessage());
+            return DATABASE_ERROR;
         }
-        return new Validation(OK);
+        return OK;
     }
-
 
     @Override
     public Validation changeUserStateInChanga(long userId, long changaId, InscriptionState state) {
@@ -150,8 +146,6 @@ public class InscriptionJdbcDao implements InscriptionDao {
         return changeUserStateInChanga(insc.getValue(), state);
     }
 
-
-
     @Override
     public Either<Boolean, Validation> isUserInscribedInChanga(long userId, long changaId) {
         final List<Inscription> list  = jdbcTemplate.query(
@@ -159,7 +153,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
                         , changa_id.name(), user_id.name()), ROW_MAPPER, changaId, userId);
 
         if (list.size() > 1) {
-            return Either.alternative(new Validation(DATABASE_ERROR));
+            return Either.alternative(DATABASE_ERROR);
         } else if (list.isEmpty()) {
             return Either.value(false);
         } else if (list.get(0).getState().compareTo(InscriptionState.optout) == 0) {

@@ -31,8 +31,8 @@ public class RegistrationController {
         Either<VerificationToken, Validation> verificationToken = userService.getVerificationToken(token);
         System.out.println(verificationToken.toString());
         if (!verificationToken.isValuePresent()) {
-            Validation.ErrorCodes errorCode = verificationToken.getAlternative().getEc();
-            if (errorCode == Validation.ErrorCodes.EXPIRED_TOKEN) {
+            Validation errorCode = verificationToken.getAlternative();
+            if (errorCode == Validation.EXPIRED_TOKEN) {
                 // String messageValue = messages.getMessage("auth.message.expired", null, locale)
                 // model.addAttribute("message", messageValue);
                 //TODO RESEND EMAIL. REDIRECT A PAGINA PARA RESEND EMAIL
