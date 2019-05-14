@@ -4,6 +4,30 @@
     <style><%@include file="/WEB-INF/css/mainPageBody.css"%></style>
 </head>
 <body>
+    <div>
+        <tr>
+            <td>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label><spring:message code="ChangaForm.category"/></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <%--todo mal implementado, solucionar--%>
+                        <label>
+                            <select>
+                                <option value="home"><spring:message code="ChangaFrom.categories.home"/></option>
+                                <option value="software"><spring:message code="ChangaFrom.categories.software"/></option>
+                                <option value="education"><spring:message code="ChangaFrom.categories.education"/></option>
+                                <option value="other"><spring:message code="ChangaFrom.categories.other"/></option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </div>
     <div class="auto-table">
         <c:choose>
             <c:when test="${isUserLogged}">

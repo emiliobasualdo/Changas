@@ -11,7 +11,8 @@ public enum DBChangaFields {
     price           ("price", "DOUBLE PRECISION",-1),
     street          ("street", "VARCHAR",100),
     neighborhood    ("neighborhood", "VARCHAR",100),
-    number          ("number", "INTEGER",-1);
+    number          ("number", "INTEGER",-1),
+    category        ("category", "VARCAHR",100);
 
     final String name;
     final String type;

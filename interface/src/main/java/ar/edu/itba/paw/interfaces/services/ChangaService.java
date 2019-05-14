@@ -19,7 +19,8 @@ public interface ChangaService {
     Either<Changa, Validation> update(final long changaId, final Changa.Builder changaBuilder);
     Either<List<Changa>, Validation> getUserOwnedChangas(final long userId);
     Either<Changa, Validation> getChangaById(final long changaId);
-    Either<List<Changa>, Validation> getAllEmittedChangas(int pageNum);
+    Either<List<Changa>, Validation> getEmittedChangas(int pageNum);
+    Either<List<Changa>, Validation> getEmittedChangasByCategory(int pageNum, String category);
     Either<Changa, Validation> changeChangaState(long changaId, ChangaState newState);
     Either<Changa, Validation> changeChangaState(Changa changa, ChangaState newState);
     Either<List<Changa>, Validation> getUserEmittedChangas(long id);

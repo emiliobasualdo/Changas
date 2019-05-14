@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -27,9 +28,10 @@ public class MainPageController {
     private InscriptionService is;
 
     @RequestMapping(value = "/")
-    public ModelAndView showChangas(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged) {
+    public ModelAndView showChangas(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged, @ModelAttribute("catFilter") String categoryFilter) {
 
-        Either<List<Changa>, Validation> maybeChangas = cs.getAllEmittedChangas(0);
+        //Either<List<Changa>, Validation> maybeChangas = cs.getEmittedChangas(0);
+        Either<List<Changa>, Validation> maybeChangas = cs.getEmittedChangasByCategory(0, categoryFilter);
         if (!maybeChangas.isValuePresent()) {
             return new ModelAndView("redirect:/error").addObject("message", maybeChangas.getAlternative().getMessage());
         }

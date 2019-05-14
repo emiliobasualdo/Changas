@@ -3,6 +3,7 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
+
 import ar.edu.itba.paw.models.ChangaState;
 import ar.edu.itba.paw.models.Either;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,10 +78,28 @@ public class ChangaJdbcDao implements ChangaDao {
         }
 
         List<Changa> resp = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = ? ORDER BY %s LIMIT %d OFFSET %d",
-                        changas.name(), state.name(), title.name(), PAGE_SIZE, PAGE_SIZE * pageNum),
+                String.format("SELECT * FROM %s WHERE %s = ? ORDER BY %s DESC LIMIT %d OFFSET %d",
+                        changas.name(), state.name(), creation_date.name(), PAGE_SIZE, PAGE_SIZE * pageNum),
                  ROW_MAPPER,
                 filterState.name()
+        );
+        return Either.value(resp);
+    }
+
+    @Override
+    public Either<List<Changa>, Validation> getByCategory(ChangaState filterState, int pageNum, String filterCategory) {
+        if (pageNum < 0) {
+            return Either.alternative(ILLEGAL_VALUE.withMessage("Page number must be greater than zero"));
+        }
+        if (filterCategory.equals("")){
+            return getAll(filterState, pageNum);
+        }
+        List<Changa> resp = jdbcTemplate.query(
+                String.format("SELECT * FROM %s WHERE %s = ? AND %s = ? ORDER BY %s DESC LIMIT %d OFFSET %d",
+                        changas.name(), state.name(), category.name(), creation_date.name(), PAGE_SIZE, PAGE_SIZE * pageNum),
+                ROW_MAPPER,
+                filterState.name(),
+                filterCategory
         );
         return Either.value(resp);
     }
@@ -177,6 +196,7 @@ public class ChangaJdbcDao implements ChangaDao {
                                                     .withPrice(rs.getDouble(price.name()))
                                                     .atAddress(rs.getString(street.name()),rs.getString(neighborhood.name()),rs.getInt(number.name()) )
                                                     .withState(ChangaState. valueOf(rs.getString(state.name())))
+                                                    .inCategory(rs.getString(category.name()))
         );
 
     }
@@ -201,6 +221,7 @@ public class ChangaJdbcDao implements ChangaDao {
             changaBuilder.withState(ChangaState.emitted);
         }
         resp.put(state.toString(), changaBuilder.getState().toString());
+        resp.put(category.toString(), changaBuilder.getCategory());
         return resp;
     }
 }

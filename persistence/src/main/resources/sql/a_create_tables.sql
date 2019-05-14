@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS changas
     description   VARCHAR(100),
     state         VARCHAR(100) DEFAULT 'emitted',
     price         DOUBLE PRECISION,
+    category      VARCHAR(100),
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
