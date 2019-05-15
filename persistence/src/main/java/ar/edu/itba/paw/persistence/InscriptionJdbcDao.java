@@ -57,14 +57,16 @@ public class InscriptionJdbcDao implements InscriptionDao {
                 ROW_MAPPER,
                 userId
         );
+
         final List<Pair<Changa,Inscription>> pairList = new LinkedList<>();
         for (Inscription insc: inscriptionList) {
             Either<Changa, Validation> either = changaDao.getById(insc.getChanga_id());
             if(!either.isValuePresent()){
                 return Either.alternative(either.getAlternative());
             }
-            pairList.add(Pair.buildPair(either.getValue(),insc));
+            pairList.add(Pair.buildPair(either.getValue(), insc));
         }
+
         return Either.value(pairList);
     }
 
@@ -105,30 +107,6 @@ public class InscriptionJdbcDao implements InscriptionDao {
     @Override
     /* An Inscription implies that the user is inscribed OR he had inscribed him self before and optout */
     public Validation inscribeInChanga(long userId, long changaId) {
-        // We check if the user is the owner of the changa
-        Either<Changa, Validation> changa = changaDao.getById(changaId);
-        if (changa.isValuePresent()) {
-            if (changa.getValue().getUser_id() == userId){
-                return USER_OWNS_THE_CHANGA;
-            }
-        } else {
-            return changa.getAlternative();
-        }
-
-        // We check if the user is already inscribed
-        Either<Inscription, Validation> insc = getInscription(userId, changaId);
-        if (insc.isValuePresent()){
-            return changeUserStateInChanga(insc.getValue(), requested);
-        } else { // user needs to be inscribbed)
-            if (insc.getAlternative() == USER_NOT_INSCRIBED){
-                return forceInscribeInChanga(userId, changaId);
-            } else {
-                return insc.getAlternative();
-            }
-        }
-    }
-
-    private Validation forceInscribeInChanga(long userId, long changaId) {
         Map<String, Object> row = inscriptionToTableRow(userId, changaId);
         try {
             jdbcInsert
@@ -197,6 +175,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
             return Either.value(true);
         }
     }
+
 
     @Override
     public boolean hasInscribedUsers(long changaId) {

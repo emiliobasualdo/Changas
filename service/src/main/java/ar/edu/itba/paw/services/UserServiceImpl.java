@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.daos.UserDao;
 import ar.edu.itba.paw.interfaces.daos.VerificationTokenDao;
+import ar.edu.itba.paw.interfaces.services.AuthenticationService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
@@ -19,9 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.Calendar;
 
-import static ar.edu.itba.paw.interfaces.util.Validation.DATABASE_ERROR;
-import static ar.edu.itba.paw.interfaces.util.Validation.EXPIRED_TOKEN;
-import static ar.edu.itba.paw.interfaces.util.Validation.USER_ALREADY_EXISTS;
+import static ar.edu.itba.paw.interfaces.util.Validation.*;
 
 @Service
 @Transactional
@@ -35,6 +34,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private VerificationTokenDao verificationTokenDao;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @Override
     public Either<User, Validation> findById(long id) {
@@ -117,7 +119,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Either<User, Validation> update(final long userId, User.Builder userBuilder) {
+        if(!isLoggedUserAuthorizedToUpdateUser(userId)){
+            return Either.alternative(UNAUTHORIZED);
+        }
         return userDao.update(userId, userBuilder);
+    }
+
+    private boolean isLoggedUserAuthorizedToUpdateUser(long userId) {
+        return authenticationService.getLoggedUser().isPresent() && authenticationService.getLoggedUser().get().getUser_id() == userId;
     }
 
 }

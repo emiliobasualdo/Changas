@@ -6,9 +6,11 @@ public enum Validation {
     OK("OK"),
     DATABASE_ERROR("Database error"),
     ILLEGAL_VALUE("This value is not allowed"),
+    UNAUTHORIZED("Unauthorized action"),
 
     // Changas,
     NO_SUCH_CHANGA("Invalid changa id"),
+    ILLEGAL_ACTION("This action is not alloed:"),
 
     // Users
     INVALID_PASSWORD("Invalid password"),
@@ -17,6 +19,7 @@ public enum Validation {
     INVALID_MAIL("Invalid mail"),
     INVALID_COMBINATION("The email and password combination is invalid"),
     USER_ALREADY_EXISTS("The email provided is already in use"),
+    DISABLED_USER ("The user isn't enabled"),
 
     // Inscription
     USER_ALREADY_INSCRIBED("User already inscribed in changa"),

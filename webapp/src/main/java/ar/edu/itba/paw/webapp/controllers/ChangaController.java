@@ -84,13 +84,17 @@ public class ChangaController {
        if (errors.hasErrors()) {
            return editChanga(id, form);
        }
-        cs.update(id, new Changa.Builder().withUserId(loggedUser.getUser_id())
+        Either<Changa, Validation> eitherUpdatedChanga = cs.update(id, new Changa.Builder().withUserId(loggedUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
         );
-        return new ModelAndView("redirect:/profile");
+
+       //if(eitherUpdatedChanga.isValuePresent()) {
+           return new ModelAndView("redirect:/profile");
+      // }
+       //if(eitherUpdatedChanga.getAlternative().getMessage() == UNAUTHORIZED)
     }
 
     @RequestMapping("/changa")

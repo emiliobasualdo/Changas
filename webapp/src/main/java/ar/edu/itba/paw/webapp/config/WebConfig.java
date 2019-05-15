@@ -1,11 +1,13 @@
 package ar.edu.itba.paw.webapp.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -79,7 +81,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         ms.setHost("smtp.gmail.com");
         ms.setPort(587);
 
-        ms.setUsername("changas-do-not-reply@gmail.com");
+        ms.setUsername("changas.do.not.reply@gmail.com");
         ms.setPassword("charlyGarcia23");
 
         Properties mailProperties = ms.getJavaMailProperties();

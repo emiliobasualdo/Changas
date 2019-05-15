@@ -7,6 +7,13 @@ import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.forms.*;
+import ar.edu.itba.paw.webapp.forms.ForgotPasswordForm;
+import ar.edu.itba.paw.webapp.forms.ResetPasswordForm;
+import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.webapp.forms.UserLoginForm;
+import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
@@ -107,7 +114,7 @@ public class UserController {
             System.out.println("No se pudo inscribir en la changa pq:"+ val.getMessage());
             return new ModelAndView("redirect:/error").addObject("message", val.getMessage());
         }
-        return new ModelAndView(new StringBuilder("redirect:/changa?id=").append(changaId).toString());
+        return new ModelAndView("redirect:/changa?id=" + changaId);
     }
 
     @RequestMapping(value = "/unjoin-changa", method = RequestMethod.POST)
@@ -125,9 +132,15 @@ public class UserController {
     }
 
     @RequestMapping(value = "/accept-user", method = RequestMethod.POST)
-    public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId) {
+    public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser) {
         Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.accepted);
         if (val.isOk()){
+            //TODO este mail en verdad es para cuando hagan el boton changa settled. mientras lo pongo cuando aceptan al changuero
+            //hacer validaciones
+            Changa changa = cs.getChangaById(changaId).getValue();
+            User changaOwner = us.findById(changa.getUser_id()).getValue();
+            User inscribedUser = us.findById(userId).getValue();
+            emailService.sendChangaSettledEmail(changa, changaOwner, inscribedUser );
             //TODO JIME popup preguntando
         } else {
             //TODO JIME un popup de error
@@ -137,7 +150,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/reject-user", method = RequestMethod.POST)
-    public ModelAndView rejectUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId) {
+    public ModelAndView rejectUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser) {
 
         Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.declined);
         if (val.isOk()){
@@ -151,7 +164,6 @@ public class UserController {
 
     @RequestMapping("/profile")
     public ModelAndView profile(@ModelAttribute("getLoggedUser") User loggedUser) {
-
         ModelAndView mav = new ModelAndView("indexProfile");
         Either<List<Pair<Changa, Inscription>>, Validation>  maybePendingChangas = is.getOpenUserInscriptions(loggedUser.getUser_id());
         if (maybePendingChangas.isValuePresent()){
@@ -182,7 +194,7 @@ public class UserController {
     @RequestMapping(value = "/login/forgot-password", method = RequestMethod.POST)
     public ModelAndView forgotPasswordSender(@Valid @ModelAttribute("forgotPasswordForm") final ForgotPasswordForm forgotPasswordForm, final BindingResult result, HttpServletRequest request) {
         if (result.hasErrors()) {
-            return forgotPassword(forgotPasswordForm);
+            return new ModelAndView("indexForgotPassword");
         }
         Either<User, Validation> user = us.findByMail(forgotPasswordForm.getMail());
         if (!user.isValuePresent()) {

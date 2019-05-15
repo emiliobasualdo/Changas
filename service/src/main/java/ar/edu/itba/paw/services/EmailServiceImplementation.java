@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.EmailService;
+import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.User;
@@ -27,6 +29,12 @@ public class EmailServiceImplementation implements EmailService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private InscriptionService inscriptionService;
+
+    @Autowired
+    private ChangaService changaService;
 
 
     @Override
@@ -61,6 +69,13 @@ public class EmailServiceImplementation implements EmailService {
     }
 
     @Override
+    public void sendChangaSettledEmail(Changa changa, User changaOwner, User inscribedUser) {
+        String subject = messageSource.getMessage("sendChangaSettledEmail.Subject", null, LocaleContextHolder.getLocale());
+        sendEmail(inscribedUser.getEmail(), subject, changaSettledEmailToInscribedUserBody(changa, changaOwner, inscribedUser));
+        sendEmail(changaOwner.getEmail(), subject, changaSettledEmailToChangaOwner(changa, changaOwner, inscribedUser));
+    }
+
+    @Override
     public void sendResetPasswordEmail(User user, String appUrl) throws MessagingException {
         String token = UUID.randomUUID().toString();
         userService.createVerificationToken(user, token);
@@ -76,20 +91,44 @@ public class EmailServiceImplementation implements EmailService {
     //TODO emails from html templates
     private String mailConfirmationEmailBody(User user, String confirmUrl) {
         return messageSource.getMessage("mailConfirmation.Body", null, LocaleContextHolder.getLocale()) +
-                "\n" + confirmUrl;
+                "\n" +
+                confirmUrl;
     }
 
+    //TODO emails from html templates
     private String resetPasswordEmailBody(String resetUrl) {
         return messageSource.getMessage("resetPassword.Body", null, LocaleContextHolder.getLocale()) +
                 ' ' + resetUrl;
     }
 
     //TODO emails from html templates
-    private String joinRequestEmailBody(Changa changa, User changaOwner, User currentUser){
-        return changaOwner.getName() +
-                ",\n" +
-                currentUser.getName() +
-                messageSource.getMessage("sendJoinRequest.Body", null, LocaleContextHolder.getLocale()) +
+    private String joinRequestEmailBody(Changa changa, User changaOwner, User requestingUser){
+        return changaOwner.getName() + ",\n" +
+                requestingUser.getName() + " " +
+                messageSource.getMessage("sendJoinRequest.Body", null, LocaleContextHolder.getLocale()) + " " +
                 changa.getDescription();
+    }
+
+    //TODO emails from html templates
+    private String changaSettledEmailToInscribedUserBody(Changa changa, User changaOwner, User inscriptedUser){
+        return inscriptedUser.getName() + ",\n" +
+                changaOwner.getName() + " " +
+                messageSource.getMessage("changaHasBeenSettled", null, LocaleContextHolder.getLocale()) + " " + changa.getTitle() + ".\n" +
+                messageSource.getMessage("changaOwnerInfo", null, LocaleContextHolder.getLocale()) + "\n" +
+                messageSource.getMessage("name", null, LocaleContextHolder.getLocale()) + " " + changaOwner.getName() + "\n" +
+                messageSource.getMessage("phoneNumber", null, LocaleContextHolder.getLocale()) + " " + changaOwner.getTel() + "\n" +
+                messageSource.getMessage("email", null, LocaleContextHolder.getLocale()) + " " + changaOwner.getEmail() + "\n" +
+                messageSource.getMessage("pleaseContactChangaOwner", null, LocaleContextHolder.getLocale())
+                ;
+    }
+
+    private String changaSettledEmailToChangaOwner(Changa changa, User changaOwner, User inscriptedUser) {
+        return changaOwner.getName() + ",\n" +
+                messageSource.getMessage("inscriptedUserInfo", null, LocaleContextHolder.getLocale()) + " " + changa.getTitle() + " " +
+                messageSource.getMessage("areTheFollowing", null, LocaleContextHolder.getLocale()) + "\n" +
+                messageSource.getMessage("name", null, LocaleContextHolder.getLocale()) + " " + inscriptedUser.getName() + "\n" +
+                messageSource.getMessage("phoneNumber", null, LocaleContextHolder.getLocale()) + " " + inscriptedUser.getTel() + "\n" +
+                messageSource.getMessage("email", null, LocaleContextHolder.getLocale()) + " " + inscriptedUser.getEmail() + "\n"
+                ;
     }
 }
