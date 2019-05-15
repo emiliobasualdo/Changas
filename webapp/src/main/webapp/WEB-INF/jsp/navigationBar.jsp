@@ -35,7 +35,6 @@
                             <li class="nav-item">
                                 <c:url value="/profile" var="profileUrl" />
                                 <a class="nav-link" href="${profileUrl}"><spring:message code="navigationBar.btn.profile"/></a>
-                                <br />
                             </li>
                             <li class="nav-item">
                                 <c:url value="/logout" var="logoutUrl" />

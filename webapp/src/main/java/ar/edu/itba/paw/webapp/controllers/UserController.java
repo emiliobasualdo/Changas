@@ -125,7 +125,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "/accept-user", method = RequestMethod.POST)
-    public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId) {
+    public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser) {
+        Either<Changa, Validation> changa = cs.getChangaById(changaId);
+        if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", changa.getAlternative().getMessage());
+        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
         Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.accepted);
         if (val.isOk()){
             //TODO JIME popup preguntando
@@ -137,8 +140,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "/reject-user", method = RequestMethod.POST)
-    public ModelAndView rejectUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId) {
-
+    public ModelAndView rejectUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser) {
+        Either<Changa, Validation> changa = cs.getChangaById(changaId);
+        if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", changa.getAlternative().getMessage());
+        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
         Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.declined);
         if (val.isOk()){
             //TODO JIME popup preguntando
@@ -151,7 +156,6 @@ public class UserController {
 
     @RequestMapping("/profile")
     public ModelAndView profile(@ModelAttribute("getLoggedUser") User loggedUser) {
-
         ModelAndView mav = new ModelAndView("indexProfile");
         Either<List<Pair<Changa, Inscription>>, Validation>  maybePendingChangas = is.getOpenUserInscriptions(loggedUser.getUser_id());
         if (maybePendingChangas.isValuePresent()){
