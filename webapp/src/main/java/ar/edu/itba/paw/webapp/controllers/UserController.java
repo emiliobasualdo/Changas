@@ -31,6 +31,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.*;
 import java.net.URI;
@@ -130,10 +131,13 @@ public class UserController {
     }
 
     @RequestMapping(value = "/accept-user", method = RequestMethod.POST)
-    public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser) {
+    public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser, HttpServletResponse response) {
         Either<Changa, Validation> changa = cs.getChangaById(changaId);
         if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null, LocaleContextHolder.getLocale()));
-        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
+        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return new ModelAndView("403");
+        }
         Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.accepted);
         if (val.isOk()){
             //TODO este mail en verdad es para cuando hagan el boton changa settled. mientras lo pongo cuando aceptan al changuero
@@ -150,10 +154,13 @@ public class UserController {
     }
 
     @RequestMapping(value = "/reject-user", method = RequestMethod.POST)
-    public ModelAndView rejectUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser) {
+    public ModelAndView rejectUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser, HttpServletResponse response) {
         Either<Changa, Validation> changa = cs.getChangaById(changaId);
         if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null, LocaleContextHolder.getLocale()));
-        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
+        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return new ModelAndView("403");
+        }
         Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.declined);
         if (val.isOk()){
             //TODO JIME popup preguntando
