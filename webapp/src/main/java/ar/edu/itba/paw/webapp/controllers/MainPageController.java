@@ -53,7 +53,7 @@ public class MainPageController {
         }
 
         // else we mark the inscribbed changas
-        return markedInscriptions(loggedUser, changas, indexModel);
+        return markedInscriptions(loggedUser, changas, indexModel).addObject("isFiltered", false);
     }
 
     @RequestMapping(value = "/filter")

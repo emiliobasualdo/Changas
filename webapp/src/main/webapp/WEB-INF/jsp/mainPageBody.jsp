@@ -23,7 +23,7 @@
                                     <div class="col-lg-3 col-md-3 col-sm-12 p-0">
                                         <select name="cfilter" class="form-control search-slt" id="exampleFormControlSelect1">
                                             <c:forEach items="${categories}" var="category">
-                                                <option value="${category.key}">${category.value}</option>
+                                                <option value="${category}"> ${category}</option>
                                             </c:forEach>
                                         </select>
                                     </div>
@@ -50,9 +50,10 @@
                                         <input name="tfilter" class="form-control search-slt" placeholder="Search"/>
                                     </div>
                                     <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                        <select name="cfilter" class="form-control search-slt" id="exampleFormControlSelect1">
+                                        <select name="cfilter" class="form-control search-slt">
+                                            <option selected="selected" disabled="disabled" hidden="hidden"> Elegi una Categoria  </option>
                                             <c:forEach items="${categories}" var="category">
-                                                <option value="${category.key}">${category.value}</option>
+                                                <option value="${category}"> ${category} </option>
                                             </c:forEach>
                                         </select>
                                     </div>
@@ -67,8 +68,6 @@
         </c:choose>
         </div>
     </section>
-
-
 
     <div class="auto-table">
         <c:choose>
