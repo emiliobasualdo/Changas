@@ -11,11 +11,14 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -33,8 +36,10 @@ public class ChangaJdbcDao implements ChangaDao {
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert jdbcInsert;
 
+    private final Connection conn;
     @Autowired
-    public ChangaJdbcDao(final DataSource ds) {
+    public ChangaJdbcDao(final DataSource ds) throws SQLException {
+        conn = ds.getConnection();
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(ds)
                 .withTableName(changas.name())
@@ -73,35 +78,65 @@ public class ChangaJdbcDao implements ChangaDao {
 
     @Override
     public Either<List<Changa>, Validation> getAll(ChangaState filterState, int pageNum) {
+        return this.getFiltered(filterState, pageNum, "", "");
+    }
+
+    @Override
+    public Either<List<Changa>, Validation> getFiltered(ChangaState filterState, int pageNum, String filterCategory, String filterTitle) {
         if (pageNum < 0) {
             return Either.alternative(ILLEGAL_VALUE.withMessage("Page number must be greater than zero"));
         }
 
+        String whereClause;
+        try {
+            whereClause = createFilterQuery(filterState, filterCategory, filterTitle);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            return Either.alternative(ILLEGAL_VALUE.withMessage("Wrong filtering"));
+        }
+
         List<Changa> resp = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = ? ORDER BY %s DESC LIMIT %d OFFSET %d",
-                        changas.name(), state.name(), creation_date.name(), PAGE_SIZE, PAGE_SIZE * pageNum),
-                 ROW_MAPPER,
-                filterState.name()
+                String.format("SELECT * FROM %s %s ORDER BY %s DESC LIMIT %d OFFSET %d",
+                        changas.name(), whereClause,
+                        creation_date.name(), PAGE_SIZE, PAGE_SIZE * pageNum),
+                ROW_MAPPER
         );
         return Either.value(resp);
     }
 
-    @Override
-    public Either<List<Changa>, Validation> getByCategory(ChangaState filterState, int pageNum, String filterCategory) {
-        if (pageNum < 0) {
-            return Either.alternative(ILLEGAL_VALUE.withMessage("Page number must be greater than zero"));
+    private String createFilterQuery(ChangaState filterState, String filterCategory, String filterTitle) throws SQLException {
+        String[] auxList = new String[1];
+        StringBuilder sb = new StringBuilder();
+        PreparedStatement ps;
+        if (filterState != null) {
+            sb
+                    .append(" WHERE ")
+                    .append(state.name())
+                    .append(" = ?");
+            ps = conn.prepareStatement(sb.toString());
+            ps.setString(1, filterState.toString());
+            sb = new StringBuilder(ps.toString());
         }
-        if (filterCategory.equals("")){
-            return getAll(filterState, pageNum);
+        if (!filterCategory.equals("")) {
+            sb
+                    .append(" AND ")
+                    .append(category.name())
+                    .append(" = ?");
+            ps = conn.prepareStatement(sb.toString());
+            ps.setString(1, filterCategory);
+            sb = new StringBuilder(ps.toString());
         }
-        List<Changa> resp = jdbcTemplate.query(
-                String.format("SELECT * FROM %s WHERE %s = ? AND %s = ? ORDER BY %s DESC LIMIT %d OFFSET %d",
-                        changas.name(), state.name(), category.name(), creation_date.name(), PAGE_SIZE, PAGE_SIZE * pageNum),
-                ROW_MAPPER,
-                filterState.name(),
-                filterCategory
-        );
-        return Either.value(resp);
+        if (!filterTitle.equals("")) {
+            sb
+                    .append(" AND ")
+                    .append(title.name())
+                    .append(" = ?");
+            ps = conn.prepareStatement(sb.toString());
+            ps.setString(1, filterTitle);
+            sb = new StringBuilder(ps.toString());
+        }
+
+        return sb.toString();
     }
 
     @Override
@@ -119,21 +154,20 @@ public class ChangaJdbcDao implements ChangaDao {
     @Override
     public Either<Changa, Validation> update(final long changaId, Changa.Builder changaBuilder) {
         int updatedChangas = jdbcTemplate.update(
-                String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ? ",
+                String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ? ",
                     changas.name(),
                     street.name(),
                     neighborhood.name(),
                     number.name(),
                     title.name(),
                     description.name(),
-                    state.name(),
                     price.name(),
                     changa_id.name()),
 
                 changaBuilder.getStreet(), changaBuilder.getNeighborhood(),
                 changaBuilder.getNumber(), changaBuilder.getTitle(),
-                changaBuilder.getDescription(), changaBuilder.getState().toString(),
-                changaBuilder.getPrice(), changaId
+                changaBuilder.getDescription(), changaBuilder.getPrice(),
+                changaId
         );
 
         // updatedChangas != 1 => rollback! fue un error
@@ -145,7 +179,9 @@ public class ChangaJdbcDao implements ChangaDao {
         // we assume the service has checked that the change can be done
         try {
             int rowsAffected = this.jdbcTemplate.update(
-                    String.format("UPDATE %s set %s = ? WHERE %s = ? ", changas.name(), state.name(), changa_id.name()),
+                    String.format("UPDATE %s set %s = ? WHERE %s = ? ", changas.name(),
+                            state.name(),
+                            changa_id.name()),
                     newState.name(), changaId);
             if (rowsAffected != 1) {
                 throw new RecoverableDataAccessException("rowsAffected != 1");

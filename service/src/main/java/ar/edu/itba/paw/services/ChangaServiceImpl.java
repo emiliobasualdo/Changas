@@ -36,11 +36,11 @@ public class ChangaServiceImpl implements ChangaService {
     }
 
     @Override
-    public Either<List<Changa>, Validation> getEmittedChangasByCategory(int pageNum, String category) {
+    public Either<List<Changa>, Validation> getEmittedChangasFiltered(int pageNum, String category, String title) {
         if (pageNum < 0) {
             return Either.alternative(ILLEGAL_VALUE.withMessage("Page number must be greater than zero"));
         }
-        return chDao.getByCategory(ChangaState.emitted, pageNum, category);
+        return chDao.getFiltered(ChangaState.emitted, pageNum, category, title);
     }
 
     @Override
@@ -101,8 +101,13 @@ public class ChangaServiceImpl implements ChangaService {
         if (!isLoggedUserAuthorizedToUpdateChanga(changa.getUser_id())) {
             return Either.alternative(UNAUTHORIZED);
         }
-        if (ChangaState.changeIsPossible(changa.getState(), newState))
+        if (ChangaState.changeIsPossible(changa.getState(), newState)) {
+            // if changa has NO changueros inscribed, it can not be settled. only closed
+            if (newState == ChangaState.settled && !inDao.hasInscribedUsers(changa.getChanga_id())) {
+                return Either.alternative(SETTLE_WHEN_EMPTY);
+            }
             return chDao.changeChangaState(changa.getChanga_id(), newState);
+        }
         else
             return Either.alternative(CHANGE_NOT_POSSIBLE);
     }

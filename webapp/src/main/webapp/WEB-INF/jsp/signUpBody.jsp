@@ -97,7 +97,7 @@
                     <td>
                         <div class="form-group">
                             <div class="input-group">
-                                <form:input type="password" class="form-control" path="password" />
+                                <form:password class="form-control" path="password" />
                             </div>
                             <form:errors cssClass="form-error" path="password" element="p"/>
                         </div>
@@ -118,7 +118,7 @@
                     <td>
                         <div class="form-group">
                             <div class="input-group">
-                                <form:input type="password" class="form-control" path="repeatPassword"/>
+                                <form:password class="form-control" path="repeatPassword"/>
                             </div>
                             <form:errors cssClass="form-error" path="repeatPassword" element="p"/>
                         </div>

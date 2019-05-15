@@ -1,14 +1,16 @@
 package ar.edu.itba.paw.webapp.controllers;
 
+import ar.edu.itba.paw.interfaces.services.CategoryService;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
-import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -22,31 +24,62 @@ public class MainPageController {
     private ChangaService cs;
 
     @Autowired
-    private UserService us;
+    private CategoryService catService;
 
     @Autowired
     private InscriptionService is;
 
-    @RequestMapping(value = "/")
-    public ModelAndView showChangas(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged, @ModelAttribute("catFilter") String categoryFilter) {
+    ModelAndView indexModel;
 
-        //Either<List<Changa>, Validation> maybeChangas = cs.getEmittedChangas(0);
-        Either<List<Changa>, Validation> maybeChangas = cs.getEmittedChangasByCategory(0, categoryFilter);
+    @RequestMapping(value = "/")
+    public ModelAndView showChangas(@ModelAttribute("getLoggedUser") User loggedUser,
+                                    @ModelAttribute("isUserLogged") boolean isUserLogged) {
+
+        Either<List<Changa>, Validation> maybeChangas = cs.getEmittedChangas(0);
         if (!maybeChangas.isValuePresent()) {
             return new ModelAndView("redirect:/error").addObject("message", maybeChangas.getAlternative().getMessage());
         }
 
+        indexModel = new ModelAndView("index");
+
+        // we add the list of chaga categories
+        List<Pair<String, String>> categories = catService.getCategories(LocaleContextHolder.getLocale());
+        indexModel.addObject("categories", categories);
+
+        // if the user logged in we show raw data
+        List<Changa> changas = maybeChangas.getValue();
         if (!isUserLogged) {
-            return new ModelAndView("index")
-                    .addObject("changaList", maybeChangas.getValue());
+            return indexModel.addObject("changaList", changas);
         }
 
+        // else we mark the inscribbed changas
+        return markedInscriptions(loggedUser, changas, indexModel);
+    }
+
+    @RequestMapping(value = "/filter")
+    public ModelAndView filterChangas(@ModelAttribute("getLoggedUser") User loggedUser,
+                                      @ModelAttribute("isUserLogged") boolean isUserLogged,
+                                      @RequestParam(value = "cfilter", defaultValue = "") String categoryFilter,
+                                      @RequestParam(value = "tfilter", defaultValue = "") String titleFilter) {
+        Either<List<Changa>, Validation> changas = cs.getEmittedChangasFiltered(0, categoryFilter, titleFilter);
+        if (!changas.isValuePresent()) {
+            return new ModelAndView("redirect:/error").addObject("message", changas.getAlternative().getMessage());
+        }
+
+        indexModel.addObject("isFiltered", true);
+        // else we mark the inscribbed changas
+        if (isUserLogged)
+            return markedInscriptions(loggedUser, changas.getValue(), indexModel);
+        return indexModel.addObject("changaList", changas.getValue());
+    }
+
+    private ModelAndView markedInscriptions(User loggedUser, List<Changa> changas, ModelAndView indexModel) {
         Either<List<Pair<Changa, Inscription>>, Validation> maybeInscriptions = is.getOpenUserInscriptions(loggedUser.getUser_id());
         if (!maybeInscriptions.isValuePresent()) {
             return new ModelAndView("redirect:/error").addObject("message", maybeInscriptions.getAlternative().getMessage());
         }
 
-        List<Changa> changas = maybeChangas.getValue();
+        // for each changa, if the user is isncribbed mark it as true
         List<Pair<Changa, Inscription>> inscriptions = maybeInscriptions.getValue();
         List<Pair<Changa, Boolean>> changaList = new ArrayList<>();
         for (Changa c : changas){
@@ -62,8 +95,6 @@ public class MainPageController {
             }
         }
 
-        return new ModelAndView("index")
-                .addObject("changaList", changaList);
-
+        return indexModel.addObject("changaList", changaList);
     }
 }

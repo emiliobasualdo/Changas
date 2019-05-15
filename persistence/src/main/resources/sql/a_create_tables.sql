@@ -40,3 +40,11 @@ CREATE TABLE IF NOT EXISTS verification_token
    user_id SERIAL NOT NULL REFERENCES users (user_id),
    expiry_date DATE NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS categories
+(
+     locale VARCHAR(5) NOT NULL,
+     key VARCHAR(30) NOT NULL,
+     message VARCHAR(30),
+     PRIMARY KEY (locale, key)
+);

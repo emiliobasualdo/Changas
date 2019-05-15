@@ -97,8 +97,7 @@ public class EmailServiceImplementation implements EmailService {
     //TODO emails from html templates
     private String resetPasswordEmailBody(String resetUrl) {
         return messageSource.getMessage("resetPassword.Body", null, LocaleContextHolder.getLocale()) +
-                ' ' +
-                resetUrl;
+                ' ' + resetUrl;
     }
 
     //TODO emails from html templates
