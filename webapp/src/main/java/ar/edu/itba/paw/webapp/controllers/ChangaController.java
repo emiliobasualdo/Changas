@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controllers;
 
+import ar.edu.itba.paw.interfaces.services.CategoryService;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
@@ -7,6 +8,7 @@ import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -34,9 +36,13 @@ public class ChangaController {
     @Autowired
     private InscriptionService is;
 
+    @Autowired
+    private CategoryService catService;
+
     @RequestMapping(value = "/create-changa")
     public ModelAndView createChanga(@ModelAttribute("changaForm") final ChangaForm form) {
-        return new ModelAndView("issueChangaForm");
+        return new ModelAndView("issueChangaForm")
+                .addObject("categories", catService.getCategories(LocaleContextHolder.getLocale()));
     }
 
     @RequestMapping(value = "/create-changa", method = RequestMethod.POST )
@@ -69,7 +75,8 @@ public class ChangaController {
         form.setDescription(changa.getDescription());
         form.setCategory(changa.getCategory());
         return new ModelAndView("editChangaForm")
-                .addObject("id", id);
+                .addObject("id", id)
+                .addObject("categories", catService.getCategories(LocaleContextHolder.getLocale()));
     }
 
     @RequestMapping(value = "/edit-changa", method = RequestMethod.POST )

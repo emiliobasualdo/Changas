@@ -17,12 +17,12 @@
         <h2 class="text-center"><spring:message code="resetPasswordBody.header"/></h2>
         <div class="form-group">
             <form:label path="newPassword1"><spring:message code="resetPasswordBody.newPassword1"/></form:label>
-            <form:input type="password" path="newPassword1" class="form-control" />
+            <form:password path="newPassword1" class="form-control" />
             <form:errors cssClass="form-error" path="newPassword1" element="p"/>
         </div>
         <div class="form-group">
             <form:label path="newPassword2"><spring:message code="resetPasswordBody.newPassword2"/></form:label>
-            <form:input type="password" path="newPassword2" class="form-control"/>
+            <form:password path="newPassword2" class="form-control"/>
             <form:errors cssClass="form-error" path="newPassword2" element="p"/>
         </div>
         <div class="form-group">

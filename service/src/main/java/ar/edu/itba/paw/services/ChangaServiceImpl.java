@@ -32,11 +32,11 @@ public class ChangaServiceImpl implements ChangaService {
     }
 
     @Override
-    public Either<List<Changa>, Validation> getEmittedChangasByCategory(int pageNum, String category) {
+    public Either<List<Changa>, Validation> getEmittedChangasFiltered(int pageNum, String category, String title) {
         if (pageNum < 0) {
             return Either.alternative(ILLEGAL_VALUE.withMessage("Page number must be greater than zero"));
         }
-        return chDao.getByCategory(ChangaState.emitted, pageNum, category);
+        return chDao.getFiltered(ChangaState.emitted, pageNum, category, title);
     }
 
     @Override
@@ -48,6 +48,7 @@ public class ChangaServiceImpl implements ChangaService {
     no fueron updateados. Si se quiere hacer un modificado más rápido, hacer funciones q updateen campos específicos. Me parece innecesario porque no tenemos
     muchos campos
     * */
+
 
     @Override
     public Either<Changa, Validation> update(final long changaId, final Changa.Builder changaBuilder) {
