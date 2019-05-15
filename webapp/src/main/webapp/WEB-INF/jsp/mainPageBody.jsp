@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
@@ -6,38 +7,83 @@
     <title>Changas</title>
 </head>
 <body>
-    <div>
-        <tr>
-            <td>
-                <div class="form-group">
-                    <label><spring:message code="ChangaForm.category"/></label>
-                    <c:url value="/filter" var="filterUrl" />
-                    <form:form action="${filterUrl}" method="get">
-                        <label>
-                            <select name="cfilter">
-                                <c:forEach items="${categories}" var="category">
-                                    <option value="${category}"><spring:message code="${category}"/></option>
-                                </c:forEach>
-                            </select>
-                            <button type="submit" class="btn btn-success btn-block"><spring:message code="mainPage.button.filter"/></button>
-                        </label>
-                    </form:form>
-                    <c:if test="${isFiltered}">
-                        <c:url value="/" var="rootUrl" />
-                        <form:form action="${rootUrl}" method="get">
-                            <button type="submit" class="btn btn-success btn-block"><spring:message code="mainPage.button.de-filter"/></button>
-                        </form:form>
-                    </c:if>
-                </div>
-            </td>
-        </tr>
-    </div>
+
+    <section class="search-sec">
+        <div class="container">
+            <c:url value="/filter" var="filterUrl" />
+            <c:choose>
+                <c:when test="${isFiltered}">
+                    <form action="${filterUrl}" method="get">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                        <input name="tfilter" class="form-control search-slt" placeholder="Search"/>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                        <select name="cfilter" class="form-control search-slt" id="exampleFormControlSelect1">
+                                            <c:forEach items="${categories}" var="category">
+                                                <option value="${category}"> ${category}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                        <button type="submit" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPage.button.filter"/></button>
+                                    </div>
+                                    <c:url value="/" var="rootUrl" />
+                                    <form:form action="${rootUrl}" method="get">
+                                        <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                            <button type="submit" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPage.button.de-filter"/></button>
+                                        </div>
+                                    </form:form>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </c:when>
+                <c:otherwise>
+                    <form action="${filterUrl}" method="get">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-3 col-sm-12 p-0">
+                                        <input name="tfilter" class="form-control search-slt" placeholder="Search"/>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                        <select name="cfilter" class="form-control search-slt">
+                                            <option selected="selected" disabled="disabled" hidden="hidden"> Elegi una Categoria  </option>
+                                            <c:forEach items="${categories}" var="category">
+                                                <option value="${category}"> ${category} </option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                        <button type="submit" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPage.button.filter"/></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </c:otherwise>
+        </c:choose>
+        </div>
+    </section>
+
     <div class="auto-table">
         <c:choose>
             <c:when test="${isUserLogged}">
                 <c:forEach items="${changaList}" var="entry">
                     <c:set var="title" value="${entry.key.title}" scope="request"/>
-                    <c:set var="description" value="${entry.key.description}" scope="request"/>
+                    <c:set var="str" value="${entry.key.description}" />
+                    <c:set var="descriptionLength" value="${fn:length(str)}"/>
+                    <c:choose>
+                        <c:when test="${descriptionLength >= 100}">
+                            <c:set var="description" value="${fn:substring(str,0,97)}..." scope="request"/>
+                        </c:when>
+                        <c:otherwise>
+                            <c:set var="description" value="${str}" scope="request"/>
+                        </c:otherwise>
+                    </c:choose>
                     <c:set var="user_id" value="${entry.key.user_id}" scope="request"/>
                     <c:set var="price" value="${entry.key.price}" scope="request"/>
                     <c:set var="changa_id" value="${entry.key.changa_id}" scope="request"/>
@@ -51,7 +97,16 @@
             <c:otherwise>
                 <c:forEach items="${changaList}" var="changa">
                     <c:set var="title" value="${changa.title}" scope="request"/>
-                    <c:set var="description" value="${changa.description}" scope="request"/>
+                    <c:set var="str" value="${changa.description}" />
+                    <c:set var="descriptionLength" value="${fn:length(str)}"/>
+                    <c:choose>
+                        <c:when test="${descriptionLength >= 100}">
+                            <c:set var="description" value="${fn:substring(str,0,97)}..." scope="request"/>
+                        </c:when>
+                        <c:otherwise>
+                            <c:set var="description" value="${str}" scope="request"/>
+                        </c:otherwise>
+                    </c:choose>
                     <c:set var="user_id" value="${changa.user_id}" scope="request"/>
                     <c:set var="price" value="${changa.price}" scope="request"/>
                     <c:set var="changa_id" value="${changa.changa_id}" scope="request"/>
