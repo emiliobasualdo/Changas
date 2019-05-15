@@ -34,34 +34,13 @@ public class CategoryJdbcDaoTest {
     //TODO No puedo usar métodos auxiliares de la clase que quiero probar, solo los métodos que quiero probar
 
     @Test
-    public void testGetByLocaleEnglish_returnsEnglishList() {
+    public void testGetByLocaleEnglish_returnsList() {
         // SETUP:
         // EJERCITAR
-        final List<Pair<String, String>> list = categoryDao.getCategories(Locale.ENGLISH);
+        final List<String> list = categoryDao.getCategories();
         // ASSERT
-        assertEquals("Education", list.get(0).getValue());
-        assertEquals("Home maintenance", list.get(1).getValue());
+        assertEquals("education", list.get(0));
+        assertEquals("home", list.get(1));
     }
-
-    @Test
-    public void testGetByLocaleGerman_returnsEnglishList() {
-        // SETUP:
-        // EJERCITAR
-        final List<Pair<String, String>> list = categoryDao.getCategories(Locale.GERMAN);
-        // ASSERT
-        assertEquals("Education", list.get(0).getValue());
-        assertEquals("Home maintenance", list.get(1).getValue());
-    }
-
-    @Test
-    public void testGetByLocaleSpanish_returnsSpanishList() {
-        // SETUP:
-        // EJERCITAR
-        final List<Pair<String, String>> list = categoryDao.getCategories(Locale.forLanguageTag("es"));
-        // ASSERT
-        assertEquals("Ayuda de software", list.get(0).getValue());
-        assertEquals("Educación", list.get(1).getValue());
-    }
-
 }
 

@@ -33,7 +33,8 @@ public class CategoryJdbcDao implements CategoryDao {
     @Override
     public List<String> getCategories() {
         return jdbcTemplate.query(
-                String.format("SELECT * FROM %s", categories.name()),
+                String.format("SELECT * FROM %s ORDER BY %s", categories.name(),
+                        key.name()),
                 ROW_MAPPER
         );
     }
