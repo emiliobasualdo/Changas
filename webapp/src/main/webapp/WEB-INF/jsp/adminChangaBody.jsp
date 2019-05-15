@@ -98,11 +98,11 @@
                     <spring:message code="adminchangaBody.continue"/>
                 </div>
                 <div class="modal-footer">
-                    <button id="btncancel1" type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="adminchangaBody.btn.cancel"/></button>
+                    <button <%--id="btncancel1"--%> type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="adminchangaBody.btn.cancel"/></button>
                     <c:url value="/delete-changa" var="deleteUrl" />
                     <form action="${deleteUrl}" method="post">
                         <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-                        <input id="btndelete3" type="submit"  class="btn btn-danger center-pill" value="<spring:message code="adminchangaBody.btn.delete"/>"/>
+                        <input <%--id="btndelete3"--%> type="submit"  class="btn btn-danger center-pill" value="<spring:message code="adminchangaBody.btn.delete"/>"/>
                     </form>
                     <br />
                 </div>
@@ -122,11 +122,11 @@
                     <spring:message code="adminchangaBody.continue"/>
                 </div>
                 <div class="modal-footer">
-                    <button id="btncancel2" type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="adminchangaBody.btn.cancel"/></button>
+                    <button <%--id="btncancel2"--%> type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="adminchangaBody.btn.cancel"/></button>
                     <c:url value="/close-changa" var="closeUrl" />
                     <form action="${closeUrl}" method="post">
                         <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-                        <input id="btnend2" type="submit"  class="btn btn-success center-pill" value="<spring:message code="adminchangaBody.btn.done"/>" />
+                        <input <%--id="btnend2"--%> type="submit"  class="btn btn-success center-pill" value="<spring:message code="adminchangaBody.btn.done"/>" />
                     </form>
                     <br />
                 </div>
@@ -146,11 +146,11 @@
                     <spring:message code="adminchangaBody.continue"/>
                 </div>
                 <div class="modal-footer">
-                    <button id="btncancel3" type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="adminchangaBody.btn.cancel"/></button>
+                    <button <%--id="btncancel3"--%> type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="adminchangaBody.btn.cancel"/></button>
                     <c:url value="/delete-changa" var="deleteUrl" />
                     <form action="${deleteUrl}" method="post">
                         <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-                        <input id="btnsettle2" type="submit"  class="btn btn-success center-pill" value="<spring:message code="adminchangaBody.btn.settle"/>"/>
+                        <input <%--id="btnsettle2"--%> type="submit"  class="btn btn-success center-pill" value="<spring:message code="adminchangaBody.btn.settle"/>"/>
                     </form>
                     <br />
                 </div>
