@@ -11,7 +11,7 @@ import ar.edu.itba.paw.models.User;
  * This will help in making code modular and easily replaceable
  * when database is replaced (for some part of data)
  * */
-public interface UserDao extends Dao<User>{
+public interface UserDao {
     Either<User, Validation> getById(final long id);
     Either<User, Validation> findByMail(final String mail);
     Either<User, Validation> create(final User.Builder userBuilder);

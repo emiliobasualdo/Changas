@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS changas
     number        INTEGER,
     creation_date TIMESTAMP,
     title         VARCHAR(100),
-    description   VARCHAR(100) ,
+    description   VARCHAR(1000) ,
     state         VARCHAR(100) DEFAULT 'emitted',
     category      VARCHAR(100),
     price         DOUBLE PRECISION,

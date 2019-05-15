@@ -14,6 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -23,7 +24,7 @@ import static ar.edu.itba.paw.interfaces.util.Validation.EXPIRED_TOKEN;
 import static ar.edu.itba.paw.interfaces.util.Validation.USER_ALREADY_EXISTS;
 
 @Service
-@Primary
+@Transactional
 public class UserServiceImpl implements UserService {
 
     @Autowired

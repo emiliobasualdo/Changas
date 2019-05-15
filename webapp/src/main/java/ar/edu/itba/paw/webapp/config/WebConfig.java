@@ -5,9 +5,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -22,6 +25,7 @@ import java.util.Properties;
 @EnableWebMvc
 @ComponentScan({ "ar.edu.itba.paw.webapp.controllers" , "ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence"})
 @Configuration
+@EnableTransactionManagement
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Override
@@ -85,6 +89,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         mailProperties.put("mail.smtp.debug", true);
 
         return ms;
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(final DataSource ds) {
+        return new DataSourceTransactionManager(ds);
     }
 
 }

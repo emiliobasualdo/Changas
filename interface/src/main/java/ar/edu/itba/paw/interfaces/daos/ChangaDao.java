@@ -7,7 +7,7 @@ import ar.edu.itba.paw.models.Either;
 
 import java.util.List;
 
-public interface ChangaDao extends Dao<Changa> {
+public interface ChangaDao {
 
     Either<Changa, Validation> getById(final long id);
     Either<Changa, Validation> create(final Changa.Builder changaBuilder);
