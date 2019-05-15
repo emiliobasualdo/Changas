@@ -8,6 +8,7 @@ import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,6 +39,9 @@ public class ChangaController {
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    private CategoryService catService;
 
     @RequestMapping(value = "/create-changa")
     public ModelAndView createChanga(@ModelAttribute("changaForm") final ChangaForm form) {

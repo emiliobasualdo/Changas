@@ -138,10 +138,9 @@ public class UserController {
         if (val.isOk()){
             //TODO este mail en verdad es para cuando hagan el boton changa settled. mientras lo pongo cuando aceptan al changuero
             //hacer validaciones
-            Changa changa = cs.getChangaById(changaId).getValue();
-            User changaOwner = us.findById(changa.getUser_id()).getValue();
+            User changaOwner = us.findById(changa.getValue().getUser_id()).getValue();
             User inscribedUser = us.findById(userId).getValue();
-            emailService.sendChangaSettledEmail(changa, changaOwner, inscribedUser );
+            emailService.sendChangaSettledEmail(changa.getValue(), changaOwner, inscribedUser );
             //TODO JIME popup preguntando
         } else {
             //TODO JIME un popup de error
