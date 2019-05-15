@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
+import ar.edu.itba.paw.interfaces.services.AuthenticationService;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
@@ -22,6 +23,9 @@ public class ChangaServiceImpl implements ChangaService {
 
     @Autowired
     private InscriptionDao inDao;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @Override
     public Either<List<Changa>, Validation> getEmittedChangas(int pageNum) {
@@ -51,19 +55,25 @@ public class ChangaServiceImpl implements ChangaService {
 
     @Override
     public Either<Changa, Validation> update(final long changaId, final Changa.Builder changaBuilder) {
+        //We check if the changa to be edited exists
         Either<Changa, Validation> old = chDao.getById(changaId);
-
         if(!old.isValuePresent()) {
             return old;
         }
-
-        // we will update a changa ONLY if no changueros are inscribed in it
+        //Only owners of the changa can update it
+        if(!isLoggedUserAuthorizedToUpdateChanga(old.getValue().getUser_id())){
+            return Either.alternative(UNAUTHORIZED);
+        }
+        // We will update a changa ONLY if no changueros are inscribed in it
         // todo permitir cambiar campos menores como fotos
         if(inDao.hasInscribedUsers(changaId)) {
             return Either.alternative(USERS_INSCRIBED);
         }
-
         return chDao.update(changaId, changaBuilder);
+    }
+
+    private boolean isLoggedUserAuthorizedToUpdateChanga(long changaOwnerId) {
+        return authenticationService.getLoggedUser().isPresent() && authenticationService.getLoggedUser().get().getUser_id() == changaOwnerId;
     }
 
     @Override
@@ -87,7 +97,10 @@ public class ChangaServiceImpl implements ChangaService {
 
     @Override
     public Either<Changa, Validation> changeChangaState(Changa changa, ChangaState newState) {
-        // todo check que el usuario logeado es el que la emitió
+        //We check if the user who wants to change the changa's state is the changa owner
+        if (!isLoggedUserAuthorizedToUpdateChanga(changa.getUser_id())) {
+            return Either.alternative(UNAUTHORIZED);
+        }
         if (ChangaState.changeIsPossible(changa.getState(), newState))
             return chDao.changeChangaState(changa.getChanga_id(), newState);
         else

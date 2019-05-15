@@ -97,6 +97,7 @@ public class EmailServiceImplementation implements EmailService {
         sb.append(",\n");
         sb.append(currentUser.getName());
         sb.append(messageSource.getMessage("sendJoinRequest.Body",null, LocaleContextHolder.getLocale()));
+        sb.append(" ");
         sb.append(changa.getDescription());
         return sb.toString();
     }

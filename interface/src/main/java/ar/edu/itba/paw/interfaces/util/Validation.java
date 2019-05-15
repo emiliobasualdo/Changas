@@ -19,6 +19,7 @@ public enum Validation {
     INVALID_MAIL("Invalid mail"),
     INVALID_COMBINATION("The email and password combination is invalid"),
     USER_ALREADY_EXISTS("The email provided is already in use"),
+    DISABLED_USER ("The user isn't enabled"),
 
     // Inscription
     USER_ALREADY_INSCRIBED("User already inscribed in changa"),

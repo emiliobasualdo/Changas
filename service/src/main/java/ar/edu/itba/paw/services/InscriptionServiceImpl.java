@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.interfaces.services.AuthenticationService;
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
 import ar.edu.itba.paw.interfaces.daos.UserDao;
@@ -30,39 +31,49 @@ public class InscriptionServiceImpl implements InscriptionService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private AuthenticationService authenticationService;
+
     @Override
-    /* An Inscription implies that the user is inscribed OR he had inscribed himself before and optout */
+    /* An Inscription implies that the user is inscribed OR he was inscribed before and opted out */
     public Validation inscribeInChanga(long userId, long changaId) {
-        // We check if the user is the owner of the changa
+        //We check that the logged user is the one who is getting inscribed
+        if(!isLoggedUserAuthorizedToInscribeUserInChanga(userId)) {
+            return UNAUTHORIZED;
+        }
+        // We check if the user is the owner of the changa. Changa owners can't inscribe to their own changas
         Either<Changa, Validation> changa = changaDao.getById(changaId);
         if (!changa.isValuePresent())  {
             return changa.getAlternative();
         }
+        if (changa.getValue().getUser_id() == userId){
+            return USER_OWNS_THE_CHANGA;
+        }
+        //We check that the user exists effectively and that the user is enabled. A disabled user can't inscribe in a changa
         Either<User, Validation> user = userDao.getById(userId);
         if (!user.isValuePresent())  {
             return user.getAlternative();
         }
-
+        if(!user.getValue().isEnabled()) {
+            return DISABLED_USER;
+        }
+        //We check that the changa state isn't or settled or done or closed. Only emitted changas can get inscriptions
         ChangaState changaState = changa.getValue().getState();
         if(changaState != emitted) {
             return ILLEGAL_ACTION.withMessage("Can not inscribe to non emitted changa.");
         }
-        if (changa.getValue().getUser_id() == userId){
-            return USER_OWNS_THE_CHANGA;
-        }
-
         // We check if the user is already inscribed
         Either<Inscription, Validation> insc = getInscription(userId, changaId);
+        //If the user had previously been inscribed and opted out, we change the state to requested. Else, we return user already inscribed.
         if (insc.isValuePresent()){
-            //if the user had previously been inscribed and opted out, we change the state to requested. Else, we return user already inscribed.
-            return insc.getValue().getState() == optout ? changeUserStateInChanga(insc.getValue(), requested, userId) : USER_ALREADY_INSCRIBED;
-        } else { // user needs to be inscribbed
-            if (insc.getAlternative() == USER_NOT_INSCRIBED){
-                return inscriptionDao.inscribeInChanga(userId, changaId);
-            } else {
-                return insc.getAlternative();
-            }
+            return insc.getValue().getState() == optout ? changeUserStateInChanga(insc.getValue(), requested) : USER_ALREADY_INSCRIBED;
         }
+        //At this point, the user needs to be inscribed.
+        return insc.getAlternative() == USER_NOT_INSCRIBED ? inscriptionDao.inscribeInChanga(userId, changaId) : insc.getAlternative();
+    }
+
+    private boolean isLoggedUserAuthorizedToInscribeUserInChanga(long userId) {
+        return authenticationService.getLoggedUser().isPresent() && authenticationService.getLoggedUser().get().getUser_id() == userId;
     }
 
     @Override
@@ -71,26 +82,27 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public Validation changeUserStateInChanga(long userId, long changaId, InscriptionState newState, long loggedUser) {
+    public Validation changeUserStateInChanga(long userId, long changaId, InscriptionState newState) {
         Either<Inscription, Validation> insc = inscriptionDao.getInscription(userId, changaId);
         if (insc.isValuePresent())
-            return this.changeUserStateInChanga(insc.getValue(), newState, loggedUser);
+            return this.changeUserStateInChanga(insc.getValue(), newState);
         else
             return insc.getAlternative();
     }
 
     @Override
-    public Validation changeUserStateInChanga(Inscription insc, InscriptionState newState, long userMakingTheChange) {
-        Either<Changa, Validation> eitherChangaInInscription = changaDao.getById(insc.getChanga_id());
-        if (!eitherChangaInInscription.isValuePresent()) {
+    public Validation changeUserStateInChanga(Inscription insc, InscriptionState newState) {
+        //We check that the changa in the inscription exists.
+        Either<Changa, Validation> inscriptionChanga = changaDao.getById(insc.getChanga_id());
+        if (!inscriptionChanga.isValuePresent()) {
             return NO_SUCH_CHANGA;
         }
-
-        if(!isUserAuthorizedToChangeInscriptionState(insc.getUser_id(), eitherChangaInInscription.getValue().getUser_id(), newState, userMakingTheChange)){
+        //We check that the logged user is authorized to change the changa's state.
+        if(!isLoggedUserAuthorizedToChangeInscriptionState(insc.getUser_id(), inscriptionChanga.getValue().getUser_id(), newState)){
             return UNAUTHORIZED;
         }
-
-        ChangaState changaState = eitherChangaInInscription.getValue().getState();
+        //Inscriptions where the changa is closed or done can't have their states changed.
+        ChangaState changaState = inscriptionChanga.getValue().getState();
         if(changaState == closed || changaState == done || !InscriptionState.changeIsPossible(insc.getState(), newState) ) {
            return CHANGE_NOT_POSSIBLE;
         }
@@ -98,12 +110,16 @@ public class InscriptionServiceImpl implements InscriptionService {
         return inscriptionDao.changeUserStateInChanga(insc, newState);
     }
 
-    private boolean isUserAuthorizedToChangeInscriptionState(long inscriptedUserId, long changaOwnerId, InscriptionState newState, long userMakingTheChange){
-        //the inscribed user can only change from requested to optout and viceversa
+    private boolean isLoggedUserAuthorizedToChangeInscriptionState(long inscriptedUserId, long changaOwnerId, InscriptionState newState){
+        if(!authenticationService.getLoggedUser().isPresent()){
+            return false;
+        }
+        long userMakingTheChange = authenticationService.getLoggedUser().get().getUser_id();
+        //The inscribed user can only change from requested to optout and viceversa.
         if(userMakingTheChange == inscriptedUserId && (newState == optout || newState == requested)) {
             return true;
         }
-        //the changa owner can only change state from: requested to accepted, requeted to declined or accepted to declined. He can't change the state of an inscription to optout
+        //The changa owner can only change state from: requested to accepted, requeted to declined or accepted to declined. He can't change the state of an inscription to optout.
        return userMakingTheChange == changaOwnerId && (newState != optout);
     }
 
