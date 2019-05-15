@@ -71,7 +71,8 @@ public class EmailServiceImplementation implements EmailService {
     @Override
     public void sendChangaSettledEmail(Changa changa, User changaOwner, User inscribedUser) {
         String subject = messageSource.getMessage("sendChangaSettledEmail.Subject", null, LocaleContextHolder.getLocale());
-        sendEmail(changaOwner.getEmail(), subject, changaSettledEmailBody(changa, changaOwner, inscribedUser));
+        sendEmail(inscribedUser.getEmail(), subject, changaSettledEmailToInscribedUserBody(changa, changaOwner, inscribedUser));
+        sendEmail(changaOwner.getEmail(), subject, changaSettledEmailToChangaOwner(changa, changaOwner, inscribedUser));
     }
 
     @Override
@@ -102,27 +103,32 @@ public class EmailServiceImplementation implements EmailService {
 
     //TODO emails from html templates
     private String joinRequestEmailBody(Changa changa, User changaOwner, User requestingUser){
-        return changaOwner.getName() +
-                ",\n" +
+        return changaOwner.getName() + ",\n" +
                 requestingUser.getName() + " " +
-                messageSource.getMessage("sendJoinRequest.Body", null, LocaleContextHolder.getLocale()) +
-                " " +
+                messageSource.getMessage("sendJoinRequest.Body", null, LocaleContextHolder.getLocale()) + " " +
                 changa.getDescription();
     }
 
     //TODO emails from html templates
-    private String changaSettledEmailBody(Changa changa, User changaOwner, User inscriptedUser){
-        return inscriptedUser.getName() +
-                ",\n" +
+    private String changaSettledEmailToInscribedUserBody(Changa changa, User changaOwner, User inscriptedUser){
+        return inscriptedUser.getName() + ",\n" +
                 changaOwner.getName() + " " +
-                messageSource.getMessage("changaHasBeenSettled", null, LocaleContextHolder.getLocale()) + " " + changa.getTitle() +
-                ".\n" +
+                messageSource.getMessage("changaHasBeenSettled", null, LocaleContextHolder.getLocale()) + " " + changa.getTitle() + ".\n" +
                 messageSource.getMessage("changaOwnerInfo", null, LocaleContextHolder.getLocale()) + "\n" +
                 messageSource.getMessage("name", null, LocaleContextHolder.getLocale()) + " " + changaOwner.getName() + "\n" +
                 messageSource.getMessage("phoneNumber", null, LocaleContextHolder.getLocale()) + " " + changaOwner.getTel() + "\n" +
                 messageSource.getMessage("email", null, LocaleContextHolder.getLocale()) + " " + changaOwner.getEmail() + "\n" +
-                messageSource.getMessage("pleaseContactChangaOwner", null, LocaleContextHolder.getLocale()) + " " + changaOwner.getEmail()
+                messageSource.getMessage("pleaseContactChangaOwner", null, LocaleContextHolder.getLocale())
+                ;
+    }
 
+    private String changaSettledEmailToChangaOwner(Changa changa, User changaOwner, User inscriptedUser) {
+        return changaOwner.getName() + ",\n" +
+                messageSource.getMessage("inscriptedUserInfo", null, LocaleContextHolder.getLocale()) + " " + changa.getTitle() + " " +
+                messageSource.getMessage("areTheFollowing", null, LocaleContextHolder.getLocale()) + "\n" +
+                messageSource.getMessage("name", null, LocaleContextHolder.getLocale()) + " " + inscriptedUser.getName() + "\n" +
+                messageSource.getMessage("phoneNumber", null, LocaleContextHolder.getLocale()) + " " + inscriptedUser.getTel() + "\n" +
+                messageSource.getMessage("email", null, LocaleContextHolder.getLocale()) + " " + inscriptedUser.getEmail() + "\n"
                 ;
     }
 }

@@ -17,6 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.core.Authentication;
+
+import java.util.Optional;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.OK;
 import static ar.edu.itba.paw.models.ChangaState.emitted;
@@ -53,12 +56,14 @@ public class InscriptionServiceImplTest {
     private User mockedUser;
     private Changa mockedChanga;
     private Inscription mockedInscription;
+    private Authentication mockedAuthentication;
 
     @Before
     public void setUp() {
         mockedUser = Mockito.mock(User.class);
         mockedChanga = Mockito.mock(Changa.class);
         mockedInscription = Mockito.mock(Inscription.class);
+        Authentication mockedAuthentication = Mockito.mock(Authentication.class);
     }
 
 
@@ -73,11 +78,15 @@ public class InscriptionServiceImplTest {
         when(mockedUser.isEnabled()).thenReturn(true);
         when(userDao.getById(USER2_ID)).thenReturn(Either.value(mockedUser));
         //Preparamos a la falsa sesión del usuario loggeado
-        when(authenticationService.getLoggedUser().isPresent()).thenReturn(true);
-        when(authenticationService.getLoggedUser().get().getUser_id()).thenReturn(USER2_ID);
-        //Preparamos al either de la inscripción con validation error con la que verifica que el usuario no esté inscripto ya
-
+        when(authenticationService.getLoggedUser()).thenReturn(Optional.of(mockedUser));
+        when(mockedUser.getUser_id()).thenReturn(USER2_ID);
+        //no se porque lo de abajo no me dejaba hacerlo. por algo de threads. pregutnar.
+        //when(authenticationService.getLoggedUser().isPresent()).thenReturn(true);
+        //when(authenticationService.getLoggedUser().get().getUser_id()).thenReturn(USER2_ID);
+        //Preparamos al falseo either de la inscripción con validation error con la que verifica que el usuario no esté inscripto ya
         when(inscriptionDao.getInscription(USER2_ID, CHANGA_ID)).thenReturn(Either.alternative(Validation.USER_NOT_INSCRIBED));
+        //Preparamos a la falsa inscripcion del usuario en la changa
+        when(inscriptionDao.inscribeInChanga(USER2_ID, CHANGA_ID)).thenReturn(OK);
 
         //EXERCISE
         Validation validation = inscriptionService.inscribeInChanga(USER2_ID, CHANGA_ID);
