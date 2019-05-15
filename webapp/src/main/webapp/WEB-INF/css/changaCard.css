@@ -7,7 +7,7 @@ body {
     background: #eee;
 }
 .changaCard-option {
-    /*width: 32%;*/
+    width: 100%;
     background: white;
     float: left;
     padding: 2%;
