@@ -15,7 +15,7 @@ body {
     grid-gap: 1rem;
     grid-auto-rows: minmax(100px, auto);
 }
-#btnedit, #btndelete1, #btnclose1, #btndelete2, #btnclose2 {
+#btnedit, #btndelete1, #btnend1, #btndelete2, #btnend2, #btndelete3, #btnsettle1, #btnsettle2, #btncancel1, #btncancel2, #btncancel3 {
     display:inline-block;
     width: 300px;
     height: 40px;
