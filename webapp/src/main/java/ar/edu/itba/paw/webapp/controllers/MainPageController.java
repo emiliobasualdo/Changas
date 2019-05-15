@@ -66,7 +66,7 @@ public class MainPageController {
             return new ModelAndView("redirect:/error").addObject("message", changas.getAlternative().getMessage());
         }
 
-        indexModel.addObject("filtered", true);
+        indexModel.addObject("isFiltered", true);
         // else we mark the inscribbed changas
         if (isUserLogged)
             return markedInscriptions(loggedUser, changas.getValue(), indexModel);
