@@ -10,12 +10,12 @@ public class ChangaForm {
     private String title;
 
     @NotEmpty
-    @Size(max = 1000) @Pattern(regexp = "[A-Za-z0-9\\s_.,!\"'/$]+")
+    @Size(max = 100) @Pattern(regexp = "[A-Za-z0-9\\s_.,!\"'/$]+") //TODO: agrandar limite de texto en la bd (muy chico 100)
     private String description;
 
     @NotNull
     @Min(1)
-    @Max(100) //TODO: agrandar limite de texto en la bd (muy chico 100)
+    @Max(100)
     private double price;
 
     @NotEmpty

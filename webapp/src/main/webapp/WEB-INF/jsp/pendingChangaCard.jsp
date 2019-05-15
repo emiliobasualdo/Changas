@@ -5,6 +5,7 @@
 
     <head>
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+        <style><%@include file="/WEB-INF/css/changaCard.css"%></style>
     </head>
 
     <body>
@@ -30,11 +31,10 @@
                         </span>
                         </div>
                         <div class="back">
-                            <c:url value="/unjoin-changa" var="unJoinUrl" />
-                            <form method="post" action="${unJoinUrl}">
-                                <input type="hidden" name="changaId" value="<c:out value="${requestScope.changa_id}"/>">
-                                <input type="submit" class="btn btn-danger btn-block" value="Desanotame" />
-                            </form>
+                            <c:url value="/unjoin-changa?changaId=${requestScope.changa_id}" var="unJoinUrl" />
+                            <a href="${unJoinUrl}" class="button">
+                                Desanotame
+                            </a>
                         </div>
                     </div>
                 </c:when>
@@ -48,10 +48,16 @@
                         </span>
                         </div>
                         <div class="back">
+
+                            <%--<c:url value="/unjoin-changa?changaId=${requestScope.changa_id}" var="unJoinUrl" />--%>
+                            <a class="button">
+                                Archivar
+                            </a>
+
                             <%--<c:url value="/unjoin-changa" var="unJoinUrl" />
                             <form method="post" action="${unJoinUrl}">
                                 <input type="hidden" name="changaId" value="<c:out value="${requestScope.changa_id}"/>">--%>
-                                <input <%--type="submit"--%> class="btn btn-info btn-block" value="Archivar" />
+                                <%--<input &lt;%&ndash;type="submit"&ndash;%&gt; class="btn btn-info btn-block" value="Archivar" />--%>
                             <%--</form>--%>
                         </div>
                     </div>
@@ -66,10 +72,15 @@
                         </span>
                         </div>
                         <div class="back">
+
+                                <%--<c:url value="/unjoin-changa?changaId=${requestScope.changa_id}" var="unJoinUrl" />--%>
+                            <a class="button">
+                                Archivar
+                            </a>
                                 <%--<c:url value="/unjoin-changa" var="unJoinUrl" />
                                 <form method="post" action="${unJoinUrl}">
                                     <input type="hidden" name="changaId" value="<c:out value="${requestScope.changa_id}"/>">--%>
-                            <input <%--type="submit"--%> class="btn btn-info btn-block" value="Archivar" />
+                            <%--<input &lt;%&ndash;type="submit"&ndash;%&gt; class="btn btn-info btn-block" value="Archivar" />--%>
                                 <%--</form>--%>
                         </div>
                     </div>

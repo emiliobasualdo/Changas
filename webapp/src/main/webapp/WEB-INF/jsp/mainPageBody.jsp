@@ -33,7 +33,16 @@
             <c:otherwise>
                 <c:forEach items="${changaList}" var="changa">
                     <c:set var="title" value="${changa.title}" scope="request"/>
-                    <c:set var="description" value="${changa.description}" scope="request"/>
+                    <c:set var="str" value="${changa.description}" />
+                    <c:set var="descriptionLength" value="${fn:length(str)}"/>
+                    <c:choose>
+                        <c:when test="${descriptionLength >= 100}">
+                            <c:set var="description" value="${fn:substring(str,0,97)}..." scope="request"/>
+                        </c:when>
+                        <c:otherwise>
+                            <c:set var="description" value="${str}" scope="request"/>
+                        </c:otherwise>
+                    </c:choose>
                     <c:set var="user_id" value="${changa.user_id}" scope="request"/>
                     <c:set var="price" value="${changa.price}" scope="request"/>
                     <c:set var="changa_id" value="${changa.changa_id}" scope="request"/>
