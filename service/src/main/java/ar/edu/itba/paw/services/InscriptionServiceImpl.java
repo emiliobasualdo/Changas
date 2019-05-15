@@ -85,6 +85,11 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
+    public Either<List<Pair<User, Inscription>>, Validation> getAcceptedUsers(long changa_id) {
+        return inscriptionDao.getAcceptedUsers(changa_id);
+    }
+
+    @Override
     public Validation changeUserStateInChanga(long userId, long changaId, InscriptionState newState) {
         Either<Inscription, Validation> insc = inscriptionDao.getInscription(userId, changaId);
         if (insc.isValuePresent())

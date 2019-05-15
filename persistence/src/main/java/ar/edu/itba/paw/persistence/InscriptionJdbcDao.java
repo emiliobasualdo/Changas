@@ -105,6 +105,29 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
     @Override
+    /* Returns the users that are accepted in a changa of id=changaId */
+    public Either<List<Pair<User, Inscription>>, Validation>  getAcceptedUsers(long changaId) {
+            final List<Inscription> inscriptionList = jdbcTemplate.query(
+                    String.format("SELECT * FROM %s WHERE %s = ? AND %s = ?", user_inscribed
+                            , changa_id.name(), state.name() ),
+                    ROW_MAPPER,
+                    changaId,
+                    InscriptionState.accepted.name()
+
+            );
+            final List<Pair<User,Inscription>> pairList = new LinkedList<>();
+            for (Inscription insc : inscriptionList) {
+                Either<User, Validation> either = userDao.getById(insc.getUser_id());
+                if(!either.isValuePresent()){
+                    return Either.alternative(either.getAlternative());
+                }
+                pairList.add(Pair.buildPair(either.getValue(), insc));
+            }
+
+            return Either.value(pairList);
+    }
+
+    @Override
     /* An Inscription implies that the user is inscribed OR he had inscribed him self before and optout */
     public Validation inscribeInChanga(long userId, long changaId) {
         Map<String, Object> row = inscriptionToTableRow(userId, changaId);
