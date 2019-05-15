@@ -55,6 +55,29 @@
                             </div>
                         </td>
                     </tr>
+
+                    <tr>
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <form:label path="description"><spring:message code="ChangaForm.category"/></form:label>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <form:select  class="form-control" path="category">
+                                        <c:forEach items="${categories}" var="category">
+                                            <option value="${category.key}">${category.value}</option>
+                                        </c:forEach>
+                                    </form:select>
+                                </div>
+                                <form:errors cssClass="form-error" path="category" element="p"/>
+                            </div>
+                        </td>
+                    </tr>
+
                     <tr>
                         <td>
                             <div class="form-group">

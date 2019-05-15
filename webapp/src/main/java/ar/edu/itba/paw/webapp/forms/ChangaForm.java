@@ -28,7 +28,12 @@ public class ChangaForm {
 
     @NotNull
     @Min(0)
+    @Max(20000)
     private int number;
+
+    @NotEmpty
+    @Size(min = 4, max = 100) @Pattern(regexp = "[a-zA-Z 0-9]+")
+    private String category;
 
     public String getTitle() {
         return title;
@@ -40,6 +45,14 @@ public class ChangaForm {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String cat) {
+        this.category = cat;
     }
 
     public void setDescription(String description) {

@@ -10,4 +10,5 @@ public interface EmailService {
     void sendJoinRequestEmail(Changa changa, User changaOwner, User requestingUser);
     void sendMailConfirmationEmail(User user, String appUrl) throws MessagingException;
     void sendResetPasswordEmail(User user, String appUrl) throws MessagingException;
+    void sendChangaSettledEmail(Changa changa, User changaOwner, User inscribedUser);
 }

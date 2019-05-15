@@ -1,10 +1,38 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
     <style><%@include file="/WEB-INF/css/mainPageBody.css"%></style>
+    <title>Changas</title>
 </head>
 <body>
+    <div>
+        <tr>
+            <td>
+                <div class="form-group">
+                    <label><spring:message code="ChangaForm.category"/></label>
+                    <c:url value="/filter" var="filterUrl" />
+                    <form:form action="${filterUrl}" method="get">
+                        <label>
+                            <select name="cfilter">
+                                <c:forEach items="${categories}" var="category">
+                                    <option value="${category.key}">${category.value}</option>
+                                </c:forEach>
+                            </select>
+                            <button type="submit" class="btn btn-success btn-block"><spring:message code="mainPage.button.filter"/></button>
+                        </label>
+                    </form:form>
+                    <c:if test="${isFiltered}">
+                        <c:url value="/" var="rootUrl" />
+                        <form:form action="${rootUrl}" method="get">
+                            <button type="submit" class="btn btn-success btn-block"><spring:message code="mainPage.button.de-filter"/></button>
+                        </form:form>
+                    </c:if>
+                </div>
+            </td>
+        </tr>
+    </div>
     <div class="auto-table">
         <c:choose>
             <c:when test="${isUserLogged}">

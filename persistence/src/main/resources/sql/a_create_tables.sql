@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS changas
     description   VARCHAR(100),
     state         VARCHAR(100) DEFAULT 'emitted',
     price         DOUBLE PRECISION,
+    category      VARCHAR(100),
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
@@ -38,4 +39,12 @@ CREATE TABLE IF NOT EXISTS verification_token
    token VARCHAR(255),
    user_id SERIAL NOT NULL REFERENCES users (user_id),
    expiry_date DATE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS categories
+(
+     locale VARCHAR(5) NOT NULL,
+     key VARCHAR(30) NOT NULL,
+     message VARCHAR(30),
+     PRIMARY KEY (locale, key)
 );

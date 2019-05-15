@@ -6,9 +6,11 @@ public enum Validation {
     OK("OK"),
     DATABASE_ERROR("Database error"),
     ILLEGAL_VALUE("This value is not allowed"),
+    UNAUTHORIZED("Unauthorized action"),
 
     // Changas,
     NO_SUCH_CHANGA("Invalid changa id"),
+    ILLEGAL_ACTION("This action is not alloed:"),
 
     // Users
     INVALID_PASSWORD("Invalid password"),
@@ -17,6 +19,7 @@ public enum Validation {
     INVALID_MAIL("Invalid mail"),
     INVALID_COMBINATION("The email and password combination is invalid"),
     USER_ALREADY_EXISTS("The email provided is already in use"),
+    DISABLED_USER ("The user isn't enabled"),
 
     // Inscription
     USER_ALREADY_INSCRIBED("User already inscribed in changa"),
@@ -24,12 +27,16 @@ public enum Validation {
     USERS_INSCRIBED("There are users inscribed in the changa"), // we cant edit a changa if users are inscribed
     NO_USERS_INSCRIBED("There are no users inscribed in the changa"),
     CHANGE_NOT_POSSIBLE("Such change is not allowed to be done"),
+    SETTLE_WHEN_EMPTY("Changa is not allowed to pass from emitted to settled when not chagueros are inscribed"),
     USER_OWNS_THE_CHANGA("An owner can not inscribe himself in his changa"),
 
     //Verification Token
     INEXISTENT_TOKEN("Inexistent token"),
     EXPIRED_TOKEN("Expired token"),
-    USER_NOT_LOGGED_IN("User must be logged in to user such functionality");
+    USER_NOT_LOGGED_IN("User must be logged in to user such functionality"),
+
+    // Categories
+    NO_SUCH_LOCALE("This locale is not defined in the db");
 
     private String message; // NOT final on purpose
 

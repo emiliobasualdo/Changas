@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.models;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 public class Changa {
 
@@ -15,6 +14,7 @@ public class Changa {
     private String description;
     private ChangaState state;
     private double price;
+    private String category;
 
     // required to make constructor private
     private Changa() { }
@@ -47,6 +47,10 @@ public class Changa {
         return price;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
     public ChangaState getState() {
         return state;
     }
@@ -62,6 +66,7 @@ public class Changa {
         description = cb.getDescription();
         state = cb.getState();
         price = cb.getPrice();
+        category = cb.getCategory();
     }
 
     public static class Builder {
@@ -74,6 +79,7 @@ public class Changa {
         private String street;
         private String neighborhood;
         private int number;
+        private String category;
 
 
         public Builder withUserId(long user_id){
@@ -106,7 +112,10 @@ public class Changa {
             this.number = number;
             return this;
         }
-
+        public Builder inCategory(String cat) {
+            this.category = cat;
+            return this;
+        }
         public long getUser_id() {
             return user_id;
         }
@@ -143,25 +152,8 @@ public class Changa {
             return number;
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Builder)) return false;
-            Builder builder = (Builder) o;
-            return user_id == builder.user_id &&
-                    Double.compare(builder.price, price) == 0 &&
-                    number == builder.number &&
-                    creation_date.equals(builder.creation_date) &&
-                    title.equals(builder.title) &&
-                    description.equals(builder.description) &&
-                    state == builder.state &&
-                    street.equals(builder.street) &&
-                    neighborhood.equals(builder.neighborhood);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(user_id, creation_date, title, description, state, price, street, neighborhood, number);
+        public String getCategory() {
+            return category;
         }
         //        public Changa build(){
 //            Changa changa = new Changa();
@@ -177,5 +169,21 @@ public class Changa {
 //            changa.number = this.number;
 //            return changa;
 //        }
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof Changa)) {
+            return false;
+        }
+
+        Changa c = (Changa) o;
+
+        return c.changa_id == changa_id;
     }
 }

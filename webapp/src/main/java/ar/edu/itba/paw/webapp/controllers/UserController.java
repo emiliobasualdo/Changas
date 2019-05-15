@@ -7,6 +7,13 @@ import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.forms.*;
+import ar.edu.itba.paw.webapp.forms.ForgotPasswordForm;
+import ar.edu.itba.paw.webapp.forms.ResetPasswordForm;
+import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.webapp.forms.UserLoginForm;
+import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
@@ -129,6 +136,12 @@ public class UserController {
         if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
         Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.accepted);
         if (val.isOk()){
+            //TODO este mail en verdad es para cuando hagan el boton changa settled. mientras lo pongo cuando aceptan al changuero
+            //hacer validaciones
+            Changa changa = cs.getChangaById(changaId).getValue();
+            User changaOwner = us.findById(changa.getUser_id()).getValue();
+            User inscribedUser = us.findById(userId).getValue();
+            emailService.sendChangaSettledEmail(changa, changaOwner, inscribedUser );
             //TODO JIME popup preguntando
         } else {
             //TODO JIME un popup de error

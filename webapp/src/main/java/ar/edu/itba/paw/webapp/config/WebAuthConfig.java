@@ -40,7 +40,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement()
 //                .invalidSessionUrl("/logIn") //upon logout, you will be forwarded here por ahora no lo usamos
                 .and().authorizeRequests()
-                    .antMatchers("/", "/changa").permitAll()
+                    .antMatchers("/", "/changa", "/filter").permitAll()
                     .antMatchers(HttpMethod.GET, "/create-changa").permitAll()
                     .antMatchers("/reset-password/validate").permitAll()
                     .antMatchers("/reset-password").hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
