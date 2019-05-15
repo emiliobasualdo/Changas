@@ -6,10 +6,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -24,6 +27,7 @@ import java.util.Properties;
 @EnableWebMvc
 @ComponentScan({ "ar.edu.itba.paw.webapp.controllers" , "ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence"})
 @Configuration
+@EnableTransactionManagement
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Override
@@ -51,9 +55,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         // todo sacar para la entrega
 
         boolean local = Boolean.valueOf(System.getenv("CHANGAS_LOCAL")); // cambiar esto si quieren conectarse a la db local
-        String url = local? "jdbc:postgresql://localhost/changas": "jdbc:postgresql://isilo.db.elephantsql.com";
-        String username = local? System.getenv("CHANGAS_USERNAME"): "nfuyohzm";
-        String passwd = local? System.getenv("CHANGAS_PASSWD"): "FQ9W7Ck3I1eTYePdn_OHsJIANQihEwzA";
+        String url = local? "jdbc:postgresql://localhost/changas": "jdbc:postgresql://10.16.1.110/paw-2019a-3";
+        String username = local? System.getenv("CHANGAS_USERNAME"): "paw-2019a-3";
+        String passwd = local? System.getenv("CHANGAS_PASSWD"): "tbpkI6aN8";
 
         ds.setUrl(url);
         ds.setUsername(username);
@@ -87,6 +91,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         mailProperties.put("mail.smtp.debug", true);
 
         return ms;
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(final DataSource ds) {
+        return new DataSourceTransactionManager(ds);
     }
 
 }
