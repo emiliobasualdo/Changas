@@ -9,6 +9,8 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,7 +21,8 @@ import static ar.edu.itba.paw.models.InscriptionState.optout;
 import static ar.edu.itba.paw.models.InscriptionState.requested;
 import static ar.edu.itba.paw.interfaces.util.Validation.CHANGE_NOT_POSSIBLE;
 
-@Repository
+@Service
+@Transactional
 public class InscriptionServiceImpl implements InscriptionService {
 
     @Autowired

@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS changas
     number        INTEGER,
     creation_date TIMESTAMP,
     title         VARCHAR(100),
-    description   VARCHAR(100),
+    description   VARCHAR(1000),
     state         VARCHAR(100) DEFAULT 'emitted',
     price         DOUBLE PRECISION,
     category      VARCHAR(100),
@@ -43,8 +43,5 @@ CREATE TABLE IF NOT EXISTS verification_token
 
 CREATE TABLE IF NOT EXISTS categories
 (
-     locale VARCHAR(5) NOT NULL,
-     key VARCHAR(30) NOT NULL,
-     message VARCHAR(30),
-     PRIMARY KEY (locale, key)
+    key VARCHAR(30) PRIMARY KEY
 );

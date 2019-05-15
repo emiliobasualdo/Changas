@@ -46,7 +46,7 @@ public class ChangaController {
     @RequestMapping(value = "/create-changa")
     public ModelAndView createChanga(@ModelAttribute("changaForm") final ChangaForm form) {
         return new ModelAndView("issueChangaForm")
-                .addObject("categories", catService.getCategories(LocaleContextHolder.getLocale()));
+                .addObject("categories", catService.getCategories());
     }
 
     @RequestMapping(value = "/create-changa", method = RequestMethod.POST )
@@ -80,7 +80,7 @@ public class ChangaController {
         form.setCategory(changa.getValue().getCategory());
         return new ModelAndView("editChangaForm")
                 .addObject("id", id)
-                .addObject("categories", catService.getCategories(LocaleContextHolder.getLocale()));
+                .addObject("categories", catService.getCategories());
     }
 
     @RequestMapping(value = "/edit-changa", method = RequestMethod.POST )
