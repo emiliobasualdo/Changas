@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css?family=Quicksand:400,500,700&subset=latin-ext');
 body {
     font-family: "Quicksand", sans-serif;
@@ -14,9 +15,9 @@ body {
     text-align: center;
     transition: all .3s ease-in-out;
 }
-/*.changaCard-option:nth-child(even) {*/
-/*margin: 0 2%;*/
-/*}*/
+/*.changaCard-option:nth-child(even) {
+margin: 0 2%;
+}*/
 .changaCard-option:hover {
     cursor: pointer;
     box-shadow: 0px 2px 30px rgba(0, 0, 0, 0.3);

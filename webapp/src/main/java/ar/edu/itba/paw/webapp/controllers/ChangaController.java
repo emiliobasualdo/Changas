@@ -143,12 +143,9 @@ public class ChangaController {
 
     @RequestMapping(value = "/close-changa", method = RequestMethod.POST)
     public ModelAndView closeChanga(@RequestParam("changaId") final long changaId, HttpSession session) {
-        //Validation val = cs.changeState;
-        /*if (val.isOk()){
-            // TODO JIME popup confirmacion
-        } else {
-            //TODO JIME popup error
-        }*/
+        // TODO JIME popup confirmacion (estás seguro?)
+        Either<Changa, Validation> err = cs.changeChangaState(changaId, ChangaState.done);
+        if (!err.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", err.getAlternative().getMessage());
         return new ModelAndView("redirect:/profile");
     }
 }
