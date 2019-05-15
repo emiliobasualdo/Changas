@@ -135,7 +135,7 @@ public class UserController {
     public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser) {
         Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.accepted);
         if (val.isOk()){
-            //TODO este mail en verdad es para cuando hagan el boton changa settled
+            //TODO este mail en verdad es para cuando hagan el boton changa settled. mientras lo pongo cuando aceptan al changuero
             //hacer validaciones
             Changa changa = cs.getChangaById(changaId).getValue();
             User changaOwner = us.findById(changa.getUser_id()).getValue();
