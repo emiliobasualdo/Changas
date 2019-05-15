@@ -15,10 +15,10 @@
             <table style="width: 100%">
                 <tr>
                     <td>
-                        <div class="form-group align-self-md-center">
-                            <div class="input-group">
+                        <div class="form-group">
+                            <div class="input-group" style="display: inline-block;">
                                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                <form:label path="name" cssStyle="align-self: center"><spring:message code="UserRegisterForm.name"/></form:label>
+                                <form:label path="name"><spring:message code="UserRegisterForm.name"/></form:label>
                             </div>
                         </div>
                     </td>
@@ -36,7 +36,7 @@
                 <tr>
                     <td>
                         <div class="form-group">
-                            <div class="input-group">
+                            <div class="input-group" style="display: inline-block;">
                                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
                                 <form:label path="surname"><spring:message code="UserRegisterForm.surname"/></form:label>
                             </div>
@@ -54,7 +54,7 @@
                 <tr>
                     <td>
                         <div class="form-group">
-                            <div class="input-group">
+                            <div class="input-group" style="display: inline-block;">
                                 <span class="input-group-addon"><i class="fa fa-phone"></i></span>
                                 <form:label path="telephone"><spring:message code="UserRegisterForm.telephone"/></form:label>
                             </div>
@@ -72,7 +72,7 @@
                 <tr>
                     <td>
                         <div class="form-group">
-                            <div class="input-group">
+                            <div class="input-group" style="display: inline-block;">
                                 <span class="input-group-addon"><i class="fa fa-paper-plane"></i></span>
                                 <form:label path="email"><spring:message code="UserRegisterForm.email"/></form:label>
                             </div>
@@ -90,7 +90,7 @@
                 <tr>
                     <td>
                         <div class="form-group">
-                            <div class="input-group">
+                            <div class="input-group" style="display: inline-block;">
                                 <span class="input-group-addon"><i class="fa fa-lock"></i></span>
                                 <form:label path="password"><spring:message code="UserRegisterForm.password"/></form:label>
                             </div>

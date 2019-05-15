@@ -34,6 +34,7 @@ body {
     vertical-align: center;
     text-align: center;
     align-items: center;
+    align-self: center;
 }
 .signup-form .input-group-addon {
     max-width: 42px;
