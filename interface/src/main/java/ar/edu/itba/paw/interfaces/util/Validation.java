@@ -24,6 +24,7 @@ public enum Validation {
     USERS_INSCRIBED("There are users inscribed in the changa"), // we cant edit a changa if users are inscribed
     NO_USERS_INSCRIBED("There are no users inscribed in the changa"),
     CHANGE_NOT_POSSIBLE("Such change is not allowed to be done"),
+    SETTLE_WHEN_EMPTY("Changa is not allowed to pass from emitted to settled when not chagueros are inscribed"),
     USER_OWNS_THE_CHANGA("An owner can not inscribe himself in his changa"),
 
     //Verification Token

@@ -87,9 +87,13 @@ public class ChangaServiceImpl implements ChangaService {
 
     @Override
     public Either<Changa, Validation> changeChangaState(Changa changa, ChangaState newState) {
-        // todo check que el usuario logeado es el que la emitió
-        if (ChangaState.changeIsPossible(changa.getState(), newState))
+        if (ChangaState.changeIsPossible(changa.getState(), newState)) {
+            // if changa has NO changueros inscribed, it can not be settled. only closed
+            if (newState == ChangaState.settled && !inDao.hasInscribedUsers(changa.getChanga_id())) {
+                return Either.alternative(SETTLE_WHEN_EMPTY);
+            }
             return chDao.changeChangaState(changa.getChanga_id(), newState);
+        }
         else
             return Either.alternative(CHANGE_NOT_POSSIBLE);
     }

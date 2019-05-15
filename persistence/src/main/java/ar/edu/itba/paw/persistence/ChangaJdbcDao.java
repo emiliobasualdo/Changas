@@ -119,21 +119,20 @@ public class ChangaJdbcDao implements ChangaDao {
     @Override
     public Either<Changa, Validation> update(final long changaId, Changa.Builder changaBuilder) {
         int updatedChangas = jdbcTemplate.update(
-                String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ? ",
+                String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ? ",
                     changas.name(),
                     street.name(),
                     neighborhood.name(),
                     number.name(),
                     title.name(),
                     description.name(),
-                    state.name(),
                     price.name(),
                     changa_id.name()),
 
                 changaBuilder.getStreet(), changaBuilder.getNeighborhood(),
                 changaBuilder.getNumber(), changaBuilder.getTitle(),
-                changaBuilder.getDescription(), changaBuilder.getState().toString(),
-                changaBuilder.getPrice(), changaId
+                changaBuilder.getDescription(), changaBuilder.getPrice(),
+                changaId
         );
 
         // updatedChangas != 1 => rollback! fue un error
@@ -145,7 +144,9 @@ public class ChangaJdbcDao implements ChangaDao {
         // we assume the service has checked that the change can be done
         try {
             int rowsAffected = this.jdbcTemplate.update(
-                    String.format("UPDATE %s set %s = ? WHERE %s = ? ", changas.name(), state.name(), changa_id.name()),
+                    String.format("UPDATE %s set %s = ? WHERE %s = ? ", changas.name(),
+                            state.name(),
+                            changa_id.name()),
                     newState.name(), changaId);
             if (rowsAffected != 1) {
                 throw new RecoverableDataAccessException("rowsAffected != 1");
