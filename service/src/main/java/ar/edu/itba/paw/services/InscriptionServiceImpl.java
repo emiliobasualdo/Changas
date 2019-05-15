@@ -71,10 +71,7 @@ public class InscriptionServiceImpl implements InscriptionService {
         }
 
         //At this point, the user needs to be inscribed.
-        System.out.println(insc.getAlternative());
-        Validation val = inscriptionDao.inscribeInChanga(userId, changaId);
-        System.out.println(val);
-        return insc.getAlternative() == USER_NOT_INSCRIBED ? val : insc.getAlternative();
+        return insc.getAlternative() == USER_NOT_INSCRIBED ? inscriptionDao.inscribeInChanga(userId, changaId) : insc.getAlternative();
     }
 
     private boolean isLoggedUserAuthorizedToInscribeUserInChanga(long userId) {
