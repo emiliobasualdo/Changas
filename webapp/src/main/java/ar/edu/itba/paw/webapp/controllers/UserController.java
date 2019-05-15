@@ -10,6 +10,7 @@ import ar.edu.itba.paw.webapp.forms.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -62,29 +63,26 @@ public class UserController {
             System.out.println("Errores en los campos del formulario sign up");
             return signUp(form);
         }
-        final Either<User, Validation> either = us.register(new User.Builder()
+        final Either<User, Validation> user = us.register(new User.Builder()
                 .withName(form.getName())
                 .withSurname(form.getSurname())
                 .withTel(form.getTelephone())
                 .withEmail(form.getEmail())
                 .withPasswd(form.getPassword())
                 );
-        if (!either.isValuePresent()) {
-            return new ModelAndView("redirect:/error").addObject("message", either.getAlternative().getMessage());
+        if (!user.isValuePresent()) {
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(user.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         }
         try {
             String appUrl = request.getContextPath();
             ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
             builder.scheme("http");
             URI uri = builder.build().toUri();
-            emailService.sendMailConfirmationEmail(either.getValue(), uri.toString());
+            emailService.sendMailConfirmationEmail(user.getValue(), uri.toString());
         } catch (javax.mail.MessagingException ex) {
             System.out.println("email error");
             return new ModelAndView("emailError", "user", form);
         }
-        /* TODO redirect sin pasar por el login
-         return new ModelAndView("redirect:/user?userId=" + either.getValue().getId());
-        */
         return new ModelAndView("redirect:/login");
     }
 
@@ -93,7 +91,7 @@ public class UserController {
         return new ModelAndView("indexLogIn");
     }
 
-    @RequestMapping(value = "/join-changa", method = RequestMethod.POST)  //TODO: DEBERIA ESSTAR EN CHANGACONTROLLER NO?
+    @RequestMapping(value = "/join-changa", method = RequestMethod.POST)
     public ModelAndView showChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser) {
         System.out.println("current user id: " + loggedUser.getUser_id());
         Validation val = is.inscribeInChanga(loggedUser.getUser_id(), changaId);
@@ -105,9 +103,9 @@ public class UserController {
             emailService.sendJoinRequestEmail(changa, changaOwner, loggedUser);
         } else {
             System.out.println("No se pudo inscribir en la changa pq:"+ val.getMessage());
-            return new ModelAndView("redirect:/error").addObject("message", val.getMessage());
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(val.name(), null, LocaleContextHolder.getLocale()));
         }
-        return new ModelAndView(new StringBuilder("redirect:/changa?id=").append(changaId).toString());
+        return new ModelAndView("redirect:/changa").addObject("id", changaId);
     }
 
     @RequestMapping(value = "/unjoin-changa", method = RequestMethod.POST)
@@ -119,7 +117,7 @@ public class UserController {
         } else {
             //TODO JIME un popup de error
             System.out.println("No se pudo desinscribir en la changa pq:"+ val.getMessage());
-            return new ModelAndView("redirect:/error").addObject("message", val.getMessage());
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(val.name(), null, LocaleContextHolder.getLocale()));
         }
         return new ModelAndView("redirect:/profile");
     }
@@ -127,54 +125,44 @@ public class UserController {
     @RequestMapping(value = "/accept-user", method = RequestMethod.POST)
     public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser) {
         Either<Changa, Validation> changa = cs.getChangaById(changaId);
-        if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", changa.getAlternative().getMessage());
+        if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
         Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.accepted);
         if (val.isOk()){
             //TODO JIME popup preguntando
         } else {
             //TODO JIME un popup de error
-            return new ModelAndView("redirect:/error").addObject("message", val.getMessage());
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(val.name(), null, LocaleContextHolder.getLocale()));
         }
-        return new ModelAndView("redirect:/admin-changa?id=" + changaId);
+        return new ModelAndView("redirect:/admin-changa").addObject("id", changaId);
     }
 
     @RequestMapping(value = "/reject-user", method = RequestMethod.POST)
     public ModelAndView rejectUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser) {
         Either<Changa, Validation> changa = cs.getChangaById(changaId);
-        if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", changa.getAlternative().getMessage());
+        if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
         Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.declined);
         if (val.isOk()){
             //TODO JIME popup preguntando
         } else {
             //TODO JIME un popup de error
-            return new ModelAndView("redirect:/error").addObject("message", val.getMessage());
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(val.name(), null, LocaleContextHolder.getLocale()));
         }
-        return new ModelAndView("redirect:/admin-changa?id=" + changaId);
+        return new ModelAndView("redirect:/admin-changa").addObject("id", changaId);
     }
 
     @RequestMapping("/profile")
     public ModelAndView profile(@ModelAttribute("getLoggedUser") User loggedUser) {
         ModelAndView mav = new ModelAndView("indexProfile");
         Either<List<Pair<Changa, Inscription>>, Validation>  maybePendingChangas = is.getOpenUserInscriptions(loggedUser.getUser_id());
-        if (maybePendingChangas.isValuePresent()){
-            maybePendingChangas.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout);
-            mav.addObject("pendingChangas", maybePendingChangas.getValue());
-        }
-        else{
-            return new ModelAndView("redirect:/error").addObject("message", maybePendingChangas.getAlternative().getMessage());
-        }
-
+        if (!maybePendingChangas.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(maybePendingChangas.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+        maybePendingChangas.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout); //TODO poner esto en la query
+        mav.addObject("pendingChangas", maybePendingChangas.getValue());
         Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserEmittedChangas(loggedUser.getUser_id());
-        if (maybePublishedChangas.isValuePresent()){
-            maybePublishedChangas.getValue().removeIf(e -> e.getState() == ChangaState.settled || e.getState() == ChangaState.closed || e.getState() == ChangaState.done);
-            mav.addObject("publishedChangas", maybePublishedChangas.getValue());
-        }
-        else{
-            return new ModelAndView("redirect:/error").addObject("message", maybePublishedChangas.getAlternative().getMessage());
-        }
-
+        if (!maybePublishedChangas.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(maybePublishedChangas.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+        maybePublishedChangas.getValue().removeIf(e -> e.getState() == ChangaState.settled || e.getState() == ChangaState.closed || e.getState() == ChangaState.done);
+        mav.addObject("publishedChangas", maybePublishedChangas.getValue());
         return mav;
     }
 
@@ -189,7 +177,7 @@ public class UserController {
             return forgotPassword(forgotPasswordForm);
         }
         Either<User, Validation> user = us.findByMail(forgotPasswordForm.getMail());
-        if (!user.isValuePresent()) {
+        if (!user.isValuePresent()) { //TODO: por seguirdad es mejor no mostrar este mensaje de error?
             result.rejectValue("mail", "error.invalidMail", new Object[] {forgotPasswordForm.getMail()}, "");
             return forgotPassword(forgotPasswordForm);
         }
@@ -214,7 +202,7 @@ public class UserController {
                 //TODO RESEND EMAIL. REDIRECT A PAGINA PARA RESEND EMAIL
                 return new ModelAndView("redirect:/login");
             } else {
-                return new ModelAndView("redirect:/error").addObject("message", verificationToken.getAlternative().getMessage());
+                return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(verificationToken.getAlternative().name(), null, LocaleContextHolder.getLocale()));
             }
         }
         return new ModelAndView("redirect:/reset-password").addObject("id", id);

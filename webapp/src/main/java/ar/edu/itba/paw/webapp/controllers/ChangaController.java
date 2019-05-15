@@ -7,6 +7,8 @@ import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -34,6 +36,9 @@ public class ChangaController {
     @Autowired
     private InscriptionService is;
 
+    @Autowired
+    private MessageSource messageSource;
+
     @RequestMapping(value = "/create-changa")
     public ModelAndView createChanga(@ModelAttribute("changaForm") final ChangaForm form) {
         return new ModelAndView("issueChangaForm");
@@ -52,14 +57,14 @@ public class ChangaController {
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
                 .createdAt(LocalDateTime.now())
         );
-        if (!changa.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", changa.getAlternative().getMessage());
+        if (!changa.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
         return new ModelAndView("redirect:/changa").addObject("id", changa.getValue().getChanga_id());
     }
 
     @RequestMapping(value = "/edit-changa")
     public ModelAndView editChanga(@RequestParam("id") final long id, @ModelAttribute("changaForm") final ChangaForm form, @ModelAttribute("getLoggedUser") User loggedUser) {
         Either<Changa, Validation> changa = cs.getChangaById(id);
-        if (!changa.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", changa.getAlternative().getMessage());
+        if (!changa.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
         if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
         form.setTitle(changa.getValue().getTitle());
         form.setStreet(changa.getValue().getStreet());
@@ -77,14 +82,15 @@ public class ChangaController {
            return editChanga(id, form, loggedUser);
        }
         Either<Changa, Validation> changa = cs.getChangaById(id);
-        if (!changa.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", changa.getAlternative().getMessage());
-        if (changa.getValue().getChanga_id() != loggedUser.getUser_id()) {
+        if (!changa.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
+        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) {
             return new ModelAndView("403");
         }
         cs.update(id, new Changa.Builder().withUserId(loggedUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
+                .withState(changa.getValue().getState())
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
         );
         return new ModelAndView("redirect:/profile");
@@ -94,7 +100,7 @@ public class ChangaController {
     public ModelAndView showChanga(@RequestParam("id") long id, @ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged) {
         ModelAndView mav = new ModelAndView("indexChanga");
         Either<Changa, Validation> changa = this.cs.getChangaById(id);
-        if (!changa.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", changa.getAlternative().getMessage());
+        if (!changa.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
         mav.addObject("changa", changa.getValue());
         boolean userAlreadyInscribedInChanga = false;
         if (isUserLogged) {
@@ -102,7 +108,7 @@ public class ChangaController {
                 return new ModelAndView("forward:/admin-changa").addObject("id", id);
             } else {
                 Either<Boolean, Validation> isUserInscribedInChanga = this.is.isUserInscribedInChanga(loggedUser.getUser_id(), id);
-                if (!isUserInscribedInChanga.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", isUserInscribedInChanga.getAlternative().getMessage());
+                if (!isUserInscribedInChanga.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(isUserInscribedInChanga.getAlternative().name(), null, LocaleContextHolder.getLocale()));
                 if (isUserInscribedInChanga.getValue()) {
                     userAlreadyInscribedInChanga = true;
                     Either<Inscription, Validation> inscriptionState = is.getInscription(loggedUser.getUser_id(), id);
@@ -112,7 +118,7 @@ public class ChangaController {
             }
         }
         Either<User, Validation> changaOwner = us.findById(changa.getValue().getUser_id());
-        if (!changaOwner.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", changaOwner.getAlternative().getMessage());
+        if (!changaOwner.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changaOwner.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         mav.addObject("changaOwner", changaOwner.getValue());
         mav.addObject("userAlreadyInscribedInChanga", userAlreadyInscribedInChanga);
         mav.addObject("userOwnsChanga", false);
@@ -123,12 +129,12 @@ public class ChangaController {
     public ModelAndView showAdminChanga(@RequestParam("id") final long id, @ModelAttribute("getLoggedUser") User loggedUser) {
         final ModelAndView mav = new ModelAndView("indexAdminChanga");
         final Either<Changa, Validation> changa = cs.getChangaById(id);
-        if (!changa.isValuePresent())  return new ModelAndView("redirect:/error").addObject("message", changa.getAlternative().getMessage());
+        if (!changa.isValuePresent())  return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
         if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
         mav.addObject("changa", changa.getValue());
         mav.addObject("changaOwner", us.findById(changa.getValue().getUser_id()).getValue());
         Either<List<Pair<User, Inscription>>, Validation> inscribedUsers = is.getInscribedUsers(id);
-        if (!inscribedUsers.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", inscribedUsers.getAlternative().getMessage());
+        if (!inscribedUsers.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(inscribedUsers.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         mav.addObject("notInscribedUsers", inscribedUsers.getValue().isEmpty());
         mav.addObject("inscribedUsers", inscribedUsers.getValue());
         return mav;
@@ -137,7 +143,7 @@ public class ChangaController {
     @RequestMapping(value = "/delete-changa", method = RequestMethod.POST)
     public ModelAndView deleteChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser) {
         Either<Changa, Validation> changa = cs.getChangaById(changaId);
-        if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", changa.getAlternative().getMessage());
+        if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
         if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
         // TODO JIME popup confirmacion (estás seguro?)
         Either<Changa, Validation> err = cs.changeChangaState(changaId, ChangaState.closed);
@@ -148,7 +154,7 @@ public class ChangaController {
     @RequestMapping(value = "/close-changa", method = RequestMethod.POST)
     public ModelAndView closeChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser) {
         Either<Changa, Validation> changa = cs.getChangaById(changaId);
-        if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", changa.getAlternative().getMessage());
+        if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
         if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
         //Validation val = cs.changeState;
         /*if (val.isOk()){
