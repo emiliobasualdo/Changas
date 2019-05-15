@@ -35,8 +35,9 @@ public class MainPageController {
         }
 
         if (!isUserLogged) {
-            return new ModelAndView("index")
-                    .addObject("changaList", maybeChangas.getValue());
+            return new ModelAndView("index").addObject("changaList", new ArrayList<>());
+            /*return new ModelAndView("index")
+                    .addObject("changaList", maybeChangas.getValue());*/
         }
 
         Either<List<Pair<Changa, Inscription>>, Validation> maybeInscriptions = is.getOpenUserInscriptions(loggedUser.getUser_id());
