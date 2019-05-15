@@ -55,9 +55,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         // todo sacar para la entrega
 
         boolean local = Boolean.valueOf(System.getenv("CHANGAS_LOCAL")); // cambiar esto si quieren conectarse a la db local
-        String url = local? "jdbc:postgresql://localhost/changas": "jdbc:postgresql://isilo.db.elephantsql.com";
-        String username = local? System.getenv("CHANGAS_USERNAME"): "nfuyohzm";
-        String passwd = local? System.getenv("CHANGAS_PASSWD"): "FQ9W7Ck3I1eTYePdn_OHsJIANQihEwzA";
+        String url = local? "jdbc:postgresql://localhost/changas": "jdbc:postgresql://10.16.1.110 ";
+        String username = local? System.getenv("CHANGAS_USERNAME"): "paw-2019a-3";
+        String passwd = local? System.getenv("CHANGAS_PASSWD"): "tbpkI6aN8";
 
         ds.setUrl(url);
         ds.setUsername(username);
