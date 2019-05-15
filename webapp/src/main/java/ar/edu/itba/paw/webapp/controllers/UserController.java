@@ -114,7 +114,7 @@ public class UserController {
             System.out.println("No se pudo inscribir en la changa pq:"+ val.getMessage());
             return new ModelAndView("redirect:/error").addObject("message", val.getMessage());
         }
-        return new ModelAndView(new StringBuilder("redirect:/changa?id=").append(changaId).toString());
+        return new ModelAndView("redirect:/changa?id=" + changaId);
     }
 
     @RequestMapping(value = "/unjoin-changa", method = RequestMethod.POST)
@@ -135,6 +135,12 @@ public class UserController {
     public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser) {
         Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.accepted);
         if (val.isOk()){
+            //TODO este mail en verdad es para cuando hagan el boton changa settled
+            //hacer validaciones
+            Changa changa = cs.getChangaById(changaId).getValue();
+            User changaOwner = us.findById(changa.getUser_id()).getValue();
+            User inscribedUser = us.findById(userId).getValue();
+            emailService.sendChangaSettledEmail(changa, changaOwner, inscribedUser );
             //TODO JIME popup preguntando
         } else {
             //TODO JIME un popup de error
