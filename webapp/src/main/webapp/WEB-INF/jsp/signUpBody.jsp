@@ -15,19 +15,21 @@
             <table style="width: 100%">
                 <tr>
                     <td>
-                        <div class="form-group">
+                        <div class="form-group align-self-md-center">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                <form:label path="name"><spring:message code="UserRegisterForm.name"/></form:label>
+                                <form:label path="name" cssStyle="align-self: center"><spring:message code="UserRegisterForm.name"/></form:label>
                             </div>
                         </div>
                     </td>
                     <td>
                         <div class="form-group">
-                            <div class="input-group">
-                                <form:input class="form-control" path="name" />
+                            <div class="align-self-md-center">
+                                <div class="input-group">
+                                    <form:input class="form-control" path="name" />
+                                </div>
+                                <form:errors cssClass="form-error" path="name" element="p"/>
                             </div>
-                            <form:errors cssClass="form-error" path="name" element="p"/>
                         </div>
                     </td>
                 </tr>
@@ -128,7 +130,7 @@
             <div class="form-group">
                 <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="signUpBody.button"/></button>
             </div>
-            <p class="small text-center"><spring:message code="signUpBody.alert.termsAndPivacyP"/><%--<br><a href="#">Terms &amp; Conditions</a>, and <a href="#">Privacy Policy</a>--%>.</p>
+            <p class="small text-center"><spring:message code="signUpBody.alert.termsAndPivacyP"/>.</p>
         </form:form>
         <c:url value="/login" var="logInUrl" />
         <div class="text-center" style="color: black;"><spring:message code="signUpBody.alert.logIn"/><a href="${logInUrl}" style="color: black;"><spring:message code="signUpBody.alert.btn.logIn"/></a>.</div>
