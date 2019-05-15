@@ -16,7 +16,7 @@
                         <label>
                             <select name="cfilter">
                                 <c:forEach items="${categories}" var="category">
-                                    <option value="${category.key}">${category.value}</option>
+                                    <option value="${category}"><spring:message code="${category}"/></option>
                                 </c:forEach>
                             </select>
                             <button type="submit" class="btn btn-success btn-block"><spring:message code="mainPage.button.filter"/></button>

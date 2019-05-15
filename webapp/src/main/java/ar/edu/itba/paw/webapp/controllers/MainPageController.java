@@ -43,7 +43,7 @@ public class MainPageController {
         indexModel = new ModelAndView("index");
 
         // we add the list of chaga categories
-        List<Pair<String, String>> categories = catService.getCategories(LocaleContextHolder.getLocale());
+        List<String> categories = catService.getCategories();
         indexModel.addObject("categories", categories);
 
         // if the user logged in we show raw data
