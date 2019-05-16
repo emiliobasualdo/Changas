@@ -4,85 +4,89 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+    <script src="http://code.jquery.com/jquery-latest.js"> </script>
+    <script>
+        var page = 1;
+        $(document).ready(function(){
+            $('#myAnchor').click(function(e){
+                e.preventDefault();
+                $.get('/page?page='+page, function(data) {
+                    $('#container').append(data);
+                    page++;
+                });
+            });
+        });
+    </script>
     <style><%@include file="/WEB-INF/css/mainPageBody.css"%></style>
     <title>Changas</title>
 </head>
 <body>
 
-    <%--<section class="search-sec">--%>
-        <%--<div class="container">--%>
-            <%--<c:url value="/filter" var="filterUrl" />--%>
-            <%--<c:choose>--%>
-                <%--<c:when test="${isFiltered}">--%>
-                    <%--<form action="${filterUrl}" method="get">--%>
-                        <%--<div class="row">--%>
-                            <%--<div class="col-lg-12">--%>
-                                <%--<div class="row">--%>
-                                    <%--<div class="col-lg-3 col-md-3 col-sm-12 p-0">--%>
-                                        <%--<input name="tfilter" class="form-control search-slt" placeholder="Search"/>--%>
-                                    <%--</div>--%>
-                                    <%--<div class="col-lg-3 col-md-3 col-sm-12 p-0">--%>
-                                        <%--<select name="cfilter" class="form-control search-slt" id="exampleFormControlSelect1">--%>
-                                            <%--<c:forEach items="${categories}" var="category">--%>
-                                                <%--<option value="${category}"> ${category}</option>--%>
-                                            <%--</c:forEach>--%>
-                                        <%--</select>--%>
-                                    <%--</div>--%>
-                                    <%--<div class="col-lg-3 col-md-3 col-sm-12 p-0">--%>
-                                        <%--<button type="submit" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPage.button.filter"/></button>--%>
-                                    <%--</div>--%>
-                                    <%--<c:url value="/" var="rootUrl" />--%>
-                                    <%--<form:form action="${rootUrl}" method="get">--%>
-                                        <%--<div class="col-lg-3 col-md-3 col-sm-12 p-0">--%>
-                                            <%--<button type="submit" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPage.button.de-filter"/></button>--%>
-                                        <%--</div>--%>
-                                    <%--</form:form>--%>
-                                <%--</div>--%>
-                            <%--</div>--%>
-                        <%--</div>--%>
-                    <%--</form>--%>
-                <%--</c:when>--%>
-                <%--<c:otherwise>--%>
-                    <%--<form action="${filterUrl}" method="get">--%>
-                        <%--<div class="row">--%>
-                            <%--<div class="col-lg-12">--%>
-                                <%--<div class="row">--%>
-                                    <%--<div class="col-lg-6 col-md-3 col-sm-12 p-0">--%>
-                                        <%--<input name="tfilter" class="form-control search-slt" placeholder="Search"/>--%>
-                                    <%--</div>--%>
-                                    <%--<div class="col-lg-3 col-md-3 col-sm-12 p-0">--%>
-                                        <%--<select name="cfilter" class="form-control search-slt">--%>
-                                            <%--<option selected="selected" disabled="disabled" hidden="hidden"> Elegi una Categoria  </option>--%>
-                                            <%--<c:forEach items="${categories}" var="category">--%>
-                                                <%--<option value="${category}"> ${category} </option>--%>
-                                            <%--</c:forEach>--%>
-                                        <%--</select>--%>
-                                    <%--</div>--%>
-                                    <%--<div class="col-lg-3 col-md-3 col-sm-12 p-0">--%>
-                                        <%--<button type="submit" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPage.button.filter"/></button>--%>
-                                    <%--</div>--%>
-                                <%--</div>--%>
-                            <%--</div>--%>
-                        <%--</div>--%>
-                    <%--</form>--%>
-                <%--</c:otherwise>--%>
-        <%--</c:choose>--%>
-        <%--</div>--%>
-    <%--</section>--%>
+    <section class="search-sec">
+        <div class="container">
+            <c:url value="/filter" var="filterUrl" />
+            <c:choose>
+                <c:when test="${isFiltered}">
+                    <form action="${filterUrl}" method="get">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                        <input name="tfilter" class="form-control search-slt" placeholder="Search"/>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                        <select name="cfilter" class="form-control search-slt" id="exampleFormControlSelect1">
+                                            <c:forEach items="${categories}" var="category">
+                                                <option value="${category}"> ${category}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                        <button type="submit" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPage.button.filter"/></button>
+                                    </div>
+                                    <c:url value="/" var="rootUrl" />
+                                    <form:form action="${rootUrl}" method="get">
+                                        <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                            <button type="submit" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPage.button.de-filter"/></button>
+                                        </div>
+                                    </form:form>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </c:when>
+                <c:otherwise>
+                    <form action="${filterUrl}" method="get">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-3 col-sm-12 p-0">
+                                        <input name="tfilter" class="form-control search-slt" placeholder="Search"/>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                        <select name="cfilter" class="form-control search-slt">
+                                            <option selected="selected" disabled="disabled" hidden="hidden"> Elegi una Categoria  </option>
+                                            <c:forEach items="${categories}" var="category">
+                                                <option value="${category}"> ${category} </option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                        <button type="submit" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPage.button.filter"/></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </c:otherwise>
+        </c:choose>
+        </div>
+    </section>
 
-    <div class="auto-table">
+    <div id="container" class="auto-table">
         <c:choose>
             <c:when test="${isUserLogged}">
-                <c:set var="i" value="0"/>
-                <c:set var="pageNum" value="0"/>
                 <c:forEach items="${changaList}" var="entry">
-                    <c:set var="pageId" value=""/>
-                    <c:if test="${i % 50 == 0}">
-                        <c:set var="pageId" value="${pageNum}"/>
-                        <c:set var="pageNum" value="${pageNum + 1}"/>
-                    </c:if>
-                    <c:set var="i" value="${i + 1}"/>
-                    <span id="page-${pageId}" hidden="hidden">  </span>
                     <c:set var="title" value="${entry.key.title}" scope="request"/>
                     <c:set var="str" value="${entry.key.description}" />
                     <c:set var="descriptionLength" value="${fn:length(str)}"/>
@@ -105,15 +109,7 @@
                 </c:forEach>
             </c:when>
             <c:otherwise>
-                <c:set var="i" value="1"/>
-                <c:set var="pageNum" value="0"/>
-                <section id="page-0" hidden="hidden"> </section>
                 <c:forEach items="${changaList}" var="changa">
-                    <c:if test="${i % 50 == 0}">
-                        <c:set var="pageNum" value="${pageNum + 1}"/>
-                        <section id="page-${pageNum}" hidden="hidden" > </section>
-                    </c:if>
-                    <c:set var="i" value="${i + 1}"/>
                     <c:set var="title" value="${changa.title}" scope="request"/>
                     <c:set var="str" value="${changa.description}" />
                     <c:set var="descriptionLength" value="${fn:length(str)}"/>
@@ -137,13 +133,12 @@
             </c:otherwise>
         </c:choose>
     </div>
-    <c:set var="nextPage" value="${page+1}"/>
-    <c:url value="/home?page=${nextPage}#page-${nextPage}" var="giveMeMore" />
-    <a href="${giveMeMore}" class="button">
-        Show More
-    </a>
-    <a href="#page-0" class="button">
-        mueva
-    </a>
+    <div style=" margin: auto; display: block; margin-top: 25px">
+        <button id="myAnchor" type="button" class="btn wrn-btn" style="background-color: #26B3BA"> Show More </button>
+    </div>
+    <%--<a id="myAnchor" class="button">--%>
+        <%--Show More--%>
+    <%--</a>--%>
+
 </body>
 </html>
