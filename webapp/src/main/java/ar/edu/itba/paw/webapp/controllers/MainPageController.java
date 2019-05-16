@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,28 +34,92 @@ public class MainPageController {
     private InscriptionService is;
 
     @RequestMapping(value = "/")
-    public ModelAndView showChangas(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged) {
-        ModelAndView model = new ModelAndView("index");
+    public ModelAndView showChangas(@ModelAttribute("getLoggedUser") User loggedUser,
+                                    @ModelAttribute("isUserLogged") boolean isUserLogged) {
+
         Either<List<Changa>, Validation> maybeChangas = cs.getEmittedChangas(0);
         if (!maybeChangas.isValuePresent()) {
             return new ModelAndView("redirect:/error").addObject("message", maybeChangas.getAlternative().getMessage());
         }
 
-        List<String> categories = catService.getCategories();
-        model.addObject("categories", categories);
-
+        // if the user logged in we show raw data
+        List<Changa> changas = maybeChangas.getValue();
         if (!isUserLogged) {
-            return model.addObject("changaList", maybeChangas.getValue());
+            return showChangas(changas).addObject("isFiltered", false);
         }
 
+        // else we mark the inscribbed changas
+        Either<List<Pair<Changa, Boolean>>, Validation> maybeMarkedInscriptions = markedInscriptions(loggedUser, changas);
+        if(!maybeMarkedInscriptions.isValuePresent()){
+            return new ModelAndView("redirect:/error").addObject("message", maybeMarkedInscriptions.getAlternative().getMessage());
+        }
+        return showChangas(maybeMarkedInscriptions.getValue()).addObject("isFiltered", false);
+    }
+
+    private ModelAndView showChangas(List<?> changasToShow) {
+
+        ModelAndView indexModel = new ModelAndView("index");
+
+        // we add the list of changa categories
+        List<String> categories = catService.getCategories();
+        indexModel.addObject("categories", categories);
+
+        indexModel.addObject("changaList", changasToShow);
+
+        return indexModel;
+    }
+
+    @RequestMapping(value = "/filter")
+    public ModelAndView filterChangas(@ModelAttribute("getLoggedUser") User loggedUser,
+                                      @ModelAttribute("isUserLogged") boolean isUserLogged,
+                                      @RequestParam(value = "cfilter", defaultValue = "") String categoryFilter,
+                                      @RequestParam(value = "tfilter", defaultValue = "") String titleFilter) {
+
+        Either<List<Changa>, Validation> changas = cs.getEmittedChangasFiltered(0, categoryFilter, titleFilter);
+        if (!changas.isValuePresent()) {
+            return new ModelAndView("redirect:/error").addObject("message", changas.getAlternative().getMessage());
+        }
+
+        if (isUserLogged){
+            Either<List<Pair<Changa, Boolean>>, Validation> maybeMarkedInscriptions = markedInscriptions(loggedUser, changas.getValue());
+            if(!maybeMarkedInscriptions.isValuePresent()){
+                return new ModelAndView("redirect:/error").addObject("message", maybeMarkedInscriptions.getAlternative().getMessage());
+            }
+            return showChangas(maybeMarkedInscriptions.getValue())
+                    .addObject("isFiltered", true)
+                    .addObject("cfilter", categoryFilter)
+                    .addObject("tfilter", titleFilter);
+        }
+
+        return showChangas(changas.getValue())
+                .addObject("isFiltered", true)
+                .addObject("cfilter", categoryFilter)
+                .addObject("tfilter", titleFilter);
+    }
+
+    private Either<List<Pair<Changa, Boolean>>, Validation> markedInscriptions(User loggedUser, List<Changa> changas) {
         Either<List<Pair<Changa, Inscription>>, Validation> maybeInscriptions = is.getOpenUserInscriptions(loggedUser.getUser_id());
         if (!maybeInscriptions.isValuePresent()) {
-            return new ModelAndView("redirect:/error").addObject("message", maybeInscriptions.getAlternative().getMessage());
+            return Either.alternative(maybeInscriptions.getAlternative());
         }
 
-        return new ModelAndView("index")
-                .addObject("changaList", getChangas(maybeChangas.getValue(), maybeInscriptions.getValue()))
-                .addObject("isFiltered", false);
+        // for each changa, if the user is isncribbed mark it as true
+        List<Pair<Changa, Inscription>> inscriptions = maybeInscriptions.getValue();
+        List<Pair<Changa, Boolean>> changaList = new ArrayList<>();
+        for (Changa c : changas){
+            boolean notFound = true;
+            for (int i = 0; i < inscriptions.size() && notFound; i++){
+                if (inscriptions.get(i).getKey().getChanga_id() == c.getChanga_id()){
+                    changaList.add(Pair.buildPair(c, true));
+                    notFound = false;
+                }
+            }
+            if (notFound){
+                changaList.add(Pair.buildPair(c, false));
+            }
+        }
+
+        return Either.value(changaList);
     }
 
     @RequestMapping(value = "/page")
@@ -71,45 +136,11 @@ public class MainPageController {
         if (!maybeInscriptions.isValuePresent()) {
             return new ModelAndView();
         }
-        List<Pair<Changa, Boolean>> changas =  getChangas(maybeChangas.getValue(), maybeInscriptions.getValue());
-        return new ModelAndView("page")
-                .addObject("changaPage", changas);
-    }
-
-    private List<Pair<Changa, Boolean>> getChangas(List<Changa> changas, List<Pair<Changa, Inscription>> inscriptions) {
-        List<Pair<Changa, Boolean>> changaList = new ArrayList<>();
-        for (Changa c : changas){
-            boolean notFound = true;
-            for (int i = 0; i < inscriptions.size() && notFound; i++){
-                if (inscriptions.get(i).getKey().getChanga_id() == c.getChanga_id()){
-                    changaList.add(Pair.buildPair(c, true));
-                    notFound = false;
-                }
-            }
-            if (notFound){
-                changaList.add(Pair.buildPair(c, false));
-            }
-        }
-        return changaList;
-    }
-
-    @RequestMapping(value = "/filter")
-    public ModelAndView filterChangas(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged,
-                                      @RequestParam(value = "cfilter", defaultValue = "") String categoryFilter, @RequestParam(value = "tfilter", defaultValue = "") String titleFilter) {
-        ModelAndView model = new ModelAndView("index");
-        Either<List<Changa>, Validation> changas = cs.getEmittedChangasFiltered(0, categoryFilter, titleFilter);
-        if (!changas.isValuePresent()) {
+        Either<List<Pair<Changa, Boolean>>, Validation> changas =  markedInscriptions(loggedUser, maybeChangas.getValue());
+        if (!changas.isValuePresent()){
             return new ModelAndView("redirect:/error").addObject("message", changas.getAlternative().getMessage());
         }
-        model.addObject("isFiltered", true);
-        if (!isUserLogged) {
-            return model.addObject("changaList", changas.getValue());
-        }
-        Either<List<Pair<Changa, Inscription>>, Validation> maybeInscriptions = is.getOpenUserInscriptions(loggedUser.getUser_id());
-        if (!maybeInscriptions.isValuePresent()) {
-            return new ModelAndView("redirect:/error").addObject("message", maybeInscriptions.getAlternative().getMessage());
-        }
-        return model.addObject("changaList", getChangas(changas.getValue(), maybeInscriptions.getValue()));
+        return new ModelAndView("page")
+                .addObject("changaPage", changas.getValue());
     }
-
 }

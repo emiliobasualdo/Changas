@@ -59,8 +59,10 @@ public class ChangaController {
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
+                .inCategory(form.getCategory())
                 .createdAt(LocalDateTime.now())
         );
+
         if (!changa.isValuePresent()) {
             response.setStatus(changa.getAlternative().getHttpStatus().value());
             return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
@@ -87,6 +89,7 @@ public class ChangaController {
         form.setNeighborhood(changa.getValue().getNeighborhood());
         form.setDescription(changa.getValue().getDescription());
         form.setCategory(changa.getValue().getCategory());
+        form.setCategory(changa.getValue().getCategory());
         return new ModelAndView("editChangaForm")
                 .addObject("id", id)
                 .addObject("categories", catService.getCategories());
@@ -106,11 +109,13 @@ public class ChangaController {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return new ModelAndView("403");
         }
+
         cs.update(id, new Changa.Builder().withUserId(loggedUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
                 .withState(changa.getValue().getState())
+                .inCategory(changa.getValue().getCategory())
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
         );
         return new ModelAndView("redirect:/profile");
