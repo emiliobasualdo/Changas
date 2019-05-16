@@ -67,7 +67,7 @@
                                     <%--todo mal implementado, solucionar--%>
                                 <form:select  class="form-control" path="category">
                                     <c:forEach items="${categories}" var="category">
-                                        <option value="${category.key}">${category.value}</option>
+                                        <option value="${category}">${category}</option>
                                     </c:forEach>
                                 </form:select>
                             </div>

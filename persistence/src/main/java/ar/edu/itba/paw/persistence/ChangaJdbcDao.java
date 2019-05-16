@@ -105,7 +105,6 @@ public class ChangaJdbcDao implements ChangaDao {
     }
 
     private String createFilterQuery(ChangaState filterState, String filterCategory, String filterTitle) throws SQLException {
-        String[] auxList = new String[1];
         StringBuilder sb = new StringBuilder();
         PreparedStatement ps;
         if (filterState != null) {
@@ -130,7 +129,7 @@ public class ChangaJdbcDao implements ChangaDao {
             sb
                     .append(" AND ")
                     .append(title.name())
-                    .append(" = ?");
+                    .append(" ~* ?"); // insensitive like
             ps = conn.prepareStatement(sb.toString());
             ps.setString(1, filterTitle);
             sb = new StringBuilder(ps.toString());

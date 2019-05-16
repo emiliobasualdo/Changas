@@ -31,6 +31,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.*;
 import java.net.URI;
@@ -67,7 +68,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/signup", method = { RequestMethod.POST })
-    public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors, final WebRequest request) {
+    public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors, final WebRequest request, HttpServletResponse response) {
         if (errors.hasErrors()) {
 
             System.out.println("Errores en los campos del formulario sign up");
@@ -81,6 +82,7 @@ public class UserController {
                 .withPasswd(form.getPassword())
                 );
         if (!user.isValuePresent()) {
+            response.setStatus(user.getAlternative().getHttpStatus().value());
             return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(user.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         }
         try {
@@ -102,14 +104,20 @@ public class UserController {
     }
 
     @RequestMapping("/profile")
-    public ModelAndView profile(@ModelAttribute("getLoggedUser") User loggedUser) {
+    public ModelAndView profile(@ModelAttribute("getLoggedUser") User loggedUser, HttpServletResponse response) {
         ModelAndView mav = new ModelAndView("indexProfile");
         Either<List<Pair<Changa, Inscription>>, Validation>  maybePendingChangas = is.getOpenUserInscriptions(loggedUser.getUser_id());
-        if (!maybePendingChangas.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(maybePendingChangas.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+        if (!maybePendingChangas.isValuePresent()) {
+            response.setStatus(maybePendingChangas.getAlternative().getHttpStatus().value());
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(maybePendingChangas.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+        }
         maybePendingChangas.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout); //TODO poner esto en la query
         mav.addObject("pendingChangas", maybePendingChangas.getValue());
         Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserEmittedChangas(loggedUser.getUser_id());
-        if (!maybePublishedChangas.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(maybePublishedChangas.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+        if (!maybePublishedChangas.isValuePresent()) {
+            response.setStatus(maybePendingChangas.getAlternative().getHttpStatus().value());
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(maybePublishedChangas.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+        }
         maybePublishedChangas.getValue().removeIf(e -> e.getState() == ChangaState.settled || e.getState() == ChangaState.closed || e.getState() == ChangaState.done);
         mav.addObject("publishedChangas", maybePublishedChangas.getValue());
         return mav;
@@ -142,7 +150,7 @@ public class UserController {
     }
 
     @RequestMapping("/reset-password/validate")
-    public ModelAndView validateResetPassword( @RequestParam("id") long id, @RequestParam("token") String token) {
+    public ModelAndView validateResetPassword( @RequestParam("id") long id, @RequestParam("token") String token, HttpServletResponse response) {
         Either<VerificationToken, Validation> verificationToken = us.getVerificationTokenWithRole(id, token);
         System.out.println("Token =" + verificationToken.toString());
         if (!verificationToken.isValuePresent()) {
@@ -151,6 +159,7 @@ public class UserController {
                 //TODO RESEND EMAIL. REDIRECT A PAGINA PARA RESEND EMAIL
                 return new ModelAndView("redirect:/login");
             } else {
+                response.setStatus(verificationToken.getAlternative().getHttpStatus().value());
                 return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(verificationToken.getAlternative().name(), null, LocaleContextHolder.getLocale()));
             }
         }
