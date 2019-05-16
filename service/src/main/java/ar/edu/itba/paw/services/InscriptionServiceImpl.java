@@ -7,6 +7,8 @@ import ar.edu.itba.paw.interfaces.daos.UserDao;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.interfaces.util.Validation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,8 @@ public class InscriptionServiceImpl implements InscriptionService {
 
     @Autowired
     private AuthenticationService authenticationService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(InscriptionService.class);
 
     @Override
     /* An Inscription implies that the user is inscribed OR he was inscribed before and opted out */

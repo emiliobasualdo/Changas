@@ -59,7 +59,7 @@ public class UserController {
     @Autowired
     private MessageSource messageSource;
 
-  //  private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @RequestMapping("/signup")
     public ModelAndView signUp(@ModelAttribute("signUpForm") final UserRegisterForm form) {
@@ -69,7 +69,7 @@ public class UserController {
     @RequestMapping(value = "/signup", method = { RequestMethod.POST })
     public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors, final WebRequest request) {
         if (errors.hasErrors()) {
-           // LOGGER.debug("error en los campos de formulario del sign up");
+
             System.out.println("Errores en los campos del formulario sign up");
             return signUp(form);
         }

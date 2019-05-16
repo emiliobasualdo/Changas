@@ -36,7 +36,12 @@ public enum Validation {
     USER_NOT_LOGGED_IN("User must be logged in to user such functionality"),
 
     // Categories
-    NO_SUCH_LOCALE("This locale is not defined in the db");
+    NO_SUCH_LOCALE("This locale is not defined in the db"),
+
+    //Email
+    EMAIL_ERROR("Email couldn't be sent")
+    ;
+
 
     private String message; // NOT final on purpose
 

@@ -6,6 +6,8 @@ import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -19,8 +21,11 @@ import javax.mail.internet.MimeMessage;
 import java.util.List;
 import java.util.UUID;
 
+import static ar.edu.itba.paw.interfaces.util.Validation.EMAIL_ERROR;
+import static ar.edu.itba.paw.interfaces.util.Validation.OK;
+
 @Service
-public class EmailServiceImplementation implements EmailService {
+public class EmailServiceImpl implements EmailService {
 
     @Autowired
     public JavaMailSender emailSender;
@@ -37,25 +42,46 @@ public class EmailServiceImplementation implements EmailService {
     @Autowired
     private ChangaService changaService;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmailServiceImpl.class);
+
 
     @Override
-    public void sendEmail(String to, String subject, String body) {
+    public Validation sendEmail(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject(subject);
         message.setText(body);
-        emailSender.send(message);
-        System.out.println("to: " + to);
+        return sendEmail(to, message);
+    }
+
+    private Validation sendEmail(String to, Object  message) {
+        try {
+            if(message instanceof MimeMessage) {
+                emailSender.send((MimeMessage) message);
+            } else if (message instanceof SimpleMailMessage){
+                emailSender.send((SimpleMailMessage) message);
+            } else {
+                System.out.println("Wrong message type");
+                LOGGER.debug("Wrong message type");
+            }
+            System.out.println("sending email to: " + to);
+            LOGGER.debug("Sending email to {}",to);
+        } catch (Exception ex){
+            System.out.println("failed sending email to: " + to);
+            LOGGER.error("Failed to send email to: {}", to);
+            return EMAIL_ERROR;
+        }
+        return OK;
     }
 
     @Override
-    public void sendJoinRequestEmail(Changa changa, User changaOwner, User requestingUser) {
+    public Validation sendJoinRequestEmail(Changa changa, User changaOwner, User requestingUser) {
         String subject = messageSource.getMessage("sendJoinRequest.Subject", null, LocaleContextHolder.getLocale());
-        sendEmail(changaOwner.getEmail(), subject, joinRequestEmailBody(changa, changaOwner, requestingUser));
+        return sendEmail(changaOwner.getEmail(), subject, joinRequestEmailBody(changa, changaOwner, requestingUser));
     }
 
     @Override
-    public void sendMailConfirmationEmail(User user, String appUrl) throws MessagingException {
+    public Validation sendMailConfirmationEmail(User user, String appUrl) throws MessagingException {
         String token = UUID.randomUUID().toString();
         userService.createVerificationToken(user, token);
         String confirmUrl = appUrl + "/registration-confirm?token=" + token;
@@ -67,31 +93,39 @@ public class EmailServiceImplementation implements EmailService {
         helper.setSubject(messageSource.getMessage("mailConfirmation.Subject",null, LocaleContextHolder.getLocale()));
         helper.setText(mailConfirmationEmailBody(user, confirmUrl), true);
 
-        emailSender.send(message);
+        return sendEmail(user.getEmail(), message);
     }
 
+
+
     @Override
-    public void sendChangaSettledEmails(long changaId) {
+    public Validation sendChangaSettledEmails(long changaId) {
         String subject = messageSource.getMessage("sendChangaSettledEmail.Subject", null, LocaleContextHolder.getLocale());
         Changa changa = changaService.getChangaById(changaId).getValue();
         User changaOwner = userService.findById(changa.getUser_id()).getValue();
         Either<List<Pair<User, Inscription>>, Validation> accpetedUsers = inscriptionService.getAcceptedUsers(changaId);
+        Validation val = OK;
         if(accpetedUsers.isValuePresent()) {
             StringBuilder acceptedUsersInfo = new StringBuilder("");
             for (Pair<User, Inscription> userInscription : accpetedUsers.getValue()) {
-                sendEmail(userInscription.getKey().getEmail(), subject, changaSettledEmailToInscribedUserBody(changa, changaOwner, userInscription.getKey()));
+                if(sendEmail(userInscription.getKey().getEmail(), subject, changaSettledEmailToInscribedUserBody(changa, changaOwner, userInscription.getKey())) == EMAIL_ERROR){
+                    val = EMAIL_ERROR;
+                }
                 acceptedUsersInfo.append("\n");
                 acceptedUsersInfo.append(messageSource.getMessage("name", null, LocaleContextHolder.getLocale())).append(" ").append(userInscription.getKey().getName()).append("\n");
                 acceptedUsersInfo.append( messageSource.getMessage("phoneNumber", null, LocaleContextHolder.getLocale())).append(" ").append(userInscription.getKey().getTel()).append("\n");
                 acceptedUsersInfo.append(messageSource.getMessage("email", null, LocaleContextHolder.getLocale())).append(" ").append(userInscription.getKey().getEmail()).append("\n");
             }
-            sendEmail(changaOwner.getEmail(), subject, changaSettledEmailToChangaOwner(changa, changaOwner, acceptedUsersInfo.toString(), accpetedUsers.getValue().size()));
+            if(sendEmail(changaOwner.getEmail(), subject, changaSettledEmailToChangaOwner(changa, changaOwner, acceptedUsersInfo.toString(), accpetedUsers.getValue().size())) == EMAIL_ERROR) {
+                System.out.println("3");
+                val = EMAIL_ERROR;
+            }
         }
+        return val;
     }
 
-
     @Override
-    public void sendResetPasswordEmail(User user, String appUrl) throws MessagingException {
+    public Validation sendResetPasswordEmail(User user, String appUrl) throws MessagingException {
         String token = UUID.randomUUID().toString();
         userService.createVerificationToken(user, token);
         String resetUrl = appUrl + "/reset-password/validate?id=" + user.getUser_id() + "&token=" + token;
@@ -100,7 +134,8 @@ public class EmailServiceImplementation implements EmailService {
         helper.setTo(user.getEmail());
         helper.setSubject(messageSource.getMessage("resetPassword.Subject",null, LocaleContextHolder.getLocale()));
         helper.setText(resetPasswordEmailBody(resetUrl), true);
-        emailSender.send(message);
+
+        return sendEmail(user.getEmail(), message);
     }
 
     //TODO emails from html templates

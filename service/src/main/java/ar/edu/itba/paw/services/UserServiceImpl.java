@@ -16,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -38,6 +40,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private AuthenticationService authenticationService;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+
     @Override
     public Either<User, Validation> findById(long id) {
         return userDao.getById(id);
@@ -55,6 +59,7 @@ public class UserServiceImpl implements UserService {
 
         // if error is from database
         if(!either.isValuePresent() && either.getAlternative() == DATABASE_ERROR){
+            LOGGER.error("Attempted to register a user but failed because a Data Base error");
             return either;
         }
         // email is already in use
