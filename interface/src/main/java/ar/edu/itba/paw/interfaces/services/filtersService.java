@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface filtersService {
     List<String> getCategories();
-    List<String> getLocalities();
+    List<String> getNeighborhoods();
 }

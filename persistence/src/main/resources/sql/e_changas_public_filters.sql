@@ -3,7 +3,7 @@ INSERT INTO categories (key) VALUES ('software') ON CONFLICT DO NOTHING;
 INSERT INTO categories (key) VALUES ('education') ON CONFLICT DO NOTHING;
 INSERT INTO categories (key) VALUES ('other') ON CONFLICT DO NOTHING;
 
-INSERT INTO localities (key) VALUES
+INSERT INTO neighborhoods (key) VALUES
 ('25 de Mayo'),
 ('3 de febrero'),
 ('A. Alsina'),

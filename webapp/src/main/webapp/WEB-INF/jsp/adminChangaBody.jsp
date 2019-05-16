@@ -25,7 +25,7 @@
 
     <div class="container">
         <c:choose>
-            <c:when test="${notInscribedUsers == true}">
+            <c:when test="${notInscribedUsers}">
                 <div class="btn-group">
                     <div class="container">
                         <c:url value="/edit-changa?id=${changa.changa_id}" var="editChangaUrl" />

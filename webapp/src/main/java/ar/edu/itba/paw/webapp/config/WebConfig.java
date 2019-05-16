@@ -70,7 +70,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Value("classpath:sql/a_create_tables.sql")
     private Resource tablesSchema;
-    @Value("classpath:sql/e_changas_public_filter.sql")
+    @Value("classpath:sql/e_changas_public_filters.sql")
     private Resource filtersSchema;
 
     @Bean

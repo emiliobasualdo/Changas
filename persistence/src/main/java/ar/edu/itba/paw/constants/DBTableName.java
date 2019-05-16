@@ -7,7 +7,7 @@ public enum DBTableName {
     user_inscribed(),
     verification_token(),
     categories(),
-    localities()
+    neighborhoods()
     ;
 
 }

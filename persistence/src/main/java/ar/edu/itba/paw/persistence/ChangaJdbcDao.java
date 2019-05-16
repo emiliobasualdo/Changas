@@ -11,7 +11,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -26,7 +25,7 @@ import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBChangaFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.changas;
-import static ar.edu.itba.paw.constants.DBTableName.localities;
+import static ar.edu.itba.paw.constants.DBTableName.neighborhoods;
 import static ar.edu.itba.paw.interfaces.util.Validation.*;
 
 @Repository
@@ -129,7 +128,7 @@ public class ChangaJdbcDao implements ChangaDao {
         if (!filterLocalitie.equals("")) {
             sb
                     .append(" AND ")
-                    .append(localities.name())
+                    .append(neighborhoods.name())
                     .append(" = ?");
             ps = conn.prepareStatement(sb.toString());
             ps.setString(1, filterLocalitie);

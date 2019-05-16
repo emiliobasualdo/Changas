@@ -44,8 +44,8 @@ public class FiltersJdbcDao implements filtersDao {
     }
 
     @Override
-    public List<String> getLocalities() {
-        return this.get(categories.name());
+    public List<String> getNeighborhood() {
+        return this.get(neighborhood.name());
     }
 
 }

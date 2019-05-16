@@ -20,7 +20,7 @@ public class FiltersServiceImpl implements filtersService {
     }
 
     @Override
-    public List<String> getLocalities() {
-        return catDao.getLocalities();
+    public List<String> getNeighborhoods() {
+        return catDao.getNeighborhoods();
     }
 }
