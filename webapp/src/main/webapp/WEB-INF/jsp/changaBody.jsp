@@ -28,14 +28,12 @@
             <thead>
             <tr>
                 <th><spring:message code="changaBody.Table.name" /></th>
-                <th><spring:message code="changaBody.Table.telephone" /></th>
                 <th><spring:message code="changaBody.Table.location" /></th>
             </tr>
             </thead>
             <tbody>
             <tr>
                 <td><c:out value="${changaOwner.name}"/> <c:out value="${changaOwner.surname}"/></td>
-                <td><c:out value="${changaOwner.tel}" /></td>
                 <td><c:out value="${changa.neighborhood}" /></td>
             </tr>
             </tbody>

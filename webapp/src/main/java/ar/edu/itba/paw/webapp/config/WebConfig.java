@@ -1,14 +1,20 @@
 package ar.edu.itba.paw.webapp.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
+import org.springframework.jdbc.datasource.init.DatabasePopulator;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -28,7 +34,11 @@ import java.util.Properties;
 @ComponentScan({ "ar.edu.itba.paw.webapp.controllers" , "ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence"})
 @Configuration
 @EnableTransactionManagement
+@PropertySource("classpath:config/application.properties")
 public class WebConfig extends WebMvcConfigurerAdapter {
+
+    @Autowired
+    Environment env;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -49,21 +59,32 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public DataSource dataSource() {
-
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
         ds.setDriverClass(org.postgresql.Driver.class);
-        // todo sacar para la entrega
-
-        boolean local = Boolean.valueOf(System.getenv("CHANGAS_LOCAL")); // cambiar esto si quieren conectarse a la db local
-        String url = local? "jdbc:postgresql://localhost/changas": "jdbc:postgresql://isilo.db.elephantsql.com";
-        String username = local? System.getenv("CHANGAS_USERNAME"): "nfuyohzm";
-        String passwd = local? System.getenv("CHANGAS_PASSWD"): "FQ9W7Ck3I1eTYePdn_OHsJIANQihEwzA";
-
-        ds.setUrl(url);
-        ds.setUsername(username);
-        ds.setPassword(passwd);
-        System.out.println(String.format("//////\nConectando a la BD %s con el usuario %s y la contraseña %s\n//////",url, username,passwd));
+        ds.setUrl(env.getProperty("datasource.url"));
+        ds.setUsername(env.getProperty("datasource.username"));
+        ds.setPassword(env.getProperty("datasource.password"));
+        //System.out.println(String.format("//////\nConectando a la BD %s con el usuario %s y la contraseña %s\n//////",ds.getUrl(), ds.getUsername(), ds.getPassword()));
         return ds;
+    }
+
+    @Value("classpath:sql/a_create_tables.sql")
+    private Resource tablesSchema;
+    @Value("classpath:sql/e_changas_public_categories.sql")
+    private Resource categoriesSchema;
+
+    @Bean
+    public DataSourceInitializer dataSourceInitializer(final DataSource ds) {
+        final DataSourceInitializer dsi = new DataSourceInitializer();
+        dsi.setDataSource(ds);
+        dsi.setDatabasePopulator(databasePopulator());
+        return dsi;
+    }
+    private DatabasePopulator databasePopulator() {
+        final ResourceDatabasePopulator dbp = new ResourceDatabasePopulator();
+        dbp.addScript(tablesSchema);
+        dbp.addScript(categoriesSchema);
+        return dbp;
     }
 
     @Bean
@@ -81,8 +102,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         ms.setHost("smtp.gmail.com");
         ms.setPort(587);
 
-        ms.setUsername("changas.do.not.reply@gmail.com");
-        ms.setPassword("charlyGarcia23");
+        ms.setUsername(env.getProperty("mailing.mail"));
+        ms.setPassword(env.getProperty("mailing.password"));
 
         Properties mailProperties = ms.getJavaMailProperties();
         mailProperties.put("mail.transport.protocol", "smtp");
@@ -97,5 +118,4 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public PlatformTransactionManager transactionManager(final DataSource ds) {
         return new DataSourceTransactionManager(ds);
     }
-
 }

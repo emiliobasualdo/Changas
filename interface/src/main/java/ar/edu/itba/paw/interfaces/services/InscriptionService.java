@@ -15,4 +15,5 @@ public interface InscriptionService {
     Validation changeUserStateInChanga(long userId, long changaId, InscriptionState state);
     Validation changeUserStateInChanga(Inscription insc, InscriptionState state);
     Either<Inscription, Validation> getInscription(long userId, long changaId);
+    Either<List<Pair<User, Inscription>>, Validation> getAcceptedUsers(long changa_id);
 }

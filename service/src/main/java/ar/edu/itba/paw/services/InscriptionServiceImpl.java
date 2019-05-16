@@ -40,7 +40,6 @@ public class InscriptionServiceImpl implements InscriptionService {
     @Override
     /* An Inscription implies that the user is inscribed OR he was inscribed before and opted out */
     public Validation inscribeInChanga(long userId, long changaId) {
-        System.out.println(isLoggedUserAuthorizedToInscribeUserInChanga(userId));
         //We check that the logged user is the one who is getting inscribed
         if(!isLoggedUserAuthorizedToInscribeUserInChanga(userId)) {
             return UNAUTHORIZED;
@@ -72,7 +71,6 @@ public class InscriptionServiceImpl implements InscriptionService {
         if (insc.isValuePresent()){
             return insc.getValue().getState() == optout ? changeUserStateInChanga(insc.getValue(), requested) : USER_ALREADY_INSCRIBED;
         }
-
         //At this point, the user needs to be inscribed.
         return insc.getAlternative() == USER_NOT_INSCRIBED ? inscriptionDao.inscribeInChanga(userId, changaId) : insc.getAlternative();
     }
@@ -84,6 +82,11 @@ public class InscriptionServiceImpl implements InscriptionService {
     @Override
     public Either<List<Pair<User, Inscription>>, Validation> getInscribedUsers(long changa_id) {
         return inscriptionDao.getInscribedUsers(changa_id);
+    }
+
+    @Override
+    public Either<List<Pair<User, Inscription>>, Validation> getAcceptedUsers(long changa_id) {
+        return inscriptionDao.getAcceptedUsers(changa_id);
     }
 
     @Override

@@ -23,8 +23,9 @@ CREATE TABLE IF NOT EXISTS changas
     number        INTEGER,
     creation_date TIMESTAMP,
     title         VARCHAR(100),
-    description   VARCHAR(100) ,
+    description   VARCHAR(1000) ,
     state         VARCHAR(100) DEFAULT 'emitted',
+    category      VARCHAR(100),
     price         DOUBLE PRECISION,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
@@ -43,4 +44,9 @@ CREATE TABLE IF NOT EXISTS user_inscribed
     changa_id INTEGER NOT NULL REFERENCES changas (changa_id),
     state     VARCHAR(100) DEFAULT 'requested',
     PRIMARY KEY (user_id, changa_id)
+);
+
+CREATE TABLE IF NOT EXISTS categories
+(
+    key VARCHAR(30)IDENTITY PRIMARY KEY
 );

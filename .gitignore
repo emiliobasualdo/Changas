@@ -21,7 +21,8 @@ target/
 *.tar.gz
 *.rar
 
-
+*/application.properties
+application.properties
 
 ### OSX ###
 # General

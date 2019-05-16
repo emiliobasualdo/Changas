@@ -6,24 +6,24 @@ import javax.validation.constraints.*;
 public class ChangaForm {
 
     @NotEmpty
-    @Size(max = 100) @Pattern(regexp = "[A-Za-z0-9 ]+")
+    @Size(max = 100) @Pattern(regexp = "[A-Za-z0-9áéíóúñü ]+")
     private String title;
 
     @NotEmpty
-    @Size(max = 100) @Pattern(regexp = "[A-Za-z0-9\\s_.,!\"'/$]+") //TODO: agrandar limite de texto en la bd (muy chico 100)
+    @Size(max = 100) @Pattern(regexp = "[A-Za-z0-9\\s_.,!\"'/$áéíóúñü ]+") //TODO: agrandar limite de texto en la bd (muy chico 100)
     private String description;
 
     @NotNull
     @Min(1)
-    @Max(100)
+    @Max(20000)
     private double price;
 
     @NotEmpty
-    @Size(max = 100) @Pattern(regexp = "[a-zA-Z 0-9]+")
+    @Size(max = 100) @Pattern(regexp = "[a-zA-Záéíóúñü 0-9]+")
     private String neighborhood;
 
     @NotEmpty
-    @Size(max = 100) @Pattern(regexp = "[a-zA-Z 0-9]+")
+    @Size(max = 100) @Pattern(regexp = "[a-zA-Záéíóúñü 0-9]+")
     private String street;
 
     @NotNull
@@ -32,7 +32,7 @@ public class ChangaForm {
     private int number;
 
     @NotEmpty
-    @Size(min = 4, max = 100) @Pattern(regexp = "[a-zA-Z 0-9]+")
+    @Size(min = 4, max = 100) @Pattern(regexp = "[a-zA-Záéíóúñü 0-9]+")
     private String category;
 
     public String getTitle() {

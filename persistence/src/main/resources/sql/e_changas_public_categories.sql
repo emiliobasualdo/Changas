@@ -1,4 +1,4 @@
-INSERT INTO public.categories (key) VALUES ('home');
-INSERT INTO public.categories (key) VALUES ('software');
-INSERT INTO public.categories (key) VALUES ('education');
-INSERT INTO public.categories (key) VALUES ('other');
+INSERT INTO categories (key) VALUES ('home') ON CONFLICT DO NOTHING;
+INSERT INTO categories (key) VALUES ('software') ON CONFLICT DO NOTHING;
+INSERT INTO categories (key) VALUES ('education') ON CONFLICT DO NOTHING;
+INSERT INTO categories (key) VALUES ('other') ON CONFLICT DO NOTHING;

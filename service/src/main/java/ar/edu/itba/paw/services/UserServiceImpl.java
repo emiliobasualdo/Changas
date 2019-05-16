@@ -45,13 +45,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Either<User, Validation> findByMail(String mail) {
-        return userDao.findByMail(mail);
+        return userDao.findByMail(mail.toLowerCase());
     }
 
     @Override
     public  Either<User, Validation> register(final User.Builder userBuilder) {
 
-        Either<User, Validation> either = userDao.findByMail(userBuilder.getEmail());
+        Either<User, Validation> either = userDao.findByMail(userBuilder.getEmail().toLowerCase());
 
         // if error is from database
         if(!either.isValuePresent() && either.getAlternative() == DATABASE_ERROR){
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
         }
         // else (!either.isValuePresent() && either.getAlternative() == NO_SUCH_USER o similar)
         userBuilder.withPasswd(passwordEncoder.encode(userBuilder.getPasswd()));
-        return userDao.create(userBuilder);
+        return userDao.create(new User.Builder(userBuilder.withEmail(userBuilder.getEmail().toLowerCase())));
     }
 
     @Override

@@ -3,13 +3,13 @@
 
     <%@ include file="/WEB-INF/jsp/navigationBar.jsp" %>
 
-    <div id="carousel-example-2" class="carousel slide carousel-fade z-depth-1-half" data-ride="carousel">
+    <div id="carousel-example-2" class="carousel slide carousel-fade z-depth-1-half" data-ride="carousel" style="margin-top: 60px; width: 100%;">
         <ol class="carousel-indicators">
             <li data-target="#carousel-example-2" data-slide-to="0" class="active"></li>
             <li data-target="#carousel-example-2" data-slide-to="1"></li>
             <li data-target="#carousel-example-2" data-slide-to="2"></li>
         </ol>
-        <div class="carousel-inner" role="listbox">
+        <div class="carousel-inner" role="listbox" style="width: 100%">
             <div class="carousel-item active">
                 <div class="view">
                     <img class="d-block h-75 w-100" src="https://cdn.makespace.com/blog/wp-content/uploads/2016/05/16125035/makespace-full-service-storage-pickup-delivery-1600x715.jpg" alt="First slide">
