@@ -101,7 +101,6 @@ public class MainPageController {
         if (!changas.isValuePresent()) {
             return new ModelAndView("redirect:/error").addObject("message", changas.getAlternative().getMessage());
         }
-
         model.addObject("isFiltered", true);
         if (!isUserLogged) {
             return model.addObject("changaList", changas.getValue());

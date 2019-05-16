@@ -134,11 +134,8 @@
         </c:choose>
     </div>
     <div style=" margin: auto; display: block; margin-top: 25px">
-        <button id="myAnchor" type="button" class="btn wrn-btn" style="background-color: #26B3BA"> Show More </button>
+        <button id="myAnchor" type="button" class="btn wrn-btn" style="background-color: #26B3BA"> <spring:message code="mainPage.showMore.btn"/> </button>
     </div>
-    <%--<a id="myAnchor" class="button">--%>
-        <%--Show More--%>
-    <%--</a>--%>
 
 </body>
 </html>
