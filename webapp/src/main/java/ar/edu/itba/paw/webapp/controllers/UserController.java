@@ -176,7 +176,6 @@ public class UserController {
     @RequestMapping(value = "/edit-profile")
     public ModelAndView editProfile(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("userForm") final EditUserForm form) {
         form.setName(loggedUser.getName());
-        form.setEmail(loggedUser.getEmail());
         form.setSurname(loggedUser.getSurname());
         form.setTelephone(loggedUser.getTel());
         return new ModelAndView("editProfileForm");
@@ -190,7 +189,6 @@ public class UserController {
         us.update(loggedUser.getUser_id(), new User.Builder()
                 .withName(form.getName())
                 .withSurname(form.getSurname())
-                .withEmail(form.getEmail())
                 .withTel(form.getTelephone()));
         return new ModelAndView("redirect:/profile");
     }

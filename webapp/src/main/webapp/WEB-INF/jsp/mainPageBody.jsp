@@ -1,13 +1,35 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <html>
 <head>
     <style><%@include file="/WEB-INF/css/mainPageBody.css"%></style>
     <title>Changas</title>
 </head>
 <body>
+<c:if test="${changaList.isEmpty()}">
+    <div class="container">
+        <div class="col-sm-12">
 
+            <div class="bs-calltoaction bs-calltoaction-default">
+                <div class="row">
+                    <div class="col-md-8 cta-contents">
+                        <h1 class="cta-title"><spring:message code="mainPageBody.noChangasTitle"/></h1>
+                        <div class="cta-desc">
+                            <p><spring:message code="mainPageBody.noChangasP"/></p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 cta-button">
+                        <c:url value="/create-changa" var="createChangaUrl"/>
+                        <a href="${createChangaUrl}" class="btn btn-lg btn-block btn-default"><spring:message code="mainPageBody.noChangasBtn"/></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</c:if>
+<c:if test="${changaList.isEmpty() == false}">
     <section class="search-sec">
         <div class="container">
             <c:url value="/filter" var="filterUrl" />
@@ -119,5 +141,6 @@
             </c:otherwise>
         </c:choose>
     </div>
+</c:if>
 </body>
 </html>

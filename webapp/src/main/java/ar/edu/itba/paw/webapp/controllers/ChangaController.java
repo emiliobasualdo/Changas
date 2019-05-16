@@ -145,6 +145,7 @@ public class ChangaController {
         Either<List<Pair<User, Inscription>>, Validation> inscribedUsers = is.getInscribedUsers(id);
         if (!inscribedUsers.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(inscribedUsers.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         mav.addObject("notInscribedUsers", inscribedUsers.getValue().isEmpty());
+        inscribedUsers.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout);
         mav.addObject("inscribedUsers", inscribedUsers.getValue());
         return mav;
     }
@@ -165,12 +166,9 @@ public class ChangaController {
         Either<Changa, Validation> changa = cs.getChangaById(changaId);
         if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
         if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
-        //Validation val = cs.changeState;
-        /*if (val.isOk()){
-            // TODO JIME popup confirmacion
-        } else {
-            //TODO JIME popup error
-        }*/
+        // TODO JIME popup confirmacion (estás seguro?)
+        Either<Changa, Validation> err = cs.changeChangaState(changaId, ChangaState.done);
+        if (!err.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(err.getAlternative().name(), null,LocaleContextHolder.getLocale()));
         return new ModelAndView("redirect:/profile");
     }
 

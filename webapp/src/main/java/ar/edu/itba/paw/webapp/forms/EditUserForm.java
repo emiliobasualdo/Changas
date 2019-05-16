@@ -9,11 +9,6 @@ import javax.validation.constraints.Size;
 public class EditUserForm {
 
     @NotEmpty
-    @Email
-    @EmailInUse
-    private String email;
-
-    @NotEmpty
     @Pattern(regexp = "[a-zA-Z ]+")
     private String name;
 
@@ -25,14 +20,6 @@ public class EditUserForm {
     @Size(min = 6, max = 25)
     @Pattern(regexp = "[0-9]+")
     private String telephone;
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public String getName() {
         return name;
@@ -61,8 +48,7 @@ public class EditUserForm {
     @Override
     public String toString() {
         return "EditUserForm{" +
-                "email='" + email + '\'' +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", telephone='" + telephone + '\'' +
                 '}';

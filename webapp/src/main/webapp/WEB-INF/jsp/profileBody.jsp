@@ -18,7 +18,7 @@
                             </div>
                         </div>
                     </div>--%>
-                    <%--<div class="col-md-8">--%>
+                    <div class="col-md-8">
                         <div class="profile-head">
 
                             <%--DATOS DEL USUARIO--%>
@@ -36,17 +36,17 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="col-md-6" style="alignment: right">
-                            <p>
-                                <c:url value="/edit-profile" var="editProfileUrl" />
-                                <a href="${editProfileUrl}" class="profile-edit-btn"><spring:message code="profileBody.nav.edit"/></a>
-                            </p>
-                            <p>
-                                <c:url value="/edit-password" var="resetPasswordUrl" />
-                                <a href="${resetPasswordUrl}" class="profile-edit-btn" style="margin-left: 65%"><spring:message code="profileBody.nav.reset"/></a>
-                            </p>
-                        </div>
-                    <%--</div>--%>
+                    </div>
+                    <div class="col-md-4" style="float: right">
+                        <p>
+                            <c:url value="/edit-profile" var="editProfileUrl" />
+                            <a href="${editProfileUrl}" class="profile-edit-btn"><spring:message code="profileBody.nav.edit"/></a>
+                        </p>
+                        <p>
+                            <c:url value="/edit-password" var="resetPasswordUrl" />
+                            <a href="${resetPasswordUrl}" class="profile-edit-btn"><spring:message code="profileBody.nav.reset"/></a>
+                        </p>
+                    </div>
                 </div>
                 <div class="row">
                     <%--<div class="col-md-4">
