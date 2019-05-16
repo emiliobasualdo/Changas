@@ -2,15 +2,14 @@ package ar.edu.itba.paw.webapp.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -31,8 +30,11 @@ import java.util.Properties;
 @ComponentScan({ "ar.edu.itba.paw.webapp.controllers" , "ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence"})
 @Configuration
 @EnableTransactionManagement
-@PropertySource("classpath:/config/application.properties")
+@PropertySource("classpath:config/application.properties")
 public class WebConfig extends WebMvcConfigurerAdapter {
+
+    @Autowired
+    Environment env;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -51,13 +53,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         return viewResolver;
     }
 
-    @Value( "${datasource.url}" )
-    private String dbUrl;
-    @Value( "${datasource.username}" )
-    private String username;
-    @Value( "${datasource.password}" )
-    private String password;
-
     @Bean
     public DataSource dataSource() {
 
@@ -68,13 +63,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         //String url = local? "jdbc:postgresql://localhost/changas": "jdbc:postgresql://10.16.1.110/paw-2019a-3";
         //String username = local? System.getenv("CHANGAS_USERNAME"): "paw-2019a-3";
         //String passwd = local? System.getenv("CHANGAS_PASSWD"): "tbpkI6aN8";
-        Database db = new Database();
-        System.out.println(db.getUrl());
-        ds.setUrl(dbUrl);
-        ds.setUsername(username);
-        ds.setPassword(password);
-        System.out.println(String.format("//////\nConectando a la BD %s con el usuario %s y la contraseña %s\n//////",dbUrl, username, password));
-
+        ds.setUrl(env.getProperty("datasource.url"));
+        ds.setUsername(env.getProperty("datasource.username"));
+        ds.setPassword(env.getProperty("datasource.password"));
+        System.out.println(String.format("//////\nConectando a la BD %s con el usuario %s y la contraseña %s\n//////",ds.getUrl(), ds.getUsername(), ds.getPassword()));
         return ds;
     }
 
@@ -108,25 +100,5 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public PlatformTransactionManager transactionManager(final DataSource ds) {
         return new DataSourceTransactionManager(ds);
-    }
-
-    @ConfigurationProperties(prefix = "datasource")
-    private class Database {
-        String url;
-        String username;
-        String password;
-        // standard getters and setters
-
-        public String getUrl() {
-            return url;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public String getPassword() {
-            return password;
-        }
     }
 }
