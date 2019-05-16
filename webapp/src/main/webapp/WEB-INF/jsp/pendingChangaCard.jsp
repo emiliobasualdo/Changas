@@ -31,9 +31,8 @@
                         </span>
                         </div>
                         <div class="back">
-                            <c:url value="/unjoin-changa?changaId=${requestScope.changa_id}" var="unJoinUrl" />
-                            <a href="${unJoinUrl}" class="button">
-                                Desanotame
+                            <a type="button" class="button" data-toggle="modal" data-target="#unjoinModal">
+                                <spring:message code="pendingChangaCard.btn"/>
                             </a>
                         </div>
                     </div>
@@ -86,6 +85,29 @@
                     </div>
                 </c:when>
             </c:choose>
+        </div>
+        <div class="modal fade" id="unjoinModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="unjoinModalLongTitle"><spring:message code="pendingChangaCard.popupTitle"/></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <spring:message code="adminchangaBody.continue"/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="adminchangaBody.btn.cancel"/></button>
+                        <c:url value="/unjoin-changa" var="unJoinUrl" />
+                        <form method="post" action="${unJoinUrl}">
+                            <input type="hidden" name="changaId" value="<c:out value="${requestScope.changa_id}"/>">
+                            <input type="submit" class="btn btn-danger btn-block" value="<spring:message code="pendingChangaCard.btn"/>" />
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 

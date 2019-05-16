@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.webapp.controllers;
 
-import ar.edu.itba.paw.interfaces.services.CategoryService;
-import ar.edu.itba.paw.interfaces.services.ChangaService;
-import ar.edu.itba.paw.interfaces.services.InscriptionService;
-import ar.edu.itba.paw.interfaces.services.UserService;
+import ar.edu.itba.paw.interfaces.services.*;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.forms.ChangaForm;
@@ -27,6 +24,9 @@ import java.util.*;
 
 @Controller
 public class ChangaController {
+
+    @Autowired
+    EmailService emailService;
 
     @Autowired
     private ChangaService cs;
@@ -103,6 +103,8 @@ public class ChangaController {
         return new ModelAndView("redirect:/profile");
     }
 
+
+
     @RequestMapping("/changa")
     public ModelAndView showChanga(@RequestParam("id") long id, @ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged) {
         ModelAndView mav = new ModelAndView("indexChanga");
@@ -143,6 +145,7 @@ public class ChangaController {
         Either<List<Pair<User, Inscription>>, Validation> inscribedUsers = is.getInscribedUsers(id);
         if (!inscribedUsers.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(inscribedUsers.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         mav.addObject("notInscribedUsers", inscribedUsers.getValue().isEmpty());
+        inscribedUsers.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout);
         mav.addObject("inscribedUsers", inscribedUsers.getValue());
         return mav;
     }
@@ -163,12 +166,85 @@ public class ChangaController {
         Either<Changa, Validation> changa = cs.getChangaById(changaId);
         if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
         if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
-        //Validation val = cs.changeState;
-        /*if (val.isOk()){
-            // TODO JIME popup confirmacion
+        // TODO JIME popup confirmacion (estás seguro?)
+        Either<Changa, Validation> err = cs.changeChangaState(changaId, ChangaState.done);
+        if (!err.isValuePresent()) return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(err.getAlternative().name(), null,LocaleContextHolder.getLocale()));
+        return new ModelAndView("redirect:/profile");
+    }
+
+    @RequestMapping(value = "/accept-user", method = RequestMethod.POST)
+    public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser) {
+        Either<Changa, Validation> changa = cs.getChangaById(changaId);
+        if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
+        Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.accepted);
+        if (val.isOk()){
+            //TODO este mail en verdad es para cuando hagan el boton changa settled. mientras lo pongo cuando aceptan al changuero
+            //hacer validaciones
+            //TODO JIME popup preguntando
         } else {
-            //TODO JIME popup error
-        }*/
+            //TODO JIME un popup de error
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(val.name(), null, LocaleContextHolder.getLocale()));
+        }
+        return new ModelAndView("redirect:/admin-changa").addObject("id", changaId);
+    }
+
+
+
+    @RequestMapping(value = "/reject-user", method = RequestMethod.POST)
+    public ModelAndView rejectUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser) {
+        Either<Changa, Validation> changa = cs.getChangaById(changaId);
+        if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
+        Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.declined);
+        if (val.isOk()){
+            //TODO JIME popup preguntando
+        } else {
+            //TODO JIME un popup de error
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(val.name(), null, LocaleContextHolder.getLocale()));
+        }
+        return new ModelAndView("redirect:/admin-changa").addObject("id", changaId);
+    }
+
+
+    @RequestMapping(value = "/settle-changa", method = RequestMethod.POST)
+    public ModelAndView settleChanga(@RequestParam("id") long changaId, @ModelAttribute("getLoggedUser") User loggedUser) {
+       Either<Changa, Validation> either = cs.changeChangaState(changaId, ChangaState.settled);
+       if(!either.isValuePresent()) {
+           return new ModelAndView("redirect:/error").addObject("message", either.getAlternative().getMessage());
+       }
+       emailService.sendChangaSettledEmails(either.getValue().getChanga_id());
+       return new ModelAndView("redirect:/admin-changa?id=" + changaId);
+    }
+
+    @RequestMapping(value = "/join-changa", method = RequestMethod.POST)
+    public ModelAndView showChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser) {
+        System.out.println("current user id: " + loggedUser.getUser_id());
+        Validation val = is.inscribeInChanga(loggedUser.getUser_id(), changaId);
+        if (val.isOk()){
+            System.out.println("user "+ loggedUser.getUser_id()+ " successfully inscripto en changa "+ changaId);
+            //TODO hacer validaciones
+            Changa changa = cs.getChangaById(changaId).getValue();
+            User changaOwner = us.findById(changa.getUser_id()).getValue();
+            emailService.sendJoinRequestEmail(changa, changaOwner, loggedUser);
+        } else {
+            System.out.println("No se pudo inscribir en la changa pq:"+ val.getMessage());
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(val.name(), null, LocaleContextHolder.getLocale()));
+        }
+        return new ModelAndView("redirect:/changa").addObject("id", changaId);
+    }
+
+    @RequestMapping(value = "/unjoin-changa", method = RequestMethod.POST)
+    public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser) {
+        Validation val = is.changeUserStateInChanga(loggedUser.getUser_id(), changaId, InscriptionState.optout);
+        System.out.println(loggedUser.getEmail() + " desanotado de " + changaId);
+        if (val.isOk()){
+            System.out.println("user "+ loggedUser.getUser_id()+ " successfully desinscripto en changa "+ changaId);
+        } else {
+            //TODO JIME un popup de error
+            System.out.println("No se pudo desinscribir en la changa pq:"+ val.getMessage());
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(val.name(), null, LocaleContextHolder.getLocale()));
+        }
         return new ModelAndView("redirect:/profile");
     }
 }

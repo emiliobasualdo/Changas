@@ -22,7 +22,10 @@ import org.springframework.security.core.Authentication;
 import java.util.Optional;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.OK;
+import static ar.edu.itba.paw.interfaces.util.Validation.USER_ALREADY_INSCRIBED;
+import static ar.edu.itba.paw.interfaces.util.Validation.USER_OWNS_THE_CHANGA;
 import static ar.edu.itba.paw.models.ChangaState.emitted;
+import static ar.edu.itba.paw.models.InscriptionState.*;
 import static org.mockito.Mockito.when;
 import static org.junit.Assert.*;
 
@@ -30,11 +33,11 @@ import static org.junit.Assert.*;
 public class InscriptionServiceImplTest {
 
     private static final String PASSWORD = "password";
-    private static final String USER1_EMAIL = "email1@email.com";
+    private static final String USER_OWNER_EMAIL = "email1@email.com";
     private static final String USER2_EMAIL = "email2@email.com";
     private static final String USER3_EMAIL = "email3@email.com";
-    private static final long USER1_ID = 111;
-    private static final long USER2_ID = 222;
+    private static final long USER_OWNER_ID = 111;
+    private static final long USER_INSCRIBED_ID = 222;
     private static final long CHANGA_ID = 321;
 
     @Mock
@@ -71,132 +74,96 @@ public class InscriptionServiceImplTest {
     public void testInscribeInChanga_returnsCorrectValidation() {
         //SETUP
         //Preparamos a la falsa changa
-        when(mockedChanga.getUser_id()).thenReturn(USER1_ID);
+        when(mockedChanga.getUser_id()).thenReturn(USER_OWNER_ID);
         when(mockedChanga.getState()).thenReturn(emitted);
         when(changaDao.getById(CHANGA_ID)).thenReturn(Either.value(mockedChanga));
         //Preparamos al falso usuario que se inscribirá en la changa
         when(mockedUser.isEnabled()).thenReturn(true);
-        when(userDao.getById(USER2_ID)).thenReturn(Either.value(mockedUser));
+        when(userDao.getById( USER_INSCRIBED_ID)).thenReturn(Either.value(mockedUser));
         //Preparamos a la falsa sesión del usuario loggeado
         when(authenticationService.getLoggedUser()).thenReturn(Optional.of(mockedUser));
-        when(mockedUser.getUser_id()).thenReturn(USER2_ID);
+        when(mockedUser.getUser_id()).thenReturn( USER_INSCRIBED_ID);
         //no se porque lo de abajo no me dejaba hacerlo. por algo de threads. pregutnar.
         //when(authenticationService.getLoggedUser().isPresent()).thenReturn(true);
         //when(authenticationService.getLoggedUser().get().getUser_id()).thenReturn(USER2_ID);
         //Preparamos al falseo either de la inscripción con validation error con la que verifica que el usuario no esté inscripto ya
-        when(inscriptionDao.getInscription(USER2_ID, CHANGA_ID)).thenReturn(Either.alternative(Validation.USER_NOT_INSCRIBED));
+        when(inscriptionDao.getInscription( USER_INSCRIBED_ID, CHANGA_ID)).thenReturn(Either.alternative(Validation.USER_NOT_INSCRIBED));
         //Preparamos a la falsa inscripcion del usuario en la changa
-        when(inscriptionDao.inscribeInChanga(USER2_ID, CHANGA_ID)).thenReturn(OK);
+        when(inscriptionDao.inscribeInChanga( USER_INSCRIBED_ID, CHANGA_ID)).thenReturn(OK);
 
         //EXERCISE
-        Validation validation = inscriptionService.inscribeInChanga(USER2_ID, CHANGA_ID);
+        Validation validation = inscriptionService.inscribeInChanga( USER_INSCRIBED_ID, CHANGA_ID);
 
         //ASSERT
         assertEquals(OK, validation);
     }
 
+        @Test
+    public void testInscribeInChanga_returnsUserOwnsChanga() {
+        //Preparamos a la falsa sesión del usuario loggeado. En este caso será el dueño de la changa
+        when(authenticationService.getLoggedUser()).thenReturn(Optional.of(mockedUser));
+        when(mockedUser.getUser_id()).thenReturn( USER_OWNER_ID);
+        //Preparamos a la falsa changa de la cual el usuario loggeado es dueño
+        when(mockedChanga.getUser_id()).thenReturn(USER_OWNER_ID);
+        when(changaDao.getById(CHANGA_ID)).thenReturn(Either.value(mockedChanga));
+
+        //EXERCISE
+        Validation validation = inscriptionService.inscribeInChanga(USER_OWNER_ID, CHANGA_ID);
+
+        //ASSERT
+        assertEquals(USER_OWNS_THE_CHANGA, validation);
+    }
+
+    @Test
+    public void testInscribeInChanga_returnsUserAlreadyInscribed() {
+        //SETUP
+        //Preparamos a la falsa sesión del usuario loggeado
+        when(authenticationService.getLoggedUser()).thenReturn(Optional.of(mockedUser));
+        when(mockedUser.getUser_id()).thenReturn( USER_INSCRIBED_ID);
+        //Preparamos a la falsa changa
+        when(mockedChanga.getUser_id()).thenReturn(USER_OWNER_ID);
+        when(mockedChanga.getState()).thenReturn(emitted);
+        when(changaDao.getById(CHANGA_ID)).thenReturn(Either.value(mockedChanga));
+        //Preparamos al falso usuario que ya esta inscripto en la changa
+        when(mockedUser.isEnabled()).thenReturn(true);
+        when(userDao.getById( USER_INSCRIBED_ID)).thenReturn(Either.value(mockedUser));
+        //Creamos la falsa inscriptcion del usuario que se volverá a inscribir
+        when(inscriptionDao.getInscription( USER_INSCRIBED_ID, CHANGA_ID)).thenReturn(Either.value(mockedInscription));
+        when(mockedInscription.getState()).thenReturn(requested);
+
+        //EXERCISE
+        Validation validation = inscriptionService.inscribeInChanga(USER_INSCRIBED_ID, CHANGA_ID);
+
+        //ASSERT
+        assertEquals(USER_ALREADY_INSCRIBED, validation);
+    }
 
 
-//    @Test
-//    public void testInscribeInChanga_returnsCorrectValidation() {
-//        //SETUP
-//
-//
-//        //Make sure the user owner of the changa is in the DB
-//        Number userOwnerId =  addUserToDatabase(USER1_EMAIL, PASSWORD);
-//
-//        //Make sure the changa is in the DB
-//        Number changaId =  addChangaToDatabase(userOwnerId.longValue());
-//        Changa changa = new Changa(changaId.longValue(), new Changa.Builder().withUserId(userOwnerId.longValue()));
-//
-//        //Make sure the user to be inscribed is in the DB
-//        Number userInscribedId =  addUserToDatabase(USER2_EMAIL, PASSWORD);
-//
-//        //Mock changaDao
-//        Mockito.when(changaDao.getById(changaId.longValue())).thenReturn(Either.value(changa));
-//
-//        //EXERCISE
-//        Validation validation = inscriptionDao.inscribeInChanga(userInscribedId.longValue(), changaId.longValue());
-//
-//        //ASSERT
-//        assertEquals(OK, validation.getEc());
-//        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, user_inscribed.name(), String.format("%s = %d", user_id, userInscribedId.longValue())));
-//    }
-//
-//    //pasar este test a service
-//    @Test
-//    public void testInscribeInChanga_returnsUserOwnsChanga() {
-//        //Make sure the user owner of the changa is in the DB
-//        Number userOwnerId =  addUserToDatabase(USER1_EMAIL, PASSWORD);
-//
-//        //Make sure the changa is in the DB
-//        Number changaId =  addChangaToDatabase(userOwnerId.longValue());
-//        Changa changa = new Changa(changaId.longValue(), new Changa.Builder().withUserId(userOwnerId.longValue()));
-//
-//        //Mock changaDao
-//        Mockito.when(changaDao.getById(changaId.longValue())).thenReturn(Either.value(changa));
-//
-//        //EXERCISE
-//        Validation validation = inscriptionDao.inscribeInChanga(userOwnerId.longValue(), changaId.longValue());
-//
-//        //ASSERT
-//        assertEquals(USER_OWNS_THE_CHANGA, validation.getEc());
-//    }
-//
-//    //pasar este test a service
-//    @Test
-//    public void testInscribeInChanga_returnsUserAlreadyInscribed() {
-//        //Make sure the user owner of the changa is in the DB
-//        Number userOwnerId =  addUserToDatabase(USER1_EMAIL, PASSWORD);
-//
-//        //Make sure the changa is in the DB
-//        Number changaId =  addChangaToDatabase(userOwnerId.longValue());
-//        Changa changa = new Changa(changaId.longValue(), new Changa.Builder().withUserId(userOwnerId.longValue()));
-//
-//        //Make sure the user inscribed is in the DB
-//        Number userInscribedId =  addUserToDatabase(USER2_EMAIL, PASSWORD);
-//
-//        // Make sure the inscription is in the DB
-//        addInscriptionToDataBase(userInscribedId.longValue(), changaId.longValue());
-//
-//        //Mock changaDao
-//        Mockito.when(changaDao.getById(changaId.longValue())).thenReturn(Either.value(changa));
-//
-//        //EXERCISE
-//        Validation validation = inscriptionDao.inscribeInChanga(userInscribedId.longValue(), changaId.longValue());
-//
-//        //ASSERT
-//        assertEquals(USER_ALREADY_INSCRIBED, validation.getEc());
-//    }
-//
-//    //pasar este test a service
-//    @Test
-//    public void testInscribeInChanga_returnsOkAfterChangingOptoutToRequested() {
-//        //Make sure the user owner of the changa is in the DB
-//        Number userOwnerId =  addUserToDatabase(USER1_EMAIL, PASSWORD);
-//
-//        //Make sure the changa is in the DB
-//        Number changaId =  addChangaToDatabase(userOwnerId.longValue());
-//        Changa changa = new Changa(changaId.longValue(), new Changa.Builder().withUserId(userOwnerId.longValue()));
-//
-//        //Make sure the user who opted out is in the DB
-//        Number userWhoOptedOutId =  addUserToDatabase(USER2_EMAIL, PASSWORD);
-//
-//        // Make sure the inscription is in the DB with the state in opt out
-//        Map<String, Object> userInscribedRow = new HashMap<>();
-//        userInscribedRow.put(user_id.name(), userWhoOptedOutId);
-//        userInscribedRow.put(changa_id.name(), changaId);
-//        userInscribedRow.put(state.name(), optout.toString());
-//        jdbcInsertUserInscribedRow.execute(userInscribedRow);
-//
-//        //Mock changaDao
-//        Mockito.when(changaDao.getById(changaId.longValue())).thenReturn(Either.value(changa));
-//
-//        //EXERCISE
-//        Validation validation = inscriptionDao.inscribeInChanga(userWhoOptedOutId.longValue(), changaId.longValue());
-//
-//        //ASSERT
-//        assertEquals(OK, validation.getEc());
-//
-//    }
+    @Test
+    public void testInscribeInChanga_returnsOkAfterChangingOptoutToRequested() {
+        //SETUP
+        //Preparamos a la falsa sesión del usuario loggeado
+        when(authenticationService.getLoggedUser()).thenReturn(Optional.of(mockedUser));
+        when(mockedUser.getUser_id()).thenReturn( USER_INSCRIBED_ID);
+        //Preparamos a la falsa changa
+        when(mockedChanga.getUser_id()).thenReturn(USER_OWNER_ID);
+        when(mockedChanga.getState()).thenReturn(emitted);
+        when(changaDao.getById(CHANGA_ID)).thenReturn(Either.value(mockedChanga));
+        //Preparamos al falso usuario que ya esta inscripto en la changa pero en optout
+        when(mockedUser.isEnabled()).thenReturn(true);
+        when(userDao.getById( USER_INSCRIBED_ID)).thenReturn(Either.value(mockedUser));
+        //Creamos la falsa inscriptcion del usuario que está con estado optout
+        when(mockedInscription.getState()).thenReturn(optout);
+        when(mockedInscription.getChanga_id()).thenReturn(CHANGA_ID);
+        when(mockedInscription.getUser_id()).thenReturn(USER_INSCRIBED_ID);
+        when(inscriptionDao.getInscription( USER_INSCRIBED_ID, CHANGA_ID)).thenReturn(Either.value(mockedInscription));
+        when(inscriptionDao.changeUserStateInChanga(mockedInscription, requested)).thenReturn(OK);
+
+        //EXERCISE
+        Validation validation = inscriptionService.inscribeInChanga(USER_INSCRIBED_ID, CHANGA_ID);
+
+        //ASSERT
+        assertEquals(OK, validation);
+    }
+
 }

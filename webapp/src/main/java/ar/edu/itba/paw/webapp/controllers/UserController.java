@@ -59,6 +59,8 @@ public class UserController {
     @Autowired
     private MessageSource messageSource;
 
+  //  private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+
     @RequestMapping("/signup")
     public ModelAndView signUp(@ModelAttribute("signUpForm") final UserRegisterForm form) {
         return new ModelAndView("indexSignUp");
@@ -67,6 +69,7 @@ public class UserController {
     @RequestMapping(value = "/signup", method = { RequestMethod.POST })
     public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors, final WebRequest request) {
         if (errors.hasErrors()) {
+           // LOGGER.debug("error en los campos de formulario del sign up");
             System.out.println("Errores en los campos del formulario sign up");
             return signUp(form);
         }
@@ -96,72 +99,6 @@ public class UserController {
     @RequestMapping("/login")
     public ModelAndView logIn(@ModelAttribute("UserLoginForm") final UserLoginForm form) {
         return new ModelAndView("indexLogIn");
-    }
-
-    @RequestMapping(value = "/join-changa", method = RequestMethod.POST)
-    public ModelAndView showChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser) {
-        System.out.println("current user id: " + loggedUser.getUser_id());
-        Validation val = is.inscribeInChanga(loggedUser.getUser_id(), changaId);
-        if (val.isOk()){
-            System.out.println("user "+ loggedUser.getUser_id()+ " successfully inscripto en changa "+ changaId);
-            //TODO hacer validaciones
-            Changa changa = cs.getChangaById(changaId).getValue();
-            User changaOwner = us.findById(changa.getUser_id()).getValue();
-            emailService.sendJoinRequestEmail(changa, changaOwner, loggedUser);
-        } else {
-            System.out.println("No se pudo inscribir en la changa pq:"+ val.getMessage());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(val.name(), null, LocaleContextHolder.getLocale()));
-        }
-        return new ModelAndView("redirect:/changa").addObject("id", changaId);
-    }
-
-    @RequestMapping(value = "/unjoin-changa", method = RequestMethod.POST)
-    public ModelAndView unjoinChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser) {
-        Validation val = is.changeUserStateInChanga(loggedUser.getUser_id(), changaId, InscriptionState.optout);
-        System.out.println(loggedUser.getEmail() + " desanotado de " + changaId);
-        if (val.isOk()){
-            System.out.println("user "+ loggedUser.getUser_id()+ " successfully desinscripto en changa "+ changaId);
-        } else {
-            //TODO JIME un popup de error
-            System.out.println("No se pudo desinscribir en la changa pq:"+ val.getMessage());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(val.name(), null, LocaleContextHolder.getLocale()));
-        }
-        return new ModelAndView("redirect:/profile");
-    }
-
-    @RequestMapping(value = "/accept-user", method = RequestMethod.POST)
-    public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser) {
-        Either<Changa, Validation> changa = cs.getChangaById(changaId);
-        if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null, LocaleContextHolder.getLocale()));
-        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
-        Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.accepted);
-        if (val.isOk()){
-            //TODO este mail en verdad es para cuando hagan el boton changa settled. mientras lo pongo cuando aceptan al changuero
-            //hacer validaciones
-            User changaOwner = us.findById(changa.getValue().getUser_id()).getValue();
-            User inscribedUser = us.findById(userId).getValue();
-            emailService.sendChangaSettledEmail(changa.getValue(), changaOwner, inscribedUser );
-            //TODO JIME popup preguntando
-        } else {
-            //TODO JIME un popup de error
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(val.name(), null, LocaleContextHolder.getLocale()));
-        }
-        return new ModelAndView("redirect:/admin-changa").addObject("id", changaId);
-    }
-
-    @RequestMapping(value = "/reject-user", method = RequestMethod.POST)
-    public ModelAndView rejectUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser) {
-        Either<Changa, Validation> changa = cs.getChangaById(changaId);
-        if (!changa.isValuePresent()) new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null, LocaleContextHolder.getLocale()));
-        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) return new ModelAndView("403");
-        Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.declined);
-        if (val.isOk()){
-            //TODO JIME popup preguntando
-        } else {
-            //TODO JIME un popup de error
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(val.name(), null, LocaleContextHolder.getLocale()));
-        }
-        return new ModelAndView("redirect:/admin-changa").addObject("id", changaId);
     }
 
     @RequestMapping("/profile")
@@ -239,7 +176,6 @@ public class UserController {
     @RequestMapping(value = "/edit-profile")
     public ModelAndView editProfile(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("userForm") final EditUserForm form) {
         form.setName(loggedUser.getName());
-        form.setEmail(loggedUser.getEmail());
         form.setSurname(loggedUser.getSurname());
         form.setTelephone(loggedUser.getTel());
         return new ModelAndView("editProfileForm");
@@ -253,7 +189,6 @@ public class UserController {
         us.update(loggedUser.getUser_id(), new User.Builder()
                 .withName(form.getName())
                 .withSurname(form.getSurname())
-                .withEmail(form.getEmail())
                 .withTel(form.getTelephone()));
         return new ModelAndView("redirect:/profile");
     }

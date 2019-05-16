@@ -7,17 +7,16 @@ body {
     background: #eee;
 }
 .changaCard-option {
-    /*width: 32%;*/
+    width: 100%;
     background: white;
     float: left;
     padding: 2%;
     text-align: center;
     transition: all .3s ease-in-out;
 }
-/*.changaCard-option:nth-child(even) {*/
-/*margin: 0 2%;*/
-/*}*/
-
+/*.changaCard-option:nth-child(even) {
+margin: 0 2%;
+}*/
 .changaCard-option:hover {
     box-shadow: 0px 2px 30px rgba(0, 0, 0, 0.3);
     -webkit-transform: scale(1.04);

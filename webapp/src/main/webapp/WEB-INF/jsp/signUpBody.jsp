@@ -16,7 +16,7 @@
                 <tr>
                     <td>
                         <div class="form-group">
-                            <div class="input-group">
+                            <div class="input-group" style="display: inline-block;">
                                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
                                 <form:label path="name"><spring:message code="UserRegisterForm.name"/></form:label>
                             </div>
@@ -24,17 +24,19 @@
                     </td>
                     <td>
                         <div class="form-group">
-                            <div class="input-group">
-                                <form:input class="form-control" path="name" />
+                            <div class="align-self-md-center">
+                                <div class="input-group">
+                                    <form:input class="form-control" path="name" />
+                                </div>
+                                <form:errors cssClass="form-error" path="name" element="p"/>
                             </div>
-                            <form:errors cssClass="form-error" path="name" element="p"/>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <div class="form-group">
-                            <div class="input-group">
+                            <div class="input-group" style="display: inline-block;">
                                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
                                 <form:label path="surname"><spring:message code="UserRegisterForm.surname"/></form:label>
                             </div>
@@ -52,7 +54,7 @@
                 <tr>
                     <td>
                         <div class="form-group">
-                            <div class="input-group">
+                            <div class="input-group" style="display: inline-block;">
                                 <span class="input-group-addon"><i class="fa fa-phone"></i></span>
                                 <form:label path="telephone"><spring:message code="UserRegisterForm.telephone"/></form:label>
                             </div>
@@ -70,7 +72,7 @@
                 <tr>
                     <td>
                         <div class="form-group">
-                            <div class="input-group">
+                            <div class="input-group" style="display: inline-block;">
                                 <span class="input-group-addon"><i class="fa fa-paper-plane"></i></span>
                                 <form:label path="email"><spring:message code="UserRegisterForm.email"/></form:label>
                             </div>
@@ -88,7 +90,7 @@
                 <tr>
                     <td>
                         <div class="form-group">
-                            <div class="input-group">
+                            <div class="input-group" style="display: inline-block;">
                                 <span class="input-group-addon"><i class="fa fa-lock"></i></span>
                                 <form:label path="password"><spring:message code="UserRegisterForm.password"/></form:label>
                             </div>
@@ -128,7 +130,7 @@
             <div class="form-group">
                 <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="signUpBody.button"/></button>
             </div>
-            <p class="small text-center"><spring:message code="signUpBody.alert.termsAndPivacyP"/><%--<br><a href="#">Terms &amp; Conditions</a>, and <a href="#">Privacy Policy</a>--%>.</p>
+            <p class="small text-center"><spring:message code="signUpBody.alert.termsAndPivacyP"/>.</p>
         </form:form>
         <c:url value="/login" var="logInUrl" />
         <div class="text-center" style="color: black;"><spring:message code="signUpBody.alert.logIn"/><a href="${logInUrl}" style="color: black;"><spring:message code="signUpBody.alert.btn.logIn"/></a>.</div>
