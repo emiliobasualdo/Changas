@@ -69,9 +69,9 @@ public class MainPageController {
                                       @ModelAttribute("isUserLogged") boolean isUserLogged,
                                       @RequestParam(value = "cfilter", defaultValue = "") String categoryFilter,
                                       @RequestParam(value = "tfilter", defaultValue = "") String titleFilter,
-                                      @RequestParam(value = "lfilter", defaultValue = "") String localityFilter) {
+                                      @RequestParam(value = "nfilter", defaultValue = "") String neighborhoodFilter) {
 
-        Either<List<Changa>, Validation> changas = cs.getEmittedChangasFiltered(0, categoryFilter, titleFilter, localityFilter);
+        Either<List<Changa>, Validation> changas = cs.getEmittedChangasFiltered(0, categoryFilter, titleFilter, neighborhoodFilter);
         if (!changas.isValuePresent()) {
             return new ModelAndView("redirect:/error").addObject("message", changas.getAlternative().getMessage());
         }
@@ -85,14 +85,14 @@ public class MainPageController {
                     .addObject("isFiltered", true)
                     .addObject("cfilter", categoryFilter)
                     .addObject("tfilter", titleFilter)
-                    .addObject("lfilter", localityFilter);
+                    .addObject("nfilter", neighborhoodFilter);
         }
 
         return showChangas(changas.getValue())
                 .addObject("isFiltered", true)
                 .addObject("cfilter", categoryFilter)
                 .addObject("tfilter", titleFilter)
-                .addObject("lfilter", localityFilter);
+                .addObject("nfilter", neighborhoodFilter);
     }
 
     private Either<List<Pair<Changa, Boolean>>, Validation> markedInscriptions(User loggedUser, List<Changa> changas) {

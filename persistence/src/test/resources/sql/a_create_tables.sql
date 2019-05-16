@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS changas
     street        VARCHAR(100),
     neighborhood  VARCHAR(100) NOT NULL,
     number        INTEGER,
-    creation_date TIMESTAMP NOT NULL,
+    creation_date TIMESTAMP,
     title         VARCHAR(100) NOT NULL,
     description   VARCHAR(1000)  NOT NULL,
     state         VARCHAR(100) DEFAULT 'emitted' NOT NULL,
@@ -48,10 +48,10 @@ CREATE TABLE IF NOT EXISTS user_inscribed
 
 CREATE TABLE IF NOT EXISTS categories
 (
-    key VARCHAR(30)IDENTITY PRIMARY KEY
+    key VARCHAR(30)  PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS neighborhoods
 (
-    key VARCHAR(30) IDENTITY PRIMARY KEY
+    key VARCHAR(50)
 );

@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static ar.edu.itba.paw.constants.DBFilterFields.*;
-import static ar.edu.itba.paw.constants.DBTableName.categories;
+import static ar.edu.itba.paw.constants.DBTableName.*;
 
 @Repository
 public class FiltersJdbcDao implements filtersDao {
@@ -44,8 +44,8 @@ public class FiltersJdbcDao implements filtersDao {
     }
 
     @Override
-    public List<String> getNeighborhood() {
-        return this.get(neighborhood.name());
+    public List<String> getNeighborhoods() {
+        return this.get(neighborhoods.name());
     }
 
 }

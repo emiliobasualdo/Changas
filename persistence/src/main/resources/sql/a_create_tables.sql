@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS changas
     street        VARCHAR(100),
     neighborhood  VARCHAR(100) NOT NULL,
     number        INTEGER ,
-    creation_date TIMESTAMP NOT NULL,
+    creation_date TIMESTAMP, /*falta not null, hay que reponer la información en el .sql*/
     title         VARCHAR(100) NOT NULL,
     description   VARCHAR(1000) NOT NULL ,
     state         VARCHAR(100) DEFAULT 'emitted' NOT NULL,

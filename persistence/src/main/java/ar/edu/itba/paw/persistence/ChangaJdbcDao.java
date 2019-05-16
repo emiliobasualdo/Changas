@@ -6,10 +6,12 @@ import ar.edu.itba.paw.models.Changa;
 
 import ar.edu.itba.paw.models.ChangaState;
 import ar.edu.itba.paw.models.Either;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.RecoverableDataAccessException;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -95,12 +97,19 @@ public class ChangaJdbcDao implements ChangaDao {
             return Either.alternative(ILLEGAL_VALUE.withMessage("Wrong filtering"));
         }
 
-        List<Changa> resp = jdbcTemplate.query(
-                String.format("SELECT * FROM %s %s ORDER BY %s DESC LIMIT %d OFFSET %d",
-                        changas.name(), whereClause,
-                        creation_date.name(), PAGE_SIZE, PAGE_SIZE * pageNum),
-                ROW_MAPPER
-        );
+        List<Changa> resp;
+        try {
+            resp = jdbcTemplate.query(
+                    String.format("SELECT * FROM %s %s ORDER BY %s DESC LIMIT %d OFFSET %d",
+                            changas.name(), whereClause,
+                            creation_date.name(), PAGE_SIZE, PAGE_SIZE * pageNum),
+                    ROW_MAPPER
+            );
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return Either.alternative(DATABASE_ERROR);
+        }
+
         return Either.value(resp);
     }
 

@@ -35,7 +35,7 @@ public class TestConfig {
     @Value("classpath:sql/d_changas_public_user_inscribed.sql")
     private Resource populateUsersInscribed;
     @Value("classpath:sql/e_changas_public_filters.sql")
-    private Resource populateCategories;
+    private Resource populateFilters;
 
     @Bean
     public DataSourceInitializer dataSourceInitializer(final DataSource ds) {
@@ -50,7 +50,7 @@ public class TestConfig {
         dbp.addScript(createTables);
         dbp.addScript(populateUsers);
         dbp.addScript(populateChangas);
-        dbp.addScript(populateCategories);
+        dbp.addScript(populateFilters);
         dbp.addScript(populateUsersInscribed);
         return dbp;
     }
