@@ -16,7 +16,7 @@ password: tbpkI6aN8
 /// 5) trasferimos el archivo
 put webapp/target/app.war
 
-/// 6) crear tablas (si no estás creadas)
+/// 6) crear tablas (si no están creadas)
 psql -h 10.16.1.110 -U paw-2019a-3
 password: tbpkI6aN8
 \i persistence/src/main/resources/sql/a_create_tables.sql

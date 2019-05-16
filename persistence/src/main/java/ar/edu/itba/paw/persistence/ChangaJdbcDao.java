@@ -129,7 +129,7 @@ public class ChangaJdbcDao implements ChangaDao {
             sb
                     .append(" AND ")
                     .append(title.name())
-                    .append(" ILIKE %?%"); // insensitive like
+                    .append(" ~* ?"); // insensitive like
             ps = conn.prepareStatement(sb.toString());
             ps.setString(1, filterTitle);
             sb = new StringBuilder(ps.toString());

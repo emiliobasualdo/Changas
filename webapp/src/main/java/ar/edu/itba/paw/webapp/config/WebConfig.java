@@ -9,8 +9,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
+import org.springframework.jdbc.datasource.init.DatabasePopulator;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -55,19 +59,32 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public DataSource dataSource() {
-
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
         ds.setDriverClass(org.postgresql.Driver.class);
-
-        //boolean local = Boolean.valueOf(System.getenv("CHANGAS_LOCAL")); // cambiar esto si quieren conectarse a la db local
-        //String url = local? "jdbc:postgresql://localhost/changas": "jdbc:postgresql://10.16.1.110/paw-2019a-3";
-        //String username = local? System.getenv("CHANGAS_USERNAME"): "paw-2019a-3";
-        //String passwd = local? System.getenv("CHANGAS_PASSWD"): "tbpkI6aN8";
         ds.setUrl(env.getProperty("datasource.url"));
         ds.setUsername(env.getProperty("datasource.username"));
         ds.setPassword(env.getProperty("datasource.password"));
-        System.out.println(String.format("//////\nConectando a la BD %s con el usuario %s y la contraseña %s\n//////",ds.getUrl(), ds.getUsername(), ds.getPassword()));
+        //System.out.println(String.format("//////\nConectando a la BD %s con el usuario %s y la contraseña %s\n//////",ds.getUrl(), ds.getUsername(), ds.getPassword()));
         return ds;
+    }
+
+    @Value("classpath:sql/a_create_tables.sql")
+    private Resource tablesSchema;
+    @Value("classpath:sql/e_changas_public_categories.sql")
+    private Resource categoriesSchema;
+
+    @Bean
+    public DataSourceInitializer dataSourceInitializer(final DataSource ds) {
+        final DataSourceInitializer dsi = new DataSourceInitializer();
+        dsi.setDataSource(ds);
+        dsi.setDatabasePopulator(databasePopulator());
+        return dsi;
+    }
+    private DatabasePopulator databasePopulator() {
+        final ResourceDatabasePopulator dbp = new ResourceDatabasePopulator();
+        dbp.addScript(tablesSchema);
+        dbp.addScript(categoriesSchema);
+        return dbp;
     }
 
     @Bean
@@ -85,8 +102,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         ms.setHost("smtp.gmail.com");
         ms.setPort(587);
 
-        ms.setUsername("changas.do.not.reply@gmail.com");
-        ms.setPassword("charlyGarcia23");
+        ms.setUsername(env.getProperty("mailing.mail"));
+        ms.setPassword(env.getProperty("mailing.password"));
 
         Properties mailProperties = ms.getJavaMailProperties();
         mailProperties.put("mail.transport.protocol", "smtp");
