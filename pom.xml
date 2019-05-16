@@ -25,6 +25,7 @@
         <org.mockito.version>2.27.0</org.mockito.version>
         <org.powermock.version>1.6.4</org.powermock.version>
         <org.powermock-api-mockito2.version>1.6.4</org.powermock-api-mockito2.version>
+        <spring-boot.version>2.1.5.RELEASE</spring-boot.version>
     </properties>
 
     <build>
@@ -185,8 +186,11 @@
                 <version>${logback-ext-spring.version}</version>
                 <scope>runtime</scope>
             </dependency>
-
-
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-jdbc</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
