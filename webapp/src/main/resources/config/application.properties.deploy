@@ -1,0 +1,8 @@
+# This should be used only for credentials and other local-only config.
+datasource.url = jdbc:postgresql://10.16.1.110/paw-2019a-3
+datasource.username = paw-2019a-3
+datasource.password = tbpkI6aN8
+
+
+mailing.mail = changas.do.not.reply@gmail.com
+mailing.password = charlyGarcia23

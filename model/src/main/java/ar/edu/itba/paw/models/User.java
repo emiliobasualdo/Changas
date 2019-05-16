@@ -61,6 +61,16 @@ public class User {
             this.enabled = false;
         }
 
+        public Builder(Builder userBuilder) {
+            this.name = userBuilder.name;
+            this.surname = userBuilder.surname;
+            this.tel = userBuilder.tel;
+            this.email = userBuilder.email.toLowerCase();
+            this.passwd = userBuilder.passwd;
+            this.enabled = userBuilder.enabled;
+
+        }
+
         public User.Builder withName(String name){
             this.name = name;
             return this;
@@ -77,7 +87,7 @@ public class User {
         }
 
         public User.Builder withEmail(String email){
-            this.email = email;
+            this.email = email.toLowerCase();
             return this;
         }
 

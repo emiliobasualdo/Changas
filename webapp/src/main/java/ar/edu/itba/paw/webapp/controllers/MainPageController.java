@@ -67,6 +67,8 @@ public class MainPageController {
         }
 
         indexModel.addObject("isFiltered", true);
+        indexModel.addObject("cfilter", categoryFilter);
+        indexModel.addObject("tfilter", titleFilter);
         // else we mark the inscribbed changas
         if (isUserLogged)
             return markedInscriptions(loggedUser, changas.getValue(), indexModel);

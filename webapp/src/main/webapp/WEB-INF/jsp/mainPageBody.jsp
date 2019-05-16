@@ -11,61 +11,55 @@
     <section class="search-sec">
         <div class="container">
             <c:url value="/filter" var="filterUrl" />
-            <c:choose>
-                <c:when test="${isFiltered}">
-                    <form action="${filterUrl}" method="get">
+            <form action="${filterUrl}" method="get">
+                <div class="row">
+                    <div class="col-lg-12">
                         <div class="row">
-                            <div class="col-lg-12">
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                        <input name="tfilter" class="form-control search-slt" placeholder="Search"/>
-                                    </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                        <select name="cfilter" class="form-control search-slt" id="exampleFormControlSelect1">
-                                            <c:forEach items="${categories}" var="category">
-                                                <option value="${category}"> ${category}</option>
-                                            </c:forEach>
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                        <button type="submit" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPage.button.filter"/></button>
-                                    </div>
-                                    <c:url value="/" var="rootUrl" />
-                                    <form:form action="${rootUrl}" method="get">
-                                        <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                            <button type="submit" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPage.button.de-filter"/></button>
-                                        </div>
-                                    </form:form>
+                            <c:url value="/filter" var="filterUrl" />
+                            <form:form action="${filterUrl}" method="get">
+                                <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                    <input name="tfilter" value="${tfilter}" class="form-control search-slt" placeholder="<spring:message code="mainPage.search"/>">
                                 </div>
-                            </div>
-                        </div>
-                    </form>
-                </c:when>
-                <c:otherwise>
-                    <form action="${filterUrl}" method="get">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-3 col-sm-12 p-0">
-                                        <input name="tfilter" class="form-control search-slt" placeholder="Search"/>
-                                    </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                        <select name="cfilter" class="form-control search-slt">
-                                            <option selected="selected" disabled="disabled" hidden="hidden"> Elegi una Categoria  </option>
-                                            <c:forEach items="${categories}" var="category">
-                                                <option value="${category}"> ${category} </option>
-                                            </c:forEach>
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                        <button type="submit" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPage.button.filter"/></button>
-                                    </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                    <select name="cfilter" class="form-control search-slt" id="exampleFormControlSelect1">
+                                        <%-- Opción vacía --%>
+                                        <c:choose>
+                                            <c:when test="${cfilter == ''}">
+                                                <option value="''" selected><spring:message code="categories.all"/></option>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <option value="''"><spring:message code="categories.all"/></option>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <%-- Demás opciones --%>
+                                        <c:forEach items="${categories}" var="category">
+                                            <c:choose>
+                                                <c:when test="${cfilter == category}">
+                                                    <option value="${category}" selected><spring:message code="${category}"/></option>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <option value="${category}"><spring:message code="${category}"/></option>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:forEach>
+                                    </select>
                                 </div>
-                            </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                    <button type="submit" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPage.button.filter"/></button>
+                                </div>
+                            </form:form>
+                            <c:if test="${isFiltered}">
+                                <c:url value="/" var="rootUrl" />
+                                <form:form action="${rootUrl}" method="get">
+                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                        <button type="submit" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPage.button.de-filter"/></button>
+                                    </div>
+                                </form:form>
+                            </c:if>
                         </div>
-                    </form>
-                </c:otherwise>
-        </c:choose>
+                    </div>
+                </div>
+            </form>
         </div>
     </section>
 
