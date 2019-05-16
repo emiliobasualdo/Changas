@@ -39,11 +39,11 @@ public class ChangaServiceImpl implements ChangaService {
     }
 
     @Override
-    public Either<List<Changa>, Validation> getEmittedChangasFiltered(int pageNum, String category, String title) {
+    public Either<List<Changa>, Validation> getEmittedChangasFiltered(int pageNum, String category, String title, String localitie) {
         if (pageNum < 0) {
             return Either.alternative(ILLEGAL_VALUE.withMessage("Page number must be greater than zero"));
         }
-        return chDao.getFiltered(ChangaState.emitted, pageNum, category, title);
+        return chDao.getFiltered(ChangaState.emitted, pageNum, category, title, localitie);
     }
 
     @Override

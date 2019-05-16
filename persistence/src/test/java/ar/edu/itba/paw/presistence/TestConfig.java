@@ -34,7 +34,7 @@ public class TestConfig {
     private Resource populateChangas;
     @Value("classpath:sql/d_changas_public_user_inscribed.sql")
     private Resource populateUsersInscribed;
-    @Value("classpath:sql/e_changas_public_categories.sql")
+    @Value("classpath:sql/e_changas_public_filters.sql")
     private Resource populateCategories;
 
     @Bean

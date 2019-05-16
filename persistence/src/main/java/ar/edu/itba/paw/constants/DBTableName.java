@@ -6,7 +6,8 @@ public enum DBTableName {
     users(),
     user_inscribed(),
     verification_token(),
-    categories()
+    categories(),
+    localities()
     ;
 
 }

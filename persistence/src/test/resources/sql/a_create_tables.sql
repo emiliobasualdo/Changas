@@ -6,9 +6,9 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE IF NOT EXISTS users
 (
     user_id INTEGER IDENTITY PRIMARY KEY,
-    name    VARCHAR(100),
-    surname VARCHAR(100),
-    tel     VARCHAR(100),
+    name    VARCHAR(100) NOT NULL,
+    surname VARCHAR(100) NOT NULL,
+    tel     VARCHAR(100) NOT NULL,
     email   VARCHAR(100) UNIQUE NOT NULL,
     passwd  VARCHAR(100) NOT NULL,
     enabled BOOLEAN DEFAULT FALSE
@@ -19,14 +19,14 @@ CREATE TABLE IF NOT EXISTS changas
     changa_id     INTEGER IDENTITY PRIMARY KEY,
     user_id       INTEGER NOT NULL ,
     street        VARCHAR(100),
-    neighborhood  VARCHAR(100),
+    neighborhood  VARCHAR(100) NOT NULL,
     number        INTEGER,
-    creation_date TIMESTAMP,
-    title         VARCHAR(100),
-    description   VARCHAR(1000) ,
-    state         VARCHAR(100) DEFAULT 'emitted',
-    category      VARCHAR(100),
-    price         DOUBLE PRECISION,
+    creation_date TIMESTAMP NOT NULL,
+    title         VARCHAR(100) NOT NULL,
+    description   VARCHAR(1000)  NOT NULL,
+    state         VARCHAR(100) DEFAULT 'emitted' NOT NULL,
+    category      VARCHAR(100) NOT NULL,
+    price         DOUBLE PRECISION NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
@@ -49,4 +49,9 @@ CREATE TABLE IF NOT EXISTS user_inscribed
 CREATE TABLE IF NOT EXISTS categories
 (
     key VARCHAR(30)IDENTITY PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS localities
+(
+    key VARCHAR(30) IDENTITY PRIMARY KEY
 );

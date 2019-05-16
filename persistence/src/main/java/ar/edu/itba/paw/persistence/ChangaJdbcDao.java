@@ -26,6 +26,7 @@ import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBChangaFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.changas;
+import static ar.edu.itba.paw.constants.DBTableName.localities;
 import static ar.edu.itba.paw.interfaces.util.Validation.*;
 
 @Repository
@@ -78,18 +79,18 @@ public class ChangaJdbcDao implements ChangaDao {
 
     @Override
     public Either<List<Changa>, Validation> getAll(ChangaState filterState, int pageNum) {
-        return this.getFiltered(filterState, pageNum, "", "");
+        return this.getFiltered(filterState, pageNum, "", "", "");
     }
 
     @Override
-    public Either<List<Changa>, Validation> getFiltered(ChangaState filterState, int pageNum, String filterCategory, String filterTitle) {
+    public Either<List<Changa>, Validation> getFiltered(ChangaState filterState, int pageNum, String filterCategory, String filterTitle, String filterLocalitie) {
         if (pageNum < 0) {
             return Either.alternative(ILLEGAL_VALUE.withMessage("Page number must be greater than zero"));
         }
 
         String whereClause;
         try {
-            whereClause = createFilterQuery(filterState, filterCategory, filterTitle);
+            whereClause = createFilterQuery(filterState, filterCategory, filterTitle, filterLocalitie);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             return Either.alternative(ILLEGAL_VALUE.withMessage("Wrong filtering"));
@@ -104,7 +105,7 @@ public class ChangaJdbcDao implements ChangaDao {
         return Either.value(resp);
     }
 
-    private String createFilterQuery(ChangaState filterState, String filterCategory, String filterTitle) throws SQLException {
+    private String createFilterQuery(ChangaState filterState, String filterCategory, String filterTitle, String filterLocalitie) throws SQLException {
         StringBuilder sb = new StringBuilder();
         PreparedStatement ps;
         if (filterState != null) {
@@ -123,6 +124,15 @@ public class ChangaJdbcDao implements ChangaDao {
                     .append(" = ?");
             ps = conn.prepareStatement(sb.toString());
             ps.setString(1, filterCategory);
+            sb = new StringBuilder(ps.toString());
+        }
+        if (!filterLocalitie.equals("")) {
+            sb
+                    .append(" AND ")
+                    .append(localities.name())
+                    .append(" = ?");
+            ps = conn.prepareStatement(sb.toString());
+            ps.setString(1, filterLocalitie);
             sb = new StringBuilder(ps.toString());
         }
         if (!filterTitle.equals("")) {

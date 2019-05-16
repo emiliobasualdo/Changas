@@ -70,8 +70,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Value("classpath:sql/a_create_tables.sql")
     private Resource tablesSchema;
-    @Value("classpath:sql/e_changas_public_categories.sql")
-    private Resource categoriesSchema;
+    @Value("classpath:sql/e_changas_public_filter.sql")
+    private Resource filtersSchema;
 
     @Bean
     public DataSourceInitializer dataSourceInitializer(final DataSource ds) {
@@ -83,7 +83,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     private DatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator dbp = new ResourceDatabasePopulator();
         dbp.addScript(tablesSchema);
-        dbp.addScript(categoriesSchema);
+        dbp.addScript(filtersSchema);
         return dbp;
     }
 
