@@ -90,6 +90,20 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
+    public Either<Boolean, Validation> hasAcceptedUsers(long changa_id) {
+        Either<List<Pair<User, Inscription>>, Validation>  inscriptions = getInscribedUsers(changa_id);
+        if (!inscriptions.isValuePresent()) {
+            return Either.alternative(inscriptions.getAlternative());
+        }
+
+        for (Pair<User, Inscription> pair: inscriptions.getValue()) {
+            if (pair.getValue().getState() == InscriptionState.accepted)
+                return Either.value(true);
+        }
+        return Either.value(false);
+    }
+
+    @Override
     public Validation changeUserStateInChanga(long userId, long changaId, InscriptionState newState) {
         Either<Inscription, Validation> insc = inscriptionDao.getInscription(userId, changaId);
         if (insc.isValuePresent())
