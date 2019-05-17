@@ -1,7 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<!DOCTYPE HTML>
 <html>
 <head>
 
@@ -20,19 +19,17 @@
         });
     </script>
     <style><%@include file="/WEB-INF/css/mainPageBody.css"%></style>
-    <title>Changas</title>
 </head>
 
 <body>
     <section class="search-sec">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="row">
-                        <c:url value="/filter" var="filterUrl" />
-                        <form:form action="${filterUrl}" method="get">
-
-                            <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+            <c:url value="/filter" var="filterUrl" />
+            <form:form action="${filterUrl}" method="get">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-3 col-sm-12 p-0">
                                 <input name="tfilter" value="${tfilter}" class="form-control search-slt" placeholder="<spring:message code="mainPage.search"/>">
                             </div>
 
@@ -88,23 +85,24 @@
                                 </select>
                             </div>
 
-                            <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                            <div class="col-lg-2 col-md-3 col-sm-12 p-0">
                                 <button type="submit" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPage.button.filter"/></button>
                             </div>
-                        </form:form>
-
-                        <c:if test="${isFiltered}">
-                            <c:url value="/" var="rootUrl" />
-                            <form:form action="${rootUrl}" method="get">
-                                <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                    <button type="submit" class="btn wrn-btn" style="background-color: #26B3BA"><spring:message code="mainPage.button.de-filter"/></button>
-                                </div>
-                            </form:form>
-                        </c:if>
-
+                        </div>
                     </div>
                 </div>
-            </div>
+            </form:form>
+
+            <c:if test="${isFiltered}">
+                <c:url value="/" var="rootUrl" />
+                <form:form action="${rootUrl}" method="get">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-2 col-md-3 col-sm-12 p-0">
+                            <button type="submit" class="btn wrn-btn center-pill" style="background-color: #26B3BA; align-self: center"><spring:message code="mainPage.button.de-filter"/></button>
+                        </div>
+                    </div>
+                </form:form>
+            </c:if>
         </div>
     </section>
 
