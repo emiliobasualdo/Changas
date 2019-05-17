@@ -32,7 +32,7 @@
                             <div class="col-lg-12">
                                 <div class="row">
                                     <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                        <input name="tfilter" class="form-control search-slt" placeholder="Search"/>
+                                        <input name="tfilter" class="form-control search-slt" placeholder="<spring:message code="mainPage.search"/>"/>
                                     </div>
                                     <div class="col-lg-3 col-md-3 col-sm-12 p-0">
                                         <select name="cfilter" class="form-control search-slt" id="exampleFormControlSelect1">
@@ -62,7 +62,7 @@
                             <div class="col-lg-12">
                                 <div class="row">
                                     <div class="col-lg-6 col-md-3 col-sm-12 p-0">
-                                        <input name="tfilter" class="form-control search-slt" placeholder="Search"/>
+                                        <input name="tfilter" class="form-control search-slt" placeholder="<spring:message code="mainPage.search"/>"/>
                                     </div>
                                     <div class="col-lg-3 col-md-3 col-sm-12 p-0">
                                         <select name="cfilter" class="form-control search-slt">
