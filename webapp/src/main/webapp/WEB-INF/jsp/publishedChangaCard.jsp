@@ -3,7 +3,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-        <style><%@include file="/WEB-INF/css/changaCard.css"%></style>
+        <style><%@include file="/WEB-INF/css/publishedChangaCard.css"%></style>
     </head>
     <body>
         <div class="changaCard-option">

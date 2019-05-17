@@ -17,7 +17,7 @@
 <body>
 <div class="signup-form">
     <c:url value="/edit-profile" var="editProfileUrl" />
-    <form:form modelAttribute="userForm" action="${editProfileUrl}" method="post">
+    <form:form modelAttribute="editUserForm" action="${editProfileUrl}" method="post">
         <h2><spring:message code="editProfile.header"/></h2>
         <table style="width: 100%">
             <tr>

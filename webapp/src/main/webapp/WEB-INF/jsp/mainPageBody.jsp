@@ -4,7 +4,9 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+
     <script src="http://code.jquery.com/jquery-latest.js"> </script>
+
     <script>
         var page = 1;
         $(document).ready(function(){
@@ -20,6 +22,7 @@
     <style><%@include file="/WEB-INF/css/mainPageBody.css"%></style>
     <title>Changas</title>
 </head>
+
 <body>
     <section class="search-sec">
         <div class="container">
