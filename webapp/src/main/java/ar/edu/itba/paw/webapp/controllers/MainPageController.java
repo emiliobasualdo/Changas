@@ -63,6 +63,9 @@ public class MainPageController {
         if (!maybeChangas.isValuePresent()) {
             return new ModelAndView();
         }
+        if (maybeChangas.getValue().isEmpty()) {
+            return new ModelAndView().addObject("changaPage", maybeChangas.getValue());
+        }
         if (!isUserLogged) {
             return new ModelAndView("page").addObject("changaPage", maybeChangas.getValue())
                     .addObject("page", page);
