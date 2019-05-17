@@ -37,10 +37,10 @@ public class VerificationToken {
             this.userId = userId;
         }
 
-        private Date calculateExpiryDate(int expiryTimeInMinutes) {
+        private Date calculateExpiryDate(int expiryTimeInDays) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Timestamp(cal.getTime().getTime()));
-            cal.add(Calendar.MINUTE, expiryTimeInMinutes);
+            cal.add(Calendar.DATE, expiryTimeInDays);
             return new Date(cal.getTime().getTime());
         }
 
