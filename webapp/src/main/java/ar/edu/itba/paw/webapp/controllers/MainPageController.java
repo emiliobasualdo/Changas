@@ -42,6 +42,7 @@ public class MainPageController {
                                     @ModelAttribute("isUserLogged") boolean isUserLogged) {
 
         Either<List<Changa>, Validation> maybeChangas = cs.getEmittedChangas(0);
+        Either<Integer, Validation> pageCount = cs.getECFPageCount("","","");
         if (!maybeChangas.isValuePresent()) {
             response.setStatus(maybeChangas.getAlternative().getHttpStatus().value());
             return new ModelAndView("redirect:/error").addObject("message",  messageSource.getMessage(maybeChangas.getAlternative().name(), null,LocaleContextHolder.getLocale()));

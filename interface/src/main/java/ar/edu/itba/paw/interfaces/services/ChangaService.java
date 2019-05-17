@@ -20,7 +20,8 @@ public interface ChangaService {
     Either<List<Changa>, Validation> getUserOwnedChangas(final long userId);
     Either<Changa, Validation> getChangaById(final long changaId);
     Either<List<Changa>, Validation> getEmittedChangas(int pageNum);
-    Either<List<Changa>, Validation> getEmittedChangasFiltered(int pageNum, String category, String title, String localitie);
+    Either<List<Changa>, Validation> getEmittedChangasFiltered(int pageNum, String category, String title, String locality);
+    Either<Integer, Validation> getECFPageCount(String category, String title, String locality);
     Either<Changa, Validation> changeChangaState(long changaId, ChangaState newState);
     Either<Changa, Validation> changeChangaState(Changa changa, ChangaState newState);
     Either<List<Changa>, Validation> getUserEmittedChangas(long id);

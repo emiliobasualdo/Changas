@@ -16,5 +16,5 @@ public interface ChangaDao {
     Either<List<Changa>, Validation> getUserOwnedChangas(final long user_id);
     Either<Changa, Validation> update(final long changaId, Changa.Builder changaBuilder);
     Either<Changa, Validation> changeChangaState(long changaId, ChangaState state);
-
+    Either<Integer, Validation> getFilteredPageCount(ChangaState emitted, String category, String title, String locality);
 }
