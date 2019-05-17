@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.services.InscriptionService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -33,13 +35,18 @@ public class MainPageController {
     @Autowired
     private InscriptionService is;
 
+
+    @Autowired
+    private MessageSource messageSource;
+
     @RequestMapping(value = "/")
-    public ModelAndView showChangas(@ModelAttribute("getLoggedUser") User loggedUser,
+    public ModelAndView showChangas(@ModelAttribute("getLoggedUser") User loggedUser, HttpServletResponse response,
                                     @ModelAttribute("isUserLogged") boolean isUserLogged) {
 
         Either<List<Changa>, Validation> maybeChangas = cs.getEmittedChangas(0);
         if (!maybeChangas.isValuePresent()) {
-            return new ModelAndView("redirect:/error").addObject("message", maybeChangas.getAlternative().getMessage());
+            response.setStatus(maybeChangas.getAlternative().getHttpStatus().value());
+            return new ModelAndView("redirect:/error").addObject("message",  messageSource.getMessage(maybeChangas.getAlternative().name(), null,LocaleContextHolder.getLocale()));
         }
 
         // if the user logged in we show raw data
@@ -51,7 +58,8 @@ public class MainPageController {
         // else we mark the inscribbed changas
         Either<List<Pair<Changa, Boolean>>, Validation> maybeMarkedInscriptions = markedInscriptions(loggedUser, changas);
         if(!maybeMarkedInscriptions.isValuePresent()){
-            return new ModelAndView("redirect:/error").addObject("message", maybeMarkedInscriptions.getAlternative().getMessage());
+            response.setStatus(maybeMarkedInscriptions.getAlternative().getHttpStatus().value());
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(maybeMarkedInscriptions.getAlternative().name(), null,LocaleContextHolder.getLocale()));
         }
         return showChangas(maybeMarkedInscriptions.getValue()).addObject("isFiltered", false);
     }
@@ -70,20 +78,23 @@ public class MainPageController {
     }
 
     @RequestMapping(value = "/filter")
-    public ModelAndView filterChangas(@ModelAttribute("getLoggedUser") User loggedUser,
+    public ModelAndView filterChangas(HttpServletResponse response,
+                                      @ModelAttribute("getLoggedUser") User loggedUser,
                                       @ModelAttribute("isUserLogged") boolean isUserLogged,
                                       @RequestParam(value = "cfilter", defaultValue = "") String categoryFilter,
                                       @RequestParam(value = "tfilter", defaultValue = "") String titleFilter) {
 
         Either<List<Changa>, Validation> changas = cs.getEmittedChangasFiltered(0, categoryFilter, titleFilter);
         if (!changas.isValuePresent()) {
-            return new ModelAndView("redirect:/error").addObject("message", changas.getAlternative().getMessage());
+            response.setStatus(changas.getAlternative().getHttpStatus().value());
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changas.getAlternative().name(), null,LocaleContextHolder.getLocale()));
         }
 
         if (isUserLogged){
             Either<List<Pair<Changa, Boolean>>, Validation> maybeMarkedInscriptions = markedInscriptions(loggedUser, changas.getValue());
             if(!maybeMarkedInscriptions.isValuePresent()){
-                return new ModelAndView("redirect:/error").addObject("message", maybeMarkedInscriptions.getAlternative().getMessage());
+                response.setStatus(maybeMarkedInscriptions.getAlternative().getHttpStatus().value());
+                return new ModelAndView("redirect:/error").addObject("message",  messageSource.getMessage(maybeMarkedInscriptions.getAlternative().name(), null,LocaleContextHolder.getLocale()));
             }
             return showChangas(maybeMarkedInscriptions.getValue())
                     .addObject("isFiltered", true)
@@ -128,6 +139,9 @@ public class MainPageController {
         if (!maybeChangas.isValuePresent()) {
             return new ModelAndView();
         }
+        if (maybeChangas.getValue().isEmpty()) {
+            return new ModelAndView().addObject("changaPage", maybeChangas.getValue());
+        }
         if (!isUserLogged) {
             return new ModelAndView("page").addObject("changaPage", maybeChangas.getValue())
                     .addObject("page", page);
@@ -136,9 +150,10 @@ public class MainPageController {
         if (!maybeInscriptions.isValuePresent()) {
             return new ModelAndView();
         }
+
         Either<List<Pair<Changa, Boolean>>, Validation> changas =  markedInscriptions(loggedUser, maybeChangas.getValue());
-        if (!changas.isValuePresent()){
-            return new ModelAndView("redirect:/error").addObject("message", changas.getAlternative().getMessage());
+        if (!changas.isValuePresent()) {
+            return new ModelAndView();
         }
         return new ModelAndView("page")
                 .addObject("changaPage", changas.getValue());
