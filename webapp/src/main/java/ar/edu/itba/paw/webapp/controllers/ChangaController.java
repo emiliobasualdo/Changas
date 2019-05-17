@@ -36,12 +36,13 @@ public class ChangaController {
     private MessageSource messageSource;
 
     @Autowired
-    private filtersService catService;
+    private filtersService filtersService;
 
     @RequestMapping(value = "/create-changa")
     public ModelAndView createChanga(@ModelAttribute("changaForm") final ChangaForm form) {
         return new ModelAndView("issueChangaForm")
-                .addObject("categories", catService.getCategories());
+                .addObject("categories", filtersService.getCategories())
+                .addObject("neighborhoods", filtersService.getNeighborhoods());
     }
 
     @RequestMapping(value = "/create-changa", method = RequestMethod.POST )
@@ -50,18 +51,18 @@ public class ChangaController {
         if (errors.hasErrors()) {
             return createChanga(form);
         }
-        Either<Changa, Validation> changa = cs.create(new Changa.Builder().withUserId(loggedUser.getUser_id())
+        Either<Changa, Validation> changa = cs.create(new Changa.Builder()
+                .withUserId(loggedUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
                 .inCategory(form.getCategory())
-                .createdAt(LocalDateTime.now())
         );
 
         if (!changa.isValuePresent()) {
             response.setStatus(changa.getAlternative().getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         }
         response.setStatus(HttpServletResponse.SC_CREATED);
         return new ModelAndView("redirect:/changa").addObject("id", changa.getValue().getChanga_id());
@@ -88,7 +89,7 @@ public class ChangaController {
         form.setCategory(changa.getValue().getCategory());
         return new ModelAndView("editChangaForm")
                 .addObject("id", id)
-                .addObject("categories", catService.getCategories());
+                .addObject("categories", filtersService.getCategories());
     }
 
     @RequestMapping(value = "/edit-changa", method = RequestMethod.POST )

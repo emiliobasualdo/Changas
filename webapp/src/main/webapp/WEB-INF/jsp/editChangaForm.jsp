@@ -68,7 +68,7 @@
                                     <%--todo mal implementado, solucionar--%>
                                 <form:select  class="form-control" path="category">
                                     <c:forEach items="${categories}" var="category">
-                                        <option value="${category}">${category}</option>
+                                        <option value="${category}"><spring:message code="${category}"/></option>
                                     </c:forEach>
                                 </form:select>
                             </div>
@@ -87,7 +87,13 @@
                     <td>
                         <div class="form-group">
                             <div class="input-group">
-                                <form:input class="form-control" path="neighborhood"/>
+                                <form:select class="form-control" path="neighborhood">
+                                    <c:forEach items="${neighborhoods}" var="neighborhood">
+                                        <c:choose>
+                                            <option value="${neighborhood}">${neighborhood}</option>
+                                        </c:choose>
+                                    </c:forEach>
+                                </form:select>
                             </div>
                             <form:errors cssClass="form-error" path="neighborhood" element="p"/>
                         </div>

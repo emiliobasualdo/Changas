@@ -33,7 +33,6 @@
                                 <input name="tfilter" value="${tfilter}" class="form-control search-slt" placeholder="<spring:message code="mainPage.search"/>">
                             </div>
 
-
                             <div class="col-lg-3 col-md-3 col-sm-12 p-0">
                                 <select name="nfilter" class="form-control search-slt" id="nfilter">
 
