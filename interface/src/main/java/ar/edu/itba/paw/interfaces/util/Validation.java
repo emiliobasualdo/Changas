@@ -38,7 +38,7 @@ public enum Validation {
     USER_NOT_LOGGED_IN("User must be logged in to user such functionality", HttpStatus.BAD_REQUEST),
 
     // Categories
-    NO_SUCH_LOCALE("This locale is not defined in the db", HttpStatus.BAD_REQUEST);
+    NO_SUCH_LOCALE("This locale is not defined in the db", HttpStatus.BAD_REQUEST),
 
     //Email
     EMAIL_ERROR("Email couldn't be sent", HttpStatus.SERVICE_UNAVAILABLE)

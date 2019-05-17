@@ -9,7 +9,7 @@ import javax.mail.MessagingException;
 public interface EmailService {
     Validation sendEmail(String to, String subject, String body);
     Validation sendJoinRequestEmail(Changa changa, User changaOwner, User requestingUser);
-    Validation sendMailConfirmationEmail(User user, String appUrl) throws MessagingException;
-    Validation sendResetPasswordEmail(User user, String appUrl) throws MessagingException;
+    Validation sendMailConfirmationEmail(User user, String appUrl);
+    Validation sendResetPasswordEmail(User user, String appUrl);
     Validation sendChangaSettledEmails(long changaId);
 }

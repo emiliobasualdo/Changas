@@ -81,17 +81,21 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public Validation sendMailConfirmationEmail(User user, String appUrl) throws MessagingException {
+    public Validation sendMailConfirmationEmail(User user, String appUrl) {
         String token = UUID.randomUUID().toString();
         userService.createVerificationToken(user, token);
         String confirmUrl = appUrl + "/registration-confirm?token=" + token;
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper;
 
-        helper = new MimeMessageHelper(message,true);
-        helper.setTo(user.getEmail());
-        helper.setSubject(messageSource.getMessage("mailConfirmation.Subject",null, LocaleContextHolder.getLocale()));
-        helper.setText(mailConfirmationEmailBody(user, confirmUrl), true);
+        try {
+            helper = new MimeMessageHelper(message,true);
+            helper.setTo(user.getEmail());
+            helper.setSubject(messageSource.getMessage("mailConfirmation.Subject",null, LocaleContextHolder.getLocale()));
+            helper.setText(mailConfirmationEmailBody(user, confirmUrl), true);
+        } catch (MessagingException e) {
+            return EMAIL_ERROR;
+        }
 
         return sendEmail(user.getEmail(), message);
     }
@@ -125,16 +129,20 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public Validation sendResetPasswordEmail(User user, String appUrl) throws MessagingException {
+    public Validation sendResetPasswordEmail(User user, String appUrl)  {
         String token = UUID.randomUUID().toString();
         userService.createVerificationToken(user, token);
         String resetUrl = appUrl + "/reset-password/validate?id=" + user.getUser_id() + "&token=" + token;
         MimeMessage message = emailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message,true);
-        helper.setTo(user.getEmail());
-        helper.setSubject(messageSource.getMessage("resetPassword.Subject",null, LocaleContextHolder.getLocale()));
-        helper.setText(resetPasswordEmailBody(resetUrl), true);
-
+        try {
+            MimeMessageHelper helper;
+            helper = new MimeMessageHelper(message,true);
+            helper.setTo(user.getEmail());
+            helper.setSubject(messageSource.getMessage("resetPassword.Subject",null, LocaleContextHolder.getLocale()));
+            helper.setText(resetPasswordEmailBody(resetUrl), true);
+        } catch (MessagingException e) {
+            return EMAIL_ERROR;
+        }
         return sendEmail(user.getEmail(), message);
     }
 

@@ -36,6 +36,7 @@ import javax.validation.Valid;
 import java.util.*;
 import java.net.URI;
 
+import static ar.edu.itba.paw.interfaces.util.Validation.EMAIL_ERROR;
 import static ar.edu.itba.paw.interfaces.util.Validation.EXPIRED_TOKEN;
 import static ar.edu.itba.paw.interfaces.util.Validation.USER_ALREADY_EXISTS;
 
@@ -85,15 +86,14 @@ public class UserController {
             response.setStatus(user.getAlternative().getHttpStatus().value());
             return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(user.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         }
-        try {
-            String appUrl = request.getContextPath();
-            ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
-            builder.scheme("http");
-            URI uri = builder.build().toUri();
-            emailService.sendMailConfirmationEmail(user.getValue(), uri.toString());
-        } catch (javax.mail.MessagingException ex) {
-            System.out.println("email error");
-            return new ModelAndView("emailError", "user", form);
+        String appUrl = request.getContextPath();
+        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
+        builder.scheme("http");
+        URI uri = builder.build().toUri();
+        Validation emailValidation = emailService.sendMailConfirmationEmail(user.getValue(), uri.toString());
+        if(emailValidation == EMAIL_ERROR) {
+           System.out.println("email error");
+           return new ModelAndView("redirect:/500");
         }
         return new ModelAndView("redirect:/login");
     }
@@ -138,11 +138,10 @@ public class UserController {
             result.rejectValue("mail", "error.invalidMail", new Object[] {forgotPasswordForm.getMail()}, "");
             return forgotPassword(forgotPasswordForm);
         }
-        try {
-            ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromContextPath(request);
-            URI uri = builder.build().toUri();
-            emailService.sendResetPasswordEmail(user.getValue(), uri.toString());
-        } catch (MessagingException e) {
+        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromContextPath(request);
+        URI uri = builder.build().toUri();
+        Validation emailVal = emailService.sendResetPasswordEmail(user.getValue(), uri.toString());
+        if(emailVal == EMAIL_ERROR) {
             return new ModelAndView("redirect:/500");
         }
         System.out.println(forgotPasswordForm.getMail());
