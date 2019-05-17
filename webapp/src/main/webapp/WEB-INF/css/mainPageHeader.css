@@ -1,0 +1,46 @@
+#carousel-example-2 {
+    margin-top: 60px;
+}
+.h1-custom {
+    color: #26B3BA;
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+    .custom-img {
+        height: auto;
+    }
+    .custom-img > img {
+        width: 80%;
+    }
+}
+
+/* tablets */
+@media (max-width: 991px) and (min-width: 768px) {
+    .custom-img {
+        height: auto;
+    }
+    .custom-img > img {
+        width: 80%;
+    }
+}
+
+/* laptops */
+@media (max-width: 1023px) and (min-width: 992px) {
+    .custom-img {
+        height: 70%;
+    }
+    .custom-img > img {
+        width: 100%;
+    }
+}
+
+/* desktops */
+@media (min-width: 1024px) {
+    .custom-img {
+        height: 75%;
+    }
+    .custom-img > img {
+        width: 100%;
+    }
+}
