@@ -180,7 +180,7 @@ public class EmailServiceImpl implements EmailService {
     private String changaSettledEmailToInscribedUserBody(Changa changa, User changaOwner, User inscriptedUser){
         return inscriptedUser.getName() + ",\n" +
                 changaOwner.getName() + " " +
-                messageSource.getMessage("changaHasBeenSettled", null, LocaleContextHolder.getLocale()) + " " + changa.getTitle() + ".\n" +
+                messageSource.getMessage("changaHasBeenSettled", null, LocaleContextHolder.getLocale()) + " " + changa.getTitle() + ".\n\n" +
                 messageSource.getMessage("changaOwnerInfo", null, LocaleContextHolder.getLocale()) + "\n" +
                 messageSource.getMessage("name", null, LocaleContextHolder.getLocale()) + " " + changaOwner.getName() + "\n" +
                 messageSource.getMessage("phoneNumber", null, LocaleContextHolder.getLocale()) + " " + changaOwner.getTel() + "\n" +
