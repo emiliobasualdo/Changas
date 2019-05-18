@@ -12,4 +12,5 @@ public interface EmailService {
     Validation sendMailConfirmationEmail(User user, String appUrl);
     Validation sendResetPasswordEmail(User user, String appUrl);
     Validation sendChangaSettledEmails(long changaId);
+    Validation resendMailConfirmationEmail(String existingToken, String appUrl);
 }

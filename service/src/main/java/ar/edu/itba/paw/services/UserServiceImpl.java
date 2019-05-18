@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.UserTokenState;
 import ar.edu.itba.paw.models.VerificationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -21,8 +22,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.UUID;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.*;
+import static ar.edu.itba.paw.models.UserTokenState.*;
 
 @Service
 @Transactional
@@ -72,22 +75,60 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createVerificationToken(User user, String token)  {
+    public void createVerificationToken(User user, String token) {
         VerificationToken.Builder myToken = new VerificationToken.Builder(token, user.getUser_id());
         verificationTokenDao.save(myToken);
     }
 
     @Override
+    public Either<VerificationToken.Builder, Validation> createNewVerificationToken(String existingTokenValue) {
+        Either<VerificationToken, Validation> existingToken = verificationTokenDao.findByToken(existingTokenValue);
+        if(!existingToken.isValuePresent()) {
+            return Either.alternative(INEXISTENT_TOKEN);
+        }
+        Either<User, Validation> user = userDao.getById(existingToken.getValue().getUserId());
+        if(!user.isValuePresent()) {
+            return Either.alternative(NO_SUCH_USER);
+        }
+        String newToken = UUID.randomUUID().toString();
+        VerificationToken.Builder myToken = new VerificationToken.Builder(newToken, user.getValue().getUser_id());
+        verificationTokenDao.save(myToken);
+        return Either.value(myToken);
+    }
+
+
+    @Override
     public Either<VerificationToken, Validation> getVerificationToken(String tokenString) {
-        Either<VerificationToken, Validation> verificationToken = verificationTokenDao.findByToken(tokenString);
-        if(!verificationToken.isValuePresent()){
-            return verificationToken;
+        return verificationTokenDao.findByToken(tokenString);
+    }
+
+    @Override
+    public Either<UserTokenState, Validation> getUserTokenState(VerificationToken verificationToken) {
+        Either<VerificationToken, Validation> validToken = verificationTokenDao.findByToken(verificationToken.getToken());
+        if(!validToken.isValuePresent()){
+           return Either.alternative(INEXISTENT_TOKEN);
         }
+
+        Either<User, Validation> user = userDao.getById(verificationToken.getUserId());
+        if(!user.isValuePresent()) {
+            return Either.alternative(SERVER_ERROR);
+        }
+
         Calendar cal = Calendar.getInstance();
-        if ((verificationToken.getValue().getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            return Either.alternative(EXPIRED_TOKEN);
+        boolean tokenExpired = verificationToken.getExpiryDate().getTime() - cal.getTime().getTime() <= 0;
+        boolean userEnabled = user.getValue().isEnabled();
+
+        if(tokenExpired){
+            if (userEnabled){
+                return Either.value(USER_ENABLED_EXPIRED_TOKEN);
+            }
+            return Either.value(USER_DISABLED_EXPIRED_TOKEN);
         }
-        return verificationToken;
+
+        if(userEnabled) {
+            return Either.value(USER_ENABLED_VALID_TOKEN);
+        }
+        return Either.value(USER_DISABLED_VALID_TOKEN);
     }
 
     @Override

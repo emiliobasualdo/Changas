@@ -36,7 +36,6 @@ public class VerificationTokenJdbcDao implements VerificationTokenDao {
                 .usingGeneratedKeyColumns(token_id.name());
     }
 
-
     @Override
     public Either<VerificationToken, Validation> findByToken(String tok) {
         Optional<VerificationToken> optional = jdbcTemplate.query(

@@ -85,9 +85,26 @@ public class EmailServiceImpl implements EmailService {
         String token = UUID.randomUUID().toString();
         userService.createVerificationToken(user, token);
         String confirmUrl = appUrl + "/registration-confirm?token=" + token;
+        return sendMailConfirmationEmailHelper(user, confirmUrl);
+    }
+
+    @Override
+    public Validation resendMailConfirmationEmail(String existingToken, String appUrl) {
+        Either<VerificationToken.Builder, Validation> newVerificationToken = userService.createNewVerificationToken(existingToken);
+        if(!newVerificationToken.isValuePresent()) {
+            return newVerificationToken.getAlternative();
+        }
+        Either<User, Validation> user = userService.findById(newVerificationToken.getValue().getUserId());
+        if(!user.isValuePresent()) {
+            return user.getAlternative();
+        }
+        String confirmUrl = appUrl + "?token=" + newVerificationToken.getValue().getToken();
+        return sendMailConfirmationEmailHelper(user.getValue(), confirmUrl);
+    }
+
+    private Validation sendMailConfirmationEmailHelper(User user, String confirmUrl) {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper;
-
         try {
             helper = new MimeMessageHelper(message,true);
             helper.setTo(user.getEmail());
@@ -96,10 +113,8 @@ public class EmailServiceImpl implements EmailService {
         } catch (MessagingException e) {
             return EMAIL_ERROR;
         }
-
         return sendEmail(user.getEmail(), message);
     }
-
 
 
     @Override
@@ -121,7 +136,6 @@ public class EmailServiceImpl implements EmailService {
                 acceptedUsersInfo.append(messageSource.getMessage("email", null, LocaleContextHolder.getLocale())).append(" ").append(userInscription.getKey().getEmail()).append("\n");
             }
             if(sendEmail(changaOwner.getEmail(), subject, changaSettledEmailToChangaOwner(changa, changaOwner, acceptedUsersInfo.toString(), accpetedUsers.getValue().size())) == EMAIL_ERROR) {
-                System.out.println("3");
                 val = EMAIL_ERROR;
             }
         }

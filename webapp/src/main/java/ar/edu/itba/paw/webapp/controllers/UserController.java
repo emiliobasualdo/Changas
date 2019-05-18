@@ -86,7 +86,7 @@ public class UserController {
             response.setStatus(user.getAlternative().getHttpStatus().value());
             return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(user.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         }
-        String appUrl = request.getContextPath();
+        //String appUrl = request.getContextPath();
         ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
         builder.scheme("http");
         URI uri = builder.build().toUri();
@@ -148,6 +148,7 @@ public class UserController {
         return new ModelAndView("redirect:/");
     }
 
+
     @RequestMapping("/reset-password/validate")
     public ModelAndView validateResetPassword( @RequestParam("id") long id, @RequestParam("token") String token, HttpServletResponse response) {
         Either<VerificationToken, Validation> verificationToken = us.getVerificationTokenWithRole(id, token);
@@ -167,7 +168,7 @@ public class UserController {
 
     @RequestMapping("/reset-password")
     public ModelAndView resetPassword(@RequestParam("id") long id, @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm) {
-        return new ModelAndView("indexResetPassword").addObject("id",id).addObject("actionUrl", "/reset-password");
+        return new ModelAndView("indexResetPassword").addObject("id", id).addObject("actionUrl", "/reset-password");
     }
 
     @RequestMapping(value = "/reset-password", method = RequestMethod.POST)
@@ -215,4 +216,6 @@ public class UserController {
         System.out.println("Contraseña restablecida");
         return new ModelAndView("redirect:/");
     }
+
+
 }

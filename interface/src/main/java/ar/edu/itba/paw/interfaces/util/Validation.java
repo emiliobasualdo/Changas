@@ -9,6 +9,7 @@ public enum Validation {
     DATABASE_ERROR("Database error", HttpStatus.SERVICE_UNAVAILABLE),
     ILLEGAL_VALUE("This value is not allowed", HttpStatus.BAD_REQUEST),
     UNAUTHORIZED("Unauthorized action", HttpStatus.BAD_REQUEST),
+    SERVER_ERROR("Something went wrong", HttpStatus.SERVICE_UNAVAILABLE),
 
     // Changas,
     NO_SUCH_CHANGA("Invalid changa id", HttpStatus.BAD_REQUEST),

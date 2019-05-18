@@ -3,6 +3,7 @@ package ar.edu.itba.paw.interfaces.services;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.UserTokenState;
 import ar.edu.itba.paw.models.VerificationToken;
 
 /**
@@ -24,4 +25,6 @@ public interface UserService {
     void resetPassword(final long id, final String password);
     void confirmMailVerification(final long userId, final long tokenId);
     Either<User, Validation> update(final long userId, User.Builder userBuilder);
+    Either<UserTokenState, Validation> getUserTokenState(VerificationToken verificationToken);
+    Either<VerificationToken.Builder, Validation> createNewVerificationToken(String existingTokenValue);
 }
