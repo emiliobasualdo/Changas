@@ -108,19 +108,22 @@ public class UserController {
         ModelAndView mav = new ModelAndView("indexProfile");
         Either<List<Pair<Changa, Inscription>>, Validation>  maybePendingChangas = is.getOpenUserInscriptions(loggedUser.getUser_id());
         if (!maybePendingChangas.isValuePresent()) {
-            response.setStatus(maybePendingChangas.getAlternative().getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(maybePendingChangas.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+           return redirectToErrorPage(response, maybePendingChangas.getAlternative());
         }
         maybePendingChangas.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout); //TODO poner esto en la query
         mav.addObject("pendingChangas", maybePendingChangas.getValue());
         Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserEmittedChangas(loggedUser.getUser_id());
         if (!maybePublishedChangas.isValuePresent()) {
-            response.setStatus(maybePendingChangas.getAlternative().getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(maybePublishedChangas.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+           return redirectToErrorPage(response, maybePublishedChangas.getAlternative());
         }
         maybePublishedChangas.getValue().removeIf(e -> e.getState() == ChangaState.settled || e.getState() == ChangaState.closed || e.getState() == ChangaState.done);
         mav.addObject("publishedChangas", maybePublishedChangas.getValue());
         return mav;
+    }
+
+    private ModelAndView redirectToErrorPage(HttpServletResponse response, Validation validation) {
+        response.setStatus(validation.getHttpStatus().value());
+        return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(validation.name(), null,LocaleContextHolder.getLocale()));
     }
 
     @RequestMapping("/login/forgot-password")
