@@ -89,6 +89,7 @@ public class ChangaController {
         form.setCategory(changa.getValue().getCategory());
         return new ModelAndView("editChangaForm")
                 .addObject("id", id)
+                .addObject("neighborhoods", filtersService.getNeighborhoods())
                 .addObject("categories", filtersService.getCategories());
     }
 
@@ -106,7 +107,6 @@ public class ChangaController {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return new ModelAndView("403");
         }
-
         cs.update(id, new Changa.Builder().withUserId(loggedUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
