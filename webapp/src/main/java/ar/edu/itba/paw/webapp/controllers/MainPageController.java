@@ -44,8 +44,7 @@ public class MainPageController {
         Either<List<Changa>, Validation> maybeChangas = cs.getEmittedChangas(0);
         Either<Integer, Validation> pageCount = cs.getECFPageCount("","","");
         if (!maybeChangas.isValuePresent()) {
-            response.setStatus(maybeChangas.getAlternative().getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message",  messageSource.getMessage(maybeChangas.getAlternative().name(), null,LocaleContextHolder.getLocale()));
+            return redirectToErrorPage(response, maybeChangas.getAlternative());
         }
 
         // if the user logged in we show raw data
@@ -57,10 +56,13 @@ public class MainPageController {
         // else we mark the inscribbed changas
         Either<List<Pair<Changa, Boolean>>, Validation> maybeMarkedInscriptions = markedInscriptions(loggedUser, changas);
         if(!maybeMarkedInscriptions.isValuePresent()){
-            response.setStatus(maybeMarkedInscriptions.getAlternative().getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(maybeMarkedInscriptions.getAlternative().name(), null,LocaleContextHolder.getLocale()));
+            return redirectToErrorPage(response, maybeMarkedInscriptions.getAlternative());
         }
         return showChangas(maybeMarkedInscriptions.getValue()).addObject("isFiltered", false);
+    }
+    private ModelAndView redirectToErrorPage(HttpServletResponse response, Validation validation) {
+        response.setStatus(validation.getHttpStatus().value());
+        return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(validation.name(), null,LocaleContextHolder.getLocale()));
     }
 
     private ModelAndView showChangas(List<?> changasToShow) {
@@ -85,8 +87,7 @@ public class MainPageController {
 
         Either<List<Changa>, Validation> changas = cs.getEmittedChangasFiltered(0, categoryFilter, titleFilter, neighborhoodFilter);
         if (!changas.isValuePresent()) {
-            response.setStatus(changas.getAlternative().getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changas.getAlternative().name(), null,LocaleContextHolder.getLocale()));
+            return redirectToErrorPage(response, changas.getAlternative());
         }
 
         if (isUserLogged){
