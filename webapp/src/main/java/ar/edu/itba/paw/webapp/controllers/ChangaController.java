@@ -216,7 +216,7 @@ public class ChangaController {
     }
 
     @RequestMapping(value = "/settle-changa", method = RequestMethod.POST)
-    public ModelAndView settleChanga(@RequestParam("id") long changaId, @ModelAttribute("getLoggedUser") User loggedUser, HttpServletResponse response) {
+    public ModelAndView settleChanga(@RequestParam("changaId") long changaId, @ModelAttribute("getLoggedUser") User loggedUser, HttpServletResponse response) {
         Either<Changa, Validation> either = cs.changeChangaState(changaId, ChangaState.settled);
         if(!either.isValuePresent()) {
             return redirectToErrorPage(response, either.getAlternative());

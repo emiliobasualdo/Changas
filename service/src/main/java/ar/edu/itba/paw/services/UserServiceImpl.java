@@ -75,13 +75,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createVerificationToken(User user, String token) {
+    public Either<VerificationToken, Validation> createVerificationToken(User user) {
+        String token = UUID.randomUUID().toString();
         VerificationToken.Builder myToken = new VerificationToken.Builder(token, user.getUser_id());
-        verificationTokenDao.save(myToken);
+        return verificationTokenDao.save(myToken);
     }
 
     @Override
-    public Either<VerificationToken.Builder, Validation> createNewVerificationToken(String existingTokenValue) {
+    public Either<VerificationToken, Validation> createNewVerificationToken(String existingTokenValue) {
         Either<VerificationToken, Validation> existingToken = verificationTokenDao.findByToken(existingTokenValue);
         if(!existingToken.isValuePresent()) {
             return Either.alternative(INEXISTENT_TOKEN);
@@ -90,12 +91,8 @@ public class UserServiceImpl implements UserService {
         if(!user.isValuePresent()) {
             return Either.alternative(NO_SUCH_USER);
         }
-        String newToken = UUID.randomUUID().toString();
-        VerificationToken.Builder myToken = new VerificationToken.Builder(newToken, user.getValue().getUser_id());
-        verificationTokenDao.save(myToken);
-        return Either.value(myToken);
+        return createVerificationToken(user.getValue());
     }
-
 
     @Override
     public Either<VerificationToken, Validation> getVerificationToken(String tokenString) {

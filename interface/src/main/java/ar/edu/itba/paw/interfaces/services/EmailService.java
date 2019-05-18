@@ -7,10 +7,11 @@ import ar.edu.itba.paw.models.User;
 import javax.mail.MessagingException;
 
 public interface EmailService {
-    Validation sendEmail(String to, String subject, String body);
+    Validation sendSimpleEmail(String to, String subject, String body);
     Validation sendJoinRequestEmail(Changa changa, User changaOwner, User requestingUser);
     Validation sendMailConfirmationEmail(User user, String appUrl);
     Validation sendResetPasswordEmail(User user, String appUrl);
     Validation sendChangaSettledEmails(long changaId);
-    Validation resendMailConfirmationEmail(String existingToken, String appUrl);
+    Validation resendMailConfirmationEmail(String existingToken, String registrationConfirmUrl);
+    Validation sendMimeEmail(String to, String subject, String text);
 }

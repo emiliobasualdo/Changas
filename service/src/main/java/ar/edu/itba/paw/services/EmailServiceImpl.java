@@ -46,11 +46,26 @@ public class EmailServiceImpl implements EmailService {
 
 
     @Override
-    public Validation sendEmail(String to, String subject, String body) {
+    public Validation sendSimpleEmail(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject(subject);
         message.setText(body);
+        return sendEmail(to, message);
+    }
+
+    @Override
+    public Validation sendMimeEmail(String to, String subject, String text) {
+        MimeMessage message = emailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper;
+            helper = new MimeMessageHelper(message,true);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(text, true);
+        } catch (MessagingException e) {
+            return EMAIL_ERROR;
+        }
         return sendEmail(to, message);
     }
 
@@ -77,20 +92,23 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public Validation sendJoinRequestEmail(Changa changa, User changaOwner, User requestingUser) {
         String subject = messageSource.getMessage("sendJoinRequest.Subject", null, LocaleContextHolder.getLocale());
-        return sendEmail(changaOwner.getEmail(), subject, joinRequestEmailBody(changa, changaOwner, requestingUser));
+        return sendSimpleEmail(changaOwner.getEmail(), subject, joinRequestEmailBody(changa, changaOwner, requestingUser));
     }
 
     @Override
     public Validation sendMailConfirmationEmail(User user, String appUrl) {
-        String token = UUID.randomUUID().toString();
-        userService.createVerificationToken(user, token);
-        String confirmUrl = appUrl + "/registration-confirm?token=" + token;
-        return sendMailConfirmationEmailHelper(user, confirmUrl);
+        Either<VerificationToken, Validation> verificationToken = userService.createVerificationToken(user);
+        if(!verificationToken.isValuePresent()) {
+           return verificationToken.getAlternative();
+        }
+        String confirmUrl = appUrl + "/registration-confirm?token=" + verificationToken.getValue().getToken();
+        return sendMimeEmail(user.getEmail(), messageSource.getMessage("mailConfirmation.Subject",null, LocaleContextHolder.getLocale()), mailConfirmationEmailBody(user, confirmUrl));
     }
 
+
     @Override
-    public Validation resendMailConfirmationEmail(String existingToken, String appUrl) {
-        Either<VerificationToken.Builder, Validation> newVerificationToken = userService.createNewVerificationToken(existingToken);
+    public Validation resendMailConfirmationEmail(String existingToken, String registrationConfirmUrl) {
+        Either<VerificationToken, Validation> newVerificationToken = userService.createNewVerificationToken(existingToken);
         if(!newVerificationToken.isValuePresent()) {
             return newVerificationToken.getAlternative();
         }
@@ -98,24 +116,9 @@ public class EmailServiceImpl implements EmailService {
         if(!user.isValuePresent()) {
             return user.getAlternative();
         }
-        String confirmUrl = appUrl + "?token=" + newVerificationToken.getValue().getToken();
-        return sendMailConfirmationEmailHelper(user.getValue(), confirmUrl);
+        String confirmUrl = registrationConfirmUrl + "?token=" + newVerificationToken.getValue().getToken();
+        return  sendMimeEmail(user.getValue().getEmail(), messageSource.getMessage("mailConfirmation.Subject",null, LocaleContextHolder.getLocale()), mailConfirmationEmailBody(user.getValue(), confirmUrl));
     }
-
-    private Validation sendMailConfirmationEmailHelper(User user, String confirmUrl) {
-        MimeMessage message = emailSender.createMimeMessage();
-        MimeMessageHelper helper;
-        try {
-            helper = new MimeMessageHelper(message,true);
-            helper.setTo(user.getEmail());
-            helper.setSubject(messageSource.getMessage("mailConfirmation.Subject",null, LocaleContextHolder.getLocale()));
-            helper.setText(mailConfirmationEmailBody(user, confirmUrl), true);
-        } catch (MessagingException e) {
-            return EMAIL_ERROR;
-        }
-        return sendEmail(user.getEmail(), message);
-    }
-
 
     @Override
     public Validation sendChangaSettledEmails(long changaId) {
@@ -127,7 +130,7 @@ public class EmailServiceImpl implements EmailService {
         if(accpetedUsers.isValuePresent()) {
             StringBuilder acceptedUsersInfo = new StringBuilder("");
             for (Pair<User, Inscription> userInscription : accpetedUsers.getValue()) {
-                if(sendEmail(userInscription.getKey().getEmail(), subject, changaSettledEmailToInscribedUserBody(changa, changaOwner, userInscription.getKey())) == EMAIL_ERROR){
+                if(sendSimpleEmail(userInscription.getKey().getEmail(), subject, changaSettledEmailToInscribedUserBody(changa, changaOwner, userInscription.getKey())) == EMAIL_ERROR){
                     val = EMAIL_ERROR;
                 }
                 acceptedUsersInfo.append("\n");
@@ -135,7 +138,7 @@ public class EmailServiceImpl implements EmailService {
                 acceptedUsersInfo.append( messageSource.getMessage("phoneNumber", null, LocaleContextHolder.getLocale())).append(" ").append(userInscription.getKey().getTel()).append("\n");
                 acceptedUsersInfo.append(messageSource.getMessage("email", null, LocaleContextHolder.getLocale())).append(" ").append(userInscription.getKey().getEmail()).append("\n");
             }
-            if(sendEmail(changaOwner.getEmail(), subject, changaSettledEmailToChangaOwner(changa, changaOwner, acceptedUsersInfo.toString(), accpetedUsers.getValue().size())) == EMAIL_ERROR) {
+            if(sendSimpleEmail(changaOwner.getEmail(), subject, changaSettledEmailToChangaOwner(changa, changaOwner, acceptedUsersInfo.toString(), accpetedUsers.getValue().size())) == EMAIL_ERROR) {
                 val = EMAIL_ERROR;
             }
         }
@@ -144,20 +147,12 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public Validation sendResetPasswordEmail(User user, String appUrl)  {
-        String token = UUID.randomUUID().toString();
-        userService.createVerificationToken(user, token);
-        String resetUrl = appUrl + "/reset-password/validate?id=" + user.getUser_id() + "&token=" + token;
-        MimeMessage message = emailSender.createMimeMessage();
-        try {
-            MimeMessageHelper helper;
-            helper = new MimeMessageHelper(message,true);
-            helper.setTo(user.getEmail());
-            helper.setSubject(messageSource.getMessage("resetPassword.Subject",null, LocaleContextHolder.getLocale()));
-            helper.setText(resetPasswordEmailBody(resetUrl), true);
-        } catch (MessagingException e) {
-            return EMAIL_ERROR;
+        Either<VerificationToken, Validation> verificationToken = userService.createVerificationToken(user);
+        if(!verificationToken.isValuePresent()) {
+            return verificationToken.getAlternative();
         }
-        return sendEmail(user.getEmail(), message);
+        String resetUrl = appUrl + "/reset-password/validate?id=" + user.getUser_id() + "&token=" + verificationToken.getValue().getToken();
+        return sendMimeEmail(user.getEmail(), messageSource.getMessage("resetPassword.Subject",null, LocaleContextHolder.getLocale()), resetPasswordEmailBody(resetUrl));
     }
 
     //TODO emails from html templates

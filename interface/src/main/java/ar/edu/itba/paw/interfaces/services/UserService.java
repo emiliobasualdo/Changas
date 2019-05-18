@@ -18,7 +18,7 @@ public interface UserService {
     String toString();
     Either<User, Validation> findByMail(String mail);
     Either<User, Validation> register(final User.Builder userBuilder);
-    void createVerificationToken(User user, String token);
+    Either<VerificationToken, Validation> createVerificationToken(User user);
     Either<VerificationToken, Validation> getVerificationToken(String VerificationToken);
     Validation setUserEnabledStatus(final long userId, final boolean status);
     Either<VerificationToken, Validation> getVerificationTokenWithRole(final long userId, final String VerificationToken);
@@ -26,5 +26,5 @@ public interface UserService {
     void confirmMailVerification(final long userId, final long tokenId);
     Either<User, Validation> update(final long userId, User.Builder userBuilder);
     Either<UserTokenState, Validation> getUserTokenState(VerificationToken verificationToken);
-    Either<VerificationToken.Builder, Validation> createNewVerificationToken(String existingTokenValue);
+    Either<VerificationToken, Validation> createNewVerificationToken(String existingTokenValue);
 }

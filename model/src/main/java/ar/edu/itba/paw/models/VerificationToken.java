@@ -58,8 +58,11 @@ public class VerificationToken {
 
     }
 
-
-
+    public VerificationToken(VerificationToken.Builder tokenBuilder) {
+        this.expiryDate = tokenBuilder.getExpiryDate();
+        this.token = tokenBuilder.getToken();
+        this.userId = tokenBuilder.getUserId();
+    }
 
     public static int getEXPIRATION() {
         return EXPIRATION;
