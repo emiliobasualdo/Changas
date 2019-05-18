@@ -22,7 +22,7 @@ margin: 0 2%;
     -webkit-transform: scale(1.04);
     transform: scale(1.04);
 }
-.changaCard-option:hover i,  .changaCard-option:hover h1,  .changaCard-option:hover span,  .changaCard-option:hover b {
+.changaCard-option:hover i,  .changaCard-option:hover h4,  .changaCard-option:hover span,  .changaCard-option:hover b {
     color: #26B3BA;
 }
 
@@ -47,7 +47,14 @@ margin: 0 2%;
     color: #D8D8D8;
     transition: all .3s ease-in-out;
 }
-.changaCard-option h1 {
+.changaCard-option h4 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-height: 30px;
+    height: 60px;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     margin: 10px 0;
     color: #212121;
     transition: all .3s ease-in-out;
@@ -87,7 +94,7 @@ margin: 0 2%;
     color: white;
     position: absolute;
     font-size: 10px;
-    top: -20px;
+    top: -25px;
     left: 0;
     right: 0;
     width: 150px;
