@@ -52,6 +52,7 @@ public enum Validation {
 
     Validation(String message, HttpStatus status) {
         this.message = message;
+        this.httpStatus = status;
     }
 
 

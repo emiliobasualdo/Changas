@@ -9,6 +9,8 @@ import ar.edu.itba.paw.models.UserTokenState;
 import ar.edu.itba.paw.models.VerificationToken;
 import ar.edu.itba.paw.webapp.forms.ResendEmailVerificationForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.configurers.provisioning.UserDetailsManagerConfigurer;
 import org.springframework.security.core.Authentication;
@@ -30,6 +32,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
@@ -46,13 +50,16 @@ import static ar.edu.itba.paw.models.UserTokenState.*;
 public class RegistrationController {
 
     @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
     private EmailService emailService;
 
     @RequestMapping(value = "/signup/registration-confirm", method = RequestMethod.GET)
-    public ModelAndView confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token) {
+    public ModelAndView confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token, HttpServletResponse response) {
         //Se busca en la DB al token pasado en la url
         Either<VerificationToken, Validation> verificationToken = userService.getVerificationToken(token);
         if(!verificationToken.isValuePresent()) { //inexistent token
@@ -63,7 +70,8 @@ public class RegistrationController {
         Either<UserTokenState, Validation> userTokenState = userService.getUserTokenState(verificationToken.getValue());
         if(!userTokenState.isValuePresent()) {
             System.out.println("inexistent user");
-            return new ModelAndView("redirect:/error").addObject("message", userTokenState.getAlternative().getMessage());
+            response.setStatus(verificationToken.getAlternative().getHttpStatus().value());
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(verificationToken.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         }
         if(userTokenState.getValue() == USER_DISABLED_EXPIRED_TOKEN) {
             //resend email verification
@@ -98,8 +106,6 @@ public class RegistrationController {
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
-
-
     @RequestMapping(value = "/signup/resend-email-verification", method = RequestMethod.POST)
     public ModelAndView resendEmailVerification(HttpServletRequest request, @RequestParam("token") String existingToken, @RequestParam("uri") String uri) {
         Validation emailValidation = emailService.resendMailConfirmationEmail(existingToken, uri);
@@ -109,7 +115,5 @@ public class RegistrationController {
         }
         return new ModelAndView("redirect:/login");
     }
-
-
 
 }

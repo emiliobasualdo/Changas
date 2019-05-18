@@ -183,7 +183,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/edit-profile")
-    public ModelAndView editProfile(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("userForm") final EditUserForm form) {
+    public ModelAndView editProfile(@ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("editUserForm") final EditUserForm form) {
         form.setName(loggedUser.getName());
         form.setSurname(loggedUser.getSurname());
         form.setTelephone(loggedUser.getTel());
@@ -191,7 +191,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/edit-profile", method = RequestMethod.POST )
-    public ModelAndView editChanga(@Valid @ModelAttribute("userForm") final EditUserForm form, final BindingResult errors, @ModelAttribute("getLoggedUser") User loggedUser) {
+    public ModelAndView editChanga(@Valid @ModelAttribute("editUserForm") final EditUserForm form, final BindingResult errors, @ModelAttribute("getLoggedUser") User loggedUser) {
         if (errors.hasErrors()) {
             return editProfile(loggedUser, form);
         }

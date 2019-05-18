@@ -4,6 +4,7 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <html>
 <head>
+    <title>Changas</title>
     <meta charset="utf-32">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -17,7 +18,7 @@
 <body>
 <div class="signup-form">
     <c:url value="/edit-profile" var="editProfileUrl" />
-    <form:form modelAttribute="userForm" action="${editProfileUrl}" method="post">
+    <form:form modelAttribute="editUserForm" action="${editProfileUrl}" method="post">
         <h2><spring:message code="editProfile.header"/></h2>
         <table style="width: 100%">
             <tr>
