@@ -43,18 +43,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
-                .addResourceHandler("/webjars/**")
-                .addResourceLocations("/webjars/");
-
-        // css resource
-       /* registry
-                .addResourceHandler("/css/**")
-                .addResourceLocations("classpath:/static/css/");*/
-
-        // img resource
-        registry
                 .addResourceHandler("/img/**")
-                .addResourceLocations("classpath:/static/img/");
+                .addResourceLocations("/WEB-INF/img/");
     }
 
     @Bean

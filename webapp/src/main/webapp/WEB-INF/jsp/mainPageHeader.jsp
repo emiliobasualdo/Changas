@@ -12,8 +12,8 @@
         <div class="carousel-inner" role="listbox">
             <div class="carousel-item active">
                 <div class="view custom-img">
-                    <c:url value="../../../resources/img/mudanza1.jpg" var="mudanzaImage"/>
-                    <img class="d-block w-100" th:src="@{/img/mudanza1.jpg}" alt="First slide">
+                    <c:url value="/img/mudanza1.jpg" var="mudanzaImage"/>
+                    <img class="d-block w-100" src="${mudanzaImage}" alt="First slide">
                     <div class="mask rgba-black-light"></div>
                 </div>
                 <div class="carousel-caption">
@@ -22,8 +22,8 @@
             </div>
             <div class="carousel-item">
                 <div class="view custom-img">
-                    <c:url value="../../../resources/img/mudanza1.jpg" var="autoImage"/>
-                    <img class="d-block w-100" th:src="@{/img/auto1.jpg}" alt="Second slide">
+                    <c:url value="/img/auto1.jpg" var="autoImage"/>
+                    <img class="d-block w-100" src="${autoImage}" alt="Second slide">
                     <div class="mask rgba-black-light"></div>
                 </div>
                 <div class="carousel-caption">
@@ -32,8 +32,8 @@
             </div>
             <div class="carousel-item">
                 <div class="view custom-img">
-                    <c:url value="../../../resources/img/mudanza1.jpg" var="nieveImage"/>
-                    <img class="d-block w-100" th:src="@{/img/nieve1.jpg}" alt="Third slide">
+                    <c:url value="/img/nieve1.jpg" var="nieveImage"/>
+                    <img class="d-block w-100" src="${nieveImage}" alt="Third slide">
                     <div class="mask rgba-black-light"></div>
                 </div>
                 <div class="carousel-caption">
