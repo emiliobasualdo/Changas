@@ -147,8 +147,8 @@
                 </div>
                 <div class="modal-footer">
                     <button <%--id="btncancel3"--%> type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="adminchangaBody.btn.cancel"/></button>
-                    <c:url value="/delete-changa" var="deleteUrl" />
-                    <form action="${deleteUrl}" method="post">
+                    <c:url value="/settle-changa" var="settleUrl" />
+                    <form action="${settleUrl}" method="post">
                         <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
                         <input <%--id="btnsettle2"--%> type="submit"  class="btn btn-success center-pill" value="<spring:message code="adminchangaBody.btn.settle"/>"/>
                     </form>

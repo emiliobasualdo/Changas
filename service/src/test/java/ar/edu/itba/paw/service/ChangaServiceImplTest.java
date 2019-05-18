@@ -232,6 +232,5 @@ public class ChangaServiceImplTest {
         assertEquals(mockedVal, val);
     }
 
-
 }
 

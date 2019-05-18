@@ -19,12 +19,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBChangaFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.changas;
@@ -306,6 +306,24 @@ public class ChangaJdbcDaoTest {
         ).getAlternative();
         // ASSERT
         assertEquals(DATABASE_ERROR, val);
+    }
+
+    private Connection conn;
+
+    @Test
+    public void testGetECFPageCount_resturnCorrectInt() throws SQLException {
+        List<String> a = new ArrayList<>();
+        a.add("hola");
+        String[] arr = a.toArray(new String[]{});
+        assertEquals(1,  arr.length);
+        assertEquals("hola",  arr[0]);
+
+        // EJERCITAR
+        Either<Integer, Validation> resp = changaDao.getFilteredPageCount(ChangaState.emitted,"", "","");
+        // ASSERT
+        assertEquals(1,  (int) resp.getValue());
+        //assertEquals("emitted",  ChangaState.emitted.toString());
+        //assertEquals("emitted",  ChangaState.emitted.name());
     }
 }
 

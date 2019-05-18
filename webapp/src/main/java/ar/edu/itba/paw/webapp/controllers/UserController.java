@@ -36,6 +36,7 @@ import javax.validation.Valid;
 import java.util.*;
 import java.net.URI;
 
+import static ar.edu.itba.paw.interfaces.util.Validation.EMAIL_ERROR;
 import static ar.edu.itba.paw.interfaces.util.Validation.EXPIRED_TOKEN;
 import static ar.edu.itba.paw.interfaces.util.Validation.USER_ALREADY_EXISTS;
 
@@ -60,7 +61,7 @@ public class UserController {
     @Autowired
     private MessageSource messageSource;
 
-  //  private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @RequestMapping("/signup")
     public ModelAndView signUp(@ModelAttribute("signUpForm") final UserRegisterForm form) {
@@ -70,7 +71,7 @@ public class UserController {
     @RequestMapping(value = "/signup", method = { RequestMethod.POST })
     public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors, final WebRequest request, HttpServletResponse response) {
         if (errors.hasErrors()) {
-           // LOGGER.debug("error en los campos de formulario del sign up");
+
             System.out.println("Errores en los campos del formulario sign up");
             return signUp(form);
         }
@@ -85,15 +86,14 @@ public class UserController {
             response.setStatus(user.getAlternative().getHttpStatus().value());
             return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(user.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         }
-        try {
-            String appUrl = request.getContextPath();
-            ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
-            builder.scheme("http");
-            URI uri = builder.build().toUri();
-            emailService.sendMailConfirmationEmail(user.getValue(), uri.toString());
-        } catch (javax.mail.MessagingException ex) {
-            System.out.println("email error");
-            return new ModelAndView("emailError", "user", form);
+        //String appUrl = request.getContextPath();
+        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
+        builder.scheme("http");
+        URI uri = builder.build().toUri();
+        Validation emailValidation = emailService.sendMailConfirmationEmail(user.getValue(), uri.toString());
+        if(emailValidation == EMAIL_ERROR) {
+           System.out.println("email error");
+           return new ModelAndView("redirect:/500");
         }
         return new ModelAndView("redirect:/login");
     }
@@ -108,19 +108,22 @@ public class UserController {
         ModelAndView mav = new ModelAndView("indexProfile");
         Either<List<Pair<Changa, Inscription>>, Validation>  maybePendingChangas = is.getOpenUserInscriptions(loggedUser.getUser_id());
         if (!maybePendingChangas.isValuePresent()) {
-            response.setStatus(maybePendingChangas.getAlternative().getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(maybePendingChangas.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+           return redirectToErrorPage(response, maybePendingChangas.getAlternative());
         }
         maybePendingChangas.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout); //TODO poner esto en la query
         mav.addObject("pendingChangas", maybePendingChangas.getValue());
         Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserEmittedChangas(loggedUser.getUser_id());
         if (!maybePublishedChangas.isValuePresent()) {
-            response.setStatus(maybePendingChangas.getAlternative().getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(maybePublishedChangas.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+           return redirectToErrorPage(response, maybePublishedChangas.getAlternative());
         }
         maybePublishedChangas.getValue().removeIf(e -> e.getState() == ChangaState.settled || e.getState() == ChangaState.closed || e.getState() == ChangaState.done);
         mav.addObject("publishedChangas", maybePublishedChangas.getValue());
         return mav;
+    }
+
+    private ModelAndView redirectToErrorPage(HttpServletResponse response, Validation validation) {
+        response.setStatus(validation.getHttpStatus().value());
+        return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(validation.name(), null,LocaleContextHolder.getLocale()));
     }
 
     @RequestMapping("/login/forgot-password")
@@ -138,16 +141,16 @@ public class UserController {
             result.rejectValue("mail", "error.invalidMail", new Object[] {forgotPasswordForm.getMail()}, "");
             return forgotPassword(forgotPasswordForm);
         }
-        try {
-            ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromContextPath(request);
-            URI uri = builder.build().toUri();
-            emailService.sendResetPasswordEmail(user.getValue(), uri.toString());
-        } catch (MessagingException e) {
+        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromContextPath(request);
+        URI uri = builder.build().toUri();
+        Validation emailVal = emailService.sendResetPasswordEmail(user.getValue(), uri.toString());
+        if(emailVal == EMAIL_ERROR) {
             return new ModelAndView("redirect:/500");
         }
         System.out.println(forgotPasswordForm.getMail());
         return new ModelAndView("redirect:/");
     }
+
 
     @RequestMapping("/reset-password/validate")
     public ModelAndView validateResetPassword( @RequestParam("id") long id, @RequestParam("token") String token, HttpServletResponse response) {
@@ -168,7 +171,7 @@ public class UserController {
 
     @RequestMapping("/reset-password")
     public ModelAndView resetPassword(@RequestParam("id") long id, @ModelAttribute("resetPasswordForm") final ResetPasswordForm resetPasswordForm) {
-        return new ModelAndView("indexResetPassword").addObject("id",id).addObject("actionUrl", "/reset-password");
+        return new ModelAndView("indexResetPassword").addObject("id", id).addObject("actionUrl", "/reset-password");
     }
 
     @RequestMapping(value = "/reset-password", method = RequestMethod.POST)
@@ -216,4 +219,6 @@ public class UserController {
         System.out.println("Contraseña restablecida");
         return new ModelAndView("redirect:/");
     }
+
+
 }

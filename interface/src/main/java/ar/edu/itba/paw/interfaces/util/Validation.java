@@ -9,6 +9,7 @@ public enum Validation {
     DATABASE_ERROR("Database error", HttpStatus.SERVICE_UNAVAILABLE),
     ILLEGAL_VALUE("This value is not allowed", HttpStatus.BAD_REQUEST),
     UNAUTHORIZED("Unauthorized action", HttpStatus.BAD_REQUEST),
+    SERVER_ERROR("Something went wrong", HttpStatus.SERVICE_UNAVAILABLE),
 
     // Changas,
     NO_SUCH_CHANGA("Invalid changa id", HttpStatus.BAD_REQUEST),
@@ -38,7 +39,12 @@ public enum Validation {
     USER_NOT_LOGGED_IN("User must be logged in to user such functionality", HttpStatus.BAD_REQUEST),
 
     // Categories
-    NO_SUCH_LOCALE("This locale is not defined in the db", HttpStatus.BAD_REQUEST);
+    NO_SUCH_LOCALE("This locale is not defined in the db", HttpStatus.BAD_REQUEST),
+
+    //Email
+    EMAIL_ERROR("Email couldn't be sent", HttpStatus.SERVICE_UNAVAILABLE)
+    ;
+
 
     private String message; // NOT final on purpose
     private HttpStatus httpStatus;

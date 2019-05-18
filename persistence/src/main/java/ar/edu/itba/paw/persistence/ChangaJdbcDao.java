@@ -1,32 +1,32 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.constants.DBChangaFields;
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
 
 import ar.edu.itba.paw.models.ChangaState;
 import ar.edu.itba.paw.models.Either;
+import ar.edu.itba.paw.models.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBChangaFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.changas;
+import static ar.edu.itba.paw.constants.DBTableName.neighborhoods;
 import static ar.edu.itba.paw.interfaces.util.Validation.*;
+import static ar.edu.itba.paw.models.Pair.buildPair;
 
 @Repository
 public class ChangaJdbcDao implements ChangaDao {
@@ -36,7 +36,7 @@ public class ChangaJdbcDao implements ChangaDao {
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert jdbcInsert;
 
-    private final Connection conn;
+    private Connection conn;
     @Autowired
     public ChangaJdbcDao(final DataSource ds) throws SQLException {
         conn = ds.getConnection();
@@ -78,64 +78,85 @@ public class ChangaJdbcDao implements ChangaDao {
 
     @Override
     public Either<List<Changa>, Validation> getAll(ChangaState filterState, int pageNum) {
-        return this.getFiltered(filterState, pageNum, "", "");
+        return this.getFiltered(filterState, pageNum, "", "", "");
     }
 
     @Override
-    public Either<List<Changa>, Validation> getFiltered(ChangaState filterState, int pageNum, String filterCategory, String filterTitle) {
-        if (pageNum < 0) {
-            return Either.alternative(ILLEGAL_VALUE.withMessage("Page number must be greater than zero"));
+    public Either<List<Changa>, Validation> getFiltered(ChangaState filterState, int pageNum, String filterCategory, String filterTitle, String filterLocality) {
+        Either<Pair<String, String[]>, Validation> filteringVal = validateFiltering(pageNum, filterState.name(), filterCategory, filterTitle, filterLocality);
+        if(!filteringVal.isValuePresent()){
+            return Either.alternative(filteringVal.getAlternative());
         }
 
-        String whereClause;
+        String whereClause = filteringVal.getValue().getKey();
+        String[] params = filteringVal.getValue().getValue();
+
+        List<Changa> resp;
         try {
-            whereClause = createFilterQuery(filterState, filterCategory, filterTitle);
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            return Either.alternative(ILLEGAL_VALUE.withMessage("Wrong filtering"));
+            resp = jdbcTemplate.query(
+                    String.format("SELECT * FROM %s WHERE 1=1 %s ORDER BY %s DESC LIMIT %d OFFSET %d",
+                            changas.name(), whereClause,
+                            creation_date.name(), PAGE_SIZE, PAGE_SIZE * pageNum),
+                    params,
+                    ROW_MAPPER
+            );
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return Either.alternative(DATABASE_ERROR);
         }
 
-        List<Changa> resp = jdbcTemplate.query(
-                String.format("SELECT * FROM %s %s ORDER BY %s DESC LIMIT %d OFFSET %d",
-                        changas.name(), whereClause,
-                        creation_date.name(), PAGE_SIZE, PAGE_SIZE * pageNum),
-                ROW_MAPPER
-        );
         return Either.value(resp);
     }
 
-    private String createFilterQuery(ChangaState filterState, String filterCategory, String filterTitle) throws SQLException {
-        StringBuilder sb = new StringBuilder();
-        PreparedStatement ps;
-        if (filterState != null) {
-            sb
-                    .append(" WHERE ")
-                    .append(state.name())
-                    .append(" = ?");
-            ps = conn.prepareStatement(sb.toString());
-            ps.setString(1, filterState.toString());
-            sb = new StringBuilder(ps.toString());
-        }
-        if (!filterCategory.equals("")) {
-            sb
-                    .append(" AND ")
-                    .append(category.name())
-                    .append(" = ?");
-            ps = conn.prepareStatement(sb.toString());
-            ps.setString(1, filterCategory);
-            sb = new StringBuilder(ps.toString());
-        }
-        if (!filterTitle.equals("")) {
-            sb
-                    .append(" AND ")
-                    .append(title.name())
-                    .append(" ~* ?"); // insensitive like
-            ps = conn.prepareStatement(sb.toString());
-            ps.setString(1, filterTitle);
-            sb = new StringBuilder(ps.toString());
+    @Override
+    public Either<Integer, Validation> getFilteredPageCount(ChangaState filterState, String filterCategory, String filterTitle, String filterLocality) {
+        Either<Pair<String, String[]>, Validation> filteringVal = validateFiltering(0, filterState.name(), filterCategory, filterTitle, filterLocality);
+        if(!filteringVal.isValuePresent()){
+            return Either.alternative(filteringVal.getAlternative());
         }
 
-        return sb.toString();
+        String whereClause = filteringVal.getValue().getKey();
+        String[] params = filteringVal.getValue().getValue();
+        Integer resp;
+        try {
+            resp = jdbcTemplate.queryForObject(
+                    String.format("SELECT count(*) FROM %s WHERE 1=1 %s ",
+                            changas.name(), whereClause),
+                    params,
+                    Integer.class
+            );
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return Either.alternative(DATABASE_ERROR);
+        }
+
+        return Either.value((int) Math.ceil((double)resp / PAGE_SIZE));
+    }
+
+    private Either<Pair<String, String[]>, Validation> validateFiltering(int pageNum, String filterState, String filterCategory, String filterTitle, String filterLocality) {
+        if (pageNum < 0) {
+            return Either.alternative(ILLEGAL_VALUE.withMessage("Page number must be greater than zero"));
+        }
+        Pair<String, String[]> whereClause = createFilterQuery(filterState, filterCategory, filterTitle, filterLocality);
+        return Either.value(whereClause);
+    }
+
+    private Pair<String, String[]> createFilterQuery(String filterState, String filterCategory, String filterTitle, String filterLocality) {
+        String sql = " ";
+        List<String> params = new ArrayList<>();
+        sql = getString(filterCategory, sql, params, category.name());
+        sql = getString(filterTitle, sql, params, title.name());
+        sql = getString(filterLocality, sql, params, neighborhood.name());
+        sql = getString(filterState, sql, params, state.name());
+        return Pair.buildPair(sql, params.toArray(new String[]{}));
+    }
+
+    private String getString(String filter, String sql, List<String> params, String column) {
+        if(!filter.equals("")){
+            sql += "AND "+ column + " = ?";
+            params.add(filter);
+        }
+        return sql;
     }
 
     @Override
