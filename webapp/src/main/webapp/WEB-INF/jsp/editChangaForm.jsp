@@ -4,6 +4,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
+    <title>Changas</title>
     <meta charset="utf-32">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -30,7 +31,7 @@
                     <td>
                         <div class="form-group">
                             <div class="input-group">
-                                <form:input class="form-control" path="title"/>
+                                <form:input class="form-control" path="title" maxlength="50"/>
                             </div>
                             <form:errors cssClass="form-error" path="title" element="p"/>
                         </div>

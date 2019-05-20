@@ -58,21 +58,21 @@
                 </div>
                 <br />
                 <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                    <div class="col-lg-4 col-md-4 col-sm-12 p-0">
                         <button id="btndelete2" type="button" class="btn btn-danger center-pill" data-toggle="modal" data-target="#deleteModal">
                             <spring:message code="adminchangaBody.btn.delete"/>
                         </button>
                     </div>
                     <br />
                         <%--todo: chequear q haya al menos un usuario aceptado antes--%>
-                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                    <div class="col-lg-4 col-md-4 col-sm-12 p-0">
                         <button id="btnsettle1" type="button" class="btn btn-success center-pill" data-toggle="modal" data-target="#settleModal">
                             <spring:message code="adminchangaBody.btn.settle"/>
                         </button>
                         <br />
                     </div>
                     <c:if test="${changa.state == 'settled'}">
-                        <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                        <div class="col-lg-4 col-md-4 col-sm-12 p-0">
                             <button id="btnend1" type="button" class="btn btn-success center-pill" data-toggle="modal" data-target="#doneModal">
                                 <spring:message code="adminchangaBody.btn.done"/>
                             </button>
@@ -145,8 +145,8 @@
                 </div>
                 <div class="modal-footer">
                     <button <%--id="btncancel3"--%> type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="adminchangaBody.btn.cancel"/></button>
-                    <c:url value="/delete-changa" var="deleteUrl" />
-                    <form action="${deleteUrl}" method="post">
+                    <c:url value="/settle-changa" var="settleUrl" />
+                    <form action="${settleUrl}" method="post">
                         <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
                         <input <%--id="btnsettle2"--%> type="submit"  class="btn btn-success center-pill" value="<spring:message code="adminchangaBody.btn.settle"/>"/>
                     </form>

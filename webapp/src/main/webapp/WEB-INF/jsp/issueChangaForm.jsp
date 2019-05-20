@@ -5,6 +5,7 @@
 <html>
 
     <head>
+        <title>Changas</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -31,7 +32,7 @@
                         <td>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <form:input cssClass="form-control" path="title"/>
+                                    <form:input class="form-control" path="title" maxlength="50"/>
                                 </div>
                                 <form:errors cssClass="form-error" path="title" element="p"/>
                             </div>

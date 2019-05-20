@@ -9,7 +9,6 @@ import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.ChangaState;
 import ar.edu.itba.paw.models.Either;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,11 +38,16 @@ public class ChangaServiceImpl implements ChangaService {
     }
 
     @Override
-    public Either<List<Changa>, Validation> getEmittedChangasFiltered(int pageNum, String category, String title) {
+    public Either<List<Changa>, Validation> getEmittedChangasFiltered(int pageNum, String category, String title, String locality) {
         if (pageNum < 0) {
             return Either.alternative(ILLEGAL_VALUE.withMessage("Page number must be greater than zero"));
         }
-        return chDao.getFiltered(ChangaState.emitted, pageNum, category, title);
+        return chDao.getFiltered(ChangaState.emitted, pageNum, category, title, locality);
+    }
+
+    @Override
+    public Either<Integer, Validation> getECFPageCount(String category, String title, String locality) {
+        return chDao.getFilteredPageCount(ChangaState.emitted, category, title, locality);
     }
 
     @Override

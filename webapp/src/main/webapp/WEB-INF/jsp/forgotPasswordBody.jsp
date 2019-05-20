@@ -14,6 +14,7 @@
     <c:url value="/login/forgot-password" var="forgotPasswordUrl" />
     <form:form action="${forgotPasswordUrl}" modelAttribute="forgotPasswordForm" method="post">
         <h2 class="text-center"><spring:message code="resetPasswordBody.header"/></h2>
+        <p class="small text-center"><spring:message code="forgotPasswordBody.info"/>.</p>
         <div class="form-group">
             <form:label path="mail"><spring:message code="resetPasswordBody.mail"/></form:label>
             <form:input path="mail" class="form-control" />
