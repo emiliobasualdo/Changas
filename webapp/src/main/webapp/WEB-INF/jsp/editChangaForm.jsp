@@ -31,7 +31,7 @@
                     <td>
                         <div class="form-group">
                             <div class="input-group">
-                                <form:input class="form-control" path="title"/>
+                                <form:input class="form-control" path="title" maxlength="50"/>
                             </div>
                             <form:errors cssClass="form-error" path="title" element="p"/>
                         </div>

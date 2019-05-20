@@ -10,9 +10,9 @@
 
 <body>
     <div class="changaCard-option">
-        <h2>
+        <h4 >
             <c:out value="${requestScope.title}" />
-        </h2>
+        </h4>
         <span class="">
             <c:choose>
                    <c:when test="${requestScope.inscribed}">
@@ -28,7 +28,7 @@
                </c:choose>
         </span>
         <hr />
-        <p style="height: 50px">
+        <p>
             <c:out value="${requestScope.description}" />
         </p>
         <hr />

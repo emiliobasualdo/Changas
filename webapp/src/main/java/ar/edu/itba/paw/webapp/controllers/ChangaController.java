@@ -61,8 +61,7 @@ public class ChangaController {
         );
 
         if (!changa.isValuePresent()) {
-            response.setStatus(changa.getAlternative().getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+            return redirectToErrorPage(response, changa.getAlternative());
         }
         response.setStatus(HttpServletResponse.SC_CREATED);
         return new ModelAndView("redirect:/changa").addObject("id", changa.getValue().getChanga_id());
@@ -70,15 +69,11 @@ public class ChangaController {
 
     @RequestMapping(value = "/edit-changa")
     public ModelAndView editChanga(@RequestParam("id") final long id, @ModelAttribute("changaForm") final ChangaForm form, @ModelAttribute("getLoggedUser") User loggedUser, HttpServletResponse response) {
-        Either<Changa, Validation> changa = cs.getChangaById(id);
-        if (!changa.isValuePresent()) {
-            response.setStatus(changa.getAlternative().getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
+        Either<Changa, ModelAndView> changa = getChangaById(id, loggedUser, response);
+        if(!changa.isValuePresent()) {
+            return changa.getAlternative();
         }
-        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return new ModelAndView("403");
-        }
+
         form.setTitle(changa.getValue().getTitle());
         form.setStreet(changa.getValue().getStreet());
         form.setPrice(changa.getValue().getPrice());
@@ -97,14 +92,9 @@ public class ChangaController {
        if (errors.hasErrors()) {
            return editChanga(id, form, loggedUser, response);
        }
-        Either<Changa, Validation> changa = cs.getChangaById(id);
-        if (!changa.isValuePresent()) {
-            response.setStatus(changa.getAlternative().getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
-        }
-        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return new ModelAndView("403");
+        Either<Changa, ModelAndView> changa = getChangaById(id, loggedUser, response);
+        if(!changa.isValuePresent()) {
+            return changa.getAlternative();
         }
 
         cs.update(id, new Changa.Builder().withUserId(loggedUser.getUser_id())
@@ -123,8 +113,7 @@ public class ChangaController {
         ModelAndView mav = new ModelAndView("indexChanga");
         Either<Changa, Validation> changa = this.cs.getChangaById(id);
         if (!changa.isValuePresent()) {
-            response.setStatus(changa.getAlternative().getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
+            return redirectToErrorPage(response, changa.getAlternative());
         }
         mav.addObject("changa", changa.getValue());
         boolean userAlreadyInscribedInChanga = false;
@@ -162,14 +151,9 @@ public class ChangaController {
     @RequestMapping("/admin-changa")
     public ModelAndView showAdminChanga(@RequestParam("id") final long id, @ModelAttribute("getLoggedUser") User loggedUser, HttpServletResponse response) {
         final ModelAndView mav = new ModelAndView("indexAdminChanga");
-        final Either<Changa, Validation> changa = cs.getChangaById(id);
-        if (!changa.isValuePresent()) {
-            response.setStatus(changa.getAlternative().getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
-        }
-        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return new ModelAndView("403");
+        Either<Changa, ModelAndView> changa = getChangaById(id, loggedUser, response);
+        if(!changa.isValuePresent()) {
+            return changa.getAlternative();
         }
         mav.addObject("changa", changa.getValue());
         mav.addObject("changaOwner", us.findById(changa.getValue().getUser_id()).getValue());
@@ -186,17 +170,21 @@ public class ChangaController {
 
     @RequestMapping(value = "/delete-changa", method = RequestMethod.POST)
     public ModelAndView deleteChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser, HttpServletResponse response) {
-        Either<Changa, Validation> changa = cs.getChangaById(changaId);
-        if (!changa.isValuePresent()) {
-            response.setStatus(changa.getAlternative().getHttpStatus().value());
-            new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
-        }
-        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return new ModelAndView("403");
+        return changeChangaState(changaId, loggedUser, response, ChangaState.closed);
+    }
+
+    @RequestMapping(value = "/close-changa", method = RequestMethod.POST)
+    public ModelAndView closeChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser, HttpServletResponse response) {
+        return changeChangaState(changaId, loggedUser, response, ChangaState.done);
+    }
+
+    private ModelAndView changeChangaState( final long changaId, User loggedUser, HttpServletResponse response, ChangaState newChangaState ) {
+        Either<Changa, ModelAndView> changa = getChangaById(changaId, loggedUser, response);
+        if(!changa.isValuePresent()) {
+            return changa.getAlternative();
         }
         // TODO JIME popup confirmacion (estás seguro?)
-        Either<Changa, Validation> err = cs.changeChangaState(changaId, ChangaState.closed);
+        Either<Changa, Validation> err = cs.changeChangaState(changaId, newChangaState);
         if (!err.isValuePresent()) {
             response.setStatus(err.getAlternative().getHttpStatus().value());
             return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(err.getAlternative().name(), null,LocaleContextHolder.getLocale()));
@@ -204,78 +192,35 @@ public class ChangaController {
         return new ModelAndView("redirect:/profile");
     }
 
-    @RequestMapping(value = "/close-changa", method = RequestMethod.POST)
-    public ModelAndView closeChanga(@RequestParam("changaId") final long changaId, @ModelAttribute("getLoggedUser") User loggedUser, HttpServletResponse response) {
-        Either<Changa, Validation> changa = cs.getChangaById(changaId);
-        if (!changa.isValuePresent()) {
-            response.setStatus(changa.getAlternative().getHttpStatus().value());
-            new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null,LocaleContextHolder.getLocale()));
-        }
-        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return new ModelAndView("403");
-        }
-        Either<Changa, Validation> err = cs.changeChangaState(changaId, ChangaState.done);
-        if (!err.isValuePresent()) {
-            response.setStatus(err.getAlternative().getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(err.getAlternative().name(), null, LocaleContextHolder.getLocale()));
-        }
-        return new ModelAndView("redirect:/profile");
-    }
-
     @RequestMapping(value = "/accept-user", method = RequestMethod.POST)
     public ModelAndView acceptUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser, HttpServletResponse response) {
-        Either<Changa, Validation> changa = cs.getChangaById(changaId);
-        if (!changa.isValuePresent()) {
-            response.setStatus(changa.getAlternative().getHttpStatus().value());
-            new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null, LocaleContextHolder.getLocale()));
-        }
-        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return new ModelAndView("403");
-        }
-        Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.accepted);
-        if (val.isOk()){
-            //TODO este mail en verdad es para cuando hagan el boton changa settled. mientras lo pongo cuando aceptan al changuero
-            //hacer validaciones
-            //TODO JIME popup preguntando
-        } else {
-            //TODO JIME un popup de error
-            response.setStatus(val.getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(val.name(), null, LocaleContextHolder.getLocale()));
-        }
-        return new ModelAndView("redirect:/admin-changa").addObject("id", changaId);
+        return changeUserStateInChanga(loggedUser, changaId, userId, InscriptionState.accepted, response);
     }
 
     @RequestMapping(value = "/reject-user", method = RequestMethod.POST)
     public ModelAndView rejectUser(@RequestParam("changaId") final long changaId, @RequestParam("userId") final long userId, @ModelAttribute("getLoggedUser") User loggedUser, HttpServletResponse response) {
-        Either<Changa, Validation> changa = cs.getChangaById(changaId);
-        if (!changa.isValuePresent()) {
-            response.setStatus(changa.getAlternative().getHttpStatus().value());
-            new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(changa.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+        return changeUserStateInChanga(loggedUser, changaId, userId, InscriptionState.declined, response);
+    }
+
+    private ModelAndView changeUserStateInChanga(User loggedUser, final long changaId, final long userId, final InscriptionState inscriptionState, HttpServletResponse response) {
+        Either<Changa, ModelAndView> changa = getChangaById(changaId, loggedUser, response);
+        if(!changa.isValuePresent()) {
+            return changa.getAlternative();
         }
-        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return new ModelAndView("403");
-        }
-        Validation val = is.changeUserStateInChanga(userId, changaId, InscriptionState.declined);
+        Validation val = is.changeUserStateInChanga(userId, changaId, inscriptionState);
         if (val.isOk()){
-            //TODO JIME popup preguntando
+
         } else {
-            //TODO JIME un popup de error
-            response.setStatus(val.getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(val.name(), null, LocaleContextHolder.getLocale()));
+            return redirectToErrorPage(response, val);
         }
         return new ModelAndView("redirect:/admin-changa").addObject("id", changaId);
     }
 
-
     @RequestMapping(value = "/settle-changa", method = RequestMethod.POST)
-    public ModelAndView settleChanga(@RequestParam("id") long changaId, @ModelAttribute("getLoggedUser") User loggedUser, HttpServletResponse response) {
+    public ModelAndView settleChanga(@RequestParam("changaId") long changaId, @ModelAttribute("getLoggedUser") User loggedUser, HttpServletResponse response) {
         Either<Changa, Validation> either = cs.changeChangaState(changaId, ChangaState.settled);
         if(!either.isValuePresent()) {
-            response.setStatus(either.getAlternative().getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(either.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+            return redirectToErrorPage(response, either.getAlternative());
         }
         emailService.sendChangaSettledEmails(either.getValue().getChanga_id());
         return new ModelAndView("redirect:/admin-changa?id=" + changaId);
@@ -293,8 +238,7 @@ public class ChangaController {
             emailService.sendJoinRequestEmail(changa, changaOwner, loggedUser);
         } else {
             System.out.println("No se pudo inscribir en la changa pq:"+ val.getMessage());
-            response.setStatus(val.getHttpStatus().value());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(val.name(), null, LocaleContextHolder.getLocale()));
+            return redirectToErrorPage(response, val);
         }
         return new ModelAndView("redirect:/changa").addObject("id", changaId);
     }
@@ -307,10 +251,30 @@ public class ChangaController {
             System.out.println("user "+ loggedUser.getUser_id()+ " successfully desinscripto en changa "+ changaId);
         } else {
             //TODO JIME un popup de error
-            response.setStatus(val.getHttpStatus().value());
             System.out.println("No se pudo desinscribir en la changa pq:"+ val.getMessage());
-            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(val.name(), null, LocaleContextHolder.getLocale()));
+            return redirectToErrorPage(response, val);
         }
         return new ModelAndView("redirect:/profile");
+    }
+
+    private Either<Changa, ModelAndView> getChangaById(final long id, User loggedUser,  HttpServletResponse response) {
+        Either<Changa, Validation> changa = cs.getChangaById(id);
+        if (!changa.isValuePresent()) {
+            return Either.alternative(redirectToErrorPage(response, changa.getAlternative()));
+        }
+        if (changa.getValue().getUser_id() != loggedUser.getUser_id()) {
+            return Either.alternative(error403(response));
+        }
+        return Either.value(changa.getValue());
+    }
+
+    private ModelAndView redirectToErrorPage(HttpServletResponse response, Validation validation) {
+        response.setStatus(validation.getHttpStatus().value());
+        return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(validation.name(), null,LocaleContextHolder.getLocale()));
+    }
+
+    private ModelAndView error403(HttpServletResponse response) {
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        return new ModelAndView("403");
     }
 }

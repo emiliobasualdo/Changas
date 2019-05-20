@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.constants.DBChangaFields;
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
@@ -10,7 +9,6 @@ import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -25,9 +23,7 @@ import java.util.*;
 
 import static ar.edu.itba.paw.constants.DBChangaFields.*;
 import static ar.edu.itba.paw.constants.DBTableName.changas;
-import static ar.edu.itba.paw.constants.DBTableName.neighborhoods;
 import static ar.edu.itba.paw.interfaces.util.Validation.*;
-import static ar.edu.itba.paw.models.Pair.buildPair;
 
 @Repository
 public class ChangaJdbcDao implements ChangaDao {
@@ -143,16 +139,16 @@ public class ChangaJdbcDao implements ChangaDao {
     private Pair<String, String[]> createFilterQuery(String filterState, String filterCategory, String filterTitle, String filterLocality) {
         String sql = " ";
         List<String> params = new ArrayList<>();
-        sql = getString(filterCategory, sql, params, category.name());
-        sql = getString(filterTitle, sql, params, title.name());
-        sql = getString(filterLocality, sql, params, neighborhood.name());
-        sql = getString(filterState, sql, params, state.name());
+        sql = getString(filterCategory, sql, params, category.name(), Eval.equals);
+        sql = getString(filterTitle, sql, params, title.name(), Eval.ilike);
+        sql = getString(filterLocality, sql, params, neighborhood.name(), Eval.equals);
+        sql = getString(filterState, sql, params, state.name(), Eval.equals);
         return Pair.buildPair(sql, params.toArray(new String[]{}));
     }
 
-    private String getString(String filter, String sql, List<String> params, String column) {
+    private String getString(String filter, String sql, List<String> params, String column, Eval evaluation) {
         if(!filter.equals("")){
-            sql += "AND "+ column + " = ?";
+            sql += "AND "+ column + " " + evaluation.eval+ " ?";
             params.add(filter);
         }
         return sql;
@@ -278,5 +274,16 @@ public class ChangaJdbcDao implements ChangaDao {
         resp.put(state.toString(), changaBuilder.getState().toString());
         resp.put(category.toString(), changaBuilder.getCategory());
         return resp;
+    }
+
+    private enum Eval {
+        equals("="),
+        ilike("~*");
+
+        private String eval;
+
+        Eval(String eval){
+            this.eval = eval;
+        }
     }
 }

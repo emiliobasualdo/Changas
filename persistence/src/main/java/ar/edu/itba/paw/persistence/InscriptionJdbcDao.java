@@ -89,10 +89,11 @@ public class InscriptionJdbcDao implements InscriptionDao {
     public Either<List<Pair<User, Inscription>>, Validation>  getInscribedUsers(long changaId) {
         final List<Inscription> inscriptionList = jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = ?", user_inscribed
-                        , user_id.name()),
+                        , changa_id.name()),
                 ROW_MAPPER,
                 changaId
         );
+
         final List<Pair<User,Inscription>> pairList = new LinkedList<>();
         for (Inscription insc: inscriptionList) {
             Either<User, Validation> either = userDao.getById(insc.getUser_id());
@@ -123,8 +124,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
                 }
                 pairList.add(Pair.buildPair(either.getValue(), insc));
             }
-
-            return Either.value(pairList);
+    return Either.value(pairList);
     }
 
     @Override
