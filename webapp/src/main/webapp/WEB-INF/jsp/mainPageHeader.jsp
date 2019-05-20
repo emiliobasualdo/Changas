@@ -1,6 +1,10 @@
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <html>
 
+    <head>
+        <style><%@ include file="/WEB-INF/css/mainPageHeader.css" %></style>
+    </head>
+
     <%@ include file="/WEB-INF/jsp/navigationBar.jsp" %>
 
     <div id="carousel-example-2" class="carousel slide carousel-fade z-depth-1-half" data-ride="carousel">
@@ -13,7 +17,7 @@
             <div class="carousel-item active">
                 <div class="view">
                     <c:url value="/img/mudanza1.jpg" var="mudanzaImage"/>
-                    <img class="d-block w-100 h-75 custom-img" src="${mudanzaImage}" alt="First slide">
+                    <img class="d-block w-100 custom-img" src="${mudanzaImage}" alt="First slide">
                     <div class="mask rgba-black-light"></div>
                 </div>
                 <div class="carousel-caption">
@@ -23,7 +27,7 @@
             <div class="carousel-item">
                 <div class="view">
                     <c:url value="/img/auto1.jpg" var="autoImage"/>
-                    <img class="d-block w-100 h-75 custom-img" src="${autoImage}" alt="Second slide">
+                    <img class="d-block w-100 custom-img" src="${autoImage}" alt="Second slide">
                     <div class="mask rgba-black-light"></div>
                 </div>
                 <div class="carousel-caption">
@@ -33,7 +37,7 @@
             <div class="carousel-item">
                 <div class="view">
                     <c:url value="/img/nieve1.jpg" var="nieveImage"/>
-                    <img class="d-block w-100 h-75 custom-img" src="${nieveImage}" alt="Third slide">
+                    <img class="d-block w-100 custom-img" src="${nieveImage}" alt="Third slide">
                     <div class="mask rgba-black-light"></div>
                 </div>
                 <div class="carousel-caption">
