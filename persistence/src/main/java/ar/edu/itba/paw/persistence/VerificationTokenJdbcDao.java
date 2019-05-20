@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.VerificationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -18,7 +19,9 @@ import java.util.Map;
 import java.util.Optional;
 import static ar.edu.itba.paw.constants.DBTableName.verification_token;
 import static ar.edu.itba.paw.constants.DBVerificationTokenFields.*;
+import static ar.edu.itba.paw.interfaces.util.Validation.DATABASE_ERROR;
 import static ar.edu.itba.paw.interfaces.util.Validation.INEXISTENT_TOKEN;
+import static ar.edu.itba.paw.interfaces.util.Validation.OK;
 
 @Repository
 public class VerificationTokenJdbcDao implements VerificationTokenDao {
@@ -36,7 +39,6 @@ public class VerificationTokenJdbcDao implements VerificationTokenDao {
                 .usingGeneratedKeyColumns(token_id.name());
     }
 
-
     @Override
     public Either<VerificationToken, Validation> findByToken(String tok) {
         Optional<VerificationToken> optional = jdbcTemplate.query(
@@ -49,9 +51,14 @@ public class VerificationTokenJdbcDao implements VerificationTokenDao {
     }
 
     @Override
-    public void save(VerificationToken.Builder tokenBuilder) {
+    public Either<VerificationToken, Validation> save(VerificationToken.Builder tokenBuilder) {
         Map<String, Object> tokenRow = tokenToTableRow(tokenBuilder);
-        jdbcInsert.execute(tokenRow);
+        try {
+            jdbcInsert.execute(tokenRow);
+        } catch (Exception ex) {
+            return Either.alternative(DATABASE_ERROR);
+        }
+        return Either.value(new VerificationToken(tokenBuilder));
 
     }
 

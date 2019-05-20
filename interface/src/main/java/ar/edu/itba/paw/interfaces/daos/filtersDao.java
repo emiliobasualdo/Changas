@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces.daos;
 
 import java.util.List;
 
-public interface CategoryDao {
+public interface filtersDao {
     List<String> getCategories();
+    List<String> getNeighborhoods();
 }

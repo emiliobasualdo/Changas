@@ -7,9 +7,9 @@
     </head>
     <body>
         <div class="changaCard-option">
-            <h2>
+            <h4>
                 <c:out value="${requestScope.title}" />
-            </h2>
+            </h4>
             <span class="">
                     <i class="fas fa-map-marker-alt fas-2x"></i>
                     <small>

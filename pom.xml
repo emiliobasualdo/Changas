@@ -27,18 +27,20 @@
         <org.powermock-api-mockito2.version>1.6.4</org.powermock-api-mockito2.version>
     </properties>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>${maven-war-plugin.version}</version>
-                <configuration>
-                    <packagingExcludes>**/logback-test.xml</packagingExcludes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+
+    <!--TODO DESCOMENTAR ESTO EN PRODUCCION!!!!!!!!!!!!!. Mientras estamos en development, dejarlo comentado-->
+    <!--<build>-->
+        <!--<plugins>-->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-war-plugin</artifactId>-->
+                <!--<version>${maven-war-plugin.version}</version>-->
+                <!--<configuration>-->
+                    <!--<packagingExcludes>**/logback-test.xml</packagingExcludes>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+        <!--</plugins>-->
+    <!--</build>-->
 
 
 
@@ -185,9 +187,6 @@
                 <version>${logback-ext-spring.version}</version>
                 <scope>runtime</scope>
             </dependency>
-
-
-
         </dependencies>
     </dependencyManagement>
 

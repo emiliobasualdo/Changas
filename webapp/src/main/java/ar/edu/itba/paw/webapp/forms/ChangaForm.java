@@ -6,11 +6,11 @@ import javax.validation.constraints.*;
 public class ChangaForm {
 
     @NotEmpty
-    @Size(max = 100) @Pattern(regexp = "[A-Za-z0-9áéíóúñü ]+")
+    @Size(min = 10, max = 50) @Pattern(regexp = "[A-Za-z0-9áéíóúñü ]+")
     private String title;
 
     @NotEmpty
-    @Size(max = 1000) @Pattern(regexp = "[A-Za-z0-9\\s_.,:;&()#$%@?|{}!\"'/áéíóúñü ]+") //TODO: agrandar limite de texto en la bd (muy chico 100)
+    @Size(min = 25, max = 1000) @Pattern(regexp = "[A-Za-z0-9\\s_.,:;&()#$%@?|{}!\"'/áéíóúñü ]+") //TODO: agrandar limite de texto en la bd (muy chico 100)
     private String description;
 
     @NotNull

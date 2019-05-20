@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS users
 (
     user_id SERIAL PRIMARY KEY,
-    name    VARCHAR(100),
-    surname VARCHAR(100),
-    tel     VARCHAR(100),
+    name    VARCHAR(100) NOT NULL,
+    surname VARCHAR(100) NOT NULL,
+    tel     VARCHAR(100) NOT NULL,
     email   VARCHAR(100) NOT NULL UNIQUE ,
     passwd  VARCHAR(100) NOT NULL ,
     enabled BOOLEAN DEFAULT FALSE
@@ -14,14 +14,14 @@ CREATE TABLE IF NOT EXISTS changas
     changa_id     SERIAL PRIMARY KEY,
     user_id       SERIAL NOT NULL,
     street        VARCHAR(100),
-    neighborhood  VARCHAR(100),
-    number        INTEGER,
-    creation_date TIMESTAMP,
-    title         VARCHAR(100),
-    description   VARCHAR(1000),
-    state         VARCHAR(100) DEFAULT 'emitted',
-    price         DOUBLE PRECISION,
-    category      VARCHAR(100),
+    neighborhood  VARCHAR(100) NOT NULL,
+    number        INTEGER ,
+    creation_date TIMESTAMP, /*falta not null, hay que reponer la información en el .sql*/
+    title         VARCHAR(100) NOT NULL,
+    description   VARCHAR(1000) NOT NULL ,
+    state         VARCHAR(100) DEFAULT 'emitted' NOT NULL,
+    price         DOUBLE PRECISION NOT NULL,
+    category      VARCHAR(100) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
@@ -44,4 +44,9 @@ CREATE TABLE IF NOT EXISTS verification_token
 CREATE TABLE IF NOT EXISTS categories
 (
     key VARCHAR(30) PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS neighborhoods
+(
+    key VARCHAR(50) PRIMARY KEY
 );

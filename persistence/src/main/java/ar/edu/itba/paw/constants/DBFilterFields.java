@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.constants;
 
-public enum DBCategoriesFields {
+public enum DBFilterFields {
 
     key          ("key", "VARCHAR",30);
 
@@ -8,7 +8,7 @@ public enum DBCategoriesFields {
     final String type;
     final int length;
 
-    DBCategoriesFields(String name, String type, int length) {
+    DBFilterFields(String name, String type, int length) {
         this.name = name;
         this.type = type;
         this.length = length;
