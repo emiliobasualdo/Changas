@@ -1,6 +1,7 @@
 #carousel-example-2 {
     margin-top: 60px;
 }
+
 .h1-custom {
     color: #26B3BA;
 }
@@ -10,9 +11,9 @@
     .custom-img {
         height: auto;
     }
-    .custom-img > img {
+    /*.custom-img > img {
         width: 80%;
-    }
+    }*/
 }
 
 /* tablets */
@@ -20,27 +21,17 @@
     .custom-img {
         height: auto;
     }
-    .custom-img > img {
+    /*.custom-img > img {
         width: 80%;
-    }
-}
-
-/* laptops */
-@media (max-width: 1023px) and (min-width: 992px) {
-    .custom-img {
-        height: 70%;
-    }
-    .custom-img > img {
-        width: 100%;
-    }
+    }*/
 }
 
 /* desktops */
-@media (min-width: 1024px) {
+@media (min-width: 992px) {
     .custom-img {
-        height: 75%;
+        max-height: 50%;
     }
-    .custom-img > img {
+    /*.custom-img > img {
         width: 100%;
-    }
+    }*/
 }

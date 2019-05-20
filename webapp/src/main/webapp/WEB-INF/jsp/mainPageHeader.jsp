@@ -11,9 +11,9 @@
         </ol>
         <div class="carousel-inner" role="listbox">
             <div class="carousel-item active">
-                <div class="view custom-img">
+                <div class="view">
                     <c:url value="/img/mudanza1.jpg" var="mudanzaImage"/>
-                    <img class="d-block w-100" src="${mudanzaImage}" alt="First slide">
+                    <img class="d-block w-100 h-75 custom-img" src="${mudanzaImage}" alt="First slide">
                     <div class="mask rgba-black-light"></div>
                 </div>
                 <div class="carousel-caption">
@@ -21,9 +21,9 @@
                 </div>
             </div>
             <div class="carousel-item">
-                <div class="view custom-img">
+                <div class="view">
                     <c:url value="/img/auto1.jpg" var="autoImage"/>
-                    <img class="d-block w-100" src="${autoImage}" alt="Second slide">
+                    <img class="d-block w-100 h-75 custom-img" src="${autoImage}" alt="Second slide">
                     <div class="mask rgba-black-light"></div>
                 </div>
                 <div class="carousel-caption">
@@ -31,9 +31,9 @@
                 </div>
             </div>
             <div class="carousel-item">
-                <div class="view custom-img">
+                <div class="view">
                     <c:url value="/img/nieve1.jpg" var="nieveImage"/>
-                    <img class="d-block w-100" src="${nieveImage}" alt="Third slide">
+                    <img class="d-block w-100 h-75 custom-img" src="${nieveImage}" alt="Third slide">
                     <div class="mask rgba-black-light"></div>
                 </div>
                 <div class="carousel-caption">
