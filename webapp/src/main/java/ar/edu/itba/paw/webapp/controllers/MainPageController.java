@@ -50,7 +50,9 @@ public class MainPageController {
         // if the user logged in we show raw data
         List<Changa> changas = maybeChangas.getValue();
         if (!isUserLogged) {
-            return showChangas(changas).addObject("isFiltered", false);
+            return showChangas(changas)
+                    .addObject("isFiltered", false)
+                    .addObject("totalPages", pageCount.getValue());
         }
 
         // else we mark the inscribbed changas
@@ -58,7 +60,9 @@ public class MainPageController {
         if(!maybeMarkedInscriptions.isValuePresent()){
             return redirectToErrorPage(response, maybeMarkedInscriptions.getAlternative());
         }
-        return showChangas(maybeMarkedInscriptions.getValue()).addObject("isFiltered", false);
+        return showChangas(maybeMarkedInscriptions.getValue())
+                .addObject("isFiltered", false)
+                .addObject("totalPages", pageCount.getValue());
     }
     private ModelAndView redirectToErrorPage(HttpServletResponse response, Validation validation) {
         response.setStatus(validation.getHttpStatus().value());
@@ -84,12 +88,11 @@ public class MainPageController {
                                       @RequestParam(value = "cfilter", defaultValue = "") String categoryFilter,
                                       @RequestParam(value = "tfilter", defaultValue = "") String titleFilter,
                                       @RequestParam(value = "nfilter", defaultValue = "") String neighborhoodFilter) {
-
         Either<List<Changa>, Validation> changas = cs.getEmittedChangasFiltered(0, categoryFilter, titleFilter, neighborhoodFilter);
+        Either<Integer, Validation> pageCount = cs.getECFPageCount(categoryFilter, titleFilter, neighborhoodFilter);
         if (!changas.isValuePresent()) {
             return redirectToErrorPage(response, changas.getAlternative());
         }
-
         if (isUserLogged){
             Either<List<Pair<Changa, Boolean>>, Validation> maybeMarkedInscriptions = markedInscriptions(loggedUser, changas.getValue());
             if(!maybeMarkedInscriptions.isValuePresent()){
@@ -97,13 +100,14 @@ public class MainPageController {
                 return new ModelAndView("redirect:/error").addObject("message",  messageSource.getMessage(maybeMarkedInscriptions.getAlternative().name(), null,LocaleContextHolder.getLocale()));
             }
             return showChangas(maybeMarkedInscriptions.getValue())
+                    .addObject("totalPages", pageCount.getValue())
                     .addObject("isFiltered", true)
                     .addObject("cfilter", categoryFilter)
                     .addObject("tfilter", titleFilter)
                     .addObject("nfilter", neighborhoodFilter);
         }
-
         return showChangas(changas.getValue())
+                .addObject("totalPages", pageCount.getValue())
                 .addObject("isFiltered", true)
                 .addObject("cfilter", categoryFilter)
                 .addObject("tfilter", titleFilter)
@@ -115,7 +119,6 @@ public class MainPageController {
         if (!maybeInscriptions.isValuePresent()) {
             return Either.alternative(maybeInscriptions.getAlternative());
         }
-
         // for each changa, if the user is isncribbed mark it as true
         List<Pair<Changa, Inscription>> inscriptions = maybeInscriptions.getValue();
         List<Pair<Changa, Boolean>> changaList = new ArrayList<>();
@@ -131,7 +134,6 @@ public class MainPageController {
                 changaList.add(Pair.buildPair(c, false));
             }
         }
-
         return Either.value(changaList);
     }
 
@@ -152,7 +154,6 @@ public class MainPageController {
         if (!maybeInscriptions.isValuePresent()) {
             return new ModelAndView();
         }
-
         Either<List<Pair<Changa, Boolean>>, Validation> changas =  markedInscriptions(loggedUser, maybeChangas.getValue());
         if (!changas.isValuePresent()) {
             return new ModelAndView();

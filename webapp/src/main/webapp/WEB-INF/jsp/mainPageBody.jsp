@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <html>
 <head>
 
@@ -9,14 +10,23 @@
     <script>
         var page = 1;
         $(document).ready(function(){
+            var totalPages = $('#totalPages').val()-1;
+            showMoreBtn(page, totalPages);
             $('#myAnchor').click(function(e){
                 e.preventDefault();
                 $.get('/page?page='+page, function(data) {
                     $('#container').append(data);
+                    showMoreBtn(page, totalPages);
                     page++;
                 });
             });
         });
+
+        function showMoreBtn(current, total) {
+            if (current === total) {
+                $('#myAnchor').hide();
+            }
+        }
     </script>
     <style><%@include file="/WEB-INF/css/mainPageBody.css"%></style>
 </head>
@@ -159,6 +169,7 @@
                 </c:otherwise>
             </c:choose>
         </div>
+        <input type="hidden" id="totalPages" value="${totalPages}"/>
         <div style=" margin: auto; display: block; margin-top: 25px">
             <button id="myAnchor" type="button" class="btn wrn-btn" style="background-color: #26B3BA"> <spring:message code="mainPage.showMore.btn"/> </button>
         </div>

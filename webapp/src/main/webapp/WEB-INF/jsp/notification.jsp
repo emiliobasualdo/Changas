@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
     <div class="toast" style="position: absolute; top: 0; right: 0;">
         <div class="toast-header">
