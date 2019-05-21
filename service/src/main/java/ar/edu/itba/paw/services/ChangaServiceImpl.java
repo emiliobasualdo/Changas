@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
+import ar.edu.itba.paw.interfaces.daos.ChangaPictureDao;
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
 import ar.edu.itba.paw.interfaces.services.AuthenticationService;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
@@ -36,7 +37,7 @@ public class ChangaServiceImpl implements ChangaService {
     private AuthenticationService authenticationService;
 
     @Autowired
-    private FileManagerService fileManager;
+    private ChangaPictureDao changaPictureDao;
 
     @Override
     public Either<List<Changa>, Validation> getEmittedChangas(int pageNum) {
@@ -135,14 +136,6 @@ public class ChangaServiceImpl implements ChangaService {
         return Either.value(resp);
     }
 
-    @Override
-    public Validation uploadChangaPicture(File file) {
-        try {
-            chDao.addChangaPicture(new FileInputStream(file));
-        } catch (FileNotFoundException e) {
 
-            e.printStackTrace();
-        }
-    }
 
 }

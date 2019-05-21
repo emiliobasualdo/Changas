@@ -42,7 +42,11 @@ public enum Validation {
     NO_SUCH_LOCALE("This locale is not defined in the db", HttpStatus.BAD_REQUEST),
 
     //Email
-    EMAIL_ERROR("Email couldn't be sent", HttpStatus.SERVICE_UNAVAILABLE)
+    EMAIL_ERROR("Email couldn't be sent", HttpStatus.SERVICE_UNAVAILABLE),
+
+    //Pictures
+    IMAGE_COULDNT_BE_UPDATED("Image couldnt be updated", HttpStatus.SERVICE_UNAVAILABLE)
+
     ;
 
 

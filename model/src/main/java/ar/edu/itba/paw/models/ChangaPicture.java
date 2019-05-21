@@ -1,23 +1,20 @@
 package ar.edu.itba.paw.models;
 
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 public class ChangaPicture {
-    private String imageReference;
+    private InputStream imageByteStream;
     private long changaId;
 
     public ChangaPicture(ChangaPicture.Builder changaPictureBuilder) {
-        this.imageReference = changaPictureBuilder.getImageReference();
+        this.imageByteStream = changaPictureBuilder.getImageByteStream();
         this.changaId = changaPictureBuilder.getChangaId();
     }
 
-    public String getImageReference() {
-        return imageReference;
-    }
-
-    public void setImageReference(String imageReference) {
-        this.imageReference = imageReference;
+    public InputStream getImageByteStream() {
+        return imageByteStream;
     }
 
     public long getChangaId() {
@@ -25,21 +22,22 @@ public class ChangaPicture {
     }
 
     public static class Builder {
-        private String imageReference;
+        private InputStream imageByteStream;
         private long changaId;
 
-        public Builder(long changaId, String imageReference) {
-            this.imageReference = imageReference;
+        public Builder(long changaId, InputStream imageByteStream) {
+            this.imageByteStream = imageByteStream;
             this.changaId = changaId;
+        }
+
+        public InputStream getImageByteStream() {
+            return imageByteStream;
         }
 
         public long getChangaId() {
             return changaId;
         }
 
-        public String getImageReference() {
-            return imageReference;
-        }
     }
 
 }
