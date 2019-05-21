@@ -11,8 +11,6 @@
             <div class="card">
                 <div class="card-body">
                     <h3 class="card-title" style="text-align: center"><c:out value="${requestScope.name}"/> <c:out value="${requestScope.surname}"/></h3>
-                    <p class="card-text" style="text-align: center"><strong><spring:message code="label.telephone"/></strong>: <c:out value="${requestScope.tel}"/></p>
-                    <p class="card-text" style="text-align: center"><strong><spring:message code="label.mail"/></strong>: <c:out value="${requestScope.email}"/></p>
                     <c:choose>
                         <c:when test="${requestScope.state == 'accepted'}">
                             <p class="card-text" style="text-align: center; color: green;"><spring:message code="inscribedUserCard.acepted"/></p>
