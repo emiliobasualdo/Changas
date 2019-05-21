@@ -6,19 +6,17 @@ import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
 import ar.edu.itba.paw.interfaces.services.AuthenticationService;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.FileManagerService;
+import ar.edu.itba.paw.interfaces.util.FileConventions;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.ChangaState;
 import ar.edu.itba.paw.models.Either;
-import com.sun.jndi.toolkit.url.Uri;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.*;
@@ -35,6 +33,9 @@ public class ChangaServiceImpl implements ChangaService {
 
     @Autowired
     private AuthenticationService authenticationService;
+
+    @Autowired
+    private FileConventions fc;
 
     @Autowired
     private ChangaPictureDao changaPictureDao;
@@ -136,6 +137,29 @@ public class ChangaServiceImpl implements ChangaService {
         return Either.value(resp);
     }
 
+    @Override
+    public Either<String, Validation> putImage(String changaId, OutputStream os) {
+        // if(chDao.changaExists(os))
+        // Todo no borrar este comment
+        // En un futuro chDao.putImage debería retornar un Either<Long, Validation>
+        // siendo el Long el key de la imagen entre las imágenes de la
+        // changa cosa de poder armar el nombre del archivo dinamicamente
+        Validation validation = chDao.putImage(changaId, os);
+        if (validation.isError()) {
+            return Either.alternative(validation);
+        }
+        return Either.value(fc.createName("changa", changaId)); // todo falta extension
+    }
 
+    @Override
+    public Either<byte[], Validation> getImage(String changaId, String imageName) {
+        //if (FileConventions.isValidImageName)
+        Either<InputStream, Validation> image = chDao.getImage(changaId);
+        try {
+            return Either.value(IOUtils.toByteArray(image.getValue()));
+        } catch (IOException e) {
+            return Either.alternative(DATABASE_ERROR.withMessage(e.getMessage()));
+        }
+    }
 
 }

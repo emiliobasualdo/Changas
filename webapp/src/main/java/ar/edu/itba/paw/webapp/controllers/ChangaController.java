@@ -12,8 +12,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -254,6 +257,23 @@ public class ChangaController {
             return redirectToErrorPage(response, val);
         }
         return new ModelAndView("redirect:/profile");
+    }
+
+    @RequestMapping(value = "/changas/{changaId}/{imageName}")
+    public void getFile(HttpServletResponse resp, @PathVariable String changaId, @PathVariable String imageName) {
+        Either<byte[], Validation> either = cs.getImage(changaId, imageName);
+        if (!either.isValuePresent()) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
+        }
+        resp.setContentType("image/png");
+        try {
+            resp.setContentLength(either.getValue().length);
+            resp.getOutputStream().write(either.getValue());
+        } catch (IOException e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            System.err.println(e.getMessage());
+        }
     }
 
     private Either<Changa, ModelAndView> getChangaById(final long id, User loggedUser,  HttpServletResponse response) {
