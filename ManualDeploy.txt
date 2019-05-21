@@ -4,6 +4,8 @@ password:*****
 
 /// 2) SI todavía no se hizo, CLONAR
 git clone https://github.com/emiliobasualdo/Changas.git
+ó
+git pull origin dev
 
 /// 3) SI todavía no se hizo, subir archivo application.properties a webapp/src/main/resources/config/application.properties
 a) nano webapp/src/main/resources/config/application.properties // copy->paste->cntrl-x->y->enter
