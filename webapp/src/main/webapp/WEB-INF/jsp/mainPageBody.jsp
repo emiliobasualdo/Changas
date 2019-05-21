@@ -12,10 +12,13 @@
         var page = 1;
         $(document).ready(function(){
             var totalPages = $('#totalPages').val()-1;
+            var title = $('#tfilter').val();
+            var neighborhood = $('#nfilter').val();
+            var category = $('#cfilter').val();
             showMoreBtn(0, totalPages);
             $('#myAnchor').click(function(e){
                 e.preventDefault();
-                $.get('/page?page='+page, function(data) {
+                $.get('/page?page='+page+'&tfilter='+title+'&nfilter='+neighborhood+'&cfilter='+category, function(data) {
                     $('#container').append(data);
                     showMoreBtn(page, totalPages);
                     page++;
@@ -41,7 +44,7 @@
                     <div class="col-lg-12">
                         <div class="row">
                             <div class="col-lg-4 col-md-3 col-sm-12 p-0">
-                                <input name="tfilter" value="${tfilter}" class="form-control search-slt" placeholder="<spring:message code="mainPage.search"/>">
+                                <input id="tfilter" name="tfilter" value="${tfilter}" class="form-control search-slt" placeholder="<spring:message code="mainPage.search"/>">
                             </div>
 
                             <div class="col-lg-3 col-md-3 col-sm-12 p-0">
