@@ -140,22 +140,24 @@ public class ChangaServiceImpl implements ChangaService {
         // En un futuro chDao.putImage debería retornar un Either<Long, Validation>
         // siendo el Long el key de la imagen entre las imágenes de la
         // changa cosa de poder armar el nombre del archivo dinamicamente
-        Validation validation = chDao.putImage(changaId, os);
+        /*Validation validation = chDao.putImage(changaId, os);
         if (validation.isError()) {
             return Either.alternative(validation);
         }
-        return Either.value(fc.createName("changa", changaId)); // todo falta extension
+        return Either.value(fc.createName("changa", changaId)); // todo falta extension*/
+        return Either.alternative(OK);
     }
 
     @Override
     public Either<byte[], Validation> getImage(String changaId, String imageName) {
         //if (FileConventions.isValidImageName)
-        Either<InputStream, Validation> image = chDao.getImage(changaId);
+        /*Either<InputStream, Validation> image = chDao.getImage(changaId);
         try {
             return Either.value(IOUtils.toByteArray(image.getValue()));
         } catch (IOException e) {
             return Either.alternative(DATABASE_ERROR.withMessage(e.getMessage()));
-        }
+        }*/
+        return Either.alternative(OK);
     }
 
 }

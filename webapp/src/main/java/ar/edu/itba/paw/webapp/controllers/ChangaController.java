@@ -10,6 +10,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletContext;
@@ -287,13 +288,13 @@ public class ChangaController {
         }
     }
 
-    @RequestMapping(value = "/changas/{changaId}/portrait-image")
-    public void getFile(HttpServletResponse resp, @PathVariable String changaId) {
-        Either<byte[], Validation> either = cs.putImage(changaId)
+    @RequestMapping(value = "/changas/{changaId}/portrait-image", method = RequestMethod.POST)
+    public void getFile(HttpServletResponse resp, @PathVariable String changaId, @RequestParam("file") MultipartFile file) {
+        /*Either<byte[], Validation> either = cs.putImage(changaId)
         if (!either.isValuePresent()) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
-        }
+        }*/
     }
 
     private Either<Changa, ModelAndView> getChangaById(final long id, User loggedUser,  HttpServletResponse response) {
