@@ -17,6 +17,14 @@ body {
     font-family: "Quicksand", sans-serif;
     text-align: center;
 }
+.custom-container {
+    width: 30%;
+    height: 30%;
+    float: left;
+}
+.profile-img img{
+    width: 100%;
+}
 .profile-img .file {
     position: relative;
     overflow: hidden;
@@ -89,10 +97,6 @@ body {
     .profile-img{
         font-size: 1vw;
     }
-    .profile-img img{
-        width: 40%;
-        height: 20%;
-    }
     .profile-img .file {
         font-size: 1vw;
         width: 70%;
@@ -131,10 +135,6 @@ body {
     .profile-img{
         font-size: 1vw;
     }
-    .profile-img img{
-        width: 40%;
-        height: 20%;
-    }
     .profile-img .file {
         font-size: 1vw;
         width: 70%;
@@ -166,10 +166,6 @@ body {
     }
     .profile-img{
         font-size: 1vw;
-    }
-    .profile-img img{
-        width: 40%;
-        height: 20%;
     }
     .profile-img .file {
         font-size: 1vw;

@@ -9,4 +9,5 @@ public interface AuthenticationService {
     Authentication getAuthentication();
     boolean isUserLogged();
     Optional<User> getLoggedUser();
+    boolean isLoggedUserAuthorizedToUpdateUser(long userId);
 }

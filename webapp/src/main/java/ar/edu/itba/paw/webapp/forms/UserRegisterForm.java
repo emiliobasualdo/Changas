@@ -33,7 +33,7 @@ public class UserRegisterForm {
     private String surname;
 
     @NotEmpty
-    @Size(min = 6, max = 25)
+    @Size(min = 8, max = 15)
     @Pattern(regexp = "[0-9]+")
     private String telephone;
 

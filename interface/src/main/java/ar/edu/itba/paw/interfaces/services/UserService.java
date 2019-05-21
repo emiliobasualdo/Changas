@@ -27,4 +27,6 @@ public interface UserService {
     Either<User, Validation> update(final long userId, User.Builder userBuilder);
     Either<UserTokenState, Validation> getUserTokenState(VerificationToken verificationToken);
     Either<VerificationToken, Validation> createNewVerificationToken(String existingTokenValue);
+    boolean isUserEnabled(long user_id);
+
 }
