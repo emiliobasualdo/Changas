@@ -127,10 +127,8 @@ public class ChangaServiceImpl implements ChangaService {
     }
 
     @Override
-    public Either<List<Changa>, Validation> getUserEmittedChangas(long id) {
-        List<Changa> resp = getUserOwnedChangas(id).getValue();
-        resp.removeIf(e -> e.getState() == ChangaState.closed || e.getState() == ChangaState.done || e.getState() == ChangaState.settled);
-        return Either.value(resp);
+    public Either<List<Changa>, Validation> getUserOpenChangas(long id) {
+        return chDao.getUserOpenChangas(id);
     }
 
 

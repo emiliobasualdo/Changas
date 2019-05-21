@@ -173,7 +173,7 @@ public class ChangaController {
         }
         mav.addObject("hasAcceptedUsers", hasAcceptedUsers.getValue());
         /*Either<String, Validation> urlImage = .... ;*/
-        mav.addObject("urlImage", "/img/T0lwiBK8.jpg");
+        mav.addObject("urlImage", "/img/nieve1.jpg");
 
         return mav;
     }
