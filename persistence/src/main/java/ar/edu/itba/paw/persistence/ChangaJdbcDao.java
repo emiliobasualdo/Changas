@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -67,11 +68,9 @@ public class ChangaJdbcDao implements ChangaDao {
         Map<String, Object> changaRow = changaToTableRow(changaBuilder);
         try {
             changaId = jdbcInsert.executeAndReturnKey(changaRow);
-        } catch (DataIntegrityViolationException e ) {
-            return Either.alternative(NO_SUCH_USER);
         } catch (Exception e ) {
             System.err.println(e.getMessage());
-            return Either.alternative(DATABASE_ERROR);
+            return Either.alternative(DATABASE_ERROR.withMessage(e.getMessage()));
         }
         return getById(changaId.longValue());
     }
@@ -271,7 +270,7 @@ public class ChangaJdbcDao implements ChangaDao {
         resp.put(neighborhood.toString(),  changaBuilder.getNeighborhood());
         resp.put(number.toString(),  changaBuilder.getNumber());
         // date convertion
-        java.sql.Date sqldate = java.sql.Date.valueOf(changaBuilder.getCreation_date().toLocalDate());
+        java.sql.Date sqldate = java.sql.Date.valueOf(LocalDate.now());
         resp.put(creation_date.toString(), sqldate);
         if(changaBuilder.getState() == null) {
             changaBuilder.withState(ChangaState.emitted);

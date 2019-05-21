@@ -68,11 +68,7 @@
                         <td>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <form:select  class="form-control" path="category">
-                                        <c:forEach items="${categories}" var="category">
-                                            <option value="${category}">${category}</option>
-                                        </c:forEach>
-                                    </form:select>
+                                    <form:select  class="form-control" path="category" items="${categories}" />
                                 </div>
                                 <form:errors cssClass="form-error" path="category" element="p"/>
                             </div>
@@ -90,7 +86,7 @@
                         <td>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <form:input class="form-control" path="neighborhood"/>
+                                    <form:select class="form-control" items="${neighborhoods}" path="neighborhood"/>
                                 </div>
                                 <form:errors cssClass="form-error" path="neighborhood" element="p"/>
                             </div>
