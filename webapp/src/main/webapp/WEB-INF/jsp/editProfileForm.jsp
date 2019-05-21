@@ -77,7 +77,7 @@
             </tr>
         </table>
 
-        <div class="form-group">
+        <div class="d-flex justify-content-center form-group">
             <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="editProfile.btn"/></button>
         </div>
     </form:form>
