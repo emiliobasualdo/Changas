@@ -12,7 +12,7 @@
         <c:url value="/signup" var="createUrl" />
         <form:form action="${createUrl}" modelAttribute="signUpForm" method="post">
             <h2><spring:message code="signUpBody.header"/></h2>
-            <table style="width: 100%">
+            <table class="table-form">
                 <tr>
                     <td>
                         <div class="form-group">
@@ -127,7 +127,7 @@
                     </td>
                 </tr>
             </table>
-            <div class="form-group">
+            <div class="d-flex justify-content-center form-group">
                 <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="signUpBody.button"/></button>
             </div>
             <p class="small text-center"><spring:message code="signUpBody.alert.termsAndPivacyP"/>.</p>

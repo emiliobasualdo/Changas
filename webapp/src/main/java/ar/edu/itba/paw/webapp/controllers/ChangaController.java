@@ -164,6 +164,12 @@ public class ChangaController {
         mav.addObject("notInscribedUsers", inscribedUsers.getValue().isEmpty());
         inscribedUsers.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout);
         mav.addObject("inscribedUsers", inscribedUsers.getValue());
+        Either<Boolean, Validation> hasAcceptedUsers = is.hasAcceptedUsers(id);
+        if(!hasAcceptedUsers.isValuePresent()){
+            response.setStatus(hasAcceptedUsers.getAlternative().getHttpStatus().value());
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(hasAcceptedUsers.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+        }
+        mav.addObject("hasAcceptedUsers", hasAcceptedUsers.getValue());
         return mav;
     }
 

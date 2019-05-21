@@ -10,7 +10,7 @@
     <body>
         <div class="login-form">
             <c:url value="/login" var="loginUrl" />
-            <form action="${loginUrl}"  method="post">
+            <form action="${loginUrl}" method="post">
                 <div class="avatar">
                     <img src="https://i.imgur.com/dGo8DOk.jpg" alt="Avatar">
                 </div>
@@ -30,8 +30,8 @@
                     <label class="pull-left checkbox-inline" style="margin-left: 3px"><input type="checkbox" name="j_rememberme"><spring:message code="logInBody.checkbox"/></label>
                 </div>
             </form>
-            <c:url value="/login/forgot-password" var="forgotPasswordUrl" />
-            <div style="text-align: center">
+            <div style="text-align: center; margin-top: auto;">
+                <c:url value="/login/forgot-password" var="forgotPasswordUrl" />
                 <a href="${forgotPasswordUrl}" class="pull-right text-center small"><spring:message code="loginBody.alert.forgotPassword"/></a>
                 <c:url value="/signup" var="signupUrl" />
                 <p class="text-center small"><spring:message code="loginBody.alert.noAccount"/><a href="${signupUrl}"><spring:message code="loginBody.btn.singUp"/></a></p>

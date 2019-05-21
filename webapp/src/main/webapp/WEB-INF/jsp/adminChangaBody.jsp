@@ -8,12 +8,12 @@
 </head>
 
 <body>
-    <div class="jumbotron jumbotron-fluid" style="margin-top: 2cm">
+    <div class="jumbotron custom-margin">
         <div class="container">
             <h2>
                 <c:out value="${changa.title}" />
             </h2>
-            <h5 style="margin-top: 1cm">
+            <h5>
                 <c:out value="${changa.description}" />
             </h5>
             <h5>
@@ -26,18 +26,16 @@
     <div class="container">
         <c:choose>
             <c:when test="${notInscribedUsers}">
-                <div class="btn-group">
-                    <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-12 p-0">
                         <c:url value="/edit-changa?id=${changa.changa_id}" var="editChangaUrl" />
                         <a id="btnedit" href="${editChangaUrl}" class="btn btn-info center-pill"><spring:message code="adminchangaBody.btn.edit"/></a>
                         <br />
                     </div>
-                    <div class="container">
-                        <div class="container">
-                            <button id="btndelete1" type="button" class="btn btn-danger center-pill" data-toggle="modal" data-target="#deleteModal">
-                                <spring:message code="adminchangaBody.btn.delete"/>
-                            </button>
-                        </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12 p-0">
+                        <button id="btndelete1" type="button" class="btn btn-danger center-pill" data-toggle="modal" data-target="#deleteModal">
+                            <spring:message code="adminchangaBody.btn.delete"/>
+                        </button>
                     </div>
                     <br />
                 </div>
@@ -59,28 +57,31 @@
                     </div>
                 </div>
                 <br />
-                <div class="btn-group">
-                    <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-12 p-0">
                         <button id="btndelete2" type="button" class="btn btn-danger center-pill" data-toggle="modal" data-target="#deleteModal">
                             <spring:message code="adminchangaBody.btn.delete"/>
                         </button>
-                    </div>
-                    <br />
-                        <%--todo: chequear q haya al menos un usuario aceptado antes--%>
-                    <div class="container">
-                        <button id="btnsettle1" type="button" class="btn btn-success center-pill" data-toggle="modal" data-target="#settleModal">
-                            <spring:message code="adminchangaBody.btn.settle"/>
-                        </button>
                         <br />
                     </div>
-                    <c:if test="${changa.state == 'settled'}">
-                        <div class="container">
-                            <button id="btnend1" type="button" class="btn btn-success center-pill" data-toggle="modal" data-target="#doneModal">
-                                <spring:message code="adminchangaBody.btn.done"/>
-                            </button>
-                            <br />
-                        </div>
-                    </c:if>
+                    <c:choose>
+                        <c:when test="${changa.state == 'settled'}">
+                            <div class="col-lg-4 col-md-4 col-sm-12 p-0">
+                                <button id="btnend1" type="button" class="btn btn-success center-pill" data-toggle="modal" data-target="#doneModal">
+                                    <spring:message code="adminchangaBody.btn.done"/>
+                                </button>
+                                <br />
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="col-lg-4 col-md-4 col-sm-12 p-0">
+                                <button id="btnsettle1" type="button" class="btn btn-success center-pill" data-toggle="modal" data-target="#settleModal">
+                                    <spring:message code="adminchangaBody.btn.settle"/>
+                                </button>
+                                <br />
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </c:otherwise>
         </c:choose>
@@ -147,12 +148,18 @@
                 </div>
                 <div class="modal-footer">
                     <button <%--id="btncancel3"--%> type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="adminchangaBody.btn.cancel"/></button>
-                    <c:url value="/settle-changa" var="settleUrl" />
-                    <form action="${settleUrl}" method="post">
-                        <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-                        <input <%--id="btnsettle2"--%> type="submit"  class="btn btn-success center-pill" value="<spring:message code="adminchangaBody.btn.settle"/>"/>
-                    </form>
-                    <br />
+                    <c:choose>
+                        <c:when test="${hasAcceptedUsers}">
+                            <c:url value="/settle-changa" var="settleUrl" />
+                            <form action="${settleUrl}" method="post">
+                                <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
+                                <input <%--id="btnsettle2"--%> type="submit"  class="btn btn-success center-pill" value="<spring:message code="adminchangaBody.btn.settle"/>"/>
+                            </form>
+                        </c:when>
+                        <c:otherwise>
+                            <%--todo: pop up de error--%>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
         </div>
