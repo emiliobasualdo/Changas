@@ -32,15 +32,13 @@ import static ar.edu.itba.paw.models.Pair.buildPair;
 @Repository
 public class ChangaJdbcDao implements ChangaDao {
     private final static RowMapper<Changa> ROW_MAPPER = (rs, rowNum) -> changaFromRS(rs);
-    private final static int PAGE_SIZE = 50;
+    private final static int PAGE_SIZE = 30;
 
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert jdbcInsert;
 
-    private Connection conn;
     @Autowired
-    public ChangaJdbcDao(final DataSource ds) throws SQLException {
-        conn = ds.getConnection();
+    public ChangaJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(ds)
                 .withTableName(changas.name())
@@ -152,7 +150,7 @@ public class ChangaJdbcDao implements ChangaDao {
 
     private String getString(String filter, String sql, List<String> params, String column) {
         if(!filter.equals("")){
-            sql += "AND "+ column + " = ?";
+            sql += " AND "+ column + " = ? ";
             params.add(filter);
         }
         return sql;
