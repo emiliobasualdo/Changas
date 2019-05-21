@@ -276,6 +276,15 @@ public class ChangaController {
         }
     }
 
+    @RequestMapping(value = "/changas/{changaId}/portrait-image")
+    public void getFile(HttpServletResponse resp, @PathVariable String changaId) {
+        Either<byte[], Validation> either = cs.putImage(changaId)
+        if (!either.isValuePresent()) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
+        }
+    }
+
     private Either<Changa, ModelAndView> getChangaById(final long id, User loggedUser,  HttpServletResponse response) {
         Either<Changa, Validation> changa = cs.getChangaById(id);
         if (!changa.isValuePresent()) {
