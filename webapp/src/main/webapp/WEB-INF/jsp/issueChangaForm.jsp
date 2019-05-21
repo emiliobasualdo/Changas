@@ -68,7 +68,11 @@
                         <td>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <form:select  class="form-control" path="category" items="${categories}" />
+                                    <form:select  class="form-control" path="category">
+                                        <c:forEach items="${categories}" var="category">
+                                            <option value="${category}"><spring:message code="${category}"/></option>
+                                        </c:forEach>
+                                    </form:select>
                                 </div>
                                 <form:errors cssClass="form-error" path="category" element="p"/>
                             </div>
@@ -144,7 +148,7 @@
                         </td>
                     </tr>
                 </table>
-                <div class="form-group">
+                <div class="d-flex justify-content-center form-group">
                     <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="issueChangaForm.btn"/></button>
                 </div>
             </form:form>

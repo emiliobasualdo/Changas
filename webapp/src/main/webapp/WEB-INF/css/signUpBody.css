@@ -26,6 +26,7 @@ body {
 }
 .signup-form .form-group {
     margin-bottom: 20px;
+    justify-items: center;
 }
 .signup-form .form-control {
 
