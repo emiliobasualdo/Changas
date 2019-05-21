@@ -128,8 +128,7 @@ public class ChangaServiceImpl implements ChangaService {
                 return Either.alternative(SETTLE_WHEN_EMPTY);
             }
             return chDao.changeChangaState(changa.getChanga_id(), newState);
-        }
-        else
+        } else
             return Either.alternative(CHANGE_NOT_POSSIBLE);
     }
 

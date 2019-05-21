@@ -207,7 +207,6 @@ public class ChangaJdbcDao implements ChangaDao {
         return getById(changaId);
     }
 
-
     private List<Changa> generateRandomChangas() {
         int N_CHANGAS = 100;
         String[] title = {"Necesito que me enseñen a sumar", "Necesito que coodeen el proyecto de PAW por mi", "Explicarme por qué RiBer se fue a la B", "Bañar el perro", "Lavar los platos", "Lavarme el auto", "Instalar Word en un computadora", "Cuidar el perro el finde largo","Arreglar estantes de madera rotos", "Crear ai para entender a mi mujer"};
