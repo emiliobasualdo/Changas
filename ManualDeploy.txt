@@ -10,13 +10,14 @@ a) nano webapp/src/main/resources/config/application.properties // copy->paste->
 
 /// 4) Buildeamos
 cd Changas
-mvb package // -DskipTests para skipper tests
+mvn package // -DskipTests para skipper tests
  
 /// 5) Log in por SFTP al servidor 10.16.1.110
 sftp paw-2019a-3@10.16.1.110
 password: tbpkI6aN8
 
 /// 6) trasferimos el archivo
+cd web
 put webapp/target/app.war
 
 /// 7) crear tablas (si no están creadas)
