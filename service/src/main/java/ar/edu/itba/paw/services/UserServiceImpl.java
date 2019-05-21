@@ -173,4 +173,14 @@ public class UserServiceImpl implements UserService {
         return userDao.update(userId, userBuilder);
     }
 
+    @Override
+    public Validation addRating(long userId, double newRating) {
+        Either<User, Validation> either = userDao.getById(userId);
+        if (!either.isValuePresent()) {
+            return either.getAlternative();
+        }
+        newRating = (newRating + either.getValue().getRating() + 0.5) / 2;
+        return userDao.setRating(userId, newRating);
+    }
+
 }

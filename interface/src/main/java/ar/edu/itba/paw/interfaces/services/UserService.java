@@ -29,4 +29,5 @@ public interface UserService {
     Either<VerificationToken, Validation> createNewVerificationToken(String existingTokenValue);
     boolean isUserEnabled(long user_id);
 
+    Validation addRating(long userId, double newRating);
 }
