@@ -4,6 +4,8 @@
 <!-- https://bootsnipp.com/snippets/K0ZmK -->
 <html>
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
         <style><%@ include file="/WEB-INF/css/profileBody.css" %></style>
     </head>
     <body>

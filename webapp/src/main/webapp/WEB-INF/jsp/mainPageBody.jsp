@@ -4,6 +4,7 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
     <script src="http://code.jquery.com/jquery-latest.js"> </script>
 
@@ -11,7 +12,7 @@
         var page = 1;
         $(document).ready(function(){
             var totalPages = $('#totalPages').val()-1;
-            showMoreBtn(page, totalPages);
+            showMoreBtn(0, totalPages);
             $('#myAnchor').click(function(e){
                 e.preventDefault();
                 $.get('/page?page='+page, function(data) {
