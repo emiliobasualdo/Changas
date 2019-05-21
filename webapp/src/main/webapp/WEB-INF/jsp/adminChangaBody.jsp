@@ -62,7 +62,15 @@
                             <c:set var="changaId" value="${changa.changa_id}" scope="request"/>
                             <c:set var="userId" value="${entry.key.user_id}" scope="request"/>
                             <c:set var="state" value="${entry.value.state}" scope="request"/>
-                            <c:import url="inscribedUserCard.jsp"/>
+
+                            <c:choose>
+                                <c:when test="${changa.state == 'settled'}">
+                                    <c:import url="userRatingCard.jsp"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:import url="inscribedUserCard.jsp"/>
+                                </c:otherwise>
+                            </c:choose>
                         </c:forEach>
                     </div>
                 </div>
