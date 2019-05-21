@@ -35,4 +35,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return Optional.empty(); // por tiempo limitado
     }
 
+    public boolean isLoggedUserAuthorizedToUpdateUser(long userId) {
+        return getLoggedUser().isPresent() && getLoggedUser().get().getUser_id() == userId;
+    }
 }

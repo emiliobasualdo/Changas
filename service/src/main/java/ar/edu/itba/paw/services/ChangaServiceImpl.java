@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
 import ar.edu.itba.paw.interfaces.services.AuthenticationService;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
+import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.ChangaState;
@@ -25,6 +26,9 @@ public class ChangaServiceImpl implements ChangaService {
 
     @Autowired
     private InscriptionDao inDao;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private AuthenticationService authenticationService;
@@ -52,6 +56,9 @@ public class ChangaServiceImpl implements ChangaService {
 
     @Override
     public Either<Changa, Validation> create(final Changa.Builder changaBuilder) {
+        if (!userService.isUserEnabled(changaBuilder.getUser_id())){
+            return Either.alternative(DISABLED_USER);
+        }
         return chDao.create(changaBuilder);
     }
 

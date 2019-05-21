@@ -81,10 +81,10 @@ public class ChangaController {
         form.setNeighborhood(changa.getValue().getNeighborhood());
         form.setDescription(changa.getValue().getDescription());
         form.setCategory(changa.getValue().getCategory());
-        form.setCategory(changa.getValue().getCategory());
         return new ModelAndView("editChangaForm")
                 .addObject("id", id)
-                .addObject("categories", filtersService.getCategories());
+                .addObject("categories", filtersService.getCategories())
+                .addObject("neighborhoods", filtersService.getNeighborhoods());
     }
 
     @RequestMapping(value = "/edit-changa", method = RequestMethod.POST )

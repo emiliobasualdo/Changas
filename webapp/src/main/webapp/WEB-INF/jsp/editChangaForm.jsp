@@ -89,9 +89,7 @@
                             <div class="input-group">
                                 <form:select class="form-control" path="neighborhood">
                                     <c:forEach items="${neighborhoods}" var="neighborhood">
-                                        <c:choose>
-                                            <option value="${neighborhood}">${neighborhood}</option>
-                                        </c:choose>
+                                            <form:option value="${neighborhood}">${neighborhood}</form:option>
                                     </c:forEach>
                                 </form:select>
                             </div>

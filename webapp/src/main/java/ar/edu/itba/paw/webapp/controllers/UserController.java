@@ -70,6 +70,7 @@ public class UserController {
 
     @RequestMapping(value = "/signup", method = { RequestMethod.POST })
     public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors, final WebRequest request, HttpServletResponse response) {
+        System.out.println("Registrando");
         if (errors.hasErrors()) {
 
             System.out.println("Errores en los campos del formulario sign up");
