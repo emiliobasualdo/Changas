@@ -147,7 +147,7 @@ public class ChangaJdbcDao implements ChangaDao {
 
     private String getString(String filter, String sql, List<String> params, String column, Eval evaluation) {
         if(!filter.equals("")){
-            sql += "AND "+ column + " " + evaluation.eval+ " ?";
+            sql += " AND "+ column + " " + evaluation.eval+ " ? ";
             params.add(filter);
         }
         return sql;
