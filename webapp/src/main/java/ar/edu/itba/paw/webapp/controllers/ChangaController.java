@@ -39,12 +39,13 @@ public class ChangaController {
     private MessageSource messageSource;
 
     @Autowired
-    private filtersService catService;
+    private filtersService filtersService;
 
     @RequestMapping(value = "/create-changa")
     public ModelAndView createChanga(@ModelAttribute("changaForm") final ChangaForm form) {
         return new ModelAndView("issueChangaForm")
-                .addObject("categories", catService.getCategories());
+                .addObject("categories", filtersService.getCategories())
+                .addObject("neighborhoods", filtersService.getNeighborhoods());
     }
 
     @RequestMapping(value = "/create-changa", method = RequestMethod.POST )
@@ -53,13 +54,13 @@ public class ChangaController {
         if (errors.hasErrors()) {
             return createChanga(form);
         }
-        Either<Changa, Validation> changa = cs.create(new Changa.Builder().withUserId(loggedUser.getUser_id())
+        Either<Changa, Validation> changa = cs.create(new Changa.Builder()
+                .withUserId(loggedUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
                 .inCategory(form.getCategory())
-                .createdAt(LocalDateTime.now())
         );
 
         if (!changa.isValuePresent()) {
@@ -83,10 +84,10 @@ public class ChangaController {
         form.setNeighborhood(changa.getValue().getNeighborhood());
         form.setDescription(changa.getValue().getDescription());
         form.setCategory(changa.getValue().getCategory());
-        form.setCategory(changa.getValue().getCategory());
         return new ModelAndView("editChangaForm")
                 .addObject("id", id)
-                .addObject("categories", catService.getCategories());
+                .addObject("neighborhoods", filtersService.getNeighborhoods())
+                .addObject("categories", filtersService.getCategories());
     }
 
     @RequestMapping(value = "/edit-changa", method = RequestMethod.POST )
@@ -98,13 +99,12 @@ public class ChangaController {
         if(!changa.isValuePresent()) {
             return changa.getAlternative();
         }
-
         cs.update(id, new Changa.Builder().withUserId(loggedUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
                 .withState(changa.getValue().getState())
-                .inCategory(changa.getValue().getCategory())
+                .inCategory(form.getCategory())
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
         );
         return new ModelAndView("redirect:/profile");
@@ -147,6 +147,8 @@ public class ChangaController {
         mav.addObject("changaOwner", changaOwner.getValue());
         mav.addObject("userAlreadyInscribedInChanga", userAlreadyInscribedInChanga);
         mav.addObject("userOwnsChanga", false);
+        /*Either<String, Validation> urlImage = .... ;*/
+        mav.addObject("urlImage", "/img/nieve1.jpg");
         return mav;
     }
 
@@ -167,6 +169,15 @@ public class ChangaController {
         mav.addObject("notInscribedUsers", inscribedUsers.getValue().isEmpty());
         inscribedUsers.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout);
         mav.addObject("inscribedUsers", inscribedUsers.getValue());
+        Either<Boolean, Validation> hasAcceptedUsers = is.hasAcceptedUsers(id);
+        if(!hasAcceptedUsers.isValuePresent()){
+            response.setStatus(hasAcceptedUsers.getAlternative().getHttpStatus().value());
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(hasAcceptedUsers.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+        }
+        mav.addObject("hasAcceptedUsers", hasAcceptedUsers.getValue());
+        /*Either<String, Validation> urlImage = .... ;*/
+        mav.addObject("urlImage", "/img/T0lwiBK8.jpg");
+
         return mav;
     }
 

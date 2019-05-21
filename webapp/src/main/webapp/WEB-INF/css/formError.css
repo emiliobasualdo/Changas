@@ -1,3 +1,57 @@
 .form-error{
     color: #ff0000;
 }
+
+.error-form {
+    text-align: center;
+    margin-bottom: 0;
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+.error-form form {
+    display: inline-block;
+    color: #7a7a7a;
+    border-radius: 2px;
+    background: white;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    position: relative;
+}
+.error-form h2 {
+    margin: 35px 0 25px;
+}
+.error-form .avatar {
+    position: absolute;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    top: -50px;
+    width: 95px;
+    height: 95px;
+    border-radius: 50%;
+    z-index: 9;
+    background: #26B3BA;
+    padding: 15px;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
+}
+.error-form input[type="checkbox"] {
+    margin-top: 2px;
+}
+.error-form .btn {
+    font-weight: bold;
+    background: #26B3BA;
+    border: none;
+    margin-bottom: 20px;
+}
+.error-form .btn:hover, .error-form .btn:focus {
+    background: #26B3BA;
+    outline: none !important;
+}
+.error-form a {
+    color: black;
+    text-decoration: underline;
+}
+.error-form a:hover {
+    text-decoration: none;
+}

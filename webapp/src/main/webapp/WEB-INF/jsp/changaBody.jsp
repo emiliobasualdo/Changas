@@ -1,25 +1,30 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <html>
 
 <head>
-    <style><%@include file="/WEB-INF/css/changaBody.css"%></style>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style><%@include file="/WEB-INF/css/adminChangaBody.css"%></style>
 </head>
 
 <body>
 
-    <div class="jumbotron jumbotron-fluid" style="margin-top: 2cm">
+    <div class="jumbotron custom-margin">
         <div class="container">
             <h2>
                 <c:out value="${changa.title}" />
             </h2>
-            <h5 style="margin-top: 1cm">
+            <h5>
                 <c:out value="${changa.description}" />
             </h5>
             <h5>
                 <c:out value="${changa.price}" /> $
             </h5>
+        </div>
+        <div class="container">
+            <c:url value="${urlImage}" var="mudanzaImage"/>
+            <img src="${mudanzaImage}" alt="Changa Image">
         </div>
     </div>
 
