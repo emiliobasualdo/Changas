@@ -5,6 +5,7 @@
 <html>
 
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
         <style><%@include file="/WEB-INF/css/changaCard.css"%></style>
     </head>

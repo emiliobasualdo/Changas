@@ -28,13 +28,13 @@ import static ar.edu.itba.paw.interfaces.util.Validation.*;
 @Repository
 public class ChangaJdbcDao implements ChangaDao {
     private final static RowMapper<Changa> ROW_MAPPER = (rs, rowNum) -> changaFromRS(rs);
-    private final static int PAGE_SIZE = 50;
+    private final static int PAGE_SIZE = 30;
 
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert jdbcInsert;
 
     @Autowired
-    public ChangaJdbcDao(final DataSource ds) throws SQLException {
+    public ChangaJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(ds)
                 .withTableName(changas.name())
@@ -59,7 +59,6 @@ public class ChangaJdbcDao implements ChangaDao {
     @Override
     public Either<Changa, Validation> create(final Changa.Builder changaBuilder) {
         Number changaId;
-        System.out.println("Ayuda perrooo");
         Map<String, Object> changaRow = changaToTableRow(changaBuilder);
         try {
             changaId = jdbcInsert.executeAndReturnKey(changaRow);

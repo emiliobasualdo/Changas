@@ -138,8 +138,13 @@ public class MainPageController {
     }
 
     @RequestMapping(value = "/page")
-    public ModelAndView showMoreChangas(@RequestParam("page") int page, @ModelAttribute("getLoggedUser") User loggedUser, @ModelAttribute("isUserLogged") boolean isUserLogged) {
-        Either<List<Changa>, Validation> maybeChangas = cs.getEmittedChangas(page);
+    public ModelAndView showMoreChangas(@RequestParam("page") int page,
+                                        @ModelAttribute("getLoggedUser") User loggedUser,
+                                        @ModelAttribute("isUserLogged") boolean isUserLogged,
+                                        @RequestParam(value = "cfilter", defaultValue = "") String categoryFilter,
+                                        @RequestParam(value = "tfilter", defaultValue = "") String titleFilter,
+                                        @RequestParam(value = "nfilter", defaultValue = "") String neighborhoodFilter) {
+        Either<List<Changa>, Validation> maybeChangas = cs.getEmittedChangasFiltered(page, categoryFilter, titleFilter, neighborhoodFilter);
         if (!maybeChangas.isValuePresent()) {
             return new ModelAndView();
         }

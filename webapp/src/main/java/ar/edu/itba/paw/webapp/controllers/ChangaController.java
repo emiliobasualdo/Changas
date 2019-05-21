@@ -101,7 +101,7 @@ public class ChangaController {
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
                 .withState(changa.getValue().getState())
-                .inCategory(changa.getValue().getCategory())
+                .inCategory(form.getCategory())
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
         );
         return new ModelAndView("redirect:/profile");
@@ -144,6 +144,8 @@ public class ChangaController {
         mav.addObject("changaOwner", changaOwner.getValue());
         mav.addObject("userAlreadyInscribedInChanga", userAlreadyInscribedInChanga);
         mav.addObject("userOwnsChanga", false);
+        /*Either<String, Validation> urlImage = .... ;*/
+        mav.addObject("urlImage", "/img/nieve1.jpg");
         return mav;
     }
 
@@ -164,6 +166,15 @@ public class ChangaController {
         mav.addObject("notInscribedUsers", inscribedUsers.getValue().isEmpty());
         inscribedUsers.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout);
         mav.addObject("inscribedUsers", inscribedUsers.getValue());
+        Either<Boolean, Validation> hasAcceptedUsers = is.hasAcceptedUsers(id);
+        if(!hasAcceptedUsers.isValuePresent()){
+            response.setStatus(hasAcceptedUsers.getAlternative().getHttpStatus().value());
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(hasAcceptedUsers.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+        }
+        mav.addObject("hasAcceptedUsers", hasAcceptedUsers.getValue());
+        /*Either<String, Validation> urlImage = .... ;*/
+        mav.addObject("urlImage", "/img/T0lwiBK8.jpg");
+
         return mav;
     }
 

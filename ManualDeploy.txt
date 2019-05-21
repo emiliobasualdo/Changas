@@ -4,19 +4,22 @@ password:*****
 
 /// 2) SI todavía no se hizo, CLONAR
 git clone https://github.com/emiliobasualdo/Changas.git
+ó
+git pull origin dev
 
 /// 3) SI todavía no se hizo, subir archivo application.properties a webapp/src/main/resources/config/application.properties
 a) nano webapp/src/main/resources/config/application.properties // copy->paste->cntrl-x->y->enter
 
 /// 4) Buildeamos
 cd Changas
-mvb package // -DskipTests para skipper tests
+mvn package // -DskipTests para skipper tests
  
 /// 5) Log in por SFTP al servidor 10.16.1.110
 sftp paw-2019a-3@10.16.1.110
 password: tbpkI6aN8
 
 /// 6) trasferimos el archivo
+cd web
 put webapp/target/app.war
 
 /// 7) crear tablas (si no están creadas)
