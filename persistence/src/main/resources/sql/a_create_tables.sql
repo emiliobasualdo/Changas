@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS neighborhoods
 
 CREATE TABLE IF NOT EXISTS changa_picture
 (
-    changa_id SERIAL NOT NULL  REFERENCES changas (changa_id),
-    img_reference     VARCHAR(100),
-    PRIMARY KEY (changa_id, img_reference)
+    changa_id SERIAL NOT NULL REFERENCES changas (changa_id),
+    img_blobl bytea,
+    PRIMARY KEY (changa_id)
 );

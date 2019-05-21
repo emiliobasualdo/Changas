@@ -14,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.*;
@@ -131,13 +135,14 @@ public class ChangaServiceImpl implements ChangaService {
         return Either.value(resp);
     }
 
-    public Validation uploadChangaPicture(Uri uri) {
-//        Either<FileLink, Validation> fileLink = fileManager.upload(uri);
-//        if(!fileLink.isValuePresent()) {
-//            return fileLink.getAlternative();
-//        }
-//        return chDao.addChangaPictureReference(fileLink.getValue());
-        return OK;
+    @Override
+    public Validation uploadChangaPicture(File file) {
+        try {
+            chDao.addChangaPicture(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
+
+            e.printStackTrace();
+        }
     }
 
 }
