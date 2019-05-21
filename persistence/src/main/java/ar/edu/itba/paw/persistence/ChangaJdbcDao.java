@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -31,15 +32,13 @@ import static ar.edu.itba.paw.models.Pair.buildPair;
 @Repository
 public class ChangaJdbcDao implements ChangaDao {
     private final static RowMapper<Changa> ROW_MAPPER = (rs, rowNum) -> changaFromRS(rs);
-    private final static int PAGE_SIZE = 50;
+    private final static int PAGE_SIZE = 30;
 
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert jdbcInsert;
 
-    private Connection conn;
     @Autowired
-    public ChangaJdbcDao(final DataSource ds) throws SQLException {
-        conn = ds.getConnection();
+    public ChangaJdbcDao(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(ds)
                 .withTableName(changas.name())
@@ -67,11 +66,9 @@ public class ChangaJdbcDao implements ChangaDao {
         Map<String, Object> changaRow = changaToTableRow(changaBuilder);
         try {
             changaId = jdbcInsert.executeAndReturnKey(changaRow);
-        } catch (DataIntegrityViolationException e ) {
-            return Either.alternative(NO_SUCH_USER);
         } catch (Exception e ) {
             System.err.println(e.getMessage());
-            return Either.alternative(DATABASE_ERROR);
+            return Either.alternative(DATABASE_ERROR.withMessage(e.getMessage()));
         }
         return getById(changaId.longValue());
     }
@@ -153,7 +150,7 @@ public class ChangaJdbcDao implements ChangaDao {
 
     private String getString(String filter, String sql, List<String> params, String column) {
         if(!filter.equals("")){
-            sql += "AND "+ column + " = ?";
+            sql += " AND "+ column + " = ? ";
             params.add(filter);
         }
         return sql;
@@ -271,7 +268,7 @@ public class ChangaJdbcDao implements ChangaDao {
         resp.put(neighborhood.toString(),  changaBuilder.getNeighborhood());
         resp.put(number.toString(),  changaBuilder.getNumber());
         // date convertion
-        java.sql.Date sqldate = java.sql.Date.valueOf(changaBuilder.getCreation_date().toLocalDate());
+        java.sql.Date sqldate = java.sql.Date.valueOf(LocalDate.now());
         resp.put(creation_date.toString(), sqldate);
         if(changaBuilder.getState() == null) {
             changaBuilder.withState(ChangaState.emitted);

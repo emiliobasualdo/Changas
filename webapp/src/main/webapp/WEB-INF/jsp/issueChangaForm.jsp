@@ -50,7 +50,7 @@
                         <td>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <form:textarea rows="3" cssClass="form-control" path="description"/>
+                                    <form:textarea rows="3" class="form-control" path="description"/>
                                 </div>
                                 <form:errors cssClass="form-error" path="description" element="p"/>
                             </div>
@@ -68,11 +68,7 @@
                         <td>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <form:select  cssClass="form-control" path="category">
-                                        <c:forEach items="${categories}" var="category">
-                                            <option value="${category}">${category}</option>
-                                        </c:forEach>
-                                    </form:select>
+                                    <form:select  class="form-control" path="category" items="${categories}" />
                                 </div>
                                 <form:errors cssClass="form-error" path="category" element="p"/>
                             </div>
@@ -90,7 +86,7 @@
                         <td>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <form:input cssClass="form-control" path="neighborhood"/>
+                                    <form:select class="form-control" items="${neighborhoods}" path="neighborhood"/>
                                 </div>
                                 <form:errors cssClass="form-error" path="neighborhood" element="p"/>
                             </div>
@@ -107,7 +103,7 @@
                         <td>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <form:input cssClass="form-control" path="street"/>
+                                    <form:input class="form-control" path="street"/>
                                 </div>
                                 <form:errors cssClass="form-error" path="street" element="p"/>
                             </div>
@@ -124,7 +120,7 @@
                         <td>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <form:input cssClass="form-control" path="number"/>
+                                    <form:input class="form-control" path="number"/>
                                 </div>
                                 <form:errors cssClass="form-error" path="number" element="p"/>
                             </div>
@@ -141,14 +137,14 @@
                         <td>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <form:input cssClass="form-control" path="price"/>
+                                    <form:input class="form-control" path="price"/>
                                 </div>
                                 <form:errors cssClass="form-error" path="price" element="p"/>
                             </div>
                         </td>
                     </tr>
                 </table>
-                <div class="d-flex justify-content-center form-group">
+                <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="issueChangaForm.btn"/></button>
                 </div>
             </form:form>
