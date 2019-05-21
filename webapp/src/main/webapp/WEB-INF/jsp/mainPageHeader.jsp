@@ -1,11 +1,10 @@
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <html>
-
-    <head>
-        <style><%@ include file="/WEB-INF/css/mainPageHeader.css" %></style>
-    </head>
-
+<head>
+    <style><%@ include file="/WEB-INF/css/mainPageHeader.css" %></style>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
     <%@ include file="/WEB-INF/jsp/navigationBar.jsp" %>
 
     <div id="carousel-example-2" class="carousel slide carousel-fade z-depth-1-half" data-ride="carousel">
