@@ -9,7 +9,7 @@
         <style><%@ include file="/WEB-INF/css/profileBody.css" %></style>
     </head>
     <body>
-        <div class="container emp-profile">
+        <div class="container emp-profile" style="margin-top: 60px">
                 <div class="row">
                     <%-- todo
                     <div class="col-md-4">
@@ -21,7 +21,7 @@
                             </div>
                         </div>
                     </div>--%>
-                    <div class="col-md-8">
+                    <div class="col-xs-6 col-sm-6 col-md-8" id="div1">
                         <div class="profile-head">
 
                             <%--DATOS DEL USUARIO--%>
@@ -40,7 +40,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="col-md-4" style="float: right">
+                    <div class="col-xs-6 col-md-4" style="float: right" id="div2">
                         <p>
                             <c:url value="/edit-profile" var="editProfileUrl" />
                             <a href="${editProfileUrl}" class="profile-edit-btn"><spring:message code="profileBody.nav.edit"/></a>

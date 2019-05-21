@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Component
 public class AuthenticationServiceImpl implements AuthenticationService {
+
     @Autowired
     private UserService us;
 
