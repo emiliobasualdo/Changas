@@ -130,7 +130,7 @@
                             <spring:message code="adminchangaBody.deleted.successModal.message" var="message"/>
                             <c:set var="titleSuccess" value="${title}" scope="request"/>
                             <c:set var="messageSuccess" value="${message}" scope="request"/>
-                            <input data-dismiss="modal" class="btn btn-danger center-pill" value="<spring:message code="adminchangaBody.btn.delete"/>" data-toggle="modal" data-target="#succesDeleteModal"/>
+                            <input data-dismiss="modal" class="btn btn-danger center-pill" value="<spring:message code="adminchangaBody.btn.delete"/>" data-toggle="modal" data-target="#successDeleteModal"/>
                         </div>
                     </div>
                 </div>
@@ -140,7 +140,7 @@
     <c:url value="/delete-changa" var="deleteUrl" />
     <form action="${deleteUrl}" method="post">
         <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-        <c:set var="modalId" value="succesDeleteModal" scope="request"/>
+        <c:set var="modalId" value="successDeleteModal" scope="request"/>
         <%@include file="/WEB-INF/jsp/successModal.jsp"%>
     </form>
     <div class="modal fade" id="doneModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -175,7 +175,7 @@
     <c:url value="/close-changa" var="closeUrl" />
     <form action="${closeUrl}" method="post">
         <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-        <c:set var="modalId" value="succesDoneModal" scope="request"/>
+        <c:set var="modalId" value="successDoneModal" scope="request"/>
         <%@include file="/WEB-INF/jsp/successModal.jsp"%>
     </form>
     <div class="modal fade" id="settleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -197,7 +197,7 @@
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12 p-0">
                             <spring:message code="adminchangaBody.successModal.title" var="title"/>
-                            <spring:message code="adminchangaBody.settled.successModal.message" var="message"/>
+                            <spring:message code="adminchangaBody.settled.successModal.message" var="message" arguments="${changa.price}"/>
                             <c:set var="titleSuccess" value="${title}" scope="request"/>
                             <c:set var="messageSuccess" value="${message}" scope="request"/>
                             <input data-dismiss="modal" class="btn btn-success center-pill" value="<spring:message code="adminchangaBody.btn.settle"/>" data-toggle="modal" data-target="#successSettleModal"/>
@@ -210,7 +210,7 @@
     <c:url value="/settle-changa" var="settleUrl" />
     <form action="${settleUrl}" method="post">
         <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-        <c:set var="modalId" value="succesSettleModal" scope="request"/>
+        <c:set var="modalId" value="successSettleModal" scope="request"/>
         <%@include file="/WEB-INF/jsp/successModal.jsp"%>
     </form>
     <%@include file="/WEB-INF/jsp/errorModal.jsp"%>

@@ -1,8 +1,4 @@
 <html>
-
-<head>
-    <style><%@include file="/WEB-INF/css/successModal.css"%></style>
-</head>
 <%-- https://www.tutorialrepublic.com/codelab.php?topic=bootstrap&file=simple-success-confirmation-popup --%>
 <div id="${requestScope.modalId}" class="modal fade">
     <div class="modal-dialog modal-confirm">
