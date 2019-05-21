@@ -22,7 +22,7 @@
     <body>
         <div class="login-form">
             <c:url value="/login" var="loginUrl" />
-            <form action="${loginUrl}" method="post">
+            <form action="${loginUrl}" method="post" style="height: auto">
                 <div class="avatar">
                     <img src="https://i.imgur.com/dGo8DOk.jpg" alt="Avatar">
                 </div>

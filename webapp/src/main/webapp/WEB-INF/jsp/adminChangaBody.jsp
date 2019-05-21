@@ -4,8 +4,13 @@
 <html>
 
 <head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style><%@include file="/WEB-INF/css/adminChangaBody.css"%></style>
+    <style><%@include file="/WEB-INF/css/successModal.css"%></style>
 </head>
 
 <body>
@@ -125,17 +130,23 @@
                             <button <%--id="btncancel1"--%> type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="adminchangaBody.btn.cancel"/></button>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12 p-0">
-                            <c:url value="/delete-changa" var="deleteUrl" />
-                            <form action="${deleteUrl}" method="post">
-                                <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-                                <input <%--id="btndelete3"--%> type="submit"  class="btn btn-danger center-pill" value="<spring:message code="adminchangaBody.btn.delete"/>"/>
-                            </form>
+                            <spring:message code="adminchangaBody.successModal.title" var="title"/>
+                            <spring:message code="adminchangaBody.deleted.successModal.message" var="message"/>
+                            <c:set var="titleSuccess" value="${title}" scope="request"/>
+                            <c:set var="messageSuccess" value="${message}" scope="request"/>
+                            <input data-dismiss="modal" class="btn btn-danger center-pill" value="<spring:message code="adminchangaBody.btn.delete"/>" data-toggle="modal" data-target="#successDeleteModal"/>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <c:url value="/delete-changa" var="deleteUrl" />
+    <form action="${deleteUrl}" method="post">
+        <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
+        <c:set var="modalId" value="successDeleteModal" scope="request"/>
+        <%@include file="/WEB-INF/jsp/successModal.jsp"%>
+    </form>
     <div class="modal fade" id="doneModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -154,17 +165,23 @@
                             <button <%--id="btncancel2"--%> type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="adminchangaBody.btn.cancel"/></button>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12 p-0">
-                            <c:url value="/close-changa" var="closeUrl" />
-                            <form action="${closeUrl}" method="post">
-                                <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-                                <input <%--id="btnend2"--%> type="submit"  class="btn btn-success center-pill" value="<spring:message code="adminchangaBody.btn.done"/>" />
-                            </form>
+                            <spring:message code="adminchangaBody.successModal.title" var="title"/>
+                            <spring:message code="adminchangaBody.done.successModal.message" var="message"/>
+                            <c:set var="titleSuccess" value="${title}" scope="request"/>
+                            <c:set var="messageSuccess" value="${message}" scope="request"/>
+                            <input data-dismiss="modal" class="btn btn-success center-pill" value="<spring:message code="adminchangaBody.btn.done"/>" data-toggle="modal" data-target="#successDoneModal"/>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <c:url value="/close-changa" var="closeUrl" />
+    <form action="${closeUrl}" method="post">
+        <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
+        <c:set var="modalId" value="successDoneModal" scope="request"/>
+        <%@include file="/WEB-INF/jsp/successModal.jsp"%>
+    </form>
     <div class="modal fade" id="settleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -183,19 +200,24 @@
                             <button <%--id="btncancel3"--%> type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="adminchangaBody.btn.cancel"/></button>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12 p-0">
-                            <c:url value="/settle-changa" var="settleUrl" />
-                            <form action="${settleUrl}" method="post">
-                                <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
-                                <input <%--id="btnsettle2"--%> type="submit"  class="btn btn-success center-pill" value="<spring:message code="adminchangaBody.btn.settle"/>"/>
-                            </form>
+                            <spring:message code="adminchangaBody.successModal.title" var="title"/>
+                            <spring:message code="adminchangaBody.settled.successModal.message" var="message" arguments="${changa.price}"/>
+                            <c:set var="titleSuccess" value="${title}" scope="request"/>
+                            <c:set var="messageSuccess" value="${message}" scope="request"/>
+                            <input data-dismiss="modal" class="btn btn-success center-pill" value="<spring:message code="adminchangaBody.btn.settle"/>" data-toggle="modal" data-target="#successSettleModal"/>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <c:url value="/settle-changa" var="settleUrl" />
+    <form action="${settleUrl}" method="post">
+        <input type="hidden" name="changaId" value="<c:out value="${changa.changa_id}"/>">
+        <c:set var="modalId" value="successSettleModal" scope="request"/>
+        <%@include file="/WEB-INF/jsp/successModal.jsp"%>
+    </form>
     <%@include file="/WEB-INF/jsp/errorModal.jsp"%>
-    <%--<%@include file="/WEB-INF/jsp/successModal.jsp"%>--%>
 </body>
 
 </html>
