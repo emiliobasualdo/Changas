@@ -13,10 +13,21 @@
                 <div class="row">
                     <div class="col-xs-6 col-sm-6 col-md-8" id="div1">
                         <div class="profile-head">
-
-                            <h5><c:out value="${getLoggedUser.name}"/> <c:out value="${getLoggedUser.surname}"/></h5>
-                            <h6><c:out value="${getLoggedUser.email}"/></h6>
-                            <p><c:out value="${getLoggedUser.tel}"/></p>
+                            <div class="container custom-container">
+                                <div class="profile-img">
+                                    <c:url value="${urlImage}" var="mudanzaImage"/>
+                                    <img src="${mudanzaImage}" alt="Changa Image">
+                                    <div class="file btn btn-lg btn-primary">
+                                        <spring:message code="profileBody.nav.photo"/>
+                                        <input type="file" name="file"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container">
+                                <h5><c:out value="${getLoggedUser.name}"/> <c:out value="${getLoggedUser.surname}"/></h5>
+                                <h6><c:out value="${getLoggedUser.email}"/></h6>
+                                <p><c:out value="${getLoggedUser.tel}"/></p>
+                            </div>
 
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
                                 <li class="nav-item">

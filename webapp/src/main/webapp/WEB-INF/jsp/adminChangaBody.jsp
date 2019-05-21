@@ -22,6 +22,10 @@
             </h5>
             <h5><c:out value="${changa.neighborhood}" />, <c:out value="${changa.street}" /> <c:out value="${changa.number}" /></h5>
         </div>
+        <div class="container">
+            <c:url value="${urlImage}" var="mudanzaImage"/>
+            <img src="${mudanzaImage}" alt="Changa Image">
+        </div>
     </div>
 
     <div class="container">

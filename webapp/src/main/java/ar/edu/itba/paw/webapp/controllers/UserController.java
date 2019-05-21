@@ -118,6 +118,8 @@ public class UserController {
         }
         maybePublishedChangas.getValue().removeIf(e -> e.getState() == ChangaState.settled || e.getState() == ChangaState.closed || e.getState() == ChangaState.done);
         mav.addObject("publishedChangas", maybePublishedChangas.getValue());
+        /*Either<String, Validation> urlImage = .... ;*/
+        mav.addObject("urlImage", "/img/nieve1.jpg");
         return mav;
     }
 

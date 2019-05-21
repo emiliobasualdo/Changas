@@ -22,6 +22,10 @@
                 <c:out value="${changa.price}" /> $
             </h5>
         </div>
+        <div class="container">
+            <c:url value="${urlImage}" var="mudanzaImage"/>
+            <img src="${mudanzaImage}" alt="Changa Image">
+        </div>
     </div>
 
     <div class="container">
