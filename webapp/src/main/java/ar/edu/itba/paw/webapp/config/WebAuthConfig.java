@@ -40,7 +40,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement()
 //                .invalidSessionUrl("/logIn") //upon logout, you will be forwarded here por ahora no lo usamos
                 .and().authorizeRequests()
-                    .antMatchers("/", "/changa", "/filter", "/page", "/error", "/signup/resend-email-verification").permitAll()
+                    .antMatchers("/", "/changa", "/filter", "/page", "/error", "/registration-confirm").permitAll()
                     .antMatchers(HttpMethod.GET, "/create-changa").permitAll()
                     .antMatchers("/reset-password/validate").permitAll()
                     .antMatchers("/reset-password").hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
@@ -49,6 +49,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .and().formLogin()
                     .usernameParameter("j_username")
                     .passwordParameter("j_password")
+                    .failureUrl("/login/error")
                     //.defaultSuccessUrl("/", true) //the landing page after a successful login
                     .loginPage("/login") //the custom login page
                     //loginProcessingUrl() – the url to submit the username and password to
