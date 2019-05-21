@@ -105,7 +105,6 @@ public class EmailServiceImpl implements EmailService {
         return sendMimeEmail(user.getEmail(), messageSource.getMessage("mailConfirmation.Subject",null, LocaleContextHolder.getLocale()), mailConfirmationEmailBody(user, confirmUrl));
     }
 
-
     @Override
     public Validation resendMailConfirmationEmail(String existingToken, String registrationConfirmUrl) {
         Either<VerificationToken, Validation> newVerificationToken = userService.createNewVerificationToken(existingToken);

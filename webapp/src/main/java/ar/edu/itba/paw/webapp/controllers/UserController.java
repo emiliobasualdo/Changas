@@ -69,7 +69,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/signup", method = { RequestMethod.POST })
-    public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors, final WebRequest request, HttpServletResponse response) {
+    public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors, HttpServletResponse response, HttpServletRequest request) {
         if (errors.hasErrors()) {
 
             System.out.println("Errores en los campos del formulario sign up");
@@ -86,9 +86,7 @@ public class UserController {
             response.setStatus(user.getAlternative().getHttpStatus().value());
             return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(user.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         }
-        //String appUrl = request.getContextPath();
-        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
-        builder.scheme("http");
+        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromContextPath(request);
         URI uri = builder.build().toUri();
         Validation emailValidation = emailService.sendMailConfirmationEmail(user.getValue(), uri.toString());
         if(emailValidation == EMAIL_ERROR) {
@@ -99,7 +97,12 @@ public class UserController {
     }
 
     @RequestMapping("/login")
-    public ModelAndView logIn(@ModelAttribute("UserLoginForm") final UserLoginForm form) {
+    public ModelAndView logIn(@ModelAttribute("emailForm")ForgotPasswordForm form) {
+        return new ModelAndView("indexLogIn");
+    }
+
+    @RequestMapping("/login/error")
+    public ModelAndView logInError(@ModelAttribute("emailForm")ForgotPasswordForm form) {
         return new ModelAndView("indexLogIn");
     }
 
@@ -221,6 +224,5 @@ public class UserController {
         System.out.println("Contraseña restablecida");
         return new ModelAndView("redirect:/");
     }
-
 
 }

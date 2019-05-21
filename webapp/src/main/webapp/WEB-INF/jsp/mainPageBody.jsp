@@ -51,7 +51,7 @@
                                 <select name="nfilter" class="form-control search-slt" id="nfilter">
 
                                     <c:choose>
-                                        <c:when test="${nfilter.equals('')}">
+                                        <c:when test="${nfilter == ''}">
                                             <option value="${""}" selected><spring:message code="filters.all"/></option>
                                         </c:when>
                                         <c:otherwise>
@@ -77,7 +77,7 @@
                                 <select name="cfilter" class="form-control search-slt" id="cfilter">
 
                                     <c:choose>
-                                        <c:when test="${cfilter.equals('')}">
+                                        <c:when test="${cfilter == ''}">
                                             <option value="${""}" selected><spring:message code="filters.all"/></option>
                                         </c:when>
                                         <c:otherwise>

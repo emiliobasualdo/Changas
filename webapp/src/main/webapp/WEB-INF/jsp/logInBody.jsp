@@ -5,6 +5,17 @@
 
 <html>
     <head>
+        <script>
+
+            $(window).on('load', function() {
+                var pathname = window.location.pathname;
+                if (pathname === '/login/error' || pathname === '/login/resend-email-verification') {
+                    $('#errorModal').modal('toggle');
+                }
+            });
+
+        </script>
+        <style><%@include file="/WEB-INF/css/formError.css"%></style>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <style><%@ include file="/WEB-INF/css/loginBody.css" %></style>
     </head>
@@ -27,7 +38,7 @@
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-lg btn-block"><spring:message code="logInBody.button"/></button>
                 </div>
-                <div class="clearfix" style="text-align: center">
+                <div class="form-group clearfix" style="text-align: center">
                     <label class="pull-left checkbox-inline" style="margin-left: 3px"><input type="checkbox" name="j_rememberme"><spring:message code="logInBody.checkbox"/></label>
                 </div>
             </form>
@@ -39,4 +50,29 @@
             </div>
         </div>
     </body>
+
+    <div class="modal fade" id="errorModal"  tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true" >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="error-form">
+                    <c:url value="/login/resend-email-verification" var="resendEmailVerificationUrl" />
+                    <form:form class="error-form" action="${resendEmailVerificationUrl}" modelAttribute="emailForm" method="post">
+                        <h5 class="text-center"><spring:message code="loginBody.alert.badInput"/></h5>
+                        <hr>
+                        <h5 class="text-center"><spring:message code="loginBody.alert.accountVerification"/></h5>
+                        <div class="form-group">
+                            <p class="small text-center"><spring:message code="loginBody.alert.accountVerificationMessage"/></p>
+                            <form:input class="form-control" path="mail"/>
+                            <form:errors cssClass="form-error" path="mail" element="p"/>
+                        </div>
+                        <div class="form-group">
+                            <form:button type="submit" class="btn btn-primary btn-lg btn-block"><spring:message code="resendEmailVerificationBody.reset.btn"/></form:button>
+                            <form:button data-dismiss="modal" type="submit" class="btn btn-primary btn-lg btn-block">OK</form:button>
+                        </div>
+                    </form:form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </html>
