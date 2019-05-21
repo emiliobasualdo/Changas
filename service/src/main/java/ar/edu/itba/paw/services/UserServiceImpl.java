@@ -57,7 +57,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public  Either<User, Validation> register(final User.Builder userBuilder) {
-
         Either<User, Validation> either = userDao.findByMail(userBuilder.getEmail().toLowerCase());
 
         // if error is from database
@@ -92,6 +91,12 @@ public class UserServiceImpl implements UserService {
             return Either.alternative(NO_SUCH_USER);
         }
         return createVerificationToken(user.getValue());
+    }
+
+    @Override
+    public boolean isUserEnabled(long user_id) {
+        Either<User, Validation> user = findById(user_id);
+        return user.isValuePresent() && user.getValue().isEnabled();
     }
 
     @Override
@@ -162,14 +167,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Either<User, Validation> update(final long userId, User.Builder userBuilder) {
-        if(!isLoggedUserAuthorizedToUpdateUser(userId)){
+        if(!authenticationService.isLoggedUserAuthorizedToUpdateUser(userId)){
             return Either.alternative(UNAUTHORIZED);
         }
         return userDao.update(userId, userBuilder);
-    }
-
-    private boolean isLoggedUserAuthorizedToUpdateUser(long userId) {
-        return authenticationService.getLoggedUser().isPresent() && authenticationService.getLoggedUser().get().getUser_id() == userId;
     }
 
 }

@@ -1,14 +1,6 @@
 <html>
-<%--https://www.tutorialrepublic.com/codelab.php?topic=bootstrap&file=simple-success-confirmation-popup--%>
-<head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <style><%@include file="/WEB-INF/css/successModal.css"%></style>
-</head>
-<body>
-<div id="successModal" class="modal fade">
+<%-- https://www.tutorialrepublic.com/codelab.php?topic=bootstrap&file=simple-success-confirmation-popup --%>
+<div id="${requestScope.modalId}" class="modal fade">
     <div class="modal-dialog modal-confirm">
         <div class="modal-content">
             <div class="modal-header">
@@ -21,10 +13,9 @@
                 <p class="text-center"><c:out value="${requestScope.messageSuccess}" /></p>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success btn-block" data-dismiss="modal">OK</button>
+                <button class="btn btn-success btn-block" type="submit">OK</button>
             </div>
         </div>
     </div>
 </div>
-</body>
 </html>

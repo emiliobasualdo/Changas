@@ -87,8 +87,8 @@ public class ChangaController {
         form.setCategory(changa.getValue().getCategory());
         return new ModelAndView("editChangaForm")
                 .addObject("id", id)
-                .addObject("neighborhoods", filtersService.getNeighborhoods())
-                .addObject("categories", filtersService.getCategories());
+                .addObject("categories", filtersService.getCategories())
+                .addObject("neighborhoods", filtersService.getNeighborhoods());
     }
 
     @RequestMapping(value = "/edit-changa", method = RequestMethod.POST )
@@ -121,7 +121,7 @@ public class ChangaController {
         mav.addObject("changa", changa.getValue());
         boolean userAlreadyInscribedInChanga = false;
         if (isUserLogged) {
-            if (loggedUser.getUser_id() == changa.getValue().getUser_id()) {
+            if (loggedUser.getUser_id() == changa.getValue().getUser_id() && changa.getValue().getState()!= ChangaState.closed && changa.getValue().getState()!= ChangaState.done) {
                 return new ModelAndView("forward:/admin-changa").addObject("id", id);
             } else {
                 Either<Boolean, Validation> isUserInscribedInChanga = this.is.isUserInscribedInChanga(loggedUser.getUser_id(), id);
