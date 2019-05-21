@@ -7,11 +7,10 @@ import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.UserTokenState;
 import ar.edu.itba.paw.models.VerificationToken;
-import ar.edu.itba.paw.webapp.forms.ForgotPasswordForm;
+import ar.edu.itba.paw.webapp.forms.EmailForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -52,7 +50,7 @@ public class RegistrationController {
     private EmailService emailService;
 
     @RequestMapping(value = "/registration-confirm", method = RequestMethod.GET)
-    public ModelAndView confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token, HttpServletResponse response) {
+    public ModelAndView confirmRegistration(HttpServletRequest request, Model model, @RequestParam("token") String token, HttpServletResponse response) {
         //Se busca en la DB al token pasado en la url
         Either<VerificationToken, Validation> verificationToken = userService.getVerificationToken(token);
         if(!verificationToken.isValuePresent()) { //inexistent token
@@ -69,8 +67,7 @@ public class RegistrationController {
         if(userTokenState.getValue() == USER_DISABLED_EXPIRED_TOKEN) {
             //resend email verification
             System.out.println("user disabled expired token");
-            ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
-            builder.scheme("http");
+            ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromContextPath(request);
             URI uri = builder.build().toUri();
             return new ModelAndView("indexResendEmailVerification").addObject("token", token).addObject("uri", uri);
         }
@@ -100,12 +97,12 @@ public class RegistrationController {
     }
 
     @RequestMapping(value = "/login/resend-email-verification/")
-    public ModelAndView resendEmailVerification(@ModelAttribute("emailForm")ForgotPasswordForm form) {
+    public ModelAndView resendEmailVerification(@ModelAttribute("emailForm")EmailForm form) {
         return new ModelAndView("indexLogIn");
     }
 
     @RequestMapping(value = "/login/resend-email-verification", method = RequestMethod.POST)
-    public ModelAndView doResendEmailVerification(@ModelAttribute("emailForm")ForgotPasswordForm form, final BindingResult result, HttpServletRequest request) {
+    public ModelAndView doResendEmailVerification(@ModelAttribute("emailForm")EmailForm form, final BindingResult result, HttpServletRequest request) {
         if (result.hasErrors()) {
             return resendEmailVerification(form);
         }

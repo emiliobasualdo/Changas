@@ -3,7 +3,7 @@ package ar.edu.itba.paw.webapp.forms;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
-public class ForgotPasswordForm {
+public class EmailForm {
 
     @NotEmpty
     @Email
@@ -19,7 +19,7 @@ public class ForgotPasswordForm {
 
     @Override
     public String toString() {
-        return "ForgotPasswordForm{" +
+        return "EmailForm{" +
                 "mail='" + mail + '\'' +
                 '}';
     }
