@@ -15,25 +15,25 @@ public class FileManagerServiceImpl implements FileManagerService {
     private static final String APP_SECRET = "";
 
     public void pictureUpload() {
-        String picture = Capture.capturePhoto(1024, -1);
-        if(picture!=null){
-            String filestack = "https://www.filestackapi.com/api/store/S3?key=MY_KEY&filename=myPicture.jpg";
-            Request request = new MultipartRequest() {
-                protected void readResponse(InputStream input) throws IOException  {
-                    JSONParser jp = new JSONParser();
-                    Map<String, Object> result = jp.parseJSON(new InputStreamReader(input, "UTF-8"));
-                    String url = (String)result.get("url");
-                }
-            };
-            request.setUrl(filestack);
-            try {
-                request.addData("fileUpload", picture, "image/jpeg");
-                request.setFilename("fileUpload", "myPicture.jpg");
-                NetworkManager.getInstance().addToQueue(request);
-            } catch(IOException err) {
-                err.printStackTrace();
-            }
-        }
+//        String picture = Capture.capturePhoto(1024, -1);
+//        if(picture!=null){
+//            String filestack = "https://www.filestackapi.com/api/store/S3?key=MY_KEY&filename=myPicture.jpg";
+//            Request request = new MultipartRequest() {
+//                protected void readResponse(InputStream input) throws IOException  {
+//                    JSONParser jp = new JSONParser();
+//                    Map<String, Object> result = jp.parseJSON(new InputStreamReader(input, "UTF-8"));
+//                    String url = (String)result.get("url");
+//                }
+//            };
+//            request.setUrl(filestack);
+//            try {
+//                request.addData("fileUpload", picture, "image/jpeg");
+//                request.setFilename("fileUpload", "myPicture.jpg");
+//                NetworkManager.getInstance().addToQueue(request);
+//            } catch(IOException err) {
+//                err.printStackTrace();
+//            }
+//        }
     }
 
 }

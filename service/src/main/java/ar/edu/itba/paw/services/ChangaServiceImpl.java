@@ -137,7 +137,7 @@ public class ChangaServiceImpl implements ChangaService {
 //            return fileLink.getAlternative();
 //        }
 //        return chDao.addChangaPictureReference(fileLink.getValue());
-//        return OK;
+        return OK;
     }
 
 }
