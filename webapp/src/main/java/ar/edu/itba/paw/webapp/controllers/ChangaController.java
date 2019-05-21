@@ -81,7 +81,6 @@ public class ChangaController {
         form.setNeighborhood(changa.getValue().getNeighborhood());
         form.setDescription(changa.getValue().getDescription());
         form.setCategory(changa.getValue().getCategory());
-        form.setCategory(changa.getValue().getCategory());
         return new ModelAndView("editChangaForm")
                 .addObject("id", id)
                 .addObject("neighborhoods", filtersService.getNeighborhoods())
@@ -102,7 +101,7 @@ public class ChangaController {
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
                 .withState(changa.getValue().getState())
-                .inCategory(changa.getValue().getCategory())
+                .inCategory(form.getCategory())
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
         );
         return new ModelAndView("redirect:/profile");
