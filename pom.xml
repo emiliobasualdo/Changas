@@ -28,19 +28,19 @@
     </properties>
 
 
-    <!--TODO DESCOMENTAR ESTO EN PRODUCCION!!!!!!!!!!!!!. Mientras estamos en development, dejarlo comentado-->
-    <!--<build>-->
-        <!--<plugins>-->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-war-plugin</artifactId>-->
-                <!--<version>${maven-war-plugin.version}</version>-->
-                <!--<configuration>-->
-                    <!--<packagingExcludes>**/logback-test.xml</packagingExcludes>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
-        <!--</plugins>-->
-    <!--</build>-->
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${maven-war-plugin.version}</version>
+                <configuration>
+                    <packagingExcludes>**/logback-test.xml</packagingExcludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 
 

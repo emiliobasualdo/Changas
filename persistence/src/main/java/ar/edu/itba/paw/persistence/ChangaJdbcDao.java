@@ -213,6 +213,7 @@ public class ChangaJdbcDao implements ChangaDao {
         return getById(changaId);
     }
 
+
     private List<Changa> generateRandomChangas() {
         int N_CHANGAS = 100;
         long[] userId = {1, 2,3,4,5};

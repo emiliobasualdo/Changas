@@ -4,10 +4,12 @@ import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
 import ar.edu.itba.paw.interfaces.services.AuthenticationService;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
+import ar.edu.itba.paw.interfaces.services.FileManagerService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.ChangaState;
 import ar.edu.itba.paw.models.Either;
+import com.sun.jndi.toolkit.url.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,9 @@ public class ChangaServiceImpl implements ChangaService {
 
     @Autowired
     private AuthenticationService authenticationService;
+
+    @Autowired
+    private FileManagerService fileManager;
 
     @Override
     public Either<List<Changa>, Validation> getEmittedChangas(int pageNum) {
@@ -126,6 +131,13 @@ public class ChangaServiceImpl implements ChangaService {
         return Either.value(resp);
     }
 
-
+    public Validation uploadChangaPicture(Uri uri) {
+//        Either<FileLink, Validation> fileLink = fileManager.upload(uri);
+//        if(!fileLink.isValuePresent()) {
+//            return fileLink.getAlternative();
+//        }
+//        return chDao.addChangaPictureReference(fileLink.getValue());
+//        return OK;
+    }
 
 }
