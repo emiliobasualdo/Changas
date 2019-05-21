@@ -96,7 +96,6 @@ public class ChangaController {
         if(!changa.isValuePresent()) {
             return changa.getAlternative();
         }
-
         cs.update(id, new Changa.Builder().withUserId(loggedUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())

@@ -67,11 +67,7 @@
                         <td>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <form:select  class="form-control" path="category">
-                                        <c:forEach items="${categories}" var="category">
-                                            <option value="${category}"><spring:message code="${category}"/></option>
-                                        </c:forEach>
-                                    </form:select>
+                                    <form:select  class="form-control" path="category" items="${categories}" />
                                 </div>
                                 <form:errors cssClass="form-error" path="category" element="p"/>
                             </div>
@@ -89,11 +85,7 @@
                         <td>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <form:select class="form-control" path="neighborhood">
-                                        <c:forEach items="${neighborhoods}" var="neighborhood">
-                                            <option value="${neighborhood}">${neighborhood}</option>
-                                        </c:forEach>
-                                    </form:select>
+                                    <form:select class="form-control" items="${neighborhoods}" path="neighborhood"/>
                                 </div>
                                 <form:errors cssClass="form-error" path="neighborhood" element="p"/>
                             </div>
