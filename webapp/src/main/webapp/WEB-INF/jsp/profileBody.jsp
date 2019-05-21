@@ -26,6 +26,7 @@
                                 <h5><c:out value="${getLoggedUser.name}"/> <c:out value="${getLoggedUser.surname}"/></h5>
                                 <h6><c:out value="${getLoggedUser.email}"/></h6>
                                 <p><c:out value="${getLoggedUser.tel}"/></p>
+                                <p class="proile-rating">RANKING : <span>5/5</span></p>
                             </div>
 
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
