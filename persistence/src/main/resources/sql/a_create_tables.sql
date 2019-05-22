@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS users
     surname VARCHAR(100) NOT NULL,
     tel     VARCHAR(100) NOT NULL,
     email   VARCHAR(100) NOT NULL UNIQUE ,
-    passwd  VARCHAR(100) NOT NULL ,
+    passwd  VARCHAR(100) NOT NULL,
+    rating  DOUBLE PRECISION NOT NULL DEFAULT 5,
     enabled BOOLEAN DEFAULT FALSE
 );
 
@@ -16,7 +17,7 @@ CREATE TABLE IF NOT EXISTS changas
     street        VARCHAR(100),
     neighborhood  VARCHAR(100) NOT NULL,
     number        INTEGER ,
-    creation_date TIMESTAMP, /*falta not null, hay que reponer la información en el .sql*/
+    creation_date TIMESTAMP, /* falta not null, hay que reponer la información en el .sql*/
     title         VARCHAR(100) NOT NULL,
     description   VARCHAR(1000) NOT NULL ,
     state         VARCHAR(100) DEFAULT 'emitted' NOT NULL,

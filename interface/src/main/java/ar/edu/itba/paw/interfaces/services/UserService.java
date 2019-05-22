@@ -31,4 +31,7 @@ public interface UserService {
     Either<VerificationToken, Validation> createNewVerificationToken(String existingTokenValue);
     Either<String, Validation> putImage(long userId, OutputStream os);
     Either<byte[], Validation> getImage(long userId, String imageName);
+    boolean isUserEnabled(long user_id);
+
+    Validation addRating(long userId, double newRating);
 }

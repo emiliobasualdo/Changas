@@ -1,8 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
     <script src="http://code.jquery.com/jquery-latest.js"> </script>
 
@@ -10,10 +12,13 @@
         var page = 1;
         $(document).ready(function(){
             var totalPages = $('#totalPages').val()-1;
-            showMoreBtn(page, totalPages);
+            var title = $('#tfilter').val();
+            var neighborhood = $('#nfilter').val();
+            var category = $('#cfilter').val();
+            showMoreBtn(0, totalPages);
             $('#myAnchor').click(function(e){
                 e.preventDefault();
-                $.get('/page?page='+page, function(data) {
+                $.get('/page?page='+page+'&tfilter='+title+'&nfilter='+neighborhood+'&cfilter='+category, function(data) {
                     $('#container').append(data);
                     showMoreBtn(page, totalPages);
                     page++;
@@ -39,15 +44,14 @@
                     <div class="col-lg-12">
                         <div class="row">
                             <div class="col-lg-4 col-md-3 col-sm-12 p-0">
-                                <input name="tfilter" value="${tfilter}" class="form-control search-slt" placeholder="<spring:message code="mainPage.search"/>">
+                                <input id="tfilter" name="tfilter" value="${tfilter}" class="form-control search-slt" placeholder="<spring:message code="mainPage.search"/>">
                             </div>
-
 
                             <div class="col-lg-3 col-md-3 col-sm-12 p-0">
                                 <select name="nfilter" class="form-control search-slt" id="nfilter">
 
                                     <c:choose>
-                                        <c:when test="${nfilter.equals('')}">
+                                        <c:when test="${nfilter == ''}">
                                             <option value="${""}" selected><spring:message code="filters.all"/></option>
                                         </c:when>
                                         <c:otherwise>
@@ -73,7 +77,7 @@
                                 <select name="cfilter" class="form-control search-slt" id="cfilter">
 
                                     <c:choose>
-                                        <c:when test="${cfilter.equals('')}">
+                                        <c:when test="${cfilter == ''}">
                                             <option value="${""}" selected><spring:message code="filters.all"/></option>
                                         </c:when>
                                         <c:otherwise>

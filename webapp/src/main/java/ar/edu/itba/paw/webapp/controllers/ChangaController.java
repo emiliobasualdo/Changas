@@ -10,6 +10,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletContext;
@@ -39,12 +40,13 @@ public class ChangaController {
     private MessageSource messageSource;
 
     @Autowired
-    private filtersService catService;
+    private filtersService filtersService;
 
     @RequestMapping(value = "/create-changa")
     public ModelAndView createChanga(@ModelAttribute("changaForm") final ChangaForm form) {
         return new ModelAndView("issueChangaForm")
-                .addObject("categories", catService.getCategories());
+                .addObject("categories", filtersService.getCategories())
+                .addObject("neighborhoods", filtersService.getNeighborhoods());
     }
 
     @RequestMapping(value = "/create-changa", method = RequestMethod.POST )
@@ -53,13 +55,13 @@ public class ChangaController {
         if (errors.hasErrors()) {
             return createChanga(form);
         }
-        Either<Changa, Validation> changa = cs.create(new Changa.Builder().withUserId(loggedUser.getUser_id())
+        Either<Changa, Validation> changa = cs.create(new Changa.Builder()
+                .withUserId(loggedUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
                 .inCategory(form.getCategory())
-                .createdAt(LocalDateTime.now())
         );
 
         if (!changa.isValuePresent()) {
@@ -83,10 +85,10 @@ public class ChangaController {
         form.setNeighborhood(changa.getValue().getNeighborhood());
         form.setDescription(changa.getValue().getDescription());
         form.setCategory(changa.getValue().getCategory());
-        form.setCategory(changa.getValue().getCategory());
         return new ModelAndView("editChangaForm")
                 .addObject("id", id)
-                .addObject("categories", catService.getCategories());
+                .addObject("categories", filtersService.getCategories())
+                .addObject("neighborhoods", filtersService.getNeighborhoods());
     }
 
     @RequestMapping(value = "/edit-changa", method = RequestMethod.POST )
@@ -98,13 +100,12 @@ public class ChangaController {
         if(!changa.isValuePresent()) {
             return changa.getAlternative();
         }
-
         cs.update(id, new Changa.Builder().withUserId(loggedUser.getUser_id())
                 .withDescription(form.getDescription())
                 .withTitle(form.getTitle())
                 .withPrice(form.getPrice())
                 .withState(changa.getValue().getState())
-                .inCategory(changa.getValue().getCategory())
+                .inCategory(form.getCategory())
                 .atAddress(form.getStreet(), form.getNeighborhood(), form.getNumber())
         );
         return new ModelAndView("redirect:/profile");
@@ -120,7 +121,7 @@ public class ChangaController {
         mav.addObject("changa", changa.getValue());
         boolean userAlreadyInscribedInChanga = false;
         if (isUserLogged) {
-            if (loggedUser.getUser_id() == changa.getValue().getUser_id()) {
+            if (loggedUser.getUser_id() == changa.getValue().getUser_id() && changa.getValue().getState()!= ChangaState.closed && changa.getValue().getState()!= ChangaState.done) {
                 return new ModelAndView("forward:/admin-changa").addObject("id", id);
             } else {
                 Either<Boolean, Validation> isUserInscribedInChanga = this.is.isUserInscribedInChanga(loggedUser.getUser_id(), id);
@@ -147,6 +148,8 @@ public class ChangaController {
         mav.addObject("changaOwner", changaOwner.getValue());
         mav.addObject("userAlreadyInscribedInChanga", userAlreadyInscribedInChanga);
         mav.addObject("userOwnsChanga", false);
+        /*Either<String, Validation> urlImage = .... ;*/
+        mav.addObject("urlImage", "/img/nieve1.jpg");
         return mav;
     }
 
@@ -167,6 +170,15 @@ public class ChangaController {
         mav.addObject("notInscribedUsers", inscribedUsers.getValue().isEmpty());
         inscribedUsers.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout);
         mav.addObject("inscribedUsers", inscribedUsers.getValue());
+        Either<Boolean, Validation> hasAcceptedUsers = is.hasAcceptedUsers(id);
+        if(!hasAcceptedUsers.isValuePresent()){
+            response.setStatus(hasAcceptedUsers.getAlternative().getHttpStatus().value());
+            return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(hasAcceptedUsers.getAlternative().name(), null, LocaleContextHolder.getLocale()));
+        }
+        mav.addObject("hasAcceptedUsers", hasAcceptedUsers.getValue());
+        /*Either<String, Validation> urlImage = .... ;*/
+        mav.addObject("urlImage", "/img/nieve1.jpg");
+
         return mav;
     }
 
@@ -234,7 +246,6 @@ public class ChangaController {
         Validation val = is.inscribeInChanga(loggedUser.getUser_id(), changaId);
         if (val.isOk()){
             System.out.println("user "+ loggedUser.getUser_id()+ " successfully inscripto en changa "+ changaId);
-            //TODO hacer validaciones
             Changa changa = cs.getChangaById(changaId).getValue();
             User changaOwner = us.findById(changa.getUser_id()).getValue();
             emailService.sendJoinRequestEmail(changa, changaOwner, loggedUser);
@@ -274,6 +285,15 @@ public class ChangaController {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             System.err.println(e.getMessage());
         }
+    }
+
+    @RequestMapping(value = "/changas/{changaId}/portrait-image", method = RequestMethod.POST)
+    public void getFile(HttpServletResponse resp, @PathVariable String changaId, @RequestParam("file") MultipartFile file) {
+        /*Either<byte[], Validation> either = cs.putImage(changaId)
+        if (!either.isValuePresent()) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
+        }*/
     }
 
     private Either<Changa, ModelAndView> getChangaById(final long id, User loggedUser,  HttpServletResponse response) {

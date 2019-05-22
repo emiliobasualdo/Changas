@@ -9,6 +9,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -53,6 +54,7 @@ public class UserJdbcDao implements UserDao {
     @Override
     public Either<User, Validation> create(final User.Builder userBuilder) {
         Number userId;
+        System.out.println("Viva perón");
         Map<String, Object> userRow = userToTableRow(userBuilder);
         try {
             userId = jdbcInsert.executeAndReturnKey(userRow);
@@ -102,6 +104,7 @@ public class UserJdbcDao implements UserDao {
 
     @Override
     public Either<User, Validation> update(final long userId, User.Builder userBuilder){
+        //generateRandomUsers();
         int updatedUser = jdbcTemplate.update(String.format("UPDATE %s SET %s = ?, %s = ?, %s = ? WHERE %s = ? ",
                                                     users.name(),
                                                     name.name(),
@@ -147,23 +150,43 @@ public class UserJdbcDao implements UserDao {
         );
     }
 
+    @Override
+    public Validation setRating(long userId, double newRating) {
+        try {
+            jdbcTemplate.update(String.format("UPDATE %s SET %s = ? WHERE %s = ? ",
+                    users.name(),
+                    rating.name(),
+                    user_id.name()),
+                    newRating,
+                    userId
+            );
+        } catch (Exception e) {
+            return DATABASE_ERROR.withMessage(e.getMessage());
+        }
+        return OK;
+    }
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private List<User> generateRandomUsers() {
         int N_USERS = 100;
-        String[] tel = {"34234", "1341", "12312", "123123", "123123"};
-        String[] name = {"Pilo", "Jime", "Fer", "Mauricio", "Cristina"};
-        String[] surname = {"Basualdo ", "Gomez", "Lozano", "Macrio", "Kirschner"};
-        String[] email = {"@hotmail.com", "@hotmail.com", "@hotmail.com", "@hotmail.com", "@hotmail.com"};
-        String[] passwd = {"San ", "Flor", "Cheto", "Quinta", "Feranandez"};
+        String[] tel = {"005491133071114", "1133452114", "1514300944", "5491145443786", "133071114"};
+        String[] name = {"Emilio Juan", "Jimena", "Fermina", "Mauricio", "Cristina"};
+        String[] surname = {"Basualdo ", "Gomez", "Lozano", "Macri", "Kirschner", "Del Valle de San Patricio", "Travolta"};
+        String[] email = {"@hotmail.com", "@gmail.com", "@peron.com", "@marshmallow.com", "@coldmail.com"};
+
+        String pass = passwordEncoder.encode("12345678");
         Random r = new Random();
-        int max = 5;
         List<User> resp = new ArrayList<>();
         for (int i = 0; i < N_USERS; i++) {
             resp.add(create(new User.Builder()
-                    .withName(name[r.nextInt(max)])
-                    .withSurname(surname[r.nextInt(max)])
-                    .withTel(tel[r.nextInt(max)])
-                    .withEmail(i+email[r.nextInt(max)])
-                    .withPasswd(passwd[r.nextInt(max)])
+                    .withName(name[r.nextInt(name.length)])
+                    .withSurname(surname[r.nextInt(surname.length)])
+                    .withTel(tel[r.nextInt(tel.length)])
+                    .withEmail(i+email[r.nextInt(email.length)])
+                    .withPasswd(pass)
+                    .enabled(true)
                     ).getValue()
             );
         }
@@ -177,6 +200,7 @@ public class UserJdbcDao implements UserDao {
         resp.put(tel.name(), userBuilder.getTel());
         resp.put(email.name(), userBuilder.getEmail());
         resp.put(passwd.name(), userBuilder.getPasswd());
+        resp.put(rating.name(), userBuilder.getRating());
         resp.put(enabled.name(), userBuilder.isEnabled());
         return resp;
     }
@@ -188,6 +212,7 @@ public class UserJdbcDao implements UserDao {
                 .withTel(rs.getString(tel.name()))
                 .withEmail(rs.getString(email.name()))
                 .withPasswd(rs.getString(passwd.name()))
+                .withRating(rs.getDouble(rating.name()))
                 .enabled(rs.getBoolean(enabled.name()))
         );
     }

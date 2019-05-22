@@ -1,11 +1,12 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style><%@include file="/WEB-INF/css/loginBody.css"%></style>
     <style><%@include file="/WEB-INF/css/formError.css"%></style>
 </head>
@@ -25,7 +26,7 @@
             <form:password path="newPassword2" class="form-control"/>
             <form:errors cssClass="form-error" path="newPassword2" element="p"/>
         </div>
-        <div class="form-group">
+        <div class="d-flex justify-content-center form-group form-group">
             <button type="submit" class="btn btn-primary btn-lg btn-block"><spring:message code="resetPasswordBody.reset.btn"/></button>
         </div>
     </form:form>

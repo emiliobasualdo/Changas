@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
 import ar.edu.itba.paw.interfaces.daos.UserDao;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.RecoverableDataAccessException;
@@ -71,6 +72,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
     private String resolveSecondWhere(InscriptionState filterState, boolean equals) {
+        // todo copiar método que armé en changaDao para filtrar
         String secondWhere = "";
         if(filterState != null) {
             secondWhere = "AND "+ state.name();
@@ -130,12 +132,12 @@ public class InscriptionJdbcDao implements InscriptionDao {
     @Override
     /* An Inscription implies that the user is inscribed OR he had inscribed him self before and optout */
     public Validation inscribeInChanga(long userId, long changaId) {
+        System.out.println("Salió el sol");
         Map<String, Object> row = inscriptionToTableRow(userId, changaId);
         try {
-            jdbcInsert
-                    .execute(row);
-        } catch (DataAccessException ex) {
-            return DATABASE_ERROR;
+            jdbcInsert.execute(row);
+        } catch (Exception ex) {
+            return DATABASE_ERROR.withMessage(ex.getMessage());
         }
         return OK;
     }
@@ -184,6 +186,7 @@ public class InscriptionJdbcDao implements InscriptionDao {
 
     @Override
     public Either<Boolean, Validation> isUserInscribedInChanga(long userId, long changaId) {
+        //generateRandomInscriptions();
         final List<Inscription> list  = jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = ?  AND %s = ?", user_inscribed.name()
                         , changa_id.name(), user_id.name()), ROW_MAPPER, changaId, userId);
@@ -207,12 +210,25 @@ public class InscriptionJdbcDao implements InscriptionDao {
     }
 
     private void generateRandomInscriptions() {
-        int N_INSCRIPTIONS = 1000;
-        int N_USERS_CHANGAS = 100;
-        Random rchanga = new Random();
-        Random ruser = new Random();
-        for (int i = 0; i < N_INSCRIPTIONS; i++) {
-            inscribeInChanga(ruser.nextInt(N_USERS_CHANGAS),rchanga.nextInt(N_USERS_CHANGAS));
+        int N_USERS_CHANGAS = 99;
+        InscriptionState rState;
+        long userId, changaId;
+        for (int i = 1; i < N_USERS_CHANGAS; i++) {
+            userId = i%N_USERS_CHANGAS + 1;
+            changaId = i%N_USERS_CHANGAS + 1;
+            System.out.println(userId +" "+ changaId);
+            inscribeInChanga(userId,changaId);
+            switch (i%3){
+                case 0:
+                    rState = InscriptionState.declined;
+                    break;
+                case 1:
+                    rState = requested;
+                    break;
+                default:
+                    rState = InscriptionState.accepted;
+            }
+            changeUserStateInChanga(userId, changaId, rState);
         }
 
     }

@@ -1,10 +1,11 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <html>
 
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>Changas</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -69,7 +70,7 @@
                                 <div class="input-group">
                                     <form:select  class="form-control" path="category">
                                         <c:forEach items="${categories}" var="category">
-                                            <option value="${category}">${category}</option>
+                                            <option value="${category}"><spring:message code="${category}"/></option>
                                         </c:forEach>
                                     </form:select>
                                 </div>
@@ -89,7 +90,7 @@
                         <td>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <form:input class="form-control" path="neighborhood"/>
+                                    <form:select class="form-control" items="${neighborhoods}" path="neighborhood"/>
                                 </div>
                                 <form:errors cssClass="form-error" path="neighborhood" element="p"/>
                             </div>
@@ -147,7 +148,7 @@
                         </td>
                     </tr>
                 </table>
-                <div class="form-group">
+                <div class="d-flex justify-content-center form-group">
                     <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="issueChangaForm.btn"/></button>
                 </div>
             </form:form>

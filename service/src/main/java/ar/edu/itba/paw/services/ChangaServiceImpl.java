@@ -7,6 +7,7 @@ import ar.edu.itba.paw.interfaces.services.AuthenticationService;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
 import ar.edu.itba.paw.interfaces.services.FileManagerService;
 import ar.edu.itba.paw.interfaces.util.FileConventions;
+import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.ChangaState;
@@ -30,6 +31,9 @@ public class ChangaServiceImpl implements ChangaService {
 
     @Autowired
     private InscriptionDao inDao;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private AuthenticationService authenticationService;
@@ -63,6 +67,9 @@ public class ChangaServiceImpl implements ChangaService {
 
     @Override
     public Either<Changa, Validation> create(final Changa.Builder changaBuilder) {
+        if (!userService.isUserEnabled(changaBuilder.getUser_id())){
+            return Either.alternative(DISABLED_USER);
+        }
         return chDao.create(changaBuilder);
     }
 
@@ -125,16 +132,13 @@ public class ChangaServiceImpl implements ChangaService {
                 return Either.alternative(SETTLE_WHEN_EMPTY);
             }
             return chDao.changeChangaState(changa.getChanga_id(), newState);
-        }
-        else
+        } else
             return Either.alternative(CHANGE_NOT_POSSIBLE);
     }
 
     @Override
-    public Either<List<Changa>, Validation> getUserEmittedChangas(long id) {
-        List<Changa> resp = getUserOwnedChangas(id).getValue();
-        resp.removeIf(e -> e.getState() == ChangaState.closed || e.getState() == ChangaState.done || e.getState() == ChangaState.settled);
-        return Either.value(resp);
+    public Either<List<Changa>, Validation> getUserOpenChangas(long id) {
+        return chDao.getUserOpenChangas(id);
     }
 
     @Override
@@ -167,7 +171,7 @@ public class ChangaServiceImpl implements ChangaService {
     }
 
     @Override
-    public Either<byte[], Validation> getImage(long changaId, String imageName) {
+    public Either<byte[], Validation> getImage(String changaId, String imageName) {
         //if (FileConventions.isValidImageName)
         Either<InputStream, Validation> image = changaPictureDao.getImage(changaId);
         try {

@@ -7,40 +7,31 @@ import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.UserTokenState;
 import ar.edu.itba.paw.models.VerificationToken;
-import ar.edu.itba.paw.webapp.forms.ResendEmailVerificationForm;
+import ar.edu.itba.paw.webapp.forms.EmailForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.configurers.provisioning.UserDetailsManagerConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetails.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.*;
 import static ar.edu.itba.paw.models.UserTokenState.*;
@@ -58,8 +49,8 @@ public class RegistrationController {
     @Autowired
     private EmailService emailService;
 
-    @RequestMapping(value = "/signup/registration-confirm", method = RequestMethod.GET)
-    public ModelAndView confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token, HttpServletResponse response) {
+    @RequestMapping(value = "/registration-confirm", method = RequestMethod.GET)
+    public ModelAndView confirmRegistration(HttpServletRequest request, Model model, @RequestParam("token") String token, HttpServletResponse response) {
         //Se busca en la DB al token pasado en la url
         Either<VerificationToken, Validation> verificationToken = userService.getVerificationToken(token);
         if(!verificationToken.isValuePresent()) { //inexistent token
@@ -76,8 +67,7 @@ public class RegistrationController {
         if(userTokenState.getValue() == USER_DISABLED_EXPIRED_TOKEN) {
             //resend email verification
             System.out.println("user disabled expired token");
-            ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
-            builder.scheme("http");
+            ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromContextPath(request);
             URI uri = builder.build().toUri();
             return new ModelAndView("indexResendEmailVerification").addObject("token", token).addObject("uri", uri);
         }
@@ -104,6 +94,30 @@ public class RegistrationController {
         List<GrantedAuthority> authorities = Arrays.asList( new SimpleGrantedAuthority("ROLE_USER"));
         Authentication auth = new UsernamePasswordAuthenticationToken(new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPasswd(), authorities) ,null, authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
+    @RequestMapping(value = "/login/resend-email-verification/")
+    public ModelAndView resendEmailVerification(@ModelAttribute("emailForm")EmailForm form) {
+        return new ModelAndView("indexLogIn");
+    }
+
+    @RequestMapping(value = "/login/resend-email-verification", method = RequestMethod.POST)
+    public ModelAndView doResendEmailVerification(@ModelAttribute("emailForm")EmailForm form, final BindingResult result, HttpServletRequest request) {
+        if (result.hasErrors()) {
+            return resendEmailVerification(form);
+        }
+        Either<User, Validation> user = userService.findByMail(form.getMail());
+        if (!user.isValuePresent()) { //TODO: por seguirdad es mejor no mostrar este mensaje de error?
+            result.rejectValue("mail", "error.invalidMail", new Object[] {form.getMail()}, "");
+            return resendEmailVerification(form);
+        } else if (user.getValue().isEnabled()) {
+            result.rejectValue("mail", "error.enabledMail", new Object[] {form.getMail()}, "");
+            return resendEmailVerification(form);
+        }
+        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromContextPath(request);
+        URI uri = builder.build().toUri();
+        Validation emailValidation = emailService.sendMailConfirmationEmail(user.getValue(), uri.toString());
+        return new ModelAndView("redirect:/");
     }
 
     @RequestMapping(value = "/signup/resend-email-verification", method = RequestMethod.POST)

@@ -7,10 +7,8 @@ import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.forms.*;
-import ar.edu.itba.paw.webapp.forms.ForgotPasswordForm;
+import ar.edu.itba.paw.webapp.forms.EmailForm;
 import ar.edu.itba.paw.webapp.forms.ResetPasswordForm;
-import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.webapp.forms.UserLoginForm;
 import ar.edu.itba.paw.webapp.forms.UserRegisterForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,16 +18,16 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -38,7 +36,6 @@ import java.net.URI;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.EMAIL_ERROR;
 import static ar.edu.itba.paw.interfaces.util.Validation.EXPIRED_TOKEN;
-import static ar.edu.itba.paw.interfaces.util.Validation.USER_ALREADY_EXISTS;
 
 @Controller
 public class UserController {
@@ -69,7 +66,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/signup", method = { RequestMethod.POST })
-    public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors, final WebRequest request, HttpServletResponse response) {
+    public ModelAndView create(@Valid @ModelAttribute("signUpForm") final UserRegisterForm form, final BindingResult errors, HttpServletResponse response, HttpServletRequest request) {
         if (errors.hasErrors()) {
 
             System.out.println("Errores en los campos del formulario sign up");
@@ -86,9 +83,7 @@ public class UserController {
             response.setStatus(user.getAlternative().getHttpStatus().value());
             return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(user.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         }
-        //String appUrl = request.getContextPath();
-        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
-        builder.scheme("http");
+        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromContextPath(request);
         URI uri = builder.build().toUri();
         Validation emailValidation = emailService.sendMailConfirmationEmail(user.getValue(), uri.toString());
         if(emailValidation == EMAIL_ERROR) {
@@ -99,7 +94,12 @@ public class UserController {
     }
 
     @RequestMapping("/login")
-    public ModelAndView logIn(@ModelAttribute("UserLoginForm") final UserLoginForm form) {
+    public ModelAndView logIn(@ModelAttribute("emailForm")EmailForm form) {
+        return new ModelAndView("indexLogIn");
+    }
+
+    @RequestMapping("/login/error")
+    public ModelAndView logInError(@ModelAttribute("emailForm")EmailForm form) {
         return new ModelAndView("indexLogIn");
     }
 
@@ -112,12 +112,13 @@ public class UserController {
         }
         maybePendingChangas.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout); //TODO poner esto en la query
         mav.addObject("pendingChangas", maybePendingChangas.getValue());
-        Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserEmittedChangas(loggedUser.getUser_id());
+        Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserOpenChangas(loggedUser.getUser_id());
         if (!maybePublishedChangas.isValuePresent()) {
            return redirectToErrorPage(response, maybePublishedChangas.getAlternative());
         }
-        maybePublishedChangas.getValue().removeIf(e -> e.getState() == ChangaState.settled || e.getState() == ChangaState.closed || e.getState() == ChangaState.done);
         mav.addObject("publishedChangas", maybePublishedChangas.getValue());
+//        /*Either<String, Validation> urlImage = .... ;*/
+        mav.addObject("urlImage", "/img/nieve1.jpg");
         return mav;
     }
 
@@ -127,12 +128,12 @@ public class UserController {
     }
 
     @RequestMapping("/login/forgot-password")
-    public ModelAndView forgotPassword(@ModelAttribute("forgotPasswordForm") final ForgotPasswordForm forgotPasswordForm) {
+    public ModelAndView forgotPassword(@ModelAttribute("forgotPasswordForm") final EmailForm forgotPasswordForm) {
         return new ModelAndView("indexForgotPassword");
     }
 
     @RequestMapping(value = "/login/forgot-password", method = RequestMethod.POST)
-    public ModelAndView forgotPasswordSender(@Valid @ModelAttribute("forgotPasswordForm") final ForgotPasswordForm forgotPasswordForm, final BindingResult result, HttpServletRequest request) {
+    public ModelAndView forgotPasswordSender(@Valid @ModelAttribute("forgotPasswordForm") final EmailForm forgotPasswordForm, final BindingResult result, HttpServletRequest request) {
         if (result.hasErrors()) {
             return forgotPassword(forgotPasswordForm);
         }
@@ -220,5 +221,9 @@ public class UserController {
         return new ModelAndView("redirect:/");
     }
 
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    public ModelAndView upload(@RequestParam("file") MultipartFile file) {
+        return new ModelAndView("uploadedImage").addObject("file", file);
+    }
 
 }

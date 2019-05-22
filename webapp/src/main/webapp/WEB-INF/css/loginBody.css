@@ -3,29 +3,24 @@ body {
     color: black;
     background: #eee;
     font-family: "Quicksand", sans-serif;
-    font-weight: 500;
-    font-size: 20px;
     line-height: 1;
     padding: 20px;
-    height: 100%;
 }
 .login-form {
-    width: 350px;
-    margin: 0 auto;
-    padding: 100px 0 30px;
+    padding: 50px 0 30px;
+    text-align: center;
 }
 .login-form form {
+    display: inline-block;
     color: #7a7a7a;
     border-radius: 2px;
     margin-bottom: 15px;
-    font-size: 16px;
     background: white;
     box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
     padding: 30px;
     position: relative;
 }
 .login-form h2 {
-    font-size: 22px;
     margin: 35px 0 25px;
 }
 .login-form .avatar {
@@ -42,14 +37,10 @@ body {
     padding: 15px;
     box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
 }
-.login-form .avatar img {
-    width: 100%;
-}
 .login-form input[type="checkbox"] {
     margin-top: 2px;
 }
 .login-form .btn {
-    font-size: 16px;
     font-weight: bold;
     background: #26B3BA;
     border: none;
@@ -66,10 +57,80 @@ body {
 .login-form a:hover {
     text-decoration: none;
 }
-.login-form form a {
-    color: black;
-    text-decoration: none;
+
+/* Mobile */
+@media (max-width: 767px) {
+    body{
+        font-size: 4vw;
+    }
+    .login-form {
+        height: 80%;
+        width: 100%;
+    }
+    .login-form form {
+        font-size: 2vw;
+        height: 100%;
+        width: 100%;
+    }
+    .login-form label, .login-form .btn {
+        font-size: 3vw;
+    }
+    .login-form .avatar img {
+        width: 100%;
+    }
+    .login-form h2 {
+        font-size: 6vw;
+    }
 }
-.login-form form a:hover {
-    text-decoration: underline;
+
+/* tablets */
+@media (max-width: 991px) and (min-width: 768px) {
+    body{
+        font-size: 4vw;
+    }
+    .login-form {
+        height: 80%;
+        width: 100%;
+    }
+    .login-form form {
+        font-size: 2vw;
+        height: 100%;
+        width: 100%;
+    }
+    .login-form label, .login-form .btn {
+        font-size: 3vw;
+    }
+    .login-form .avatar img {
+        width: 100%;
+    }
+    .login-form h2 {
+        font-size: 6vw;
+    }
+    .login-form .btn {
+        font-size: 3vw;
+    }
+}
+
+/* laptops and desktops --> min 1024px */
+@media (min-width: 992px) {
+    body{
+        font-size: 1.5vw;
+    }
+    .login-form {
+        height: 80%;
+        width: 100%;
+    }
+    .login-form form {
+        height: 90%;
+        width: 40%;
+    }
+    .login-form label, .login-form .btn, .login-form form {
+        font-size: 1.5vw;
+    }
+    .login-form .avatar img {
+        width: 100%;
+    }
+    .login-form h2 {
+        font-size: 2.5vw;
+    }
 }

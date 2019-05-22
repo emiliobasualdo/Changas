@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.daos.ChangaDao;
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
 import ar.edu.itba.paw.interfaces.daos.UserDao;
 import ar.edu.itba.paw.interfaces.services.InscriptionService;
+import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import org.slf4j.Logger;
@@ -37,6 +38,9 @@ public class InscriptionServiceImpl implements InscriptionService {
     private UserDao userDao;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private AuthenticationService authenticationService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InscriptionService.class);
@@ -61,7 +65,7 @@ public class InscriptionServiceImpl implements InscriptionService {
         if (!user.isValuePresent())  {
             return user.getAlternative();
         }
-        if(!user.getValue().isEnabled()) {
+        if(!userService.isUserEnabled(userId)) {
             return DISABLED_USER;
         }
         //We check that the changa state isn't or settled or done or closed. Only emitted changas can get inscriptions

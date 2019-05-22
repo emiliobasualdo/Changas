@@ -27,7 +27,7 @@ public interface ChangaService {
     Either<Integer, Validation> getECFPageCount(String category, String title, String locality);
     Either<Changa, Validation> changeChangaState(long changaId, ChangaState newState);
     Either<Changa, Validation> changeChangaState(Changa changa, ChangaState newState);
-    Either<List<Changa>, Validation> getUserEmittedChangas(long id);
-    Either<String, Validation> putImage(long changaId, FileInputStream os);
-    Either<byte[], Validation> getImage(long changaId, String imageName);
+    Either<List<Changa>, Validation> getUserOpenChangas(long id);
+    Either<String, Validation> putImage(String changaId, OutputStream os);
+    Either<byte[], Validation> getImage(String changaId, String imageName);
 }
