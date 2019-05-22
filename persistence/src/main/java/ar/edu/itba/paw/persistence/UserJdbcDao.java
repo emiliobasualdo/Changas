@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -120,18 +121,6 @@ public class UserJdbcDao implements UserDao {
         return updatedUser == 1 ? getById(userId) : Either.alternative(NO_SUCH_USER);
     }
 
-    @Override
-    public void addRating(long userId, double newRating) {
-        Either<User, Validation> user = getById(userId);
-        if (user.isValuePresent()) {
-            newRating = (newRating + user.getValue().getRating() +1) / 2;
-            jdbcTemplate.update(String.format("UPDATE %s SET %s = ? WHERE %s = ? ",
-                    users.name(), rating.name(), user_id.name()),
-                    newRating,
-                    user_id);
-        }
-    }
-
     public Validation setUserStatus(final long userId, final boolean status) {
         if (getById(userId).isValuePresent()) {
             try {
@@ -161,6 +150,21 @@ public class UserJdbcDao implements UserDao {
                 password,
                 id
         );
+    }
+
+    @Override
+    public Validation setRating(long userId, double ratingNum) {
+        // we assume the service has checked that the change can be done
+        String sql = String.format("UPDATE %s SET %s = ? WHERE %s = ?", users.name(), rating.name(), user_id.name());
+        try {
+            jdbcTemplate.update(
+                    sql,
+                    ratingNum, userId);
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+            return DATABASE_ERROR;
+        }
+        return OK;
     }
 
     @Autowired

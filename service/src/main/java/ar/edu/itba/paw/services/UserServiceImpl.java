@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
         if (!either.isValuePresent()) {
             return either.getAlternative();
         }
-        newRating = (newRating + either.getValue().getRating() + 0.5) / 2;
+        newRating = (newRating + either.getValue().getRating() + 1) / 2;
         return userDao.setRating(userId, newRating);
     }
 
