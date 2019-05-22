@@ -40,7 +40,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return Optional.empty(); // por tiempo limitado
     }
 
+    @Override
     public boolean isLoggedUserAuthorizedToUpdateUser(long userId) {
         return getLoggedUser().isPresent() && getLoggedUser().get().getUser_id() == userId;
     }
+
+    @Override
+    public boolean isLoggedUserAuthorizedToUpdateChanga(long changaOwnerId) {
+        return getLoggedUser().isPresent() && getLoggedUser().get().getUser_id() == changaOwnerId;
+    }
+
 }

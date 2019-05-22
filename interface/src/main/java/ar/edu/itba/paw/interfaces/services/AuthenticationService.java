@@ -10,4 +10,6 @@ public interface AuthenticationService {
     boolean isUserLogged();
     Optional<User> getLoggedUser();
     boolean isLoggedUserAuthorizedToUpdateUser(long userId);
+
+    boolean isLoggedUserAuthorizedToUpdateChanga(long changaOwnerId);
 }

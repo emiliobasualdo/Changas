@@ -119,6 +119,19 @@ public class UserJdbcDao implements UserDao {
 
         return updatedUser == 1 ? getById(userId) : Either.alternative(NO_SUCH_USER);
     }
+
+    @Override
+    public void addRating(long userId, double newRating) {
+        Either<User, Validation> user = getById(userId);
+        if (user.isValuePresent()) {
+            newRating = (newRating + user.getValue().getRating() +1) / 2;
+            jdbcTemplate.update(String.format("UPDATE %s SET %s = ? WHERE %s = ? ",
+                    users.name(), rating.name(), user_id.name()),
+                    newRating,
+                    user_id);
+        }
+    }
+
     public Validation setUserStatus(final long userId, final boolean status) {
         if (getById(userId).isValuePresent()) {
             try {
@@ -148,22 +161,6 @@ public class UserJdbcDao implements UserDao {
                 password,
                 id
         );
-    }
-
-    @Override
-    public Validation setRating(long userId, double newRating) {
-        try {
-            jdbcTemplate.update(String.format("UPDATE %s SET %s = ? WHERE %s = ? ",
-                    users.name(),
-                    rating.name(),
-                    user_id.name()),
-                    newRating,
-                    userId
-            );
-        } catch (Exception e) {
-            return DATABASE_ERROR.withMessage(e.getMessage());
-        }
-        return OK;
     }
 
     @Autowired

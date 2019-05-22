@@ -7,7 +7,9 @@ import ar.edu.itba.paw.models.UserTokenState;
 import ar.edu.itba.paw.models.VerificationToken;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.OutputStream;
+import ar.edu.itba.paw.models.*;
+
+import java.util.List;
 
 /**
  * DAO should be limited to only add/update/insert/select Entity
@@ -33,6 +35,6 @@ public interface UserService {
     Either<String, Validation> putImage(long userId, MultipartFile multipartFile);
     Either<byte[], Validation> getImage(long userId, String imageName);
     boolean isUserEnabled(long user_id);
-
+    void notifyClosing(ChangaState newState, List<Inscription> inscriptions);
     Validation addRating(long userId, double newRating);
 }

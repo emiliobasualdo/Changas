@@ -13,6 +13,7 @@ import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.ChangaState;
 import ar.edu.itba.paw.models.Either;
 import org.apache.commons.io.IOUtils;
+import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,7 +88,7 @@ public class ChangaServiceImpl implements ChangaService {
             return old;
         }
         //Only owners of the changa can update it
-        if(!isLoggedUserAuthorizedToUpdateChanga(old.getValue().getUser_id())){
+        if(!authenticationService.isLoggedUserAuthorizedToUpdateChanga(old.getValue().getUser_id())){
             return Either.alternative(UNAUTHORIZED);
         }
         // We will update a changa ONLY if no changueros are inscribed in it
@@ -96,10 +97,6 @@ public class ChangaServiceImpl implements ChangaService {
             return Either.alternative(USERS_INSCRIBED);
         }
         return chDao.update(changaId, changaBuilder);
-    }
-
-    private boolean isLoggedUserAuthorizedToUpdateChanga(long changaOwnerId) {
-        return authenticationService.getLoggedUser().isPresent() && authenticationService.getLoggedUser().get().getUser_id() == changaOwnerId;
     }
 
     @Override
@@ -124,13 +121,20 @@ public class ChangaServiceImpl implements ChangaService {
     @Override
     public Either<Changa, Validation> changeChangaState(Changa changa, ChangaState newState) {
         //We check if the user who wants to change the changa's state is the changa owner
-        if (!isLoggedUserAuthorizedToUpdateChanga(changa.getUser_id())) {
+        if (!authenticationService.isLoggedUserAuthorizedToUpdateChanga(changa.getUser_id())) {
             return Either.alternative(UNAUTHORIZED);
         }
         if (ChangaState.changeIsPossible(changa.getState(), newState)) {
             // if changa has NO changueros inscribed, it can not be settled. only closed
             if (newState == ChangaState.settled && !inDao.hasInscribedUsers(changa.getChanga_id())) {
                 return Either.alternative(SETTLE_WHEN_EMPTY);
+            }
+            // if closing, grab all users ratings and pass them over
+            if (newState == ChangaState.closed ) {
+                // we get the user inscription rating list and pass it to the user service
+                Either<List<Inscription>, Validation> inscriptions = inDao.getInscriptions(changa.getChanga_id());
+                if (inscriptions.isValuePresent()) // else no se
+                    userService.notifyClosing(newState, inscriptions.getValue());
             }
             return chDao.changeChangaState(changa.getChanga_id(), newState);
         } else
@@ -153,7 +157,8 @@ public class ChangaServiceImpl implements ChangaService {
         }
 
         //Only owners of the changa can edit it
-        if(!isLoggedUserAuthorizedToUpdateChanga(changa.getValue().getUser_id())){
+
+        if(!authenticationService.isLoggedUserAuthorizedToUpdateChanga(changa.getValue().getUser_id())){
             System.out.println("2");
             return Either.alternative(UNAUTHORIZED);
         }

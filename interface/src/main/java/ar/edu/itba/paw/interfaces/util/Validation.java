@@ -23,6 +23,7 @@ public enum Validation {
     INVALID_COMBINATION("The email and password combination is invalid", HttpStatus.BAD_REQUEST),
     USER_ALREADY_EXISTS("The email provided is already in use", HttpStatus.BAD_REQUEST),
     DISABLED_USER ("The user isn't enabled", HttpStatus.BAD_REQUEST),
+    NOT_VALID_RATING ("The rating must be between 0(inclusive) and 5(inclusive)", HttpStatus.BAD_REQUEST),
 
     // Inscription
     USER_ALREADY_INSCRIBED("User already inscribed in changa", HttpStatus.BAD_REQUEST),
