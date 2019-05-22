@@ -173,7 +173,7 @@ public class ChangaController {
         }
         mav.addObject("hasAcceptedUsers", hasAcceptedUsers.getValue());
         /*Either<String, Validation> urlImage = .... ;*/
-        mav.addObject("urlImage", "/img/T0lwiBK8.jpg");
+        mav.addObject("urlImage", "/img/nieve1.jpg");
 
         return mav;
     }
@@ -242,7 +242,6 @@ public class ChangaController {
         Validation val = is.inscribeInChanga(loggedUser.getUser_id(), changaId);
         if (val.isOk()){
             System.out.println("user "+ loggedUser.getUser_id()+ " successfully inscripto en changa "+ changaId);
-            //TODO hacer validaciones
             Changa changa = cs.getChangaById(changaId).getValue();
             User changaOwner = us.findById(changa.getUser_id()).getValue();
             emailService.sendJoinRequestEmail(changa, changaOwner, loggedUser);
