@@ -14,13 +14,14 @@
                 <div class="profile-head">
                     <div class="container custom-container">
                         <div class="profile-img">
-                            <c:url value="${urlImage}" var="mudanzaImage"/>
-                            <img src="${mudanzaImage}" alt="Changa Image">
+                            <c:url value="${urlImage}" var="profileImage"/>
+                            <img src="${profileImage}" class="rounded-circle img-fluid" alt="Changa Image">
                             <div class="file btn btn-lg btn-primary">
                                 <c:url value="/upload" var="uploadUrl"/>
                                 <form method="post" action="${uploadUrl}" enctype="multipart/form-data">
+                                    <spring:message code="profileBody.nav.choosePhoto.label"/>
                                     <input type="file" name="file" /><br/>
-                                    <button type="submit"><spring:message code="profileBody.nav.photo"/></button>
+                                    <button type="submit" class="btn btn-primary" style="font-size: 1vw"><spring:message code="profileBody.nav.choosePhoto.btn"/></button>
                                 </form>
                             </div>
                         </div>
@@ -29,20 +30,19 @@
                         <h5><c:out value="${getLoggedUser.name}"/> <c:out value="${getLoggedUser.surname}"/></h5>
                         <h6><c:out value="${getLoggedUser.email}"/></h6>
                         <p><c:out value="${getLoggedUser.tel}"/></p>
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="published-changas-tab" data-toggle="tab" href="#published"
+                                   role="tab" aria-controls="published" aria-selected="true"><spring:message
+                                        code="profileBody.nav.publish"/></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pending-changas-tab" data-toggle="tab" href="#pending" role="tab"
+                                   aria-controls="pending" aria-selected="false"><spring:message
+                                        code="profileBody.nav.inscribed"/></a>
+                            </li>
+                        </ul>
                     </div>
-
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="published-changas-tab" data-toggle="tab" href="#published"
-                               role="tab" aria-controls="published" aria-selected="true"><spring:message
-                                    code="profileBody.nav.publish"/></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="pending-changas-tab" data-toggle="tab" href="#pending" role="tab"
-                               aria-controls="pending" aria-selected="false"><spring:message
-                                    code="profileBody.nav.inscribed"/></a>
-                        </li>
-                    </ul>
                 </div>
             </div>
             <div class="col-xs-6 col-md-4" style="float: right" id="div2">

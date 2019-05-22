@@ -117,8 +117,9 @@ public class UserController {
            return redirectToErrorPage(response, maybePublishedChangas.getAlternative());
         }
         mav.addObject("publishedChangas", maybePublishedChangas.getValue());
-//        /*Either<String, Validation> urlImage = .... ;*/
-        mav.addObject("urlImage", "/img/nieve1.jpg");
+        /*Either<String, Validation> urlImage = .... ;*/
+        /* si el usuario no tiene foto de perfil, le mandamos esta url: /img/img_avatar.png */
+        mav.addObject("urlImage", "/img/img_avatar.png");
         return mav;
     }
 
