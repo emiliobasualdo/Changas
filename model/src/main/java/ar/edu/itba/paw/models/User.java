@@ -8,6 +8,7 @@ public class User {
     private  String tel;
     private  String email;
     private  String passwd;
+    private double rating;
     private boolean enabled;
 
     private User(){
@@ -47,6 +48,11 @@ public class User {
         email = ub.getEmail();
         passwd = ub.getPasswd();
         enabled = ub.isEnabled();
+        rating = ub.getRating();
+    }
+
+    public double getRating() {
+        return this.rating;
     }
 
     public static class Builder {
@@ -56,6 +62,7 @@ public class User {
         private String email;
         private String passwd;
         private boolean enabled;
+        private double rating;
 
         public Builder() {
             this.enabled = false;
@@ -68,6 +75,7 @@ public class User {
             this.email = userBuilder.email.toLowerCase();
             this.passwd = userBuilder.passwd;
             this.enabled = userBuilder.enabled;
+            this.rating = userBuilder.rating;
 
         }
 
@@ -101,6 +109,11 @@ public class User {
             return this;
         }
 
+        public User.Builder withRating(double rating) {
+            this.rating = rating;
+            return this;
+        }
+
         public String getEmail() {
             return email;
         }
@@ -123,7 +136,9 @@ public class User {
 
         public boolean isEnabled() {return enabled;}
 
-
+        public double getRating() {
+            return this.rating;
+        }
     }
 
     @Override

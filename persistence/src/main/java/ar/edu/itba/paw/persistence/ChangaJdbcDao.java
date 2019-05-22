@@ -165,6 +165,19 @@ public class ChangaJdbcDao implements ChangaDao {
     }
 
     @Override
+    public Either<List<Changa>, Validation> getUserOpenChangas(long id) {
+        return Either.value(
+                jdbcTemplate.query(
+                        String.format("SELECT * FROM %s WHERE %s = ? AND %s != ?", changas.name(),
+                                user_id.name(), state.name()),
+                        ROW_MAPPER,
+                        id,
+                        ChangaState.closed.name()
+                )
+        );
+    }
+
+    @Override
     public Either<Changa, Validation> update(final long changaId, Changa.Builder changaBuilder) {
         //generateRandomChangas();
         int updatedChangas = jdbcTemplate.update(
