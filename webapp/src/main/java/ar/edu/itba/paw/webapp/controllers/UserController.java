@@ -18,11 +18,13 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -217,6 +219,11 @@ public class UserController {
         us.resetPassword(loggedUser.getUser_id(), resetPasswordForm.getNewPassword());
         System.out.println("Contraseña restablecida");
         return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    public ModelAndView upload(@RequestParam("file") MultipartFile file) {
+        return new ModelAndView("uploadedImage").addObject("file", file);
     }
 
 }
