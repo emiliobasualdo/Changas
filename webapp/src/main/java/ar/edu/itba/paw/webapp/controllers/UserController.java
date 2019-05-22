@@ -110,13 +110,12 @@ public class UserController {
         }
         maybePendingChangas.getValue().removeIf(e -> e.getValue().getState() == InscriptionState.optout); //TODO poner esto en la query
         mav.addObject("pendingChangas", maybePendingChangas.getValue());
-        Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserEmittedChangas(loggedUser.getUser_id());
+        Either<List<Changa>, Validation> maybePublishedChangas = cs.getUserOpenChangas(loggedUser.getUser_id());
         if (!maybePublishedChangas.isValuePresent()) {
            return redirectToErrorPage(response, maybePublishedChangas.getAlternative());
         }
-        maybePublishedChangas.getValue().removeIf(e -> e.getState() == ChangaState.settled || e.getState() == ChangaState.closed || e.getState() == ChangaState.done);
         mav.addObject("publishedChangas", maybePublishedChangas.getValue());
-        /*Either<String, Validation> urlImage = .... ;*/
+//        /*Either<String, Validation> urlImage = .... ;*/
         mav.addObject("urlImage", "/img/nieve1.jpg");
         return mav;
     }

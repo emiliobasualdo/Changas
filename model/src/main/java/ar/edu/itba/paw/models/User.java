@@ -2,13 +2,13 @@ package ar.edu.itba.paw.models;
 
 public class User {
 
-    private  double rating;
     private long user_id;
     private String name;
     private String surname;
     private String tel;
     private String email;
     private String passwd;
+    private double rating;
     private boolean enabled;
 
     private User(){
@@ -75,6 +75,7 @@ public class User {
             this.email = userBuilder.email.toLowerCase();
             this.passwd = userBuilder.passwd;
             this.enabled = userBuilder.enabled;
+            this.rating = userBuilder.rating;
 
         }
 
@@ -108,7 +109,7 @@ public class User {
             return this;
         }
 
-        public User.Builder withRating (double rating) {
+        public User.Builder withRating(double rating) {
             this.rating = rating;
             return this;
         }
