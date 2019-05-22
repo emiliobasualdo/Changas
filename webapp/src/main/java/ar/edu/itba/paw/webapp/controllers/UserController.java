@@ -16,10 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.jws.WebParam;
 import javax.mail.Multipart;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -160,7 +164,7 @@ public class UserController {
 
 
     @RequestMapping("/reset-password/validate")
-    public ModelAndView validateResetPassword( @RequestParam("id") long id, @RequestParam("token") String token, HttpServletResponse response) {
+    public ModelAndView validateResetPassword(@RequestParam("id") long id, @RequestParam("token") String token, HttpServletResponse response) {
         Either<VerificationToken, Validation> verificationToken = us.getVerificationTokenWithRole(id, token);
         System.out.println("Token =" + verificationToken.toString());
         if (!verificationToken.isValuePresent()) {
@@ -230,6 +234,11 @@ public class UserController {
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public ModelAndView upload(@RequestParam("file") MultipartFile file) {
         return new ModelAndView("uploadedImage").addObject("file", file);
+    }
+
+    @RequestMapping(value = "/rate", method = RequestMethod.POST)
+    public void rateChanguero(@RequestParam("id") long id, @RequestParam("rating") String rating) {
+        System.out.println(id + "  " + rating);
     }
 
 }
