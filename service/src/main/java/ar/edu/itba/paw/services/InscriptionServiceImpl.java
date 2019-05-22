@@ -11,7 +11,6 @@ import ar.edu.itba.paw.interfaces.util.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -168,4 +167,18 @@ public class InscriptionServiceImpl implements InscriptionService {
         return inscriptionDao.getInscription(userId, changaId);
     }
 
+    @Override
+    public Validation setRating(long userId, long changaId, double rating) {
+        if(!authenticationService.isLoggedUserAuthorizedToUpdateChanga(changaId)) {
+            return UNAUTHORIZED;
+        }
+        if (isValidRating(rating)) {
+            return inscriptionDao.setRating(userId, changaId, rating);
+        }
+        return NOT_VALID_RATING;
+    }
+
+    private boolean isValidRating(double rating) {
+        return rating >= 0 && rating <= 5;
+    }
 }
