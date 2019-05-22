@@ -144,6 +144,11 @@ public class ChangaServiceImpl implements ChangaService {
 
     @Override
     public Either<String, Validation> putImage(long changaId, MultipartFile multipartFile) {
+
+        if (multipartFile.isEmpty()){
+            return Either.alternative(NULL_IMAGE);
+        }
+
         System.out.println("service put image");
         //We check if the changa exists
         Either<Changa, Validation> changa = chDao.getById(changaId);

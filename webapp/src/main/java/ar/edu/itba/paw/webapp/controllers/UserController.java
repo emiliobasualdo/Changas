@@ -20,10 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -32,10 +29,7 @@ import javax.mail.Multipart;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 import java.net.URI;
 
@@ -122,9 +116,13 @@ public class UserController {
            return redirectToErrorPage(response, maybePublishedChangas.getAlternative());
         }
         mav.addObject("publishedChangas", maybePublishedChangas.getValue());
-        /*Either<String, Validation> urlImage = .... ;*/
-        /* si el usuario no tiene foto de perfil, le mandamos esta url: /img/img_avatar.png */
-        mav.addObject("urlImage", "/img/img_avatar.png");
+
+        Either<byte[], Validation> maybeImage = us.getImage(loggedUser.getUser_id(), "portrait-image");
+        if (!maybeImage.isValuePresent()){
+            mav.addObject("urlImage", "/img/img_avatar.png");
+        } else {
+            mav.addObject("urlImage", new StringBuilder("/users/").append(loggedUser.getUser_id()).append("/portrait-image"));
+        }
         return mav;
     }
 
@@ -228,9 +226,27 @@ public class UserController {
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public ModelAndView upload(@RequestParam("file") MultipartFile file) {
+    public ModelAndView upload(@ModelAttribute("getLoggedUser") User loggedUser, @RequestParam("file") MultipartFile file) {
 
-        return new ModelAndView("uploadedImage").addObject("file", file);
+        us.putImage(loggedUser.getUser_id(), file);
+        return new ModelAndView("redirect:/profile");
+    }
+
+    @RequestMapping(value = "/users/{userId}/{imageName}")
+    public void getFile(HttpServletResponse resp, @PathVariable final long userId, @PathVariable final String imageName) {
+        Either<byte[], Validation> either = us.getImage(userId, imageName);
+        if (!either.isValuePresent()) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
+        }
+        resp.setContentType("image/png");
+        try {
+            resp.setContentLength(either.getValue().length);
+            resp.getOutputStream().write(either.getValue());
+        } catch (IOException e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            System.err.println(e.getMessage());
+        }
     }
 
 }
