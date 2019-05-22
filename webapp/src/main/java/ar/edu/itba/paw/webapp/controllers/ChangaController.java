@@ -10,10 +10,14 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -144,8 +148,10 @@ public class ChangaController {
         mav.addObject("changaOwner", changaOwner.getValue());
         mav.addObject("userAlreadyInscribedInChanga", userAlreadyInscribedInChanga);
         mav.addObject("userOwnsChanga", false);
-        /*Either<String, Validation> urlImage = .... ;*/
-        mav.addObject("urlImage", "/img/nieve1.jpg");
+        /*Either<String, Validation> urlImage = .... ;
+        mav.addObject("urlImage", "/img/nieve1.jpg"); */
+        /* cambiar esto si tiene una foto para mostrar */
+        mav.addObject("noPicture", true);
         return mav;
     }
 
@@ -172,9 +178,10 @@ public class ChangaController {
             return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(hasAcceptedUsers.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         }
         mav.addObject("hasAcceptedUsers", hasAcceptedUsers.getValue());
-        /*Either<String, Validation> urlImage = .... ;*/
-        mav.addObject("urlImage", "/img/nieve1.jpg");
-
+        /*Either<String, Validation> urlImage = .... ;
+        mav.addObject("urlImage", "/img/nieve1.jpg"); */
+        /* cambiar esto si tiene una foto para mostrar */
+        mav.addObject("noPicture", true);
         return mav;
     }
 
@@ -264,6 +271,32 @@ public class ChangaController {
             return redirectToErrorPage(response, val);
         }
         return new ModelAndView("redirect:/profile");
+    }
+
+    @RequestMapping(value = "/changas/{changaId}/{imageName}")
+    public void getFile(HttpServletResponse resp, @PathVariable final long changaId, @PathVariable final String imageName) {
+        Either<byte[], Validation> either = cs.getImage(changaId, imageName);
+        if (!either.isValuePresent()) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
+        }
+        resp.setContentType("image/png");
+        try {
+            resp.setContentLength(either.getValue().length);
+            resp.getOutputStream().write(either.getValue());
+        } catch (IOException e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            System.err.println(e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/changas/{changaId}/portrait-image", method = RequestMethod.POST)
+    public void getFile(HttpServletResponse resp, @PathVariable String changaId, @RequestParam("file") MultipartFile file) {
+        /*Either<byte[], Validation> either = cs.putImage(changaId)
+        if (!either.isValuePresent()) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
+        }*/
     }
 
     private Either<Changa, ModelAndView> getChangaById(final long id, User loggedUser,  HttpServletResponse response) {

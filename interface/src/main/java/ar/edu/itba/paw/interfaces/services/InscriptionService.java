@@ -17,4 +17,5 @@ public interface InscriptionService {
     Either<Inscription, Validation> getInscription(long userId, long changaId);
     Either<List<Pair<User, Inscription>>, Validation> getAcceptedUsers(long changa_id);
     Either<Boolean, Validation> hasAcceptedUsers(long changa_id);
+    Validation setRating(long userId, long changaId, double ratingNum);
 }

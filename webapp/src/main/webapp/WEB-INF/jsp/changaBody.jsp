@@ -23,8 +23,15 @@
             </h5>
         </div>
         <div class="container">
-            <c:url value="${urlImage}" var="mudanzaImage"/>
-            <img src="${mudanzaImage}" alt="Changa Image">
+            <c:choose>
+                <c:when test="${noPicture}">
+
+                </c:when>
+                <c:otherwise>
+                    <c:url value="${urlImage}" var="changaImage"/>
+                    <img src="${changaImage}" alt="Changa Image">
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
 

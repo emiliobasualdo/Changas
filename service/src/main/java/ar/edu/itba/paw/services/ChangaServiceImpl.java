@@ -1,18 +1,25 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.daos.ChangaDao;
+import ar.edu.itba.paw.interfaces.daos.ChangaPictureDao;
 import ar.edu.itba.paw.interfaces.daos.InscriptionDao;
 import ar.edu.itba.paw.interfaces.services.AuthenticationService;
 import ar.edu.itba.paw.interfaces.services.ChangaService;
+import ar.edu.itba.paw.interfaces.services.FileManagerService;
+import ar.edu.itba.paw.interfaces.util.FileConventions;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.ChangaState;
 import ar.edu.itba.paw.models.Either;
+import org.apache.commons.io.IOUtils;
+import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
 import java.util.List;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.*;
@@ -32,6 +39,12 @@ public class ChangaServiceImpl implements ChangaService {
 
     @Autowired
     private AuthenticationService authenticationService;
+
+    @Autowired
+    private FileConventions fc;
+
+    @Autowired
+    private ChangaPictureDao changaPictureDao;
 
     @Override
     public Either<List<Changa>, Validation> getEmittedChangas(int pageNum) {
@@ -75,7 +88,7 @@ public class ChangaServiceImpl implements ChangaService {
             return old;
         }
         //Only owners of the changa can update it
-        if(!isLoggedUserAuthorizedToUpdateChanga(old.getValue().getUser_id())){
+        if(!authenticationService.isLoggedUserAuthorizedToUpdateChanga(old.getValue().getUser_id())){
             return Either.alternative(UNAUTHORIZED);
         }
         // We will update a changa ONLY if no changueros are inscribed in it
@@ -84,10 +97,6 @@ public class ChangaServiceImpl implements ChangaService {
             return Either.alternative(USERS_INSCRIBED);
         }
         return chDao.update(changaId, changaBuilder);
-    }
-
-    private boolean isLoggedUserAuthorizedToUpdateChanga(long changaOwnerId) {
-        return authenticationService.getLoggedUser().isPresent() && authenticationService.getLoggedUser().get().getUser_id() == changaOwnerId;
     }
 
     @Override
@@ -112,7 +121,7 @@ public class ChangaServiceImpl implements ChangaService {
     @Override
     public Either<Changa, Validation> changeChangaState(Changa changa, ChangaState newState) {
         //We check if the user who wants to change the changa's state is the changa owner
-        if (!isLoggedUserAuthorizedToUpdateChanga(changa.getUser_id())) {
+        if (!authenticationService.isLoggedUserAuthorizedToUpdateChanga(changa.getUser_id())) {
             return Either.alternative(UNAUTHORIZED);
         }
         if (ChangaState.changeIsPossible(changa.getState(), newState)) {
@@ -120,9 +129,15 @@ public class ChangaServiceImpl implements ChangaService {
             if (newState == ChangaState.settled && !inDao.hasInscribedUsers(changa.getChanga_id())) {
                 return Either.alternative(SETTLE_WHEN_EMPTY);
             }
+            // if closing, grab all users ratings and pass them over
+            if (newState == ChangaState.closed ) {
+                // we get the user inscription rating list and pass it to the user service
+                Either<List<Inscription>, Validation> inscriptions = inDao.getInscriptions(changa.getChanga_id());
+                if (inscriptions.isValuePresent()) // else no se
+                    userService.notifyClosing(newState, inscriptions.getValue());
+            }
             return chDao.changeChangaState(changa.getChanga_id(), newState);
-        }
-        else
+        } else
             return Either.alternative(CHANGE_NOT_POSSIBLE);
     }
 
@@ -131,6 +146,38 @@ public class ChangaServiceImpl implements ChangaService {
         return chDao.getUserOpenChangas(id);
     }
 
+    @Override
+    public Either<String, Validation> putImage(long changaId, MultipartFile multipartFile) {
+        System.out.println("service put image");
+        //We check if the changa exists
+        Either<Changa, Validation> changa = chDao.getById(changaId);
+        if (!changa.isValuePresent()) {
+            System.out.println("1");
+            return Either.alternative(NO_SUCH_CHANGA);
+        }
 
+        //Only owners of the changa can edit it
+
+        if(!authenticationService.isLoggedUserAuthorizedToUpdateChanga(changa.getValue().getUser_id())){
+            System.out.println("2");
+            return Either.alternative(UNAUTHORIZED);
+        }
+
+        // Todo no borrar este comment
+        // En un futuro changaPictureDao.putImage debería retornar un Either<Long, Validation>
+        // siendo el Long el key de la imagen entre las imágenes de la
+        // changa cosa de poder armar el nombre del archivo dinamicamente
+        Validation validation = changaPictureDao.putImage(changaId, multipartFile);
+        if (validation.isError()) {
+            return Either.alternative(validation);
+        }
+        return Either.value(fc.createName("changa", String.valueOf(changaId))); // todo falta extension
+    }
+
+    @Override
+    public Either<byte[], Validation> getImage(long changaId, String imageName) {
+        //if (FileConventions.isValidImageName)
+        return changaPictureDao.getImage(changaId);
+    }
 
 }

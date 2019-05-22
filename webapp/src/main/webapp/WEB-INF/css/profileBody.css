@@ -23,7 +23,8 @@ body {
     float: left;
 }
 .profile-img img{
-    width: 100%;
+    width: 75%;
+    height: auto;
 }
 .profile-img .file {
     position: relative;
@@ -33,12 +34,14 @@ body {
     border-radius: 0;
     font-family: "Quicksand", sans-serif;
     background: #212529b8;
+    cursor: pointer;
 }
 .profile-img .file input {
     position: absolute;
     opacity: 0;
     right: 0;
     top: 0;
+    cursor: pointer;
 }
 .profile-head h5{
     color: #333;
@@ -55,7 +58,8 @@ body {
     cursor: pointer;
 }
 .profile-head .nav-tabs{
-    margin-bottom:5%;
+    margin-bottom: 5%;
+    margin-top: 25%;
 }
 .profile-head .nav-tabs .nav-link{
     font-weight:600;

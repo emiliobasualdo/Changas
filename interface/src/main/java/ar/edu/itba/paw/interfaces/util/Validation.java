@@ -23,6 +23,7 @@ public enum Validation {
     INVALID_COMBINATION("The email and password combination is invalid", HttpStatus.BAD_REQUEST),
     USER_ALREADY_EXISTS("The email provided is already in use", HttpStatus.BAD_REQUEST),
     DISABLED_USER ("The user isn't enabled", HttpStatus.BAD_REQUEST),
+    NOT_VALID_RATING ("The rating must be between 0(inclusive) and 5(inclusive)", HttpStatus.BAD_REQUEST),
 
     // Inscription
     USER_ALREADY_INSCRIBED("User already inscribed in changa", HttpStatus.BAD_REQUEST),
@@ -42,7 +43,11 @@ public enum Validation {
     NO_SUCH_LOCALE("This locale is not defined in the db", HttpStatus.BAD_REQUEST),
 
     //Email
-    EMAIL_ERROR("Email couldn't be sent", HttpStatus.SERVICE_UNAVAILABLE)
+    EMAIL_ERROR("Email couldn't be sent", HttpStatus.SERVICE_UNAVAILABLE),
+
+    //Pictures
+    IMAGE_COULDNT_BE_UPDATED("Image couldnt be updated", HttpStatus.SERVICE_UNAVAILABLE),
+    IMAGE_COULDNT_BE_SAVED("Image couldn't be saved", HttpStatus.SERVICE_UNAVAILABLE)
     ;
 
 

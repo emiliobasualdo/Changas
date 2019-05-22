@@ -1,15 +1,21 @@
 package ar.edu.itba.paw.services;
+
 import ar.edu.itba.paw.interfaces.daos.UserDao;
+import ar.edu.itba.paw.interfaces.daos.UserPictureDao;
 import ar.edu.itba.paw.interfaces.daos.VerificationTokenDao;
 import ar.edu.itba.paw.interfaces.services.AuthenticationService;
 import ar.edu.itba.paw.interfaces.services.UserService;
+import ar.edu.itba.paw.interfaces.util.FileConventions;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.UserTokenState;
 import ar.edu.itba.paw.models.VerificationToken;
+import org.apache.commons.io.IOUtils;
+import ar.edu.itba.paw.models.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,9 +25,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.UUID;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.*;
@@ -42,6 +53,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private AuthenticationService authenticationService;
+
+    @Autowired
+    private FileConventions fc;
+
+    @Autowired
+    private UserPictureDao userPictureDao;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -97,6 +114,26 @@ public class UserServiceImpl implements UserService {
     public boolean isUserEnabled(long user_id) {
         Either<User, Validation> user = findById(user_id);
         return user.isValuePresent() && user.getValue().isEnabled();
+    }
+
+    @Override
+    public void notifyClosing(ChangaState newState, List<Inscription> inscriptions) {
+        if (newState == ChangaState.closed) {
+            for (Inscription insc: inscriptions) {
+                if (insc.getRating() != Defaults.rating.doubs)
+                    addRating(insc.getUser_id(), insc.getRating());
+            }
+        }
+    }
+
+    @Override
+    public Validation addRating(long userId, double newRating) {
+        Either<User, Validation> either = userDao.getById(userId);
+        if (!either.isValuePresent()) {
+            return either.getAlternative();
+        }
+        newRating = (newRating + either.getValue().getRating() + 1) / 2;
+        return userDao.setRating(userId, newRating);
     }
 
     @Override
@@ -167,20 +204,47 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Either<User, Validation> update(final long userId, User.Builder userBuilder) {
-        if(!authenticationService.isLoggedUserAuthorizedToUpdateUser(userId)){
+        if(!authenticationService.isLoggedUserAuthorizedToUpdateUser(userId)) {
             return Either.alternative(UNAUTHORIZED);
         }
         return userDao.update(userId, userBuilder);
     }
 
-    @Override
-    public Validation addRating(long userId, double newRating) {
-        Either<User, Validation> either = userDao.getById(userId);
-        if (!either.isValuePresent()) {
-            return either.getAlternative();
+    private enum Defaults {
+        rating (-1);
+        final double doubs;
+        Defaults(double doubs ) {
+            this.doubs = doubs;
         }
-        newRating = (newRating + either.getValue().getRating() + 0.5) / 2;
-        return userDao.setRating(userId, newRating);
+    }
+
+    @Override
+    public Either<String, Validation> putImage(long userId, MultipartFile multipartFile) {
+        //We check if the user exists
+        Either<User, Validation> user = userDao.getById(userId);
+        if (!user.isValuePresent())
+            return Either.alternative(IMAGE_COULDNT_BE_SAVED);
+
+        //
+        if(!authenticationService.isLoggedUserAuthorizedToUpdateUser(userId)){
+            return Either.alternative(UNAUTHORIZED);
+        }
+
+        // Todo no borrar este comment
+        // En un futuro userPictureDao.putImage debería retornar un Either<Long, Validation>
+        // siendo el Long el key de la imagen entre las imágenes de la
+        // changa cosa de poder armar el nombre del archivo dinamicamente
+        Validation validation = userPictureDao.putImage(userId, multipartFile);
+        if (validation.isError()) {
+            return Either.alternative(validation);
+        }
+        return Either.value(fc.createName("user", String.valueOf(userId))); // todo falta extension
+    }
+
+    @Override
+    public Either<byte[], Validation> getImage(long userId, String imageName) {
+        //if (FileConventions.isValidImageName)
+        return userPictureDao.getImage(userId);
     }
 
 }

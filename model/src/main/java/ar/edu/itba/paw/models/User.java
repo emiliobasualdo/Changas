@@ -3,15 +3,19 @@ package ar.edu.itba.paw.models;
 public class User {
 
     private long user_id;
-    private  String name;
-    private  String surname;
-    private  String tel;
-    private  String email;
-    private  String passwd;
+    private String name;
+    private String surname;
+    private String tel;
+    private String email;
+    private String passwd;
     private double rating;
     private boolean enabled;
 
     private User(){
+    }
+
+    public double getRating() {
+        return rating;
     }
 
     public long getUser_id() {
@@ -51,18 +55,14 @@ public class User {
         rating = ub.getRating();
     }
 
-    public double getRating() {
-        return this.rating;
-    }
-
     public static class Builder {
         private String name;
         private String surname;
         private String tel;
         private String email;
         private String passwd;
-        private boolean enabled;
         private double rating;
+        private boolean enabled;
 
         public Builder() {
             this.enabled = false;

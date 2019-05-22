@@ -20,16 +20,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.jws.WebParam;
+import javax.mail.Multipart;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.*;
 import java.net.URI;
 
@@ -116,8 +127,9 @@ public class UserController {
            return redirectToErrorPage(response, maybePublishedChangas.getAlternative());
         }
         mav.addObject("publishedChangas", maybePublishedChangas.getValue());
-//        /*Either<String, Validation> urlImage = .... ;*/
-        mav.addObject("urlImage", "/img/nieve1.jpg");
+        /*Either<String, Validation> urlImage = .... ;*/
+        /* si el usuario no tiene foto de perfil, le mandamos esta url: /img/img_avatar.png */
+        mav.addObject("urlImage", "/img/img_avatar.png");
         return mav;
     }
 
@@ -218,6 +230,11 @@ public class UserController {
         us.resetPassword(loggedUser.getUser_id(), resetPasswordForm.getNewPassword());
         System.out.println("Contraseña restablecida");
         return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    public ModelAndView upload(@RequestParam("file") MultipartFile file) {
+        return new ModelAndView("uploadedImage").addObject("file", file);
     }
 
     @RequestMapping(value = "/rate", method = RequestMethod.POST)

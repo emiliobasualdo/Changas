@@ -6,6 +6,7 @@
             <pattern>${defaultPattern:-}</pattern>
         </encoder>
     </appender>
+    <!--TODO DESCOMENTAR ESTO-->
     <!--<root level="DEBUG">-->
         <!--<appender-ref ref="STDOUT" />-->
     <!--</root>-->

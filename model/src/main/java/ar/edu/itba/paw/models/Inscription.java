@@ -4,6 +4,7 @@ public class Inscription {
     private long user_id;
     private long changa_id;
     private InscriptionState state;
+    private double rating;
 
     private Inscription(){
     }
@@ -20,6 +21,9 @@ public class Inscription {
         return state;
     }
 
+    public double getRating() {
+        return rating;
+    }
 
     public static class Builder {
 
@@ -27,6 +31,7 @@ public class Inscription {
         private long user_id;
         private long changa_id;
         private InscriptionState state;
+        private double rating;
 
         public Builder() {
             this.user_id = NO_ID;
@@ -44,6 +49,10 @@ public class Inscription {
             this.state = state;
             return this;
         }
+        public Inscription.Builder withRating(double rating) {
+            this.rating = rating;
+            return this;
+        }
 
         public Inscription build(){
             //Here we create the actual bank account object, which is always in a fully initialised state when it's returned.
@@ -51,6 +60,7 @@ public class Inscription {
             insc.changa_id = this.changa_id;
             insc.user_id = this.user_id;
             insc.state = this.state;
+            insc.rating = this.rating;
             return insc;
         }
     }
