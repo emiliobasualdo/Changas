@@ -6,6 +6,8 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.UserTokenState;
 import ar.edu.itba.paw.models.VerificationToken;
 
+import java.io.OutputStream;
+
 /**
  * DAO should be limited to only add/update/insert/select Entity
  * objects into/from database and that's all. If you want to do
@@ -27,4 +29,6 @@ public interface UserService {
     Either<User, Validation> update(final long userId, User.Builder userBuilder);
     Either<UserTokenState, Validation> getUserTokenState(VerificationToken verificationToken);
     Either<VerificationToken, Validation> createNewVerificationToken(String existingTokenValue);
+    Either<String, Validation> putImage(long userId, OutputStream os);
+    Either<byte[], Validation> getImage(long userId, String imageName);
 }

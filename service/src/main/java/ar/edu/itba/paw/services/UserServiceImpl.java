@@ -1,13 +1,16 @@
 package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.daos.UserDao;
+import ar.edu.itba.paw.interfaces.daos.UserPictureDao;
 import ar.edu.itba.paw.interfaces.daos.VerificationTokenDao;
 import ar.edu.itba.paw.interfaces.services.AuthenticationService;
 import ar.edu.itba.paw.interfaces.services.UserService;
+import ar.edu.itba.paw.interfaces.util.FileConventions;
 import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.UserTokenState;
 import ar.edu.itba.paw.models.VerificationToken;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.UUID;
@@ -42,6 +48,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private AuthenticationService authenticationService;
+
+    @Autowired
+    private FileConventions fc;
+
+    @Autowired
+    private UserPictureDao userPictureDao;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -170,6 +182,40 @@ public class UserServiceImpl implements UserService {
 
     private boolean isLoggedUserAuthorizedToUpdateUser(long userId) {
         return authenticationService.getLoggedUser().isPresent() && authenticationService.getLoggedUser().get().getUser_id() == userId;
+    }
+
+    @Override
+    public Either<String, Validation> putImage(long userId, OutputStream os) {
+        //We check if the user exists
+        Either<User, Validation> user = userDao.getById(userId);
+        if (!user.isValuePresent())
+            return Either.alternative(IMAGE_COULDNT_BE_SAVED);
+
+        //
+        if(!isLoggedUserAuthorizedToUpdateUser(userId)){
+            return Either.alternative(UNAUTHORIZED);
+        }
+
+        // Todo no borrar este comment
+        // En un futuro userPictureDao.putImage debería retornar un Either<Long, Validation>
+        // siendo el Long el key de la imagen entre las imágenes de la
+        // changa cosa de poder armar el nombre del archivo dinamicamente
+        Validation validation = userPictureDao.putImage(userId, os);
+        if (validation.isError()) {
+            return Either.alternative(validation);
+        }
+        return Either.value(fc.createName("changa", String.valueOf(userId))); // todo falta extension
+    }
+
+    @Override
+    public Either<byte[], Validation> getImage(long userId, String imageName) {
+        //if (FileConventions.isValidImageName)
+        Either<InputStream, Validation> image = userPictureDao.getImage(userId);
+        try {
+            return Either.value(IOUtils.toByteArray(image.getValue()));
+        } catch (IOException e) {
+            return Either.alternative(DATABASE_ERROR.withMessage(e.getMessage()));
+        }
     }
 
 }

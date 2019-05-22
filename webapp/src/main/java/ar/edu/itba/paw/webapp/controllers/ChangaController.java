@@ -260,7 +260,7 @@ public class ChangaController {
     }
 
     @RequestMapping(value = "/changas/{changaId}/{imageName}")
-    public void getFile(HttpServletResponse resp, @PathVariable String changaId, @PathVariable String imageName) {
+    public void getFile(HttpServletResponse resp, @PathVariable final long changaId, @PathVariable final String imageName) {
         Either<byte[], Validation> either = cs.getImage(changaId, imageName);
         if (!either.isValuePresent()) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

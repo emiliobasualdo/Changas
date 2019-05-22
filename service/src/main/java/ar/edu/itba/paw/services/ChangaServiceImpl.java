@@ -138,23 +138,38 @@ public class ChangaServiceImpl implements ChangaService {
     }
 
     @Override
-    public Either<String, Validation> putImage(String changaId, OutputStream os) {
-        // if(chDao.changaExists(os))
+    public Either<String, Validation> putImage(long changaId, FileInputStream os) {
+        System.out.println("service put image");
+        //We check if the changa exists
+        Either<Changa, Validation> changa = chDao.getById(changaId);
+        if (!changa.isValuePresent()) {
+            System.out.println("1");
+            return Either.alternative(NO_SUCH_CHANGA);
+        }
+
+        //Only owners of the changa can edit it
+        if(!isLoggedUserAuthorizedToUpdateChanga(changa.getValue().getUser_id())){
+            System.out.println("2");
+            return Either.alternative(UNAUTHORIZED);
+        }
+
         // Todo no borrar este comment
-        // En un futuro chDao.putImage debería retornar un Either<Long, Validation>
+        // En un futuro changaPictureDao.putImage debería retornar un Either<Long, Validation>
         // siendo el Long el key de la imagen entre las imágenes de la
         // changa cosa de poder armar el nombre del archivo dinamicamente
-        Validation validation = chDao.putImage(changaId, os);
+        Validation validation = changaPictureDao.putImage(changaId, os);
         if (validation.isError()) {
+            System.out.println(validation);
             return Either.alternative(validation);
         }
-        return Either.value(fc.createName("changa", changaId)); // todo falta extension
+        System.out.println("3");
+        return Either.value(fc.createName("changa", String.valueOf(changaId))); // todo falta extension
     }
 
     @Override
-    public Either<byte[], Validation> getImage(String changaId, String imageName) {
+    public Either<byte[], Validation> getImage(long changaId, String imageName) {
         //if (FileConventions.isValidImageName)
-        Either<InputStream, Validation> image = chDao.getImage(changaId);
+        Either<InputStream, Validation> image = changaPictureDao.getImage(changaId);
         try {
             return Either.value(IOUtils.toByteArray(image.getValue()));
         } catch (IOException e) {

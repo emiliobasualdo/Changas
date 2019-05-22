@@ -45,8 +45,8 @@ public enum Validation {
     EMAIL_ERROR("Email couldn't be sent", HttpStatus.SERVICE_UNAVAILABLE),
 
     //Pictures
-    IMAGE_COULDNT_BE_UPDATED("Image couldnt be updated", HttpStatus.SERVICE_UNAVAILABLE)
-
+    IMAGE_COULDNT_BE_UPDATED("Image couldnt be updated", HttpStatus.SERVICE_UNAVAILABLE),
+    IMAGE_COULDNT_BE_SAVED("Image couldn't be saved", HttpStatus.SERVICE_UNAVAILABLE)
     ;
 
 

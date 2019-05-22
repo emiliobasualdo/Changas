@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.ChangaState;
 import ar.edu.itba.paw.models.Either;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -27,6 +28,6 @@ public interface ChangaService {
     Either<Changa, Validation> changeChangaState(long changaId, ChangaState newState);
     Either<Changa, Validation> changeChangaState(Changa changa, ChangaState newState);
     Either<List<Changa>, Validation> getUserEmittedChangas(long id);
-    Either<String, Validation> putImage(String changaId, OutputStream os);
-    Either<byte[], Validation> getImage(String changaId, String imageName);
+    Either<String, Validation> putImage(long changaId, FileInputStream os);
+    Either<byte[], Validation> getImage(long changaId, String imageName);
 }

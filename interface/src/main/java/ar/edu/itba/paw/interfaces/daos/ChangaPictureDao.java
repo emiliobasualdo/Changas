@@ -9,6 +9,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public interface ChangaPictureDao {
-    Validation putImage(long changaId, OutputStream fileInputStream);
+    Validation putImage(long changaId, FileInputStream imageByteStream);
     Either<InputStream, Validation> getImage(long changaId);
 }

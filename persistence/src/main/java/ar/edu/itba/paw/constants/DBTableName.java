@@ -8,7 +8,8 @@ public enum DBTableName {
     verification_token(),
     categories(),
     neighborhoods(),
-    changa_picture()
+    changa_picture(),
+    user_picture()
     ;
 
 }

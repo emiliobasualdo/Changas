@@ -1,16 +1,14 @@
 package ar.edu.itba.paw.models;
 
 import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
 
-public class ChangaPicture {
+public class Picture {
     private InputStream imageByteStream;
-    private long changaId;
+    private long ownerId;
 
-    public ChangaPicture(ChangaPicture.Builder changaPictureBuilder) {
+    public Picture(Picture.Builder changaPictureBuilder) {
         this.imageByteStream = changaPictureBuilder.getImageByteStream();
-        this.changaId = changaPictureBuilder.getChangaId();
+        this.ownerId = changaPictureBuilder.getOwnerId();
     }
 
     public InputStream getImageByteStream() {
@@ -18,24 +16,24 @@ public class ChangaPicture {
     }
 
     public long getChangaId() {
-        return changaId;
+        return ownerId;
     }
 
     public static class Builder {
         private InputStream imageByteStream;
-        private long changaId;
+        private long ownerId;
 
-        public Builder(long changaId, InputStream imageByteStream) {
+        public Builder(long ownerId, InputStream imageByteStream) {
             this.imageByteStream = imageByteStream;
-            this.changaId = changaId;
+            this.ownerId = ownerId;
         }
 
         public InputStream getImageByteStream() {
             return imageByteStream;
         }
 
-        public long getChangaId() {
-            return changaId;
+        public long getOwnerId() {
+            return ownerId;
         }
 
     }
