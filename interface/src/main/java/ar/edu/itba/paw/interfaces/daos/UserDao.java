@@ -18,5 +18,7 @@ public interface UserDao {
     Validation setUserStatus(final long userId, boolean status);
     void updatePassword(final long id, final String password);
     Either<User, Validation> update(final long userId, User.Builder userBuilder);
+
+    Validation setRating(long userId, double newRating);
     //List<User> createUsers();
 }

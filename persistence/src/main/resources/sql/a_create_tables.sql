@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS users
     surname VARCHAR(100) NOT NULL,
     tel     VARCHAR(100) NOT NULL,
     email   VARCHAR(100) NOT NULL UNIQUE ,
-    passwd  VARCHAR(100) NOT NULL ,
+    passwd  VARCHAR(100) NOT NULL,
+    rating  DOUBLE PRECISION NOT NULL DEFAULT 5,
     enabled BOOLEAN DEFAULT FALSE
 );
 
@@ -49,4 +50,19 @@ CREATE TABLE IF NOT EXISTS categories
 CREATE TABLE IF NOT EXISTS neighborhoods
 (
     key VARCHAR(50) PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS changa_picture
+(
+    changa_id SERIAL NOT NULL REFERENCES changas (changa_id),
+    img_blobl bytea,
+    PRIMARY KEY (changa_id)
+);
+
+
+CREATE TABLE IF NOT EXISTS user_picture
+(
+    user_id SERIAL NOT NULL REFERENCES changas (changa_id),
+    img_blobl bytea,
+    PRIMARY KEY (user_id)
 );

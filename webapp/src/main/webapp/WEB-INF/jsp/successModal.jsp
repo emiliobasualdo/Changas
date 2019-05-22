@@ -1,7 +1,7 @@
 <html>
 <%-- https://www.tutorialrepublic.com/codelab.php?topic=bootstrap&file=simple-success-confirmation-popup --%>
 <div id="${requestScope.modalId}" class="modal fade">
-    <div class="modal-dialog modal-confirm">
+    <div class="modal-dialog modal-confirm-success">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="icon-box">

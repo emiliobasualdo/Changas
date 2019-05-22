@@ -11,6 +11,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style><%@include file="/WEB-INF/css/adminChangaBody.css"%></style>
     <style><%@include file="/WEB-INF/css/successModal.css"%></style>
+    <style><%@include file="/WEB-INF/css/errorModal.css"%></style>
 </head>
 
 <body>
@@ -28,8 +29,15 @@
             <h5><c:out value="${changa.neighborhood}" />, <c:out value="${changa.street}" /> <c:out value="${changa.number}" /></h5>
         </div>
         <div class="container">
-            <c:url value="${urlImage}" var="mudanzaImage"/>
-            <img src="${mudanzaImage}" alt="Changa Image">
+            <c:choose>
+                <c:when test="${noPicture}">
+
+                </c:when>
+                <c:otherwise>
+                    <c:url value="${urlImage}" var="changaImage"/>
+                    <img src="${changaImage}" alt="Changa Image">
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
 
@@ -62,7 +70,15 @@
                             <c:set var="changaId" value="${changa.changa_id}" scope="request"/>
                             <c:set var="userId" value="${entry.key.user_id}" scope="request"/>
                             <c:set var="state" value="${entry.value.state}" scope="request"/>
-                            <c:import url="inscribedUserCard.jsp"/>
+
+                            <c:choose>
+                                <c:when test="${changa.state == 'settled'}">
+                                    <c:import url="userRatingCard.jsp"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:import url="inscribedUserCard.jsp"/>
+                                </c:otherwise>
+                            </c:choose>
                         </c:forEach>
                     </div>
                 </div>

@@ -14,6 +14,7 @@ public interface ChangaDao {
     Either<List<Changa>, Validation> getAll(ChangaState state, int pageNum);
     Either<List<Changa>, Validation> getFiltered(ChangaState state, int pageNum, String filterCategory, String filterTitle, String filterLocalitie);
     Either<List<Changa>, Validation> getUserOwnedChangas(final long user_id);
+    Either<List<Changa>, Validation> getUserOpenChangas(long id);
     Either<Changa, Validation> update(final long changaId, Changa.Builder changaBuilder);
     Either<Changa, Validation> changeChangaState(long changaId, ChangaState state);
     Either<Integer, Validation> getFilteredPageCount(ChangaState emitted, String category, String title, String locality);
