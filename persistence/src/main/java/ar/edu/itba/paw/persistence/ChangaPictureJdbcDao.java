@@ -42,36 +42,25 @@ public class ChangaPictureJdbcDao implements ChangaPictureDao {
     }
 
     private static Picture changaPictureFromRS(ResultSet rs) throws SQLException {
-        return new Picture(new Picture.Builder(rs.getLong(changa_id.name()), rs.getBinaryStream(img_blobl.name())));
+        return new Picture(new Picture.Builder(rs.getLong(changa_id.name()), rs.getBytes(img_blobl.name())));
     }
 
-    private Map<String, Object> changaPictureToTableRow(long changaId, FileInputStream imageByteStream) {
-        MultipartFile file;
-        byte[] bytes = null;
-        try {
-            bytes = "/home/maite/Logo-ITBA-azul.png".getBytes();
-            //bytes = IOUtils.toByteArray("/home/maite/Logo-ITBA-azul.png");
-            System.out.println("a");
-        } catch (Exception e) {
-            System.out.println("b");
-            e.printStackTrace();
-        }
+    private Map<String, Object> changaPictureToTableRow(long changaId, byte[] bytes) {
         Map<String, Object> resp = new HashMap<>();
         resp.put(changa_id.name(), changaId);
         resp.put(img_blobl.name(), bytes);
         return resp;
     }
 
-//    private Map<String, Object> changaPictureToTableRow(Picture.Builder changaPictureBuilder) {
-//        return changaPictureToTableRow(changaPictureBuilder.getChangaId(),changaPictureBuilder.getImageByteStream() );
-//    }
-
     @Override
-    public Validation putImage(long changaId, FileInputStream imageByteStream) {
-        System.out.println("adaf" + imageByteStream);
-
-
-        Map<String, Object> row = changaPictureToTableRow(changaId, imageByteStream);
+    public Validation putImage(long changaId, MultipartFile multipartFile) {
+        byte[] bytes = null;
+        try {
+            bytes = multipartFile.getBytes();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Map<String, Object> row = changaPictureToTableRow(changaId,  bytes);
         try {
             jdbcInsert
                     .execute(row);
@@ -81,18 +70,16 @@ public class ChangaPictureJdbcDao implements ChangaPictureDao {
                     img_blobl.name(),
                     changa_id.name()
                     ),
-                    imageByteStream, changaId);
+                    bytes, changaId);
             return updatedImage == 1 ? OK : IMAGE_COULDNT_BE_UPDATED;
         } catch (Exception ex) {
-            System.out.println("aca");
-            ex.printStackTrace();
             return IMAGE_COULDNT_BE_SAVED;
         }
         return OK;
     }
 
     @Override
-    public Either<InputStream, Validation> getImage(long changaId) {
+    public Either<byte[], Validation> getImage(long changaId) {
         final List<Picture> list = jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = ?",changa_picture.name(), changa_id.name()),
                 ROW_MAPPER, changaId

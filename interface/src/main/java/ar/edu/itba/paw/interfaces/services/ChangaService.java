@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.util.Validation;
 import ar.edu.itba.paw.models.Changa;
 import ar.edu.itba.paw.models.ChangaState;
 import ar.edu.itba.paw.models.Either;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,6 +29,6 @@ public interface ChangaService {
     Either<Changa, Validation> changeChangaState(long changaId, ChangaState newState);
     Either<Changa, Validation> changeChangaState(Changa changa, ChangaState newState);
     Either<List<Changa>, Validation> getUserOpenChangas(long id);
-    Either<String, Validation> putImage(String changaId, OutputStream os);
-    Either<byte[], Validation> getImage(String changaId, String imageName);
+    Either<String, Validation> putImage(long changaId, MultipartFile multipartFile);
+    Either<byte[], Validation> getImage(long changaId, String imageName);
 }

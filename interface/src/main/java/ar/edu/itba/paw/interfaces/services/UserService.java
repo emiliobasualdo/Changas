@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Either;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.UserTokenState;
 import ar.edu.itba.paw.models.VerificationToken;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.OutputStream;
 
@@ -29,7 +30,7 @@ public interface UserService {
     Either<User, Validation> update(final long userId, User.Builder userBuilder);
     Either<UserTokenState, Validation> getUserTokenState(VerificationToken verificationToken);
     Either<VerificationToken, Validation> createNewVerificationToken(String existingTokenValue);
-    Either<String, Validation> putImage(long userId, OutputStream os);
+    Either<String, Validation> putImage(long userId, MultipartFile multipartFile);
     Either<byte[], Validation> getImage(long userId, String imageName);
     boolean isUserEnabled(long user_id);
 

@@ -16,6 +16,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.List;
@@ -142,7 +143,7 @@ public class ChangaServiceImpl implements ChangaService {
     }
 
     @Override
-    public Either<String, Validation> putImage(long changaId, FileInputStream os) {
+    public Either<String, Validation> putImage(long changaId, MultipartFile multipartFile) {
         System.out.println("service put image");
         //We check if the changa exists
         Either<Changa, Validation> changa = chDao.getById(changaId);
@@ -161,24 +162,17 @@ public class ChangaServiceImpl implements ChangaService {
         // En un futuro changaPictureDao.putImage debería retornar un Either<Long, Validation>
         // siendo el Long el key de la imagen entre las imágenes de la
         // changa cosa de poder armar el nombre del archivo dinamicamente
-        Validation validation = changaPictureDao.putImage(changaId, os);
+        Validation validation = changaPictureDao.putImage(changaId, multipartFile);
         if (validation.isError()) {
-            System.out.println(validation);
             return Either.alternative(validation);
         }
-        System.out.println("3");
         return Either.value(fc.createName("changa", String.valueOf(changaId))); // todo falta extension
     }
 
     @Override
-    public Either<byte[], Validation> getImage(String changaId, String imageName) {
+    public Either<byte[], Validation> getImage(long changaId, String imageName) {
         //if (FileConventions.isValidImageName)
-        Either<InputStream, Validation> image = changaPictureDao.getImage(changaId);
-        try {
-            return Either.value(IOUtils.toByteArray(image.getValue()));
-        } catch (IOException e) {
-            return Either.alternative(DATABASE_ERROR.withMessage(e.getMessage()));
-        }
+        return changaPictureDao.getImage(changaId);
     }
 
 }

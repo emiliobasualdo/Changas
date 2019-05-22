@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -196,14 +197,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Either<String, Validation> putImage(long userId, OutputStream os) {
+    public Either<String, Validation> putImage(long userId, MultipartFile multipartFile) {
         //We check if the user exists
         Either<User, Validation> user = userDao.getById(userId);
         if (!user.isValuePresent())
             return Either.alternative(IMAGE_COULDNT_BE_SAVED);
 
         //
-        if(!isLoggedUserAuthorizedToUpdateUser(userId)){
+        if(!authenticationService.isLoggedUserAuthorizedToUpdateUser(userId)){
             return Either.alternative(UNAUTHORIZED);
         }
 
@@ -211,22 +212,17 @@ public class UserServiceImpl implements UserService {
         // En un futuro userPictureDao.putImage debería retornar un Either<Long, Validation>
         // siendo el Long el key de la imagen entre las imágenes de la
         // changa cosa de poder armar el nombre del archivo dinamicamente
-        Validation validation = userPictureDao.putImage(userId, os);
+        Validation validation = userPictureDao.putImage(userId, multipartFile);
         if (validation.isError()) {
             return Either.alternative(validation);
         }
-        return Either.value(fc.createName("changa", String.valueOf(userId))); // todo falta extension
+        return Either.value(fc.createName("user", String.valueOf(userId))); // todo falta extension
     }
 
     @Override
     public Either<byte[], Validation> getImage(long userId, String imageName) {
         //if (FileConventions.isValidImageName)
-        Either<InputStream, Validation> image = userPictureDao.getImage(userId);
-        try {
-            return Either.value(IOUtils.toByteArray(image.getValue()));
-        } catch (IOException e) {
-            return Either.alternative(DATABASE_ERROR.withMessage(e.getMessage()));
-        }
+        return userPictureDao.getImage(userId);
     }
 
 }

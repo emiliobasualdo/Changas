@@ -3,7 +3,7 @@ package ar.edu.itba.paw.models;
 import java.io.InputStream;
 
 public class Picture {
-    private InputStream imageByteStream;
+    private byte[] imageByteStream;
     private long ownerId;
 
     public Picture(Picture.Builder changaPictureBuilder) {
@@ -11,7 +11,7 @@ public class Picture {
         this.ownerId = changaPictureBuilder.getOwnerId();
     }
 
-    public InputStream getImageByteStream() {
+    public byte[] getImageByteStream() {
         return imageByteStream;
     }
 
@@ -20,15 +20,15 @@ public class Picture {
     }
 
     public static class Builder {
-        private InputStream imageByteStream;
+        private byte[] imageByteStream;
         private long ownerId;
 
-        public Builder(long ownerId, InputStream imageByteStream) {
+        public Builder(long ownerId, byte[] imageByteStream) {
             this.imageByteStream = imageByteStream;
             this.ownerId = ownerId;
         }
 
-        public InputStream getImageByteStream() {
+        public byte[] getImageByteStream() {
             return imageByteStream;
         }
 

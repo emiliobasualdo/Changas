@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.DataSource;
 import java.io.InputStream;
@@ -40,19 +41,25 @@ public class UserPictureJdbcDao implements UserPictureDao {
     }
 
     private static Picture userPictureFromRS(ResultSet rs) throws SQLException {
-        return new Picture(new Picture.Builder(rs.getLong(user_id.name()), rs.getBinaryStream(img_blobl.name())));
+        return new Picture(new Picture.Builder(rs.getLong(user_id.name()), rs.getBytes(img_blobl.name())));
     }
 
-    private Map<String, Object> userPictureToTableRow(long userId, OutputStream imageByteStream) {
+    private Map<String, Object> userPictureToTableRow(long userId, byte[] bytes) {
         Map<String, Object> resp = new HashMap<>();
         resp.put(user_id.name(), userId);
-        resp.put(img_blobl.name(), imageByteStream);
+        resp.put(img_blobl.name(), bytes);
         return resp;
     }
 
     @Override
-    public Validation putImage(long userId, OutputStream imageByteStream) {
-        Map<String, Object> row = userPictureToTableRow(userId, imageByteStream);
+    public Validation putImage(long userId,  MultipartFile multipartFile) {
+        byte[] bytes = null;
+        try {
+            bytes = multipartFile.getBytes();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Map<String, Object> row = userPictureToTableRow(userId, bytes);
         try {
             jdbcInsert
                     .execute(row);
@@ -62,7 +69,7 @@ public class UserPictureJdbcDao implements UserPictureDao {
                     img_blobl.name(),
                     user_id.name()
                     ),
-                    imageByteStream, userId);
+                    bytes, userId);
             return updatedImage == 1 ? OK : IMAGE_COULDNT_BE_UPDATED;
         } catch (Exception ex) {
             return IMAGE_COULDNT_BE_SAVED;
@@ -72,7 +79,7 @@ public class UserPictureJdbcDao implements UserPictureDao {
 
 
     @Override
-    public Either<InputStream, Validation> getImage(long userId) {
+    public Either<byte[], Validation> getImage(long userId) {
         final List<Picture> list = jdbcTemplate.query(
                 String.format("SELECT * FROM %s WHERE %s = ?", user_picture.name(), user_id.name()),
                 ROW_MAPPER, userId
