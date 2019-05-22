@@ -148,8 +148,10 @@ public class ChangaController {
         mav.addObject("changaOwner", changaOwner.getValue());
         mav.addObject("userAlreadyInscribedInChanga", userAlreadyInscribedInChanga);
         mav.addObject("userOwnsChanga", false);
-        /*Either<String, Validation> urlImage = .... ;*/
-        mav.addObject("urlImage", "/img/nieve1.jpg");
+        /*Either<String, Validation> urlImage = .... ;
+        mav.addObject("urlImage", "/img/nieve1.jpg"); */
+        /* cambiar esto si tiene una foto para mostrar */
+        mav.addObject("noPicture", true);
         return mav;
     }
 
@@ -176,9 +178,10 @@ public class ChangaController {
             return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(hasAcceptedUsers.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         }
         mav.addObject("hasAcceptedUsers", hasAcceptedUsers.getValue());
-        /*Either<String, Validation> urlImage = .... ;*/
-        mav.addObject("urlImage", "/img/nieve1.jpg");
-
+        /*Either<String, Validation> urlImage = .... ;
+        mav.addObject("urlImage", "/img/nieve1.jpg"); */
+        /* cambiar esto si tiene una foto para mostrar */
+        mav.addObject("noPicture", true);
         return mav;
     }
 

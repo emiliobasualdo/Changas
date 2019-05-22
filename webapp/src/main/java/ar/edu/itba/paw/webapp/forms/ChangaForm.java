@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.webapp.forms;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.validation.constraints.*;
 
 public class ChangaForm {
@@ -34,6 +36,8 @@ public class ChangaForm {
     @NotEmpty
     @Size(min = 4, max = 100) @Pattern(regexp = "[a-zA-Záéíóúñü 0-9]+")
     private String category;
+
+    private MultipartFile photo;
 
     public String getTitle() {
         return title;
@@ -89,5 +93,13 @@ public class ChangaForm {
 
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    public MultipartFile getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(MultipartFile photo) {
+        this.photo = photo;
     }
 }
