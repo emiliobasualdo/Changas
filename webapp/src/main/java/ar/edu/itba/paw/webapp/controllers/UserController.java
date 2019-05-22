@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.jws.WebParam;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -220,8 +221,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "/rate", method = RequestMethod.POST)
-    public void rateChanguero(@RequestParam("id") long id, @RequestParam("rating") String rating) {
-        System.out.println(id + "  " + rating);
+    @ResponseStatus(value = HttpStatus.OK)
+    public void rateChanguero(@RequestParam("userId") long userId, @RequestParam(name="rating", defaultValue = "0") long rating) {
+        System.out.println(userId + "  " + rating );
+        us.addRating(userId, rating);
     }
 
 }

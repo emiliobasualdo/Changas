@@ -11,6 +11,7 @@
     <script>
         var page = 1;
         $(document).ready(function(){
+            var ctx = '${pageContext.request.contextPath}';
             var totalPages = $('#totalPages').val()-1;
             var title = $('#tfilter').val();
             var neighborhood = $('#nfilter').val();
@@ -18,7 +19,7 @@
             showMoreBtn(0, totalPages);
             $('#myAnchor').click(function(e){
                 e.preventDefault();
-                $.get('/page?page='+page+'&tfilter='+title+'&nfilter='+neighborhood+'&cfilter='+category, function(data) {
+                $.get(ctx+'/page?page='+page+'&tfilter='+title+'&nfilter='+neighborhood+'&cfilter='+category, function(data) {
                     $('#container').append(data);
                     showMoreBtn(page, totalPages);
                     page++;

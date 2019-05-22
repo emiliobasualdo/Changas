@@ -65,6 +65,7 @@
 
                             <c:choose>
                                 <c:when test="${changa.state == 'settled'}">
+                                    <c:set var="changaId" value="${changa.changa_id}" scope="request"/>
                                     <c:import url="userRatingCard.jsp"/>
                                 </c:when>
                                 <c:otherwise>
