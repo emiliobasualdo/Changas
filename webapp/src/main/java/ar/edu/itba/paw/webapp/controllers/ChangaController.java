@@ -242,9 +242,9 @@ public class ChangaController {
         Validation val = is.inscribeInChanga(loggedUser.getUser_id(), changaId);
         if (val.isOk()){
             System.out.println("user "+ loggedUser.getUser_id()+ " successfully inscripto en changa "+ changaId);
-//            Changa changa = cs.getChangaById(changaId).getValue();
-//            User changaOwner = us.findById(changa.getUser_id()).getValue();
-//            emailService.sendJoinRequestEmail(changa, changaOwner, loggedUser);
+            Changa changa = cs.getChangaById(changaId).getValue();
+            User changaOwner = us.findById(changa.getUser_id()).getValue();
+            emailService.sendJoinRequestEmail(changa, changaOwner, loggedUser);
         } else {
             System.out.println("No se pudo inscribir en la changa pq:"+ val.getMessage());
             return redirectToErrorPage(response, val);
