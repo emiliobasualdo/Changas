@@ -2,15 +2,20 @@ package ar.edu.itba.paw.models;
 
 public class User {
 
+    private  double rating;
     private long user_id;
-    private  String name;
-    private  String surname;
-    private  String tel;
-    private  String email;
-    private  String passwd;
+    private String name;
+    private String surname;
+    private String tel;
+    private String email;
+    private String passwd;
     private boolean enabled;
 
     private User(){
+    }
+
+    public double getRating() {
+        return rating;
     }
 
     public long getUser_id() {
@@ -47,6 +52,7 @@ public class User {
         email = ub.getEmail();
         passwd = ub.getPasswd();
         enabled = ub.isEnabled();
+        rating = ub.getRating();
     }
 
     public static class Builder {
@@ -55,6 +61,7 @@ public class User {
         private String tel;
         private String email;
         private String passwd;
+        private double rating;
         private boolean enabled;
 
         public Builder() {
@@ -101,6 +108,11 @@ public class User {
             return this;
         }
 
+        public User.Builder withRating (double rating) {
+            this.rating = rating;
+            return this;
+        }
+
         public String getEmail() {
             return email;
         }
@@ -123,7 +135,9 @@ public class User {
 
         public boolean isEnabled() {return enabled;}
 
-
+        public double getRating() {
+            return this.rating;
+        }
     }
 
     @Override

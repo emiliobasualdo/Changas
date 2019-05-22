@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS users
     tel     VARCHAR(100) NOT NULL,
     email   VARCHAR(100) UNIQUE NOT NULL,
     passwd  VARCHAR(100) NOT NULL,
+    rating  DOUBLE PRECISION,
     enabled BOOLEAN DEFAULT FALSE
 );
 
@@ -43,6 +44,7 @@ CREATE TABLE IF NOT EXISTS user_inscribed
     user_id   INTEGER NOT NULL REFERENCES users (user_id),
     changa_id INTEGER NOT NULL REFERENCES changas (changa_id),
     state     VARCHAR(100) DEFAULT 'requested',
+    rating  DOUBLE PRECISION,
     PRIMARY KEY (user_id, changa_id)
 );
 

@@ -119,6 +119,19 @@ public class UserJdbcDao implements UserDao {
 
         return updatedUser == 1 ? getById(userId) : Either.alternative(NO_SUCH_USER);
     }
+
+    @Override
+    public void addRating(long userId, double newRating) {
+        Either<User, Validation> user = getById(userId);
+        if (user.isValuePresent()) {
+            newRating = (newRating + user.getValue().getRating() +1) / 2;
+            jdbcTemplate.update(String.format("UPDATE %s SET %s = ? WHERE %s = ? ",
+                    users.name(), rating.name(), user_id.name()),
+                    newRating,
+                    user_id);
+        }
+    }
+
     public Validation setUserStatus(final long userId, final boolean status) {
         if (getById(userId).isValuePresent()) {
             try {
@@ -152,6 +165,7 @@ public class UserJdbcDao implements UserDao {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     private List<User> generateRandomUsers() {
         int N_USERS = 100;
         String[] tel = {"005491133071114", "1133452114", "1514300944", "5491145443786", "133071114"};
@@ -183,6 +197,7 @@ public class UserJdbcDao implements UserDao {
         resp.put(tel.name(), userBuilder.getTel());
         resp.put(email.name(), userBuilder.getEmail());
         resp.put(passwd.name(), userBuilder.getPasswd());
+        resp.put(rating.name(), userBuilder.getRating());
         resp.put(enabled.name(), userBuilder.isEnabled());
         return resp;
     }
@@ -194,6 +209,7 @@ public class UserJdbcDao implements UserDao {
                 .withTel(rs.getString(tel.name()))
                 .withEmail(rs.getString(email.name()))
                 .withPasswd(rs.getString(passwd.name()))
+                .withRating(rs.getDouble(rating.name()))
                 .enabled(rs.getBoolean(enabled.name()))
         );
     }

@@ -1,10 +1,9 @@
 package ar.edu.itba.paw.interfaces.services;
 
 import ar.edu.itba.paw.interfaces.util.Validation;
-import ar.edu.itba.paw.models.Either;
-import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.models.UserTokenState;
-import ar.edu.itba.paw.models.VerificationToken;
+import ar.edu.itba.paw.models.*;
+
+import java.util.List;
 
 /**
  * DAO should be limited to only add/update/insert/select Entity
@@ -28,5 +27,5 @@ public interface UserService {
     Either<UserTokenState, Validation> getUserTokenState(VerificationToken verificationToken);
     Either<VerificationToken, Validation> createNewVerificationToken(String existingTokenValue);
     boolean isUserEnabled(long user_id);
-
+    void notifyClosing(ChangaState newState, List<Inscription> inscriptions);
 }

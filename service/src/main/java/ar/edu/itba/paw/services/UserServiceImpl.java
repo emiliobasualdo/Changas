@@ -1,15 +1,14 @@
 package ar.edu.itba.paw.services;
+
 import ar.edu.itba.paw.interfaces.daos.UserDao;
 import ar.edu.itba.paw.interfaces.daos.VerificationTokenDao;
 import ar.edu.itba.paw.interfaces.services.AuthenticationService;
 import ar.edu.itba.paw.interfaces.services.UserService;
 import ar.edu.itba.paw.interfaces.util.Validation;
-import ar.edu.itba.paw.models.Either;
-import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.models.UserTokenState;
-import ar.edu.itba.paw.models.VerificationToken;
+import ar.edu.itba.paw.models.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,11 +16,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.UUID;
 
 import static ar.edu.itba.paw.interfaces.util.Validation.*;
@@ -100,6 +98,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void notifyClosing(ChangaState newState, List<Inscription> inscriptions) {
+        if (newState == ChangaState.closed) {
+            for (Inscription insc: inscriptions) {
+                if (insc.getRating() != Defaults.rating.doubs)
+                    addRating(insc.getUser_id(), insc.getRating());
+            }
+        }
+    }
+
+    private void addRating(long user_id, double rating) {
+        userDao.addRating(user_id, rating);
+    }
+
+    @Override
     public Either<VerificationToken, Validation> getVerificationToken(String tokenString) {
         return verificationTokenDao.findByToken(tokenString);
     }
@@ -167,10 +179,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Either<User, Validation> update(final long userId, User.Builder userBuilder) {
-        if(!authenticationService.isLoggedUserAuthorizedToUpdateUser(userId)){
+        if(!authenticationService.isLoggedUserAuthorizedToUpdateUser(userId)) {
             return Either.alternative(UNAUTHORIZED);
         }
         return userDao.update(userId, userBuilder);
     }
 
+    private enum Defaults {
+        rating (-1);
+        final double doubs;
+        Defaults(double doubs ) {
+            this.doubs = doubs;
+        }
+    }
 }

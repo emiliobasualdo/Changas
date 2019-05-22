@@ -8,6 +8,7 @@ public enum DBUserFields {
     tel         ("tel", "VARCHAR",100),
     email       ("email", "VARCHAR",100),
     passwd      ("passwd", "VARCHAR",100),
+    rating      ("rating", "DOUBLE PRECISION",-1),
     enabled     ("enabled", "BOOLEAN", -1);
 
     final String colName;

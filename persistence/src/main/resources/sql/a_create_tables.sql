@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS users
     surname VARCHAR(100) NOT NULL,
     tel     VARCHAR(100) NOT NULL,
     email   VARCHAR(100) NOT NULL UNIQUE ,
-    passwd  VARCHAR(100) NOT NULL ,
+    passwd  VARCHAR(100) NOT NULL,
+    rating  DOUBLE PRECISION default -1.0,
     enabled BOOLEAN DEFAULT FALSE
 );
 
@@ -30,6 +31,7 @@ CREATE TABLE IF NOT EXISTS user_inscribed
     user_id   SERIAL NOT NULL REFERENCES users (user_id),
     changa_id SERIAL NOT NULL  REFERENCES changas (changa_id),
     state     VARCHAR(100) DEFAULT 'requested',
+    rating  DOUBLE PRECISION,
     PRIMARY KEY (user_id, changa_id)
 );
 
