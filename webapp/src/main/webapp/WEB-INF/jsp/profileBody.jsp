@@ -14,13 +14,13 @@
                 <div class="profile-head">
                     <div class="container custom-container">
                         <div class="profile-img">
-                            <c:url value="${urlImage}" var="profileImage"/>
+                            <c:url value="${request.getContextPath()}${urlImage}" var="profileImage"/>
                             <img src="${profileImage}" class="rounded-circle img-fluid" alt="Changa Image">
                             <div class="file btn btn-lg btn-primary">
                                 <c:url value="/upload" var="uploadUrl"/>
                                 <form method="post" action="${uploadUrl}" enctype="multipart/form-data">
                                     <spring:message code="profileBody.nav.choosePhoto.label"/>
-                                    <input type="file" name="file" /><br/>
+                                    <input type="file" name="file" accept="image/gif, image/jpg, image/jpeg, image/png" /><br/>
                                     <button type="submit" class="btn btn-primary" style="font-size: 1vw"><spring:message code="profileBody.nav.choosePhoto.btn"/></button>
                                 </form>
                             </div>

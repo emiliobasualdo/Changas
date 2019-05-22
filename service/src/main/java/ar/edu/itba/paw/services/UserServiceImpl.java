@@ -198,6 +198,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Either<String, Validation> putImage(long userId, MultipartFile multipartFile) {
+
+        if (multipartFile.isEmpty()){
+            return Either.alternative(NULL_IMAGE);
+        }
+
         //We check if the user exists
         Either<User, Validation> user = userDao.getById(userId);
         if (!user.isValuePresent())

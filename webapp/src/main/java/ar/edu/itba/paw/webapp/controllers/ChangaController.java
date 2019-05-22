@@ -67,6 +67,7 @@ public class ChangaController {
         if (!changa.isValuePresent()) {
             return redirectToErrorPage(response, changa.getAlternative());
         }
+        cs.putImage(changa.getValue().getChanga_id(), form.getPhoto());
         response.setStatus(HttpServletResponse.SC_CREATED);
         return new ModelAndView("redirect:/changa").addObject("id", changa.getValue().getChanga_id());
     }
@@ -148,10 +149,14 @@ public class ChangaController {
         mav.addObject("changaOwner", changaOwner.getValue());
         mav.addObject("userAlreadyInscribedInChanga", userAlreadyInscribedInChanga);
         mav.addObject("userOwnsChanga", false);
-        /*Either<String, Validation> urlImage = .... ;
-        mav.addObject("urlImage", "/img/nieve1.jpg"); */
-        /* cambiar esto si tiene una foto para mostrar */
-        mav.addObject("noPicture", true);
+
+        Either<byte[], Validation> maybeImage = cs.getImage(id, "portrait-image");
+        if (!maybeImage.isValuePresent()){
+            mav.addObject("noPicture", true);
+        } else {
+            mav.addObject("urlImage", new StringBuilder("/changas/").append(id).append("/portrait-image"));
+            mav.addObject("noPicture", false);
+        }
         return mav;
     }
 
@@ -178,10 +183,14 @@ public class ChangaController {
             return new ModelAndView("redirect:/error").addObject("message", messageSource.getMessage(hasAcceptedUsers.getAlternative().name(), null, LocaleContextHolder.getLocale()));
         }
         mav.addObject("hasAcceptedUsers", hasAcceptedUsers.getValue());
-        /*Either<String, Validation> urlImage = .... ;
-        mav.addObject("urlImage", "/img/nieve1.jpg"); */
-        /* cambiar esto si tiene una foto para mostrar */
-        mav.addObject("noPicture", true);
+
+        Either<byte[], Validation> maybeImage = cs.getImage(id, "portrait-image");
+        if (!maybeImage.isValuePresent()){
+            mav.addObject("noPicture", true);
+        } else {
+            mav.addObject("urlImage", new StringBuilder("/changas/").append(id).append("/portrait-image"));
+            mav.addObject("noPicture", false);
+        }
         return mav;
     }
 

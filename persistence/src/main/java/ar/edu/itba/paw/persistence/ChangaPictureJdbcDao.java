@@ -75,6 +75,7 @@ public class ChangaPictureJdbcDao implements ChangaPictureDao {
         } catch (Exception ex) {
             return IMAGE_COULDNT_BE_SAVED;
         }
+
         return OK;
     }
 

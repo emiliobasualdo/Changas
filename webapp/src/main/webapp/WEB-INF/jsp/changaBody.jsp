@@ -25,10 +25,9 @@
         <div class="container">
             <c:choose>
                 <c:when test="${noPicture}">
-
                 </c:when>
                 <c:otherwise>
-                    <c:url value="${urlImage}" var="changaImage"/>
+                    <c:url value="${request.getContextPath()}${urlImage}" var="changaImage"/>
                     <img src="${changaImage}" alt="Changa Image">
                 </c:otherwise>
             </c:choose>
