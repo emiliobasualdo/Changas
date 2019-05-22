@@ -229,6 +229,7 @@ public class UserController {
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public ModelAndView upload(@RequestParam("file") MultipartFile file) {
+
         return new ModelAndView("uploadedImage").addObject("file", file);
     }
 

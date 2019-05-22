@@ -58,3 +58,11 @@ CREATE TABLE IF NOT EXISTS changa_picture
     img_blobl bytea,
     PRIMARY KEY (changa_id)
 );
+
+
+CREATE TABLE IF NOT EXISTS user_picture
+(
+    user_id SERIAL NOT NULL REFERENCES changas (changa_id),
+    img_blobl bytea,
+    PRIMARY KEY (user_id)
+);
