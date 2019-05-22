@@ -1,11 +1,8 @@
 <html>
 <%--https://www.tutorialrepublic.com/codelab.php?topic=bootstrap&file=simple-error-confirmation-popup--%>
-<head>
-    <style><%@include file="/WEB-INF/css/errorModal.css"%></style>
-</head>
 <body>
 <div id="errorModal" class="modal fade">
-    <div class="modal-dialog modal-confirm">
+    <div class="modal-dialog modal-confirm-error">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="icon-box">

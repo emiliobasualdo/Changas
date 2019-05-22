@@ -11,6 +11,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style><%@include file="/WEB-INF/css/adminChangaBody.css"%></style>
     <style><%@include file="/WEB-INF/css/successModal.css"%></style>
+    <style><%@include file="/WEB-INF/css/errorModal.css"%></style>
 </head>
 
 <body>
