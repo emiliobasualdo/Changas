@@ -115,7 +115,7 @@ public class UserController {
            return redirectToErrorPage(response, maybePublishedChangas.getAlternative());
         }
         mav.addObject("publishedChangas", maybePublishedChangas.getValue());
-        /*Either<String, Validation> urlImage = .... ;*/
+//        /*Either<String, Validation> urlImage = .... ;*/
         mav.addObject("urlImage", "/img/nieve1.jpg");
         return mav;
     }

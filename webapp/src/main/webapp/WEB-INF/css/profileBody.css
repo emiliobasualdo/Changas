@@ -89,101 +89,101 @@ body {
     grid-auto-rows: minmax(100px, 1fr);
 }
 
-/* Mobile */
-@media (max-width: 767px) {
-    p {
-        font-size: 2vw;
-    }
-    .profile-img{
-        font-size: 1vw;
-    }
-    .profile-img .file {
-        font-size: 1vw;
-        width: 70%;
-    }
-    .profile-head h5{
-        font-size: 3vw;
-    }
-    .profile-edit-btn {
-        width: 20%;
-    }
-    .profile-head h6, .profile-head label, .profile-tab p {
-        font-size: 2vw;
-    }
-    .profile-head .nav-tabs .nav-link {
-        font-size: 1.5vw;
-    }
-    .tab-content {
-        width: 100%;
-    }
-    #div1 {
-        width: 70%;
-    }
-    #div2 {
-        width: 30%;
-    }
-    .emp-profile {
-        min-height: 50%;
-    }
-}
+/*!* Mobile *!*/
+/*@media (max-width: 767px) {*/
+    /*p {*/
+        /*font-size: 2vw;*/
+    /*}*/
+    /*.profile-img{*/
+        /*font-size: 1vw;*/
+    /*}*/
+    /*.profile-img .file {*/
+        /*font-size: 1vw;*/
+        /*width: 70%;*/
+    /*}*/
+    /*.profile-head h5{*/
+        /*font-size: 3vw;*/
+    /*}*/
+    /*.profile-edit-btn {*/
+        /*width: 20%;*/
+    /*}*/
+    /*.profile-head h6, .profile-head label, .profile-tab p {*/
+        /*font-size: 2vw;*/
+    /*}*/
+    /*.profile-head .nav-tabs .nav-link {*/
+        /*font-size: 1.5vw;*/
+    /*}*/
+    /*.tab-content {*/
+        /*width: 100%;*/
+    /*}*/
+    /*#div1 {*/
+        /*width: 70%;*/
+    /*}*/
+    /*#div2 {*/
+        /*width: 30%;*/
+    /*}*/
+    /*.emp-profile {*/
+        /*min-height: 50%;*/
+    /*}*/
+/*}*/
 
-/* tablets */
-@media (max-width: 991px) and (min-width: 768px) {
-    p {
-        font-size: 2vw;
-    }
-    .profile-img{
-        font-size: 1vw;
-    }
-    .profile-img .file {
-        font-size: 1vw;
-        width: 70%;
-    }
-    .profile-head h5{
-        font-size: 3vw;
-    }
-    .profile-edit-btn {
-        width: 20%;
-    }
-    .profile-head h6, .profile-head label, .profile-tab p {
-        font-size: 2vw;
-    }
-    .profile-head .nav-tabs .nav-link {
-        font-size: 2vw;
-    }
-    .tab-content {
-        width: 100%;
-    }
-    .emp-profile {
-        min-height: 80%;
-    }
-}
+/*!* tablets *!*/
+/*@media (max-width: 991px) and (min-width: 768px) {*/
+    /*p {*/
+        /*font-size: 2vw;*/
+    /*}*/
+    /*.profile-img{*/
+        /*font-size: 1vw;*/
+    /*}*/
+    /*.profile-img .file {*/
+        /*font-size: 1vw;*/
+        /*width: 70%;*/
+    /*}*/
+    /*.profile-head h5{*/
+        /*font-size: 3vw;*/
+    /*}*/
+    /*.profile-edit-btn {*/
+        /*width: 20%;*/
+    /*}*/
+    /*.profile-head h6, .profile-head label, .profile-tab p {*/
+        /*font-size: 2vw;*/
+    /*}*/
+    /*.profile-head .nav-tabs .nav-link {*/
+        /*font-size: 2vw;*/
+    /*}*/
+    /*.tab-content {*/
+        /*width: 100%;*/
+    /*}*/
+    /*.emp-profile {*/
+        /*min-height: 80%;*/
+    /*}*/
+/*}*/
 
-/* laptops and desktops --> min 1024px */
-@media (min-width: 992px) {
-    p {
-        font-size: 1vw;
-    }
-    .profile-img{
-        font-size: 1vw;
-    }
-    .profile-img .file {
-        font-size: 1vw;
-        width: 70%;
-    }
-    .profile-head h5{
-        font-size: 2vw;
-    }
-    .profile-edit-btn {
-        width: 20%;
-    }
-    .profile-head h6, .profile-head .nav-tabs .nav-link, .profile-head label, .profile-tab p {
-        font-size: 1.5vw;
-    }
-    .tab-content {
-        width: 100%;
-    }
-    .emp-profile {
-        min-height: 70%;
-    }
-}
+/*!* laptops and desktops --> min 1024px *!*/
+/*@media (min-width: 992px) {*/
+    /*p {*/
+        /*font-size: 1vw;*/
+    /*}*/
+    /*.profile-img{*/
+        /*font-size: 1vw;*/
+    /*}*/
+    /*.profile-img .file {*/
+        /*font-size: 1vw;*/
+        /*width: 70%;*/
+    /*}*/
+    /*.profile-head h5{*/
+        /*font-size: 2vw;*/
+    /*}*/
+    /*.profile-edit-btn {*/
+        /*width: 20%;*/
+    /*}*/
+    /*.profile-head h6, .profile-head .nav-tabs .nav-link, .profile-head label, .profile-tab p {*/
+        /*font-size: 1.5vw;*/
+    /*}*/
+    /*.tab-content {*/
+        /*width: 100%;*/
+    /*}*/
+    /*.emp-profile {*/
+        /*min-height: 70%;*/
+    /*}*/
+/*}*/
