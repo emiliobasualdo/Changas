@@ -139,6 +139,12 @@
       <artifactId>logback-ext-spring</artifactId>
     </dependency>
 
+    <!-- Apache Commons Upload -->
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>

@@ -19,7 +19,7 @@
     <body>
         <div class="signup-form">
             <c:url value="/create-changa" var="createUrl" />
-            <form:form method="post" modelAttribute="changaForm" action="${createUrl}">
+            <form:form method="post" modelAttribute="changaForm" action="${createUrl}" enctype="multipart/form-data">
                 <h2><spring:message code="issueChangaForm.header"/></h2>
                 <table style="width: 100%;">
                     <tr>
@@ -147,6 +147,23 @@
                             </div>
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <form:label path="photo"><spring:message code="ChangaForm.photo"/></form:label>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <form:input type="file" class="form-control" path="photo"/>
+                                </div>
+                                <form:errors cssClass="form-error" path="price" element="p"/>
+                            </div>
+                        </td>
+                    </tr>
                 </table>
                 <div class="d-flex justify-content-center form-group">
                     <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="issueChangaForm.btn"/></button>
@@ -155,4 +172,3 @@
         </div>
     </body>
 </html>
-

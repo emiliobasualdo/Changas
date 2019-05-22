@@ -139,6 +139,23 @@
                         </div>
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <form:label path="photo"><spring:message code="ChangaForm.photo"/></form:label>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <form:input type="file" class="form-control" path="photo"/>
+                            </div>
+                            <form:errors cssClass="form-error" path="price" element="p"/>
+                        </div>
+                    </td>
+                </tr>
             </table>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary btn-block btn-lg"><spring:message code="editChangaForm.btn"/></button>
