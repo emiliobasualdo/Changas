@@ -4,10 +4,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
-
     <body>
         <div class="auto-table">
-            <c:forEach var="entry" items="${pendingChangas}" >
+            <c:forEach items="${pendingChangas}" var="entry" >
                 <c:set var="title" value="${entry.key.title}" scope="request"/>
                 <c:set var="price" value="${entry.key.price}" scope="request"/>
                 <c:set var="neighborhood" value="${entry.key.neighborhood}" scope="request"/>

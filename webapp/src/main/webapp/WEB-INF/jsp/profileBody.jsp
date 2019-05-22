@@ -1,7 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<!-- https://bootsnipp.com/snippets/K0ZmK -->
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -9,10 +8,9 @@
         <%@ include file="/WEB-INF/css/profileBody.css" %>
     </style>
 </head>
-<body>
 <div class="container emp-profile" style="margin-top: 60px">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-xs-6 col-sm-6 col-md-8" id="div1">
             <div class="profile-head">
                 <div class="container custom-container">
                     <div class="profile-img">
@@ -30,7 +28,7 @@
                     <p><c:out value="${getLoggedUser.tel}"/></p>
                 </div>
 
-                <ul class="nav nav-tabs" id="myTab">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="published-changas-tab" data-toggle="tab" href="#published"
                            role="tab" aria-controls="published" aria-selected="true"><spring:message
@@ -44,7 +42,7 @@
                 </ul>
             </div>
         </div>
-        <div class="col-md-4" style="float: right">
+        <div class="col-xs-6 col-md-4" style="float: right" id="div2">
             <p>
                 <c:url value="/edit-profile" var="editProfileUrl"/>
                 <a href="${editProfileUrl}" class="profile-edit-btn"><spring:message code="profileBody.nav.edit"/></a>
@@ -72,5 +70,4 @@
         </div>
     </div>
 </div>
-</body>
 </html>
